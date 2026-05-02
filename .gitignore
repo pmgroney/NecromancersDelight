@@ -1,0 +1,32 @@
+# Local agent/project instructions
+AGENTS.md
+
+# IDE and editor state
+.idea/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Local game blueprint dumps and generated scratch data
+WOTR_Blueprints/
+temp_blueprints/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.cache
+
+# Packaged/generated binaries
+*.dll
+*.pdb
+*.mdb
+*.zip
+*.7z
+*.rar

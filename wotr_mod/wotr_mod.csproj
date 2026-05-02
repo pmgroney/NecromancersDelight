@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{92C44DAF-22D7-4E9F-AE0F-1EE5AF070BE7}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>wotr_mod</RootNamespace>
+        <AssemblyName>wotr_mod</AssemblyName>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <OutputPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Mods\NecromancersDelight\</OutputPath>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <DebugType>pdbonly</DebugType>
+        <Optimize>true</Optimize>
+        <OutputPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Mods\NecromancersDelight\</OutputPath>
+        <DefineConstants>TRACE</DefineConstants>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System"/>
+        <Reference Include="System.Core"/>
+        <Reference Include="System.Data"/>
+        <Reference Include="System.Xml"/>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Assembly-CSharp.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityModManager">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityModManager\UnityModManager.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="0Harmony">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Classes\CharacterClassDefinition.cs"/>
+        <Compile Include="Classes\CharacterClassInstaller.cs"/>
+        <Compile Include="Classes\CharacterClassPresentationDefinition.cs"/>
+        <Compile Include="Classes\CharacterClassRegistry.cs"/>
+        <Compile Include="Classes\ClassChassisDefinition.cs"/>
+        <Compile Include="Classes\ClassComponentInstallers.cs" />
+        <Compile Include="Classes\ClassSpellDefinition.cs" />
+        <Compile Include="Classes\EvokerInstaller.cs" />
+        <Compile Include="Classes\EvokerSpellRegistry.cs"/>
+        <Compile Include="Classes\IClassContentInstaller.cs" />
+        <Compile Include="Classes\NecromancerSpellRegistry.cs"/>
+        <Compile Include="Content\ModContentPatch.cs"/>
+        <Compile Include="Content\IContentModule.cs"/>
+        <Compile Include="Content\Localization\ModText.cs"/>
+        <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
+        <Compile Include="Features\ReapingEdgeComponent.cs" />
+        <Compile Include="Main.cs" />
+        <Compile Include="Infrastructure\BlueprintFields.cs" />
+        <Compile Include="Infrastructure\GameBlueprintIds.cs" />
+        <Compile Include="Infrastructure\LocalizationIds.cs" />
+        <Compile Include="Infrastructure\ModBlueprintIds.cs" />
+        <Compile Include="Infrastructure\BlueprintClassRegistration.cs" />
+        <Compile Include="Infrastructure\BlueprintCloner.cs" />
+        <Compile Include="Infrastructure\BlueprintTool.cs" />
+        <Compile Include="Infrastructure\IGamePatch.cs" />
+        <Compile Include="Infrastructure\LocalizationTool.cs" />
+        <Compile Include="Infrastructure\PatchRegistry.cs" />
+        <Compile Include="Infrastructure\SelectionRecommendation.cs" />
+        <Compile Include="Spells\SpellDefinition.cs" />
+        <Compile Include="Spells\Modifiers\AbilityTargetMustBeDead.cs" />
+        <Compile Include="Spells\Modifiers\ActionListPatcher.cs" />
+        <Compile Include="Spells\Modifiers\AreaNecromancyModifier.cs" />
+        <Compile Include="Spells\Modifiers\CompositeSpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\ConfigureSpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\CorpseExplosionModifier.cs" />
+        <Compile Include="Spells\Modifiers\DamageTypeSpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\ISpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\SpellModifierContext.cs" />
+        <Compile Include="Spells\Modifiers\SpellModifierUtility.cs" />
+        <Compile Include="Spells\SpellIconLoader.cs" />
+        <Compile Include="Spells\SpellInstaller.cs" />
+        <Compile Include="Spells\SpellRegistry.cs" />
+        <Compile Include="Spells\SpellSchoolFilter.cs" />
+        <Compile Include="Patches\CleverPyromaniacGnomePatch.cs" />
+        <Compile Include="Patches\CustomHeritagePatch.cs" />
+        <Compile Include="Patches\CompanionSelectionPatch.cs" />
+        <Compile Include="Patches\LeopardTripPatch.cs" />
+        <Compile Include="Patches\ReapingEdgeProgressionFramePatch.cs" />
+        <Compile Include="Patches\VelociraptorGrowthPatch.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Info.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <Content Include="Data\Localization\Spells.resx">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\bone_spike.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\bone_armor.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\corpse_explosion.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\death_ray.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\eldritch_horror.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\emperors_wrath.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\force_ray_arcane.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\hell_on_earth.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\necromancer.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\reaping_edge.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\shadowborn_bloodline.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\shadow_hands.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\shadow_ray.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\umbral_blast.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\umbral_ray.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\vitriolic_blast.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="WOTR_Blueprints\**" />
+    </ItemGroup>
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+
+</Project>
