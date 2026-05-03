@@ -71,14 +71,21 @@
         <Compile Include="Classes\ClassComponentInstallers.cs" />
         <Compile Include="Classes\ClassSpellDefinition.cs" />
         <Compile Include="Classes\EvokerInstaller.cs" />
+        <Compile Include="Classes\EvokerScalingInstaller.cs" />
         <Compile Include="Classes\EvokerSpellRegistry.cs"/>
         <Compile Include="Classes\IClassContentInstaller.cs" />
         <Compile Include="Classes\NecromancerSpellRegistry.cs"/>
         <Compile Include="Content\ModContentPatch.cs"/>
+        <Compile Include="Content\CompanionInstaller.cs" />
         <Compile Include="Content\IContentModule.cs"/>
         <Compile Include="Content\Localization\ModText.cs"/>
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
+        <Compile Include="Features\EvokerArcaneDcScaling.cs" />
+        <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
+        <Compile Include="Features\ShadowbornNegativeEnergyHealing.cs" />
+        <Compile Include="Features\SelectedRaceStatBonus.cs" />
+        <Compile Include="Features\SkillPointsPerCharacterLevel.cs" />
         <Compile Include="Main.cs" />
         <Compile Include="Infrastructure\BlueprintFields.cs" />
         <Compile Include="Infrastructure\GameBlueprintIds.cs" />
@@ -107,6 +114,9 @@
         <Compile Include="Spells\SpellRegistry.cs" />
         <Compile Include="Spells\SpellSchoolFilter.cs" />
         <Compile Include="Patches\CleverPyromaniacGnomePatch.cs" />
+        <Compile Include="Patches\BillyPlacementPatch.cs" />
+        <Compile Include="Patches\GravebladeStartingEquipmentPatch.cs" />
+        <Compile Include="Patches\StartingEquipmentPatch.cs" />
         <Compile Include="Patches\CustomHeritagePatch.cs" />
         <Compile Include="Patches\CompanionSelectionPatch.cs" />
         <Compile Include="Patches\LeopardTripPatch.cs" />
@@ -121,7 +131,19 @@
         <Content Include="Data\Localization\Spells.resx">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\billy.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\billy_headshot.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\bone_spike.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\arcane_supremacy.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\corrosive_mastery.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\bone_armor.png">
@@ -142,7 +164,13 @@
         <Content Include="Icons\force_ray_arcane.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\glacial_dominion.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\hell_on_earth.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\infernal_potency.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\necromancer.png">
@@ -158,6 +186,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\shadow_ray.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\tempest_surge.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\umbral_blast.png">

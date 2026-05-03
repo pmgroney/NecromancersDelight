@@ -28,6 +28,19 @@ namespace wotr_mod.Infrastructure
                 new IGamePatch[]
                 {
                     new ModContentPatch(blueprints, localization, logger, modPath),
+                    new CompanionSelectionPatch(
+                        blueprints,
+                        localization,
+                        new CompanionSelectionPatch.CompanionSelectionTarget(
+                            "Evoker",
+                            ModBlueprintIds.Classes.Evoker,
+                            ModBlueprintIds.Progressions.Evoker),
+                        new CompanionSelectionPatch.CompanionSelectionTarget(
+                            "Necromancer",
+                            ModBlueprintIds.Classes.Necromancer,
+                            ModBlueprintIds.Progressions.Necromancer)),
+                    new BillyPlacementPatch(blueprints, logger),
+                    new GravebladeStartingEquipmentPatch(blueprints, logger),
                     new CustomHeritagePatch(blueprints, localization),
                     new CleverPyromaniacGnomePatch(blueprints, localization),
                     new LeopardTripPatch(blueprints, localization, logger),
@@ -84,6 +97,14 @@ namespace wotr_mod.Infrastructure
             foreach (var handler in _patches.OfType<IUnitLoadHandler>())
             {
                 handler.OnUnitLoaded(unit);
+            }
+        }
+
+        public void OnAreaLoaded()
+        {
+            foreach (var handler in _patches.OfType<IAreaLoadHandler>())
+            {
+                handler.OnAreaLoaded();
             }
         }
     }

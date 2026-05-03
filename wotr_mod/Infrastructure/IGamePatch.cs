@@ -13,4 +13,9 @@ namespace wotr_mod.Infrastructure
     {
         void OnUnitLoaded(UnitEntityData unit);
     }
+
+    internal interface IAreaLoadHandler
+    {
+        void OnAreaLoaded();
+    }
 }

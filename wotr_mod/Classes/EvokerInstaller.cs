@@ -14,7 +14,9 @@ using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
+using UnityEngine;
 using UnityModManagerNet;
+using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
 using wotr_mod.Spells.Modifiers;
@@ -56,11 +58,12 @@ namespace wotr_mod.Classes
             BlueprintSpellList spellList)
         {
             ConfigureEvokerSpellList(spellList);
-            // Evoker-specific logic here (none currently beyond spell list and archetypes)
+            _blueprints.SetCharacterClassArchetypes(characterClass);
 
             _blueprints.SetCharacterClassArchetypes(
                 characterClass,
                 EnsureArchetypes(definition, characterClass, spellbook, spellList));
+            new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
         }
 
         private void ConfigureEvokerSpellList(BlueprintSpellList spellList)
@@ -155,7 +158,7 @@ namespace wotr_mod.Classes
                 LocalizationIds.Mod.ShadowbornUmbralRayName,
                 LocalizationIds.Mod.ShadowbornUmbralRayDescription,
                 characterClass,
-                "Icons\\umbral_ray.png");
+                GameBlueprintIds.Features.BloodlineElementalEarthElementalRayFeature);
             var umbralBlast = EnsureShadowbornDamageFeature(
                 GameBlueprintIds.Features.BloodlineElementalFireElementalBlastFeature,
                 GameBlueprintIds.Abilities.BloodlineElementalFireElementalBlastAbility,
@@ -166,8 +169,9 @@ namespace wotr_mod.Classes
                 LocalizationIds.Mod.ShadowbornUmbralBlastName,
                 LocalizationIds.Mod.ShadowbornUmbralBlastDescription,
                 characterClass,
-                "Icons\\umbral_blast.png");
+                GameBlueprintIds.Features.BloodlineElementalFireElementalBlastFeature);
             var resistance = EnsureShadowbornResistanceFeature(characterClass);
+            var elementalBody = EnsureShadowbornElementalBodyFeature();
             var arcana = EnsureShadowbornArcanaFeature(characterClass);
             var shadowHands = EnsureShadowbornKnownSpellFeature(
                 GameBlueprintIds.Features.BloodlineElementalFireSpellLevel1,
@@ -211,6 +215,10 @@ namespace wotr_mod.Classes
                 umbralBlast);
             ReplaceProgressionFeature(
                 bloodline,
+                GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature,
+                elementalBody);
+            ReplaceProgressionFeature(
+                bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireResistanceFeature,
                 resistance);
             ReplaceProgressionFeature(
@@ -224,6 +232,59 @@ namespace wotr_mod.Classes
             _blueprints.SetProgressionClasses(bloodline, characterClass);
 
             return bloodline;
+        }
+
+        private BlueprintFeature EnsureShadowbornElementalBodyFeature()
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.ShadowbornElementalBody);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_ShadowbornUmbralBodyFeature",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.ShadowbornElementalBody),
+                    Ranks = 1,
+                    IsClassFeature = true
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.ShadowbornElementalBody, feature);
+            }
+
+            feature.Ranks = 1;
+            feature.IsClassFeature = true;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.ShadowbornElementalBodyName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornElementalBodyDescription));
+            _blueprints.SetComponents(
+                feature,
+                new AddEnergyDamageImmunity
+                {
+                    name = "$AddEnergyDamageImmunity$ShadowbornNegativeEnergyHealing",
+                    EnergyType = DamageEnergyType.NegativeEnergy,
+                    HealOnDamage = true
+                },
+                new ShadowbornNegativeEnergyHealing
+                {
+                    name = "$ShadowbornNegativeEnergyHealing$UndeadDoubleHealing",
+                    UndeadType = _blueprints.Require<BlueprintFeature>(
+                        GameBlueprintIds.Features.UndeadType,
+                        "Undead type"),
+                    ResistanceFeaturesToRemove = new[]
+                    {
+                        _blueprints.Require<BlueprintFeature>(
+                            ModBlueprintIds.Features.ShadowbornResistanceLevel1,
+                            "Shadowborn negative energy resistance 10"),
+                        _blueprints.Require<BlueprintFeature>(
+                            ModBlueprintIds.Features.ShadowbornResistanceLevel2,
+                            "Shadowborn negative energy resistance 20")
+                    }
+                });
+            SetShadowTintedIcon(
+                feature,
+                GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature,
+                "ShadowbornElementalBody");
+
+            return feature;
         }
 
         private BlueprintFeature EnsureShadowbornResistanceFeature(BlueprintCharacterClass characterClass)
@@ -260,7 +321,10 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceDescription));
-            SetIcon(feature, "Icons\\shadowborn_bloodline.png");
+            SetShadowTintedIcon(
+                feature,
+                GameBlueprintIds.Features.BloodlineElementalFireResistanceFeature,
+                "ShadowbornResistance");
             _blueprints.SetProgressionClasses(feature, characterClass);
 
             return feature;
@@ -288,7 +352,7 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceDescription));
-            SetIcon(feature, "Icons\\shadowborn_bloodline.png");
+            SetShadowTintedIcon(feature, sourceFeatureGuid, featureName);
 
             return feature;
         }
@@ -318,7 +382,10 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaDescription));
-            SetIcon(feature, "Icons\\shadowborn_bloodline.png");
+            SetShadowTintedIcon(
+                feature,
+                GameBlueprintIds.Features.BloodlineElementalFireArcana,
+                "ShadowbornArcanaFeature");
             _blueprints.SetProgressionClasses(feature, characterClass);
 
             return feature;
@@ -345,7 +412,10 @@ namespace wotr_mod.Classes
                 ability,
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaDescription));
-            SetIcon(ability, "Icons\\shadowborn_bloodline.png");
+            SetShadowTintedIcon(
+                ability,
+                GameBlueprintIds.Abilities.BloodlineElementalFireArcanaAbility,
+                "ShadowbornArcanaAbility");
 
             return ability;
         }
@@ -377,7 +447,10 @@ namespace wotr_mod.Classes
                 buff,
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaDescription));
-            SetIcon(buff, "Icons\\shadowborn_bloodline.png");
+            SetShadowTintedIcon(
+                buff,
+                GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
+                "ShadowbornArcanaBuff");
 
             return buff;
         }
@@ -454,7 +527,7 @@ namespace wotr_mod.Classes
             string displayNameKey,
             string descriptionKey,
             BlueprintCharacterClass characterClass,
-            string iconPath)
+            string iconSourceFeatureGuid)
         {
             var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
             if (feature == null)
@@ -471,7 +544,7 @@ namespace wotr_mod.Classes
                 displayNameKey,
                 descriptionKey,
                 characterClass,
-                iconPath);
+                iconSourceFeatureGuid);
             foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
             {
                 _blueprints.SetAddFacts(addFacts, ability);
@@ -483,7 +556,7 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(displayNameKey),
                 _localization.Text(descriptionKey));
-            SetIcon(feature, iconPath);
+            SetShadowTintedIcon(feature, iconSourceFeatureGuid, featureName);
 
             return feature;
         }
@@ -495,7 +568,7 @@ namespace wotr_mod.Classes
             string displayNameKey,
             string descriptionKey,
             BlueprintCharacterClass characterClass,
-            string iconPath)
+            string iconSourceFeatureGuid)
         {
             var ability = _blueprints.Get<BlueprintAbility>(abilityGuid);
             if (ability == null)
@@ -509,7 +582,7 @@ namespace wotr_mod.Classes
                 ability,
                 _localization.Text(displayNameKey),
                 _localization.Text(descriptionKey));
-            SetIcon(ability, iconPath);
+            SetShadowTintedIcon(ability, iconSourceFeatureGuid, abilityName);
             SpellModifierUtility.ReplaceDescriptor(ability, SpellDescriptor.Fire, SpellDescriptor.Death, _blueprints);
             BindAbilityRankConfigsToClass(ability, characterClass);
             PatchFireDamageToNegativeEnergy(ability);
@@ -555,6 +628,43 @@ namespace wotr_mod.Classes
             {
                 _blueprints.SetUnitFactIcon(fact, icon);
             }
+        }
+
+        private void SetShadowTintedIcon(BlueprintUnitFact fact, string sourceFeatureGuid, string cacheKey)
+        {
+            var source = _blueprints.Require<BlueprintUnitFact>(sourceFeatureGuid, cacheKey + " icon source");
+            var tint = GetShadowIconTint(cacheKey);
+            var icon = _icons.Tint(source.Icon, cacheKey, tint.Color, tint.Strength);
+            if (icon != null)
+            {
+                _blueprints.SetUnitFactIcon(fact, icon);
+            }
+        }
+
+        private static ShadowIconTint GetShadowIconTint(string cacheKey)
+        {
+            if (cacheKey != null &&
+                (cacheKey.Contains("UmbralBlast") ||
+                 cacheKey.Contains("ShadowbornArcana") ||
+                 cacheKey.Contains("ShadowbornResistance") ||
+                 cacheKey.Contains("ShadowbornElementalBody")))
+            {
+                return new ShadowIconTint(new Color(0.32f, 0.06f, 0.78f, 1f), 0.86f);
+            }
+
+            return new ShadowIconTint(new Color(0.45f, 0.2f, 0.85f, 1f), 0.65f);
+        }
+
+        private readonly struct ShadowIconTint
+        {
+            public ShadowIconTint(Color color, float strength)
+            {
+                Color = color;
+                Strength = strength;
+            }
+
+            public Color Color { get; }
+            public float Strength { get; }
         }
 
         private static void ReplaceBuffReferences(
@@ -646,6 +756,9 @@ namespace wotr_mod.Classes
                     BlueprintFields.ContextRankConfigClass.SetValue(newConfig, reference);
                 }
 
+                BlueprintFields.ContextRankConfigBaseValueType?.SetValue(
+                    newConfig,
+                    ContextRankBaseValueType.ClassLevel);
                 BlueprintFields.ContextRankConfigArchetype?.SetValue(newConfig, null);
                 BlueprintFields.ContextRankConfigAdditionalArchetypes?.SetValue(
                     newConfig,

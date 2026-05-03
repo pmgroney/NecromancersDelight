@@ -10,6 +10,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.ElementsSystem;
@@ -171,6 +172,19 @@ namespace wotr_mod.Infrastructure
                 .ToArray();
         }
 
+        public void AddFeatureToRace(BlueprintRace race, BlueprintFeatureBase feature)
+        {
+            var features = (BlueprintFeatureBaseReference[])BlueprintFields.RaceFeatures.GetValue(race)
+                           ?? Array.Empty<BlueprintFeatureBaseReference>();
+            if (features.Any(featureReference => featureReference.Get() == feature))
+            {
+                return;
+            }
+
+            var newReference = BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(feature);
+            BlueprintFields.RaceFeatures.SetValue(race, features.Concat(new[] { newReference }).ToArray());
+        }
+
         public void AddFactToUnitBlueprint(BlueprintUnit unit, BlueprintUnitFact fact)
         {
             var addFacts = (BlueprintUnitFactReference[])BlueprintFields.UnitAddFacts.GetValue(unit);
@@ -249,6 +263,43 @@ namespace wotr_mod.Infrastructure
                 .ToArray();
 
             BlueprintFields.ProgressionUIGroups.SetValue(progression, groups);
+        }
+
+        public void AddProgressionUiGroup(BlueprintProgression progression, params BlueprintFeatureBase[] features)
+        {
+            if (BlueprintFields.UIGroupFeatures == null)
+            {
+                Error($"UIGroup.m_Features field not found, cannot add UI group for {progression.name}.");
+                return;
+            }
+
+            if (BlueprintFields.ProgressionUIGroups == null)
+            {
+                Error($"BlueprintProgression.UIGroups field not found, cannot add UI group for {progression.name}.");
+                return;
+            }
+
+            var groupFeatures = (features ?? Array.Empty<BlueprintFeatureBase>())
+                .Where(feature => feature != null)
+                .ToArray();
+            if (groupFeatures.Length == 0)
+            {
+                return;
+            }
+
+            var groups = ((UIGroup[])BlueprintFields.ProgressionUIGroups.GetValue(progression) ?? Array.Empty<UIGroup>())
+                .ToList();
+            if (groups.Any(group => UiGroupContains(group, groupFeatures[0])))
+            {
+                return;
+            }
+
+            var newGroup = CreateUiGroup(groupFeatures);
+            if (newGroup != null)
+            {
+                groups.Add(newGroup);
+                BlueprintFields.ProgressionUIGroups.SetValue(progression, groups.ToArray());
+            }
         }
 
         public void SetUnitFactDisplay(BlueprintUnitFact fact, LocalizedString name, LocalizedString description)
@@ -373,6 +424,61 @@ namespace wotr_mod.Infrastructure
                 .Select(BlueprintReferenceBase.CreateTyped<BlueprintArchetypeReference>)
                 .ToArray();
             BlueprintFields.CharacterClassArchetypes.SetValue(characterClass, references);
+
+            if (string.Equals(characterClass?.AssetGuid.ToString(), ModBlueprintIds.Classes.Necromancer, StringComparison.OrdinalIgnoreCase))
+            {
+                Log("Necromancer archetypes assigned: " + DescribeArchetypes(archetypes));
+            }
+        }
+
+        public void SetCharacterClassAppearanceFromClass(BlueprintCharacterClass target, BlueprintCharacterClass source)
+        {
+            CopyClassAppearanceField(BlueprintFields.CharacterClassPrimaryColor, target, source);
+            CopyClassAppearanceField(BlueprintFields.CharacterClassSecondaryColor, target, source);
+            CopyClassAppearanceField(BlueprintFields.CharacterClassEquipmentEntities, target, source);
+            CopyClassAppearanceField(BlueprintFields.CharacterClassMaleEquipmentEntities, target, source);
+            CopyClassAppearanceField(BlueprintFields.CharacterClassFemaleEquipmentEntities, target, source);
+        }
+
+        private static void CopyClassAppearanceField(FieldInfo field, BlueprintCharacterClass target, BlueprintCharacterClass source)
+        {
+            var value = field?.GetValue(source);
+            if (value is Array array)
+            {
+                value = array.Clone();
+            }
+
+            field?.SetValue(target, value);
+        }
+
+        private static string DescribeArchetypes(IEnumerable<BlueprintArchetype> archetypes)
+        {
+            var values = (archetypes ?? Enumerable.Empty<BlueprintArchetype>())
+                .Select(archetype => archetype == null
+                    ? "<null>"
+                    : $"{archetype.name}({archetype.AssetGuid})")
+                .ToArray();
+            return values.Length == 0 ? "<none>" : string.Join(", ", values);
+        }
+
+        private static string DescribeLevelEntries(IEnumerable<LevelEntry> entries)
+        {
+            var values = (entries ?? Enumerable.Empty<LevelEntry>())
+                .Select(entry => entry == null
+                    ? "<null>"
+                    : $"L{entry.Level}=[{DescribeFeatures(entry.Features)}]")
+                .ToArray();
+            return values.Length == 0 ? "<none>" : string.Join("; ", values);
+        }
+
+        private static string DescribeFeatures(IEnumerable<BlueprintFeatureBase> features)
+        {
+            var values = (features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                .Select(feature => feature == null
+                    ? "<null>"
+                    : $"{feature.name}({feature.AssetGuid})")
+                .ToArray();
+            return values.Length == 0 ? "<none>" : string.Join(", ", values);
         }
 
         public void SetArchetypeDisplay(BlueprintArchetype archetype, LocalizedString name, LocalizedString description)
@@ -393,8 +499,16 @@ namespace wotr_mod.Infrastructure
 
         public void SetArchetypeFeatureChanges(BlueprintArchetype archetype, IEnumerable<LevelEntry> addFeatures, IEnumerable<LevelEntry> removeFeatures)
         {
-            BlueprintFields.ArchetypeAddFeatures.SetValue(archetype, (addFeatures ?? Enumerable.Empty<LevelEntry>()).ToArray());
-            BlueprintFields.ArchetypeRemoveFeatures.SetValue(archetype, (removeFeatures ?? Enumerable.Empty<LevelEntry>()).ToArray());
+            var addEntries = (addFeatures ?? Enumerable.Empty<LevelEntry>()).ToArray();
+            var removeEntries = (removeFeatures ?? Enumerable.Empty<LevelEntry>()).ToArray();
+            BlueprintFields.ArchetypeAddFeatures.SetValue(archetype, addEntries);
+            BlueprintFields.ArchetypeRemoveFeatures.SetValue(archetype, removeEntries);
+
+            if (string.Equals(archetype?.AssetGuid.ToString(), ModBlueprintIds.Archetypes.Graveblade, StringComparison.OrdinalIgnoreCase))
+            {
+                Log("Graveblade AddFeatures: " + DescribeLevelEntries(addEntries));
+                Log("Graveblade RemoveFeatures: " + DescribeLevelEntries(removeEntries));
+            }
         }
 
         public void SetArchetypeBuildChanging(BlueprintArchetype archetype, bool buildChanging)
@@ -814,6 +928,55 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.AddFactsFacts.SetValue(component, references);
         }
 
+        public void SetAddStartingEquipment(
+            AddStartingEquipment component,
+            IEnumerable<BlueprintItem> basicItems,
+            params BlueprintCharacterClass[] restrictedByClass)
+        {
+            BlueprintFields.AddStartingEquipmentBasicItems?.SetValue(
+                component,
+                (basicItems ?? Enumerable.Empty<BlueprintItem>())
+                    .Where(item => item != null)
+                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintItemReference>)
+                    .ToArray());
+            BlueprintFields.AddStartingEquipmentRestrictedByClass?.SetValue(
+                component,
+                (restrictedByClass ?? Array.Empty<BlueprintCharacterClass>())
+                    .Where(characterClass => characterClass != null)
+                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>)
+                    .ToArray());
+            component.CategoryItems = Array.Empty<WeaponCategory>();
+            component.ParametrizedCategory = false;
+        }
+
+        public void AddCheckedFact(AddStatBonusIfHasFact component, BlueprintUnitFact fact)
+        {
+            AddCheckedFactReference(BlueprintFields.AddStatBonusIfHasFactCheckedFacts, component, fact);
+        }
+
+        public void AddCheckedFact(RecalculateOnFactsChange component, BlueprintUnitFact fact)
+        {
+            AddCheckedFactReference(BlueprintFields.RecalculateOnFactsChangeCheckedFacts, component, fact);
+        }
+
+        private static void AddCheckedFactReference(FieldInfo checkedFactsField, object component, BlueprintUnitFact fact)
+        {
+            if (checkedFactsField == null || component == null || fact == null)
+            {
+                return;
+            }
+
+            var references = (BlueprintUnitFactReference[])checkedFactsField.GetValue(component) ??
+                             Array.Empty<BlueprintUnitFactReference>();
+            if (references.Any(reference => reference != null && reference.Get() == fact))
+            {
+                return;
+            }
+
+            var newReference = BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(fact);
+            checkedFactsField.SetValue(component, references.Concat(new[] { newReference }).ToArray());
+        }
+
         public void SetAddKnownSpell(
             AddKnownSpell component,
             BlueprintCharacterClass characterClass,
@@ -1152,7 +1315,8 @@ namespace wotr_mod.Infrastructure
             BlueprintFeature feature,
             BlueprintFeatureReference reference)
         {
-            var features = (BlueprintFeatureReference[])field.GetValue(selection);
+            var features = (BlueprintFeatureReference[])field.GetValue(selection)
+                           ?? Array.Empty<BlueprintFeatureReference>();
             if (features.Any(r => r.Get() == feature))
             {
                 return;
@@ -1176,6 +1340,12 @@ namespace wotr_mod.Infrastructure
             var group = new UIGroup();
             BlueprintFields.UIGroupFeatures.SetValue(group, references);
             return group;
+        }
+
+        private static bool UiGroupContains(UIGroup group, BlueprintFeatureBase feature)
+        {
+            var references = BlueprintFields.UIGroupFeatures?.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
+            return references != null && references.Any(reference => reference?.Get() == feature);
         }
 
         private static void CopySpellbookField(BlueprintSpellbook target, BlueprintSpellbook source, string fieldName)

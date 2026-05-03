@@ -118,6 +118,7 @@ namespace wotr_mod.Spells
                     null,
                     energy,
                     fromForce: true,
+                    diceType: DiceType.D6,
                     scaling: new DamageTypeSpellModifier.ScalingConfig
                     {
                         RankType = Kingmaker.Enums.AbilityRankType.Default,

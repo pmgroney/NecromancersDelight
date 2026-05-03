@@ -78,6 +78,9 @@ namespace wotr_mod.Classes
             var sorcererClass = _blueprints.Require<BlueprintCharacterClass>(
                 GameBlueprintIds.Classes.Sorcerer,
                 "Sorcerer class");
+            var wizardClass = _blueprints.Require<BlueprintCharacterClass>(
+                GameBlueprintIds.Classes.Wizard,
+                "Wizard class");
             var sorcererSpellbook = _blueprints.Require<BlueprintSpellbook>(
                 GameBlueprintIds.Spellbooks.Sorcerer,
                 "Sorcerer spellbook");
@@ -113,6 +116,10 @@ namespace wotr_mod.Classes
                         sorcererProgression,
                         bloodlineFeature);
                     characterClass = EnsureClass(definition, sorcererClass, spellbook, progression);
+                    if (definition.UseNecromancerBloodline)
+                    {
+                        _blueprints.SetCharacterClassAppearanceFromClass(characterClass, wizardClass);
+                    }
 
                     if (definition.UseUndeadBloodline)
                     {
@@ -186,6 +193,7 @@ namespace wotr_mod.Classes
                 AddNecromancerFeaturesToProgression(characterClass.Progression);
             }
 
+            _blueprints.SetCharacterClassArchetypes(characterClass);
             _blueprints.SetCharacterClassArchetypes(
                 characterClass,
                 EnsureArchetypes(definition, characterClass, spellbook, spellList));
@@ -296,6 +304,7 @@ namespace wotr_mod.Classes
                 archetype,
                 _localization.Text(LocalizationIds.Mod.SepulchritName),
                 _localization.Text(LocalizationIds.Mod.SepulchritDescription));
+            _blueprints.SetArchetypeParentClass(archetype, characterClass);
             _blueprints.SetArchetypeReplaceSpellbook(archetype, sepulchritSpellbook);
             _blueprints.SetArchetypeFeatureChanges(archetype, Array.Empty<LevelEntry>(), Array.Empty<LevelEntry>());
             _blueprints.SetArchetypeBuildChanging(archetype, true);
@@ -330,15 +339,36 @@ namespace wotr_mod.Classes
                 archetype,
                 _localization.Text(LocalizationIds.Mod.GravebladeName),
                 _localization.Text(LocalizationIds.Mod.GravebladeDescription));
+            _blueprints.SetArchetypeParentClass(archetype, characterClass);
             var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
                 GameBlueprintIds.StatProgressions.BaseAttackBonusHigh,
                 "Graveblade base attack bonus progression");
-            var proficiencies = EnsureGravebladeProficiencies();
+            var proficiencies = EnsureGravebladeProficiencies(characterClass);
             var reapingEdge = EnsureGravebladeReapingEdge(characterClass);
             var bonusFeat = EnsureGravebladeBonusFeatSelection();
             var fighterTraining = EnsureGravebladeFighterTraining(characterClass, bonusFeat);
             var armorTraining = EnsureGravebladeArmorTraining();
             var armorMastery = EnsureGravebladeArmorMastery();
+            var twoHandedWeaponTraining = EnsureGravebladeTwoHandedWeaponTraining(characterClass);
+            var overhandChop = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.TwoHandedFighterOverhandChop,
+                "Two-Handed Fighter Overhand Chop");
+            var backswing = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.TwoHandedFighterBackswing,
+                "Two-Handed Fighter Backswing");
+            var piledriver = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.TwoHandedFighterPiledriver,
+                "Two-Handed Fighter Piledriver");
+            var greaterPowerAttack = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.TwoHandedFighterGreaterPowerAttack,
+                "Two-Handed Fighter Greater Power Attack");
+            var weaponMastery = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.TwoHandedFighterDevastatingBlow,
+                "Two-Handed Fighter weapon mastery feature");
+            var firstLevelFighterBonusFeat = _blueprints.Require<BlueprintFeatureSelection>(
+                GameBlueprintIds.Selections.FighterFeat,
+                "Fighter Bonus Feat");
+            var necromancerBonusFeat = EnsureNecromancerBonusFeatSelection();
             
             // Register all archetype-specific features with the class
             _blueprints.SetProgressionClasses(proficiencies, characterClass);
@@ -347,7 +377,25 @@ namespace wotr_mod.Classes
             _blueprints.SetProgressionClasses(fighterTraining, characterClass);
             _blueprints.SetProgressionClasses(armorTraining, characterClass);
             _blueprints.SetProgressionClasses(armorMastery, characterClass);
+            _blueprints.SetProgressionClasses(twoHandedWeaponTraining, characterClass);
 
+            var gravebladeLevelEntries = new[]
+            {
+                CreateLevelEntry(1, proficiencies, fighterTraining, reapingEdge, firstLevelFighterBonusFeat),
+                CreateLevelEntry(2, bonusFeat),
+                CreateLevelEntry(3, armorTraining, reapingEdge, overhandChop),
+                CreateLevelEntry(5, reapingEdge, twoHandedWeaponTraining),
+                CreateLevelEntry(6, bonusFeat),
+                CreateLevelEntry(7, armorTraining, reapingEdge, backswing),
+                CreateLevelEntry(9, reapingEdge, twoHandedWeaponTraining),
+                CreateLevelEntry(10, bonusFeat),
+                CreateLevelEntry(11, armorTraining, reapingEdge, piledriver),
+                CreateLevelEntry(13, reapingEdge, twoHandedWeaponTraining),
+                CreateLevelEntry(15, armorTraining, reapingEdge, greaterPowerAttack),
+                CreateLevelEntry(16, bonusFeat),
+                CreateLevelEntry(17, reapingEdge, twoHandedWeaponTraining),
+                CreateLevelEntry(19, armorMastery, reapingEdge, weaponMastery)
+            };
             _blueprints.SetArchetypeReplaceSpellbook(archetype, gravebladeSpellbook);
             _blueprints.SetArchetypeStartingEquipmentFromClass(
                 archetype,
@@ -357,70 +405,115 @@ namespace wotr_mod.Classes
                     "Masterwork scythe"));
             _blueprints.SetArchetypeFeatureChanges(
                 archetype,
-                new[]
-                {
-                    CreateLevelEntry(1, proficiencies, fighterTraining, reapingEdge),
-                    CreateLevelEntry(2, bonusFeat),
-                    CreateLevelEntry(3, armorTraining, reapingEdge),
-                    CreateLevelEntry(5, reapingEdge),
-                    CreateLevelEntry(6, bonusFeat),
-                    CreateLevelEntry(7, armorTraining, reapingEdge),
-                    CreateLevelEntry(9, reapingEdge),
-                    CreateLevelEntry(10, bonusFeat),
-                    CreateLevelEntry(11, armorTraining, reapingEdge),
-                    CreateLevelEntry(13, reapingEdge),
-                    CreateLevelEntry(15, armorTraining, reapingEdge),
-                    CreateLevelEntry(16, bonusFeat),
-                    CreateLevelEntry(17, reapingEdge),
-                    CreateLevelEntry(19, armorMastery, reapingEdge)
-                },
-                new[]
-                {
-                    CreateLevelEntry(
-                        1,
-                        _blueprints.Require<BlueprintFeature>(
-                            ModBlueprintIds.Features.NecromancerBloodlineArcana,
-                            "Master of Death"),
-                        _blueprints.Require<BlueprintFeature>(
-                            ModBlueprintIds.Features.NecromancerBloodlinePower1,
-                            "Withering Ray")),
-                    CreateLevelEntry(
-                        2,
-                        _blueprints.Require<BlueprintFeature>(
-                            ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell,
-                            "Bone Spike granted spell")),
-                    CreateLevelEntry(
-                        4,
-                        _blueprints.Require<BlueprintFeature>(
-                            ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell,
-                            "Corpse Explosion granted spell")),
-                    CreateLevelEntry(6, EnsureNecromancerBonusFeatSelection()),
-                    CreateLevelEntry(
-                        7,
-                        _blueprints.Require<BlueprintFeature>(
-                            ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell,
-                            "Eldritch Horror granted spell")),
-                    CreateLevelEntry(10, EnsureNecromancerBonusFeatSelection()),
-                    CreateLevelEntry(16, EnsureNecromancerBonusFeatSelection()),
-                    CreateLevelEntry(
-                        19,
-                        _blueprints.Require<BlueprintFeature>(
-                            ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell,
-                            "Hell on Earth granted spell"))
-                });
+                gravebladeLevelEntries,
+                CreateGravebladeRemoveFeatureEntries(necromancerBonusFeat));
             _blueprints.SetArchetypeBaseAttackBonus(archetype, baseAttackBonus);
             _blueprints.SetArchetypeSignatureAbilities(archetype, reapingEdge);
-            AddGravebladeFeaturesToProgressionUi(characterClass.Progression, reapingEdge, armorTraining, armorMastery);
+            AddGravebladeFeaturesToProgressionUi(
+                characterClass.Progression,
+                reapingEdge,
+                armorTraining,
+                armorMastery,
+                twoHandedWeaponTraining,
+                overhandChop,
+                backswing,
+                piledriver,
+                greaterPowerAttack,
+                weaponMastery);
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
+        }
+
+        private LevelEntry[] CreateGravebladeRemoveFeatureEntries(BlueprintFeatureBase necromancerBonusFeat)
+        {
+            var entries = new List<LevelEntry>();
+            AddLevelEntryIfAny(
+                entries,
+                1,
+                GetFeatureIfAvailable(GameBlueprintIds.Features.SorcererCantrips, "Sorcerer Cantrips"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerProficiencies, "Necromancer Proficiencies"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
+                necromancerBonusFeat);
+            AddLevelEntryIfAny(
+                entries,
+                2,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"));
+            AddLevelEntryIfAny(
+                entries,
+                3,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
+            AddLevelEntryIfAny(
+                entries,
+                4,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"));
+            AddLevelEntryIfAny(entries, 6, necromancerBonusFeat);
+            AddLevelEntryIfAny(
+                entries,
+                7,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror granted spell"));
+            AddLevelEntryIfAny(
+                entries,
+                9,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead"));
+            AddLevelEntryIfAny(entries, 10, necromancerBonusFeat);
+            AddLevelEntryIfAny(
+                entries,
+                15,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form"));
+            AddLevelEntryIfAny(entries, 16, necromancerBonusFeat);
+            AddLevelEntryIfAny(
+                entries,
+                19,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth granted spell"));
+            AddLevelEntryIfAny(
+                entries,
+                20,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us"));
+
+            return entries.ToArray();
+        }
+
+        private BlueprintFeature GetFeatureIfAvailable(string guid, string displayName)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(guid);
+            if (feature == null)
+            {
+                _blueprints.Warning($"Skipping Graveblade remove feature: {displayName} ({guid}) was not available.");
+            }
+
+            return feature;
+        }
+
+        private static void AddLevelEntryIfAny(
+            ICollection<LevelEntry> entries,
+            int level,
+            params BlueprintFeatureBase[] features)
+        {
+            var availableFeatures = (features ?? Array.Empty<BlueprintFeatureBase>())
+                .Where(feature => feature != null)
+                .ToArray();
+            if (availableFeatures.Length == 0)
+            {
+                return;
+            }
+
+            entries.Add(CreateLevelEntry(level, availableFeatures));
         }
 
         private void AddGravebladeFeaturesToProgressionUi(
             BlueprintProgression progression,
             BlueprintFeatureBase reapingEdge,
             BlueprintFeatureBase armorTraining,
-            BlueprintFeatureBase armorMastery)
+            BlueprintFeatureBase armorMastery,
+            BlueprintFeatureBase twoHandedWeaponTraining,
+            BlueprintFeatureBase overhandChop,
+            BlueprintFeatureBase backswing,
+            BlueprintFeatureBase piledriver,
+            BlueprintFeatureBase greaterPowerAttack,
+            BlueprintFeatureBase weaponMastery)
         {
             if (progression == null || reapingEdge == null || armorTraining == null || armorMastery == null)
             {
@@ -446,9 +539,40 @@ namespace wotr_mod.Classes
                 new[] { deathsGift },
                 new[] { necromancerBonusFeat },
                 new[] { armorTraining, armorMastery },
+                new[] { twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery },
                 new[] { reapingEdge },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, hellOnEarth });
+        }
+
+        private BlueprintFeature EnsureGravebladeTwoHandedWeaponTraining(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.GravebladeTwoHandedWeaponTraining);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(
+                        GameBlueprintIds.Features.TwoHandedFighterWeaponTraining,
+                        "Two-Handed Fighter Weapon Training"),
+                    ModBlueprintIds.Features.GravebladeTwoHandedWeaponTraining,
+                    "WotrMod_NecromancerGravebladeTwoHandedWeaponTraining");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.GravebladeTwoHandedWeaponTraining, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 10;
+
+            var components = _blueprints.GetComponents<BlueprintComponent>(feature)
+                .Where(component => component.GetType().Name != "PrerequisiteArchetypeLevel")
+                .ToArray();
+            _blueprints.SetComponents(feature, components);
+
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
         }
 
         private BlueprintFeature EnsureGravebladeArmorMastery()
@@ -566,7 +690,7 @@ namespace wotr_mod.Classes
             return feature;
         }
 
-        private BlueprintFeature EnsureGravebladeProficiencies()
+        private BlueprintFeature EnsureGravebladeProficiencies(BlueprintCharacterClass characterClass)
         {
             var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.GravebladeProficiencies);
             if (feature == null)
@@ -595,6 +719,7 @@ namespace wotr_mod.Classes
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyMedium, "Medium Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyHeavy, "Heavy Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency, "Martial Weapon Proficiency"));
+
             _blueprints.SetComponents(feature, addFacts);
 
             return feature;
@@ -1009,7 +1134,7 @@ namespace wotr_mod.Classes
 
                 if (feature != null &&
                     definition.InternalName == "WotrMod_NecromancerClass" &&
-                    feature.AssetGuid == BlueprintGuid.Parse("25c97697236ccf2479d0c6a4185eae7f"))
+                    feature.AssetGuid == BlueprintGuid.Parse(GameBlueprintIds.Features.SorcererProficiencies))
                 {
                     // Skip Sorcerer Proficiencies for Necromancer, we add our own later in AddNecromancerFeaturesToProgression
                     continue;
@@ -1072,7 +1197,7 @@ namespace wotr_mod.Classes
             }
 
             var sorcererProficiencies = _blueprints.Require<BlueprintFeature>(
-                "25c97697236ccf2479d0c6a4185eae7f",
+                GameBlueprintIds.Features.SorcererProficiencies,
                 "Sorcerer Proficiencies");
             var scytheProficiency = _blueprints.Require<BlueprintFeature>(
                 "96c174b0ebca7b246b82d4bc4aac4574",
@@ -1116,7 +1241,7 @@ namespace wotr_mod.Classes
             var hellOnEarth = features[11];
             var necromancerBonusFeat = features[12];
 
-            AddFeaturesToLevel(progression, 1, necromancerProficiencies, masterOfDeath, witheringRay, boneArmor);
+            AddFeaturesToLevel(progression, 1, necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
             AddFeaturesToLevel(progression, 2, boneSpike);
             AddFeaturesToLevel(progression, 3, deathsGift);
             AddFeaturesToLevel(progression, 4, corpseExplosion);
@@ -1942,18 +2067,14 @@ namespace wotr_mod.Classes
             {
                 _blueprints.SetUnitFactIcon(feature, icon);
             }
-            var rank = new ContextRankConfig { name = "$ContextRankConfig$NecromancerBoneArmor" };
-            _blueprints.ConfigureFeatureRankAsIs(rank, feature);
-
             _blueprints.SetComponents(
                 feature,
-                rank,
-                new AddContextStatBonus
+                new AddStatBonus
                 {
-                    name = "$AddContextStatBonus$NecromancerBoneArmor",
+                    name = "$AddStatBonus$NecromancerBoneArmor",
                     Stat = StatType.AC,
                     Descriptor = ModifierDescriptor.NaturalArmor,
-                    Value = CreateRankValue()
+                    Value = 1
                 });
 
             if (characterClass != null)
@@ -2017,7 +2138,16 @@ namespace wotr_mod.Classes
                 ValueRank = AbilityRankType.Default
             };
         }
-
+        
+        private static SkillPointsPerCharacterLevel CreateSkillPointBonus(string className)
+        {
+            return new SkillPointsPerCharacterLevel
+            {
+                name = className,
+                SkillPointsPerLevel = 3
+            };
+        }
+        
         private static LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)
         {
             var entry = new LevelEntry { Level = level };

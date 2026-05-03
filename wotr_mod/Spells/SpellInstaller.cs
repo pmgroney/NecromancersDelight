@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using UnityEngine;
 using UnityModManagerNet;
 using wotr_mod.Content;
 using wotr_mod.Content.Localization;
@@ -118,11 +119,68 @@ namespace wotr_mod.Spells
                 _logger.Warning($"{definition.InternalName} has no SpellComponent.");
             }
 
-            var icon = _icons.Load(definition.IconPath);
+            var icon = GetIcon(definition);
             if (icon != null)
             {
                 _blueprints.SetUnitFactIcon(spell, icon);
             }
+        }
+
+        private Sprite GetIcon(SpellDefinition definition)
+        {
+            var icon = _icons.Load(definition.IconPath);
+            if (icon != null)
+            {
+                return icon;
+            }
+
+            var tint = GetMissileIconTint(definition.NewSpellGuid);
+            if (!tint.HasValue)
+            {
+                return null;
+            }
+
+            var source = _blueprints.Require<BlueprintAbility>(
+                definition.BaseSpellGuid,
+                definition.InternalName + " icon donor");
+            return _icons.Tint(source.Icon, definition.InternalName + "Icon", tint.Value.Color, tint.Value.Strength);
+        }
+
+        private static MissileIconTint? GetMissileIconTint(string spellGuid)
+        {
+            if (spellGuid == ModBlueprintIds.Spells.FireMissile)
+            {
+                return new MissileIconTint(new Color(1f, 0.16f, 0.08f, 1f), 0.78f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.AcidMissile)
+            {
+                return new MissileIconTint(new Color(0.18f, 0.95f, 0.18f, 1f), 0.76f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ElectricMissile)
+            {
+                return new MissileIconTint(new Color(0.25f, 0.7f, 1f, 1f), 0.74f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.IceMissile)
+            {
+                return new MissileIconTint(new Color(0.65f, 0.95f, 1f, 1f), 0.74f);
+            }
+
+            return null;
+        }
+
+        private readonly struct MissileIconTint
+        {
+            public MissileIconTint(Color color, float strength)
+            {
+                Color = color;
+                Strength = strength;
+            }
+
+            public Color Color { get; }
+            public float Strength { get; }
         }
     }
 }

@@ -45,35 +45,35 @@
     <value>Bone Spike</value>
   </data>
   <data name="wotr_mod.spell.bone_spike.description" xml:space="preserve">
-    <value>A spike of bone forms from the other side and strikes the target, dealing 1d4+1 unholy damage. The spike strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional spike, to a maximum of five spikes at 9th level.</value>
+    <value>A spike of bone forms from the other side and strikes the target, dealing 1d6+1 unholy damage. The spike strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional spike, to a maximum of five spikes at 9th level.</value>
   </data>
 
   <data name="wotr_mod.spell.acid_missile.name" xml:space="preserve">
     <value>Acid Missile</value>
   </data>
   <data name="wotr_mod.spell.acid_missile.description" xml:space="preserve">
-    <value>A mass of acid strikes the target, dealing 1d4+1 acid damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
+    <value>A mass of acid strikes the target, dealing 1d6+1 acid damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
   </data>
 
   <data name="wotr_mod.spell.fire_missile.name" xml:space="preserve">
     <value>Fire Missile</value>
   </data>
   <data name="wotr_mod.spell.fire_missile.description" xml:space="preserve">
-    <value>A blazing bolt of fire strikes the target, dealing 1d4+1 fire damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
+    <value>A blazing bolt of fire strikes the target, dealing 1d6+1 fire damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
   </data>
 
   <data name="wotr_mod.spell.electric_missile.name" xml:space="preserve">
     <value>Electric Missile</value>
   </data>
   <data name="wotr_mod.spell.electric_missile.description" xml:space="preserve">
-    <value>A crackling surge of electricity strikes the target, dealing 1d4+1 electricity damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
+    <value>A crackling surge of electricity strikes the target, dealing 1d6+1 electricity damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
   </data>
 
   <data name="wotr_mod.spell.ice_missile.name" xml:space="preserve">
     <value>Ice Missile</value>
   </data>
   <data name="wotr_mod.spell.ice_missile.description" xml:space="preserve">
-    <value>A shard of freezing ice strikes the target, dealing 1d4+1 cold damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
+    <value>A shard of freezing ice strikes the target, dealing 1d6+1 cold damage. The missile strikes unerringly so long as the target has less than total cover or total concealment. For every two caster levels beyond 1st, you gain an additional missile, to a maximum of five missiles at 9th level.</value>
   </data>
 
   <data name="wotr_mod.spell.vitriolic_blast.name" xml:space="preserve">

@@ -26,17 +26,29 @@ namespace wotr_mod.Classes
             var existing = _blueprints.Get<BlueprintSpellbook>(definition.SpellbookGuid);
             if (existing != null)
             {
+                ConfigureSpellbook(existing, definition, donor, spellList);
                 return existing;
             }
 
             var clone = _blueprints.CloneBlueprint(donor, definition.SpellbookGuid, definition.InternalName + "_Spellbook");
-            _blueprints.SetSpellbookSpellList(clone, spellList);
-            clone.CastingAttribute = definition.CastingStat;
-            clone.AllSpellsKnown = true;
-            clone.IsArcane = true;
+            ConfigureSpellbook(clone, definition, donor, spellList);
             _blueprints.AddCachedBlueprint(definition.SpellbookGuid, clone);
 
             return clone;
+        }
+
+        private void ConfigureSpellbook(
+            BlueprintSpellbook spellbook,
+            CharacterClassDefinition definition,
+            BlueprintSpellbook donor,
+            BlueprintSpellList spellList)
+        {
+            _blueprints.SetSpellbookSpellList(spellbook, spellList);
+            spellbook.CastingAttribute = definition.CastingStat;
+            spellbook.Spontaneous = donor.Spontaneous;
+            spellbook.SpellsPerLevel = donor.SpellsPerLevel;
+            spellbook.AllSpellsKnown = donor.AllSpellsKnown;
+            spellbook.IsArcane = donor.IsArcane;
         }
     }
 
@@ -95,10 +107,30 @@ namespace wotr_mod.Classes
                     continue;
                 }
 
+                if (ShouldSkipNecromancerSorcererFeature(definition, feature))
+                {
+                    continue;
+                }
+
                 result.Add(feature);
             }
 
             return result;
+        }
+
+        private static bool ShouldSkipNecromancerSorcererFeature(
+            CharacterClassDefinition definition,
+            BlueprintFeatureBase feature)
+        {
+            if (feature == null || !definition.UseNecromancerBloodline)
+            {
+                return false;
+            }
+
+            var guid = feature.AssetGuid;
+            return guid == BlueprintGuid.Parse(GameBlueprintIds.Features.SorcererProficiencies) ||
+                   guid == BlueprintGuid.Parse(GameBlueprintIds.Selections.SorcererBonusFeat) ||
+                   guid == BlueprintGuid.Parse(GameBlueprintIds.Selections.SorcererFeatSelection);
         }
     }
 }

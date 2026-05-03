@@ -5,8 +5,10 @@ namespace wotr_mod.Infrastructure
         internal static class Classes
         {
             public const string Arcanist = "52dbfd8505e22f84fad8d702611f60b7";
+            public const string Cleric = "67819271767a9dd4fbfd4ae700befea0";
             public const string Fighter = "48ac8db94d5de7645906c7d0ad3bcfbd";
             public const string Sorcerer = "b3a505fb61437dc4097f43c3f8f9a4cf";
+            public const string Wizard = "ba34257984f4c41408ce1dc2004e342e";
         }
 
         internal static class Progressions
@@ -25,6 +27,17 @@ namespace wotr_mod.Infrastructure
         internal static class Root
         {
             public const string BlueprintRoot = "2d77316c72b9ed44f888ceefc2a131f6";
+        }
+
+        internal static class Races
+        {
+            public const string Gnome = "ef35a22c9a27da345a4528f0d5889157";
+            public const string Human = "0a5d473ead98b0646b94495af250fdc4";
+        }
+
+        internal static class Areas
+        {
+            public const string PrologueLabyrinth = "944a6947fe8ffa8458c278aa1c0c4226";
         }
 
         internal static class Spellbooks
@@ -69,17 +82,26 @@ namespace wotr_mod.Infrastructure
 
         internal static class Selections
         {
+            public const string BasicFeat = "247a4068296e8be42890143f451b4b45";
+            public const string ChannelEnergy = "d332c1748445e8f4f9e92763123e31bd";
+            public const string Deity = "59e7a76987fe3b547b9cce045f4db3e4";
             public const string DhampirHeritage = "1246f548304a7654c97d8f2e9488e25f";
+            public const string Domain = "48525e5da45c9c243a343fc6545dbdb9";
             public const string FighterFeat = "41c8486641f7d6d4283ca9dae4147a9f";
             public const string GnomeHeritage = "584d8b50817b49b2bb7aab3d6add8d3a";
+            public const string HalfElfHeritage = "9df7b68d60544bcf8e5b56c0a4688e04";
+            public const string HalfOrcHeritage = "8c3244440e0b4d1d9d9b182685cbacbd";
+            public const string SecondaryDomain = "43281c3d7fe18cc4d91928395837cd1e";
             public const string SorcererBloodline = "24bef8d1bee12274686f6da6ccbc8914";
             public const string SorcererBonusFeat = "d6dd06f454b34014ab0903cb1ed2ade3";
             public const string SorcererFeatSelection = "3a60f0c0442acfb419b0c03b584e1394";
+            public const string SylvanAnimalCompanion = "a540d7dfe1e2a174a94198aba037274c";
             public const string SylvanCompanion = "bdeb45c295e93644c9fed3b3b431aa2d";
         }
 
         internal static class Archetypes
         {
+            public const string Ecclesitheurge = "472af8cb3de628f4a805dc4a038971bc";
             public const string Elementalist = "c4a866cef5134632a8a3ef5696f45a5b";
         }
 
@@ -89,11 +111,22 @@ namespace wotr_mod.Infrastructure
             public const string ArmorProficiencyHeavy = "1b0f68188dcc435429fb87a022239681";
             public const string ArmorProficiencyLight = "6d3728d4e9c9898458fe5e9532951132";
             public const string ArmorProficiencyMedium = "46f4fb320f35704488ba3d513397789d";
+            public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
+            public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
+            public const string ChannelNegative = "3adb2c906e031ee41a01bfc1d5fb7eea";
+            public const string DeathDomainProgressionSecondary = "023794a8386506c49aad142846700594";
             public const string FighterArmorMastery = "ae177f17cfb45264291d4d7c2cb64671";
             public const string FighterArmorTraining = "3c380607706f209499d951b29d3c44f3";
+            public const string HealingDomainProgression = "b0a26ee984b6b6945b884467aa2f1baa";
             public const string MartialWeaponProficiency = "203992ef5b35c864390b4e4a1e200629";
+            public const string LongbowProficiency = "0978f630fc5d6a6409ac641137bf6659";
             public const string MagusFighterTraining = "2b636b9e8dd7df94cbd372c52237eebf";
+            public const string Pharasma = "458750bc214ab2e44abdeae404ab22e9";
+            public const string PointBlankShot = "0da0c194d6e1d43419eb8d990b28e0ab";
+            public const string PreciseShot = "8f3d1e6b4be006f4d896081f2f889665";
             public const string RedDragonBloodlineArcana = "a8baee8eb681d53438cc17bd1d125890";
+            public const string ShortbowProficiency = "e8096942d950c8843857c2545f8dc18f";
+            public const string UndeadType = "734a29b693e9ec346ba2951b27987e33";
             public const string BloodlineElementalEarthElementalRayFeature = "cb15c04cf43b93a4589077078b4188eb";
             public const string BloodlineUndeadSpellLevel1 = "3e4080a48cbd3154aac907befca64801";
             public const string BloodlineUndeadSpellLevel2 = "2444632e058986248b9f9e2d57a9dfee";
@@ -107,6 +140,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalFireArcana = "c33b319082a7edc468d3eda248a527f3";
             public const string BloodlineElementalFireElementalRayFeature = "ce0889b5c1b392e48baf1e004d1efd67";
             public const string BloodlineElementalFireElementalBlastFeature = "3022a5066a5604a498dd289b37dfd8aa";
+            public const string BloodlineElementalFireElementalBodyFeature = "5d974328297021a479b4e3a1de749126";
             public const string BloodlineElementalFireResistanceFeature = "24980315c1bdcc4478ebb717e9b81961";
             public const string BloodlineElementalFireResistanceLevel1 = "bc2a39d12271198488809646afd88128";
             public const string BloodlineElementalFireResistanceLevel2 = "bcfbd2e30b6df7d4eab9414dd0f2c6e4";
@@ -116,11 +150,18 @@ namespace wotr_mod.Infrastructure
             public const string TrippingBite = "f957b4444b6fb404e84ae2a5765797bb";
             public const string VelociraptorCompanion = "89420de28b6bb9443b62ce489ae5423b";
             public const string VelociraptorUpgrade = "5ae6dc5f479b5ea408ccaf75212155e8";
+            public const string TwoHandedFighterBackswing = "1bbda0dab2f8dc540a647bdc5f0e59ce";
+            public const string TwoHandedFighterDevastatingBlow = "687aa977ef0d3f849af8bee2f40930df";
+            public const string TwoHandedFighterGreaterPowerAttack = "1b058a5ce1de415449a0f105c55b5f8b";
+            public const string TwoHandedFighterOverhandChop = "ad4d4db6bb9c75a4a9bc59174b948769";
+            public const string TwoHandedFighterPiledriver = "4723b31d7defd3d4e85395e2a3353b01";
+            public const string TwoHandedFighterWeaponTraining = "88da2a5dfc505054f933bb81014e864f";
         }
 
         internal static class Items
         {
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
+            public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
         }
 
         internal static class Abilities
@@ -148,8 +189,24 @@ namespace wotr_mod.Infrastructure
 
         internal static class Units
         {
+            public const string CiarUndead = "1f341d3068d6b7a429134125f7141e18";
+            public const string CiarCompanion = "7ece3afabe2b6f343b17d1eaa409d273";
+            public const string CiarFeatureList = "ec014b7a7a6cd814090c1cd6c7a599d8";
             public const string LeopardCompanion = "54cf380dee486ff42b803174d1b9da1b";
             public const string VelociraptorCompanion = "28d1986d57a7081439fbb581aa6f960c";
+        }
+
+        internal static class Dialogs
+        {
+            public const string CiarZombieDialog = "3652ad053a57e3e45ade58af8ba88357";
+            public const string CiarZombieGreetingCue = "5b15202a9a322bb4e8e1876baa6514b6";
+            public const string CiarZombieAnswers = "18554000ba1e36043b96307448b827bd";
+            public const string CiarZombieLeaveAnswer = "ba02a076940e9cd409a53bfd5a47231d";
+        }
+
+        internal static class Portraits
+        {
+            public const string Ciar = "dc2f02dd42cfe2b40923eb014591a009";
         }
     }
 }

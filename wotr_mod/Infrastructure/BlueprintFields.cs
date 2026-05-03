@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -101,6 +102,21 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo CharacterClassDefaultBuild =
             typeof(BlueprintCharacterClass).GetField("m_DefaultBuild", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo CharacterClassPrimaryColor =
+            typeof(BlueprintCharacterClass).GetField("PrimaryColor", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo CharacterClassSecondaryColor =
+            typeof(BlueprintCharacterClass).GetField("SecondaryColor", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo CharacterClassEquipmentEntities =
+            typeof(BlueprintCharacterClass).GetField("m_EquipmentEntities", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo CharacterClassMaleEquipmentEntities =
+            typeof(BlueprintCharacterClass).GetField("MaleEquipmentEntities", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo CharacterClassFemaleEquipmentEntities =
+            typeof(BlueprintCharacterClass).GetField("FemaleEquipmentEntities", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
         public static readonly FieldInfo CharacterClassStartingGold =
             typeof(BlueprintCharacterClass).GetField("StartingGold", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -192,11 +208,26 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo FeatureSelectionAllFeatures =
             typeof(BlueprintFeatureSelection).GetField("m_AllFeatures", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo RaceFeatures =
+            typeof(BlueprintRace).GetField("m_Features", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo AddFeatureOnApplyFeature =
             typeof(AddFeatureOnApply).GetField("m_Feature", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AddFactsFacts =
             typeof(AddFacts).GetField("m_Facts", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddStartingEquipmentBasicItems =
+            typeof(AddStartingEquipment).GetField("m_BasicItems", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddStartingEquipmentRestrictedByClass =
+            typeof(AddStartingEquipment).GetField("m_RestrictedByClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddStatBonusIfHasFactCheckedFacts =
+            typeof(AddStatBonusIfHasFact).GetField("m_CheckedFacts", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo RecalculateOnFactsChangeCheckedFacts =
+            typeof(RecalculateOnFactsChange).GetField("m_CheckedFacts", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AddKnownSpellCharacterClass =
             typeof(AddKnownSpell).GetField("m_CharacterClass", BindingFlags.Instance | BindingFlags.NonPublic);

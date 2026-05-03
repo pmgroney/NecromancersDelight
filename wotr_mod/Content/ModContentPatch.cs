@@ -22,7 +22,8 @@ namespace wotr_mod.Content
             _modules = new IContentModule[]
             {
                 new SpellInstaller(blueprints, localization, logger, modPath),
-                new CharacterClassInstaller(blueprints, localization, logger, modPath)
+                new CharacterClassInstaller(blueprints, localization, logger, modPath),
+                new CompanionInstaller(blueprints, localization, modPath)
             };
         }
 

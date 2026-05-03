@@ -73,7 +73,7 @@ namespace wotr_mod.Patches
                 feature,
                 addPyromaniac,
                 CreateStatBonus(StatType.Charisma, -2),
-                CreateStatBonus(StatType.Intelligence, 2));
+                CreateStatBonus(StatType.Intelligence, 3));
 
             return feature;
         }

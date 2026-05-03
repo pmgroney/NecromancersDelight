@@ -8,6 +8,25 @@ namespace wotr_mod.Infrastructure
             public const string Necromancer = "8fdbb61220fa467cbbec9d803b4a6a2c";
         }
 
+        internal static class Units
+        {
+            public const string UndeadCiarCompanion = "ad4b1f09c2e84f6db7a19305c8d62e4f";
+        }
+
+        internal static class Dialogs
+        {
+            public const string BillyDialog = "96850f6d4f4e444a80c0675c76d37c5d";
+            public const string BillyGreetingCue = "8f6a33462ad8422a8884a767110fc6a3";
+            public const string BillyAnswers = "1327a2fbb2b84f0694fe6e9212f77b8c";
+            public const string BillyJoinAnswer = "88ed37575b8b4f1390ad389668ba5089";
+            public const string BillyLeaveAnswer = "095e7161e86f46cebd33efeeefd99c22";
+        }
+
+        internal static class Portraits
+        {
+            public const string Billy = "dc4b32165f4e4e269031dafbffd22d05";
+        }
+
         internal static class Progressions
         {
             public const string Evoker = "1779f8e832614de1a9d2cd8948f48d0d";
@@ -19,6 +38,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerWaterBloodline = "5aab61736c324eaa9112dbb8c43440a9";
             public const string ShadowbornBloodline = "c030e509679940aa9132e6fa0a15430a";
             public const string NecromancerBloodline = "9c2a3d4e5f6a7b8c9d0e1f2a3b4c5d6e";
+            public const string Graveblade = "2e9f6a8c4b714d0a9c3e5f7b1d82604a";
         }
 
         internal static class Spellbooks
@@ -90,7 +110,9 @@ namespace wotr_mod.Infrastructure
 
         internal static class Selections
         {
+            public const string CompanionPet = "13dc7dba1250470ea2f717f2340c6535";
             public const string EvokerBloodline = "dc4f77e8d0f3476aad11bda78da721c7";
+            public const string HumanHeritage = "2f4a6c8e0b134d57a9c1e3f5b7d90246";
             public const string NecromancerBloodline = "a1b2c3d4e5f64758b9c0d1e2f3a4b5c6";
             public const string NecromancerBonusFeat = "c3d4e5f6a7b84960d1e2f3a4b5c6d7e8";
             public const string GravebladeBonusFeat = "9d1b3c5e7f804a2b9c0d1e3f5a6b8c02";
@@ -98,11 +120,17 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
+            public const string BillyPositiveEnergyImmunity = "e009f36b497c489c9faeeac27d115a82";
             public const string CleverPyromaniacGnome = "d2c7d0907a3340f8a34d2a6d1f569101";
             public const string UmbralDhampirHeritage = "e17a9c4d6f2b4810a5c3d7e9f1b60482";
-            public const string GraveguardDhampirHeritage = "9102837465af4e3d2c1b0a9b8c7d6e5f";
-            public const string UmbralGnomeHeritage = "f28b0d5e7a3c4921b6d4e8f0a2c71593";
+            public const string CryptguardDhampirHeritage = "9102837465af4e3d2c1b0a9b8c7d6e5f";
+            public const string GraveltoeGnomeHeritage = "f28b0d5e7a3c4921b6d4e8f0a2c71593";
             public const string ShadowGnomeHeritage = "0a9c1e6f8b4d4032a7e5f901b3d826a4";
+            public const string NormalHumanHeritage = "3a5c7e9f1b244e68a0d2f4b6c8e01357";
+            public const string DescendantOfKingsHeritage = "4b6d8f102c354f79b1e3a5c7d9f02468";
+            public const string OrcLordsBloodHeritage = "5c8e102a4b6d4f78a9c1e3d5f7092468";
+            public const string TrueHighElfHeritage = "6d9f213b5c7e4089bad2f4e6a8013579";
             public const string NecromancerBloodlineArcana = "b2c3d4e5f6a74859b0c1d2e3f4a5b6c7";
             public const string NecromancerBloodlinePower1 = "c3d4e5f6a7b84960c1d2e3f4a5b6c7d8";
             public const string NecromancerBloodlinePower3 = "d4e5f6a7b8c94a71d2e3f4a5b6c7d8e9";
@@ -114,9 +142,16 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornScorchingRayKnownSpell = "3f90afb837764ec3beb8cb555bb33eb2";
             public const string ShadowbornUmbralRay = "0a40fbba68d24db5aebdf1afbcc57cc8";
             public const string ShadowbornUmbralBlast = "e15bcd7b82b94cdab66c629b4adb7cb9";
+            public const string ShadowbornElementalBody = "4f8b1d2c6e934a70a5c9e3f217bd4608";
             public const string ShadowbornResistance = "4d5e6f7081924a3bb4c5d6e7f8091a2b";
             public const string ShadowbornResistanceLevel1 = "5e6f708192a34b4cc5d6e7f8091a2b3c";
             public const string ShadowbornResistanceLevel2 = "6f708192a3b44c5dd6e7f8091a2b3c4d";
+            public const string ShadowbornScaling = "7a8192a3b4c54d6ee7f8091a2b3c4d5e";
+            public const string EvokerScalingFire = "8e5f7c9a3d4245f9a1c2e6b7d8f90111";
+            public const string EvokerScalingWater = "3b7a91f4c2d6483ea9f0c1d2e3b45672";
+            public const string EvokerScalingAir = "5d2e7f4a9c1b4a3f8e6d0c2b7a981234";
+            public const string EvokerScalingEarth = "9a4c2e7f1b3d4e8f6a0c1b2d3e4f5678";
+            public const string EvokerScalingArcane = "1f8e3d6c4b2a49e7a0c5d2b9f1e23456";
             public const string NecromancerBoneArmor = "6f2d4e6d4b3e4f4b8c3a7a9c8b6d1234";
             public const string NecromancerBoneSpikeKnownSpell = "de8225e0126746c7880b95f957159f19";
             public const string NecromancerCorpseExplosionKnownSpell = "afa9787ecde14b13a74c4b0344e3a905";
@@ -128,6 +163,7 @@ namespace wotr_mod.Infrastructure
             public const string GravebladeFighterTraining = "1f3a5c7e9b204d6f8a0c2e4b6d8f0132";
             public const string GravebladeProficiencies = "0e2f4a6c8b104d3e9f1a2c5b7d9e0f31";
             public const string GravebladeReapingEdge = "c6f5e4d3a2b14c8d9e0f1a3b5c7d9e02";
+            public const string GravebladeTwoHandedWeaponTraining = "a7d2e4f6b8094c1d9235e7f0a2b4c6d8";
         }
 
         internal static class Buffs

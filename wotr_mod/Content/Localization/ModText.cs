@@ -7,6 +7,10 @@ namespace wotr_mod.Content.Localization
     {
         private static readonly Dictionary<string, string> Strings = new Dictionary<string, string>
         {
+            { LocalizationIds.Mod.BillyName, "Billy" },
+            { LocalizationIds.Mod.BillyGreeting, "Oh, you almost scared me to death. Wait, too late for that! Anyways, I thought you were another one of those crazy cultists." },
+            { LocalizationIds.Mod.BillyJoinAnswer, "Come with us." },
+            { LocalizationIds.Mod.BillyLeaveAnswer, "Stay here for now." },
             { LocalizationIds.Mod.EvokerName, "Evoker" },
             { LocalizationIds.Mod.EvokerDescription, "An Evoker is a living conduit of raw, untamed power, channeling destructive arcane forces into devastating spells." },
             { LocalizationIds.Mod.ShadowbornName, "Shadowborn" },
@@ -16,15 +20,19 @@ namespace wotr_mod.Content.Localization
             { LocalizationIds.Mod.ShadowbornArcanaName, "Umbral Arcana" },
             { LocalizationIds.Mod.ShadowbornArcanaDescription, "Your damaging spells can be infused with living shadow, changing elemental damage into negative energy." },
             { LocalizationIds.Mod.ShadowbornBurningHandsName, "Shadow Hands" },
-            { LocalizationIds.Mod.ShadowbornBurningHandsDescription, "A cone of grasping shadow deals negative energy damage to creatures in its path." },
+            { LocalizationIds.Mod.ShadowbornBurningHandsDescription, "A cone of grasping shadow deals 1d4 negative energy damage per caster level, to a maximum of 5d4 damage." },
             { LocalizationIds.Mod.ShadowbornScorchingRayName, "Shadow Ray" },
-            { LocalizationIds.Mod.ShadowbornScorchingRayDescription, "A ray of concentrated shadow deals negative energy damage with a ranged touch attack." },
+            { LocalizationIds.Mod.ShadowbornScorchingRayDescription, "A ray of concentrated shadow deals 4d6 negative energy damage with a ranged touch attack. For every 4 caster levels beyond 3rd, you gain one additional ray, to a maximum of three rays at caster level 11." },
             { LocalizationIds.Mod.ShadowbornUmbralRayName, "Umbral Ray" },
             { LocalizationIds.Mod.ShadowbornUmbralRayDescription, "You can unleash a ray of living shadow as a standard action, targeting any foe within 30 feet as a ranged touch attack. This ray deals 1d6 negative energy damage plus 1d6 for every two Evoker levels beyond 1st. You can use this ability a number of times per day equal to 3 + your Charisma modifier." },
             { LocalizationIds.Mod.ShadowbornUmbralBlastName, "Umbral Blast" },
             { LocalizationIds.Mod.ShadowbornUmbralBlastDescription, "At 9th level, you can release a 20-foot burst of living shadow. This blast deals 1d6 negative energy damage per Evoker level. A successful Reflex save halves the damage." },
             { LocalizationIds.Mod.ShadowbornResistanceName, "Umbral Resistance" },
             { LocalizationIds.Mod.ShadowbornResistanceDescription, "At 3rd level, your shadowed blood grants negative energy resistance 10. At 9th level, this resistance increases to 20." },
+            { LocalizationIds.Mod.ShadowbornElementalBodyName, "Umbral Body" },
+            { LocalizationIds.Mod.ShadowbornElementalBodyDescription, "At 20th level, your body becomes a vessel for lightless power. Negative energy heals you instead of harming you. If you are undead, negative energy heals you for twice as much." },
+            { LocalizationIds.Mod.ShadowbornScalingName, "Shadowborn - Umbral Potency" },
+            { LocalizationIds.Mod.ShadowbornScalingDescription, "Your shadowed spells drink deeper from the dark. Evocation spells cast from your Evoker spellbook that deal negative energy damage gain +1 damage per die per rank. While Umbral Arcana is active, this bonus also applies to elemental energy damage converted into negative energy. Ranks increase at levels 1, 5, 9, 13, and 17." },
             { LocalizationIds.Mod.NecromancerName, "Necromancer" },
             { LocalizationIds.Mod.NecromancerDescription, "A spontaneous arcane caster who rejects traditional bloodlines and draws power from death itself." },
             { LocalizationIds.Mod.SepulchritName, "Sepulchrit" },
@@ -82,7 +90,17 @@ namespace wotr_mod.Content.Localization
             { LocalizationIds.Mod.EvokerFireName, "Pyromancer" },
             { LocalizationIds.Mod.EvokerFireDescription, "Flame is your birthright, and your magic burns with unrestrained intensity." },
             { LocalizationIds.Mod.EvokerWaterName, "Glacialist" },
-            { LocalizationIds.Mod.EvokerWaterDescription, "Frost answers your call, locking enemies in killing cold." }
+            { LocalizationIds.Mod.EvokerWaterDescription, "Frost answers your call, locking enemies in killing cold." },
+            { LocalizationIds.Mod.EvokerScalingArcaneName, "Arcanist - Arcane Supremacy" },
+            { LocalizationIds.Mod.EvokerScalingArcaneDescription, "Your grasp of arcane structure refines your destructive spells. You gain a +2 bonus to the Difficulty Class of Evocation spells cast from your Evoker spellbook per rank. Ranks increase at levels 1, 5, 9, 13, and 17." },
+            { LocalizationIds.Mod.EvokerScalingAirName, "Stormcaller - Tempest Surge" },
+            { LocalizationIds.Mod.EvokerScalingAirDescription, "You channel the growing wrath of the storm. Evocation spells cast from your Evoker spellbook that deal electricity damage gain +1 damage per die per rank. Ranks increase at levels 1, 5, 9, 13, and 17." },
+            { LocalizationIds.Mod.EvokerScalingEarthName, "Vitriomancer - Corrosive Mastery" },
+            { LocalizationIds.Mod.EvokerScalingEarthDescription, "Your corrosive magic intensifies with each milestone. Evocation spells cast from your Evoker spellbook that deal acid damage gain +1 damage per die per rank. Ranks increase at levels 1, 5, 9, 13, and 17." },
+            { LocalizationIds.Mod.EvokerScalingFireName, "Pyromancer - Infernal Potency" },
+            { LocalizationIds.Mod.EvokerScalingFireDescription, "Your flames burn with escalating fury. Evocation spells cast from your Evoker spellbook that deal fire damage gain +1 damage per die per rank. Ranks increase at levels 1, 5, 9, 13, and 17." },
+            { LocalizationIds.Mod.EvokerScalingWaterName, "Glacialist - Glacial Dominion" },
+            { LocalizationIds.Mod.EvokerScalingWaterDescription, "Your mastery of frost deepens with experience. Evocation spells cast from your Evoker spellbook that deal cold damage gain +1 damage per die per rank. Ranks increase at levels 1, 5, 9, 13, and 17." }
         };
 
         public static void Register(LocalizationTool localization)

@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Reflection;
 using HarmonyLib;
+using Kingmaker;
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Localization;
@@ -72,6 +74,16 @@ namespace wotr_mod
             _registry.OnUnitLoaded(unit);
         }
 
+        internal static void OnAreaLoaded()
+        {
+            if (!_applied || _registry == null)
+            {
+                return;
+            }
+
+            _registry.OnAreaLoaded();
+        }
+
         [HarmonyPatch(typeof(BlueprintsCache), nameof(BlueprintsCache.Init))]
         private static class BlueprintsCacheInitPatch
         {
@@ -106,6 +118,25 @@ namespace wotr_mod
             {
                 OnUnitLoaded(__instance);
             }
+        }
+
+        [HarmonyPatch(typeof(Game), "AreaLoadingComplete")]
+        private static class GameAreaLoadingCompletePatch
+        {
+            private static void Postfix(ref IEnumerator __result)
+            {
+                __result = NotifyAfterAreaLoadingComplete(__result);
+            }
+        }
+
+        private static IEnumerator NotifyAfterAreaLoadingComplete(IEnumerator areaLoading)
+        {
+            while (areaLoading.MoveNext())
+            {
+                yield return areaLoading.Current;
+            }
+
+            OnAreaLoaded();
         }
     }
 }

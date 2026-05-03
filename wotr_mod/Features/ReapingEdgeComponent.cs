@@ -30,6 +30,7 @@ namespace wotr_mod.Features
         public BlueprintBuff BrittleBoneBuff;
         public BlueprintBuff FatigueBuff;
         public BlueprintBuff ExhaustionBuff;
+        private bool _spent;
 
         public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
@@ -84,6 +85,23 @@ namespace wotr_mod.Features
         }
 
         public void OnEventDidTrigger(RuleAttackWithWeapon evt)
+        {
+            if (evt.Weapon == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ApplyHitEffects(evt);
+            }
+            finally
+            {
+                Spend();
+            }
+        }
+
+        private void ApplyHitEffects(RuleAttackWithWeapon evt)
         {
             if (evt.AttackRoll == null || !evt.AttackRoll.IsHit || evt.Target == null)
             {
@@ -181,6 +199,17 @@ namespace wotr_mod.Features
             {
                 target.AddBuffDuration(buff, seconds);
             }
+        }
+
+        private void Spend()
+        {
+            if (_spent || Fact == null)
+            {
+                return;
+            }
+
+            _spent = true;
+            Owner.Buffs.RemoveFact(Fact);
         }
     }
 }
