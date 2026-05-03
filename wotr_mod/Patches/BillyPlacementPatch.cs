@@ -12,9 +12,9 @@ namespace wotr_mod.Patches
 {
     internal sealed class BillyPlacementPatch : IGamePatch, IAreaLoadHandler
     {
-        private const float SpawnOffsetX = 2.5f;
-        private const float SpawnOffsetZ = 1.5f;
-        private const float SpawnOrientation = 180f;
+        private const float SpawnOffsetX = 64f;
+        private const float SpawnOffsetZ = -40f;
+        private const float SpawnOrientation = 5f;
         private static readonly BlueprintGuid BillyGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.UndeadCiarCompanion);
         private static readonly BlueprintGuid PrologueLabyrinthGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.PrologueLabyrinth);
 
@@ -48,19 +48,18 @@ namespace wotr_mod.Patches
                     return;
                 }
 
-                var billyBlueprint = _blueprints.Require<BlueprintUnit>(
-                    ModBlueprintIds.Units.UndeadCiarCompanion,
-                    "Billy companion unit");
-                var billy = Game.Instance.AddUnitToPersistentState(billyBlueprint);
+                var billy = FindBillyRosterOrphan() ?? CreateBillyAreaUnit();
                 var position = GetSpawnPosition();
 
                 billy.Position = position;
                 billy.SpawnPosition = position;
                 billy.Orientation = SpawnOrientation;
                 billy.IsInGame = true;
-                billy.CreateView();
+                if (billy.View == null)
+                {
+                    billy.CreateView();
+                }
 
-                _logger.Log($"Placed Billy in the Shield Maze at {position}.");
             }
             catch (Exception ex)
             {
@@ -83,6 +82,16 @@ namespace wotr_mod.Patches
             return !IsBillyInPlayerRoster() && !IsBillyInLoadedArea();
         }
 
+        private UnitEntityData CreateBillyAreaUnit()
+        {
+            var billyBlueprint = _blueprints.Require<BlueprintUnit>(
+                ModBlueprintIds.Units.UndeadCiarCompanion,
+                "Billy companion unit");
+            var billy = Game.Instance.CreateUnitVacuum(billyBlueprint);
+            Game.Instance.LoadedAreaState.AddEntityData(billy);
+            return billy;
+        }
+
         private static bool IsBillyInPlayerRoster()
         {
             var player = Game.Instance.Player;
@@ -91,11 +100,27 @@ namespace wotr_mod.Patches
                 return false;
             }
 
-            return player.AllCharacters
-                .Concat(player.PartyAndPets)
+            return player.PartyAndPets
+                .Concat(player.ActiveCompanions)
+                .Concat(player.RemoteCompanions)
                 .Where(unit => unit != null)
                 .Distinct()
                 .Any(IsBilly);
+        }
+
+        private static UnitEntityData FindBillyRosterOrphan()
+        {
+            var player = Game.Instance.Player;
+            if (player == null)
+            {
+                return null;
+            }
+
+            return player.AllCharacters
+                .Where(IsBilly)
+                .FirstOrDefault(unit => !player.PartyAndPets.Contains(unit)
+                    && !player.ActiveCompanions.Contains(unit)
+                    && !player.RemoteCompanions.Contains(unit));
         }
 
         private static bool IsBillyInLoadedArea()

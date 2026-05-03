@@ -15,12 +15,12 @@ namespace wotr_mod.Features
             LevelUpState state,
             ref int extraSkillPoints)
         {
-            if (state == null || SkillPointsPerLevel <= 0)
+            if (state == null || SkillPointsPerLevel == 0)
             {
                 return;
             }
 
-            extraSkillPoints += state.NextCharacterLevel * SkillPointsPerLevel;
+            extraSkillPoints += SkillPointsPerLevel;
         }
     }
 }

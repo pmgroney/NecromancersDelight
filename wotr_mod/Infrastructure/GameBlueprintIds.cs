@@ -29,6 +29,11 @@ namespace wotr_mod.Infrastructure
             public const string BlueprintRoot = "2d77316c72b9ed44f888ceefc2a131f6";
         }
 
+        internal static class UnitAsks
+        {
+            public const string ZombieCiarBarks = "cb71c3e13d52b8843b2906109d08f788";
+        }
+
         internal static class Races
         {
             public const string Gnome = "ef35a22c9a27da345a4528f0d5889157";
@@ -114,13 +119,17 @@ namespace wotr_mod.Infrastructure
             public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
             public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
             public const string ChannelNegative = "3adb2c906e031ee41a01bfc1d5fb7eea";
+            public const string ChannelPositive = "a79013ff4bcd4864cb669622a29ddafb";
             public const string DeathDomainProgressionSecondary = "023794a8386506c49aad142846700594";
             public const string FighterArmorMastery = "ae177f17cfb45264291d4d7c2cb64671";
             public const string FighterArmorTraining = "3c380607706f209499d951b29d3c44f3";
             public const string HealingDomainProgression = "b0a26ee984b6b6945b884467aa2f1baa";
+            public const string Irori = "23a77a5985de08349820429ce1b5a234";
+            public const string LawDomainProgressionSecondary = "0d9749df9d68ded438ecdf8527085963";
             public const string MartialWeaponProficiency = "203992ef5b35c864390b4e4a1e200629";
             public const string LongbowProficiency = "0978f630fc5d6a6409ac641137bf6659";
             public const string MagusFighterTraining = "2b636b9e8dd7df94cbd372c52237eebf";
+            public const string MonkAcBonus = "e241bdfd6333b9843a7bfd674d607ac4";
             public const string Pharasma = "458750bc214ab2e44abdeae404ab22e9";
             public const string PointBlankShot = "0da0c194d6e1d43419eb8d990b28e0ab";
             public const string PreciseShot = "8f3d1e6b4be006f4d896081f2f889665";
@@ -156,10 +165,12 @@ namespace wotr_mod.Infrastructure
             public const string TwoHandedFighterOverhandChop = "ad4d4db6bb9c75a4a9bc59174b948769";
             public const string TwoHandedFighterPiledriver = "4723b31d7defd3d4e85395e2a3353b01";
             public const string TwoHandedFighterWeaponTraining = "88da2a5dfc505054f933bb81014e864f";
+            public const string ZenArcherWayOfTheBowLongbowFocus = "2e659493076249f49821925b9b7dc389";
         }
 
         internal static class Items
         {
+            public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
         }
@@ -185,6 +196,8 @@ namespace wotr_mod.Infrastructure
         {
             public const string BloodlineElementalFireArcanaBuff = "b3e3882ab6829e34983f31e989c00dfc";
             public const string FighterArmorMastery = "0794e96a6c5da8f41979d809bb4a9a8c";
+            public const string MonkAcBonusBuff = "f132c4c4279e4646a05de26635941bfe";
+            public const string MonkAcBonusBuffUnarmored = "d7ff7a9f1fe84e679f98b36e4bacd63c";
         }
 
         internal static class Units
@@ -192,6 +205,7 @@ namespace wotr_mod.Infrastructure
             public const string CiarUndead = "1f341d3068d6b7a429134125f7141e18";
             public const string CiarCompanion = "7ece3afabe2b6f343b17d1eaa409d273";
             public const string CiarFeatureList = "ec014b7a7a6cd814090c1cd6c7a599d8";
+            public const string MythicLichSkeletonArcher = "2b0c36c34172ac440a8e6d373094c3bd";
             public const string LeopardCompanion = "54cf380dee486ff42b803174d1b9da1b";
             public const string VelociraptorCompanion = "28d1986d57a7081439fbb581aa6f960c";
         }

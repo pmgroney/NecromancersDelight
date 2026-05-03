@@ -19,6 +19,11 @@ namespace wotr_mod
 
         internal static string ModPath { get; private set; }
 
+        internal static void Warning(string message)
+        {
+            _logger?.Warning(message);
+        }
+
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             _logger = modEntry.Logger;

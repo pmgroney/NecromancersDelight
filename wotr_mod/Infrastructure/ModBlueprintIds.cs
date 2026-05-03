@@ -17,14 +17,28 @@ namespace wotr_mod.Infrastructure
         {
             public const string BillyDialog = "96850f6d4f4e444a80c0675c76d37c5d";
             public const string BillyGreetingCue = "8f6a33462ad8422a8884a767110fc6a3";
+            public const string BillyJoinCue = "4e1ad2f0b8c44f9aa5a66c3d7f8210b9";
             public const string BillyAnswers = "1327a2fbb2b84f0694fe6e9212f77b8c";
             public const string BillyJoinAnswer = "88ed37575b8b4f1390ad389668ba5089";
             public const string BillyLeaveAnswer = "095e7161e86f46cebd33efeeefd99c22";
+            public const string BillyWhatAreYouCue = "f2f2d665be9247ce8ca58d12966a0303";
+            public const string BillyWhyHereCue = "7a1aa997f16845cf8a087cde6432dfaf";
+            public const string BillyDangerousCue = "6bffbc86aa5d46fdb1dafc1f7fdfc996";
+            public const string BillyPlanCue = "362a1f88e98c4538a121a5fff27657a7";
+            public const string BillyWhatAreYouAnswer = "308f2222ceb84415bb26b9138895fae3";
+            public const string BillyWhyHereAnswer = "7deda162e8c04afb9b41db4487937a9b";
+            public const string BillyDangerousAnswer = "4ac3e85ec1524017815bf2f566593d5b";
+            public const string BillyPlanAnswer = "8ed60d49ed9e4a38b29328b4ad184bb2";
         }
 
         internal static class Portraits
         {
             public const string Billy = "dc4b32165f4e4e269031dafbffd22d05";
+        }
+
+        internal static class UnitAsks
+        {
+            public const string BillyBarks = "06404cabe50b4de5b3aaea72bb259cdd";
         }
 
         internal static class Progressions
@@ -121,7 +135,9 @@ namespace wotr_mod.Infrastructure
         internal static class Features
         {
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
+            public const string BillyMonkAcBonus = "a73f9c2d4e5849a5bc6d7e8f9012a3b4";
             public const string BillyPositiveEnergyImmunity = "e009f36b497c489c9faeeac27d115a82";
+            public const string BillyWayOfTheBowLongbow = "b84e0f6a1c2d4e3f95a7b8c9d0e1f234";
             public const string CleverPyromaniacGnome = "d2c7d0907a3340f8a34d2a6d1f569101";
             public const string UmbralDhampirHeritage = "e17a9c4d6f2b4810a5c3d7e9f1b60482";
             public const string CryptguardDhampirHeritage = "9102837465af4e3d2c1b0a9b8c7d6e5f";
@@ -168,6 +184,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Buffs
         {
+            public const string BillyMonkAcBonusBuffUnarmored = "c95f1a2b3c4d5e6f8091a2b3c4d5e6f7";
             public const string GravebladeArmorMastery = "d0b8a6f4c2e1437a9b5d1f3c8e0a6247";
             public const string ReapingEdge = "d7a6f5e4c3b24d9e8f0a1b3c5d7e9f10";
             public const string ReapingEdgeBrittleBone = "e8b7a6f5d4c34e0f9a1b2c4d6e8f0132";
