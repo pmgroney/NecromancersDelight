@@ -13,6 +13,8 @@ using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.Utility;
+using UnityModManagerNet;
+using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Features
 {
@@ -30,11 +32,25 @@ namespace wotr_mod.Features
         public BlueprintBuff BrittleBoneBuff;
         public BlueprintBuff FatigueBuff;
         public BlueprintBuff ExhaustionBuff;
-        private bool _spent;
-
+        private bool _used;
+        public static UnityModManager.ModEntry.ModLogger Logger;
+        
+        
+        
         public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
-            var weapon = GetWeapon(evt.ParentRule);
+            if (_used)
+            {
+                return;
+            }
+            
+            var attack = evt.ParentRule?.AttackRoll?.RuleAttackWithWeapon;
+            if (attack == null || attack.Weapon == null || !IsMeleeWeapon(attack.Weapon))
+            {
+                return;
+            }
+
+            var weapon = attack.Weapon;
             if (weapon == null)
             {
                 return;
@@ -58,26 +74,29 @@ namespace wotr_mod.Features
             }
 
             var bonusDice = GetBonusDice(weapon);
-            if (bonusDice <= 0)
-            {
-                return;
-            }
 
             var extraDamage = new EnergyDamage(
                 new DiceFormula(bonusDice, DiceType.D6),
                 DamageEnergyType.NegativeEnergy);
-            var bundle = evt.DamageBundle as DamageBundle;
-            if (bundle != null)
+            if (evt.DamageBundle is DamageBundle bundle)
             {
                 bundle.Add(extraDamage);
+                _used = true;
                 return;
             }
 
             evt.ParentRule?.Add(extraDamage);
+            _used = true;
+        }
+        
+        private static bool IsMeleeWeapon(ItemEntityWeapon weapon)
+        {
+            return weapon.Blueprint.IsMelee;
         }
 
         public void OnEventDidTrigger(RuleCalculateDamage evt)
         {
+ 
         }
 
         public void OnEventAboutToTrigger(RuleAttackWithWeapon evt)
@@ -86,19 +105,17 @@ namespace wotr_mod.Features
 
         public void OnEventDidTrigger(RuleAttackWithWeapon evt)
         {
-            if (evt.Weapon == null)
+            if (evt.Weapon == null || !IsMeleeWeapon(evt.Weapon))
             {
                 return;
             }
 
-            try
+            if (evt.AttackRoll == null || !evt.AttackRoll.IsHit)
             {
-                ApplyHitEffects(evt);
+                return;
             }
-            finally
-            {
-                Spend();
-            }
+
+            ApplyHitEffects(evt);
         }
 
         private void ApplyHitEffects(RuleAttackWithWeapon evt)
@@ -131,32 +148,47 @@ namespace wotr_mod.Features
 
         public void OnEventDidTrigger(RuleDealDamage evt)
         {
-            if (GetClassLevel() < 20 || evt.Target == null || !evt.Target.State.IsDead)
+            Logger.Warning("!!!ReapingEdge RuleDealDamage fired");
+
+            if (evt == null)
             {
+                Logger.Warning("[ReapingEdge] RuleDealDamage evt is null");
                 return;
             }
 
             var weapon = GetWeapon(evt);
             if (weapon == null)
             {
+                Logger.Warning("[ReapingEdge] Weapon is null");
                 return;
             }
 
-            var burstDamage = RollWeaponBaseDamage(weapon);
-            if (burstDamage <= 0)
+            if (weapon.Blueprint == null)
             {
+                Logger.Warning("[ReapingEdge] Weapon blueprint is null");
                 return;
             }
 
-            foreach (var target in GameHelper.GetTargetsAround(evt.Target.Position, new Feet(5), true, false))
+            if (!IsMeleeWeapon(weapon))
             {
-                if (target == null || target == evt.Target || target.State.IsDead || !Owner.IsEnemy(target))
-                {
-                    continue;
-                }
-
-                GameHelper.DealDirectDamage(Owner, target, burstDamage);
+                Logger.Warning("[ReapingEdge] Weapon is not melee");
+                return;
             }
+
+            if (evt.AttackRoll == null)
+            {
+                Logger.Warning("[ReapingEdge] AttackRoll is null");
+                return;
+            }
+
+            if (!evt.AttackRoll.IsHit)
+            {
+                Logger.Warning("[ReapingEdge] Attack was not a hit");
+                return;
+            }
+
+            Logger.Warning("[ReapingEdge] Valid melee damage hit, spending");
+            // level 20 explosion logic can go below this later
         }
 
         private int GetBonusDice(ItemEntityWeapon weapon)
@@ -199,17 +231,6 @@ namespace wotr_mod.Features
             {
                 target.AddBuffDuration(buff, seconds);
             }
-        }
-
-        private void Spend()
-        {
-            if (_spent || Fact == null)
-            {
-                return;
-            }
-
-            _spent = true;
-            Owner.Buffs.RemoveFact(Fact);
         }
     }
 }

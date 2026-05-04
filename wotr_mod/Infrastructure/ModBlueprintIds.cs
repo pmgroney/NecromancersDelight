@@ -96,6 +96,7 @@ namespace wotr_mod.Infrastructure
             public const string GraspOfTheDead = "6bd1d04aafdb4459812b1a4ed7910a89";
             public const string IncorporealForm = "2b4514f3866845ab871a4055bcb77b7a";
             public const string ReapingEdge = "a4f3c2d1e0b94f6a8c7d5e3f1a2b4c6d";
+            public const string ReapingEdgeAbility = "1faef653ffb44bf0a29193b9298c6448";
             public const string ShadowbornArcana = "5f58f3ee60f44ec0bdc4a85190d11883";
             public const string ShadowbornUmbralRay = "70e2d1d47f924bd1ac3721b3905f0035";
             public const string ShadowbornUmbralBlast = "8e6bea96313f40b2a217bc43ade2b99a";

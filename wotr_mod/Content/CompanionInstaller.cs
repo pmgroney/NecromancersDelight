@@ -468,7 +468,7 @@ namespace wotr_mod.Content
             unit.Constitution = 10;
             unit.Intelligence = 12;
             unit.Wisdom = 17;
-            unit.Charisma = 16;
+            unit.Charisma = 14;
             unit.Alignment = Alignment.LawfulNeutral;
 
             var longbowProficiency = _blueprints.Require<BlueprintUnitFact>(

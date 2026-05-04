@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -844,6 +845,8 @@ namespace wotr_mod.Classes
                 name = "$ContextActionApplyBuff$GravebladeReapingEdge",
                 UseDurationSeconds = true,
                 DurationSeconds = 60f,
+                AsChild = false,
+                IgnoreParentContext = true,
                 IsNotDispelable = true
             };
             _blueprints.SetApplyBuffActionBuff(applyBuff, buff);
@@ -886,6 +889,39 @@ namespace wotr_mod.Classes
                 _blueprints.SetUnitFactIcon(buff, icon);
             }
 
+            ReapingEdgeComponent.Logger = _logger;
+            
+            var removeBuff = new ContextActionRemoveBuff
+            {
+                name = "$ContextActionRemoveBuff$GravebladeReapingEdge",
+                ToCaster = false,
+                RemoveRank = false,
+                OnlyFromCaster = false
+            };
+
+            var removeBuffField = AccessTools.Field(typeof(ContextActionRemoveBuff), "m_Buff");
+
+            removeBuffField.SetValue(
+                removeBuff,
+                buff.ToReference<BlueprintBuffReference>());
+
+            var assigned = removeBuffField.GetValue(removeBuff) != null;
+            //_logger.Warning($"!!!![ReapingEdge] RemoveBuff m_Buff assigned: {assigned}");
+            
+            var removeOnHit = new AddInitiatorAttackWithWeaponTrigger
+            {
+                name = "$AddInitiatorAttackWithWeaponTrigger$GravebladeReapingEdge",
+                TriggerBeforeAttack = false,
+                OnlyHit = true,
+                CheckWeaponRangeType = true,
+                RangeType = WeaponRangeType.Melee,
+                ActionsOnInitiator = true,
+                Action = new ActionList
+                {
+                    Actions = new GameAction[] { removeBuff }
+                }
+            };
+
             _blueprints.SetComponents(
                 buff,
                 new ReapingEdgeComponent
@@ -895,7 +931,8 @@ namespace wotr_mod.Classes
                     BrittleBoneBuff = brittleBoneBuff,
                     FatigueBuff = fatigueBuff,
                     ExhaustionBuff = exhaustionBuff
-                });
+                },
+                removeOnHit);
 
             return buff;
         }
