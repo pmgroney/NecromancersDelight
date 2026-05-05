@@ -158,13 +158,6 @@ namespace wotr_mod.Features
             return GetClassLevel() + Owner.Progression.MythicLevel * 2;
         }
 
-        private int GetClassLevel()
-        {
-            return CharacterClass == null
-                ? Owner.Progression.CharacterLevel
-                : Owner.Progression.GetClassLevel(CharacterClass);
-        }
-
         private static bool IsScythe(ItemEntityWeapon weapon)
         {
             return weapon.Blueprint.Category == WeaponCategory.Scythe;

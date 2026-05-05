@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using wotr_mod.Infrastructure;
 
-namespace wotr_mod.Classes
+namespace wotr_mod.Classes.Necromancer
 {
     internal static class NecromancerSpellRegistry
     {

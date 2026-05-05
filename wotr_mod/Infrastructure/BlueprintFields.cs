@@ -11,6 +11,7 @@ using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Abilities.Components.CasterCheckers;
 using Kingmaker.UnitLogic.FactLogic;
 
 namespace wotr_mod.Infrastructure
@@ -255,6 +256,12 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo ContextActionApplyBuffBuff =
             typeof(ContextActionApplyBuff).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo BuffOnArmorBuff =
+            typeof(BuffOnArmor).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AbilityCasterHasNoFactsFacts =
+            typeof(AbilityCasterHasNoFacts).GetField("m_Facts", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo BindAbilitiesToClassCharacterClass =
             typeof(BindAbilitiesToClass).GetField("m_CharacterClass", BindingFlags.Instance | BindingFlags.NonPublic);

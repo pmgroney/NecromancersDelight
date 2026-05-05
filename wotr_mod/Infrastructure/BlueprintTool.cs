@@ -16,6 +16,7 @@ using Kingmaker.Enums;
 using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Abilities.Components.CasterCheckers;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
@@ -1134,6 +1135,26 @@ namespace wotr_mod.Infrastructure
                 buff == null
                     ? null
                     : BlueprintReferenceBase.CreateTyped<BlueprintBuffReference>(buff));
+        }
+
+        public void SetBuffOnArmorBuff(BuffOnArmor component, BlueprintBuff buff)
+        {
+            BlueprintFields.BuffOnArmorBuff.SetValue(
+                component,
+                buff == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintBuffReference>(buff));
+        }
+
+        public void SetAbilityCasterHasNoFacts(
+            AbilityCasterHasNoFacts component,
+            params BlueprintUnitFact[] facts)
+        {
+            var references = (facts ?? Array.Empty<BlueprintUnitFact>())
+                .Where(fact => fact != null)
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>)
+                .ToArray();
+            BlueprintFields.AbilityCasterHasNoFactsFacts.SetValue(component, references);
         }
 
         public void BindAbilityComponentsToClass(BlueprintFeature feature, BlueprintCharacterClass characterClass)

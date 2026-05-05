@@ -51,13 +51,31 @@ namespace wotr_mod.Classes
         {
         }
 
+        public void ConfigureSpellList(CharacterClassDefinition definition, BlueprintSpellList spellList)
+        {
+            ConfigureEvokerSpellList(spellList);
+        }
+
+        public BlueprintFeatureBase EnsureProgressionFeature(CharacterClassDefinition definition)
+        {
+            return EnsureEvokerBloodlineSelection();
+        }
+
+        public void ConfigureProgression(CharacterClassDefinition definition, BlueprintProgression progression)
+        {
+            if (definition.UseUndeadBloodline)
+            {
+                AddUndeadBloodline(progression);
+            }
+        }
+
         public void Install(
             CharacterClassDefinition definition,
             BlueprintCharacterClass characterClass,
             BlueprintSpellbook spellbook,
             BlueprintSpellList spellList)
         {
-            ConfigureEvokerSpellList(spellList);
+            EnsureEvokerBloodlineSelection(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
 
             _blueprints.SetCharacterClassArchetypes(
@@ -69,21 +87,107 @@ namespace wotr_mod.Classes
         private void ConfigureEvokerSpellList(BlueprintSpellList spellList)
         {
             var spellsByLevel = EvokerSpellRegistry.GetAll()
-                .GroupBy(s => s.SpellLevel);
-
-            foreach (var levelGroup in spellsByLevel)
-            {
-                foreach (var spellDef in levelGroup)
+                .Select(definition =>
                 {
-                    var spell = _blueprints.Get<BlueprintAbility>(spellDef.SpellGuid);
-                    if (spell == null)
-                    {
-                        _logger.Warning($"Could not find spell {spellDef.DisplayName} ({spellDef.SpellGuid}) for Evoker spell list.");
-                        continue;
-                    }
+                    var spell = _blueprints.Require<BlueprintAbility>(definition.SpellGuid, definition.DisplayName);
+                    return new KeyValuePair<BlueprintAbility, int>(spell, definition.SpellLevel);
+                });
 
-                    _blueprints.AddSpellToList(spellList, spell, levelGroup.Key);
+            _blueprints.SetSpellListSpells(
+                spellList,
+                spellsByLevel.OrderBy(pair => pair.Value).ThenBy(pair => pair.Key.name));
+        }
+
+        private BlueprintFeatureSelection EnsureEvokerBloodlineSelection(BlueprintCharacterClass characterClass = null)
+        {
+            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.EvokerBloodline);
+            if (selection == null)
+            {
+                var donorSelection = _blueprints.Require<BlueprintFeatureSelection>(
+                    GameBlueprintIds.Selections.SorcererBloodline,
+                    "Sorcerer bloodline selection");
+                selection = _blueprints.CloneBlueprint(
+                    donorSelection,
+                    ModBlueprintIds.Selections.EvokerBloodline,
+                    "WotrMod_EvokerBloodlineSelection");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Selections.EvokerBloodline, selection);
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                selection,
+                _localization.Text(LocalizationIds.Mod.EvokerBloodlineName),
+                _localization.Text(LocalizationIds.Mod.EvokerBloodlineDescription));
+
+            var bloodlines = new[]
+            {
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ArcaneBloodline,
+                    ModBlueprintIds.Progressions.EvokerArcaneBloodline, "WotrMod_EvokerBloodline_Arcane",
+                    LocalizationIds.Mod.EvokerArcaneName, LocalizationIds.Mod.EvokerArcaneDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalAirBloodline,
+                    ModBlueprintIds.Progressions.EvokerAirBloodline, "WotrMod_EvokerBloodline_Air",
+                    LocalizationIds.Mod.EvokerAirName, LocalizationIds.Mod.EvokerAirDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalEarthBloodline,
+                    ModBlueprintIds.Progressions.EvokerEarthBloodline, "WotrMod_EvokerBloodline_Earth",
+                    LocalizationIds.Mod.EvokerEarthName, LocalizationIds.Mod.EvokerEarthDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalFireBloodline,
+                    ModBlueprintIds.Progressions.EvokerFireBloodline, "WotrMod_EvokerBloodline_Fire",
+                    LocalizationIds.Mod.EvokerFireName, LocalizationIds.Mod.EvokerFireDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalWaterBloodline,
+                    ModBlueprintIds.Progressions.EvokerWaterBloodline, "WotrMod_EvokerBloodline_Water",
+                    LocalizationIds.Mod.EvokerWaterName, LocalizationIds.Mod.EvokerWaterDescription)
+            };
+
+            _blueprints.SetFeatureSelectionFeatures(selection, bloodlines);
+            _blueprints.SetFeatureSelectionAllFeatures(selection, bloodlines);
+
+            if (characterClass != null)
+            {
+                foreach (var bloodline in bloodlines)
+                {
+                    _blueprints.SetProgressionClasses(bloodline, characterClass);
                 }
+
+                _blueprints.SetProgressionClasses(selection, characterClass);
+            }
+
+            return selection;
+        }
+
+        private BlueprintProgression EnsureEvokerBloodline(
+            string donorGuid,
+            string newGuid,
+            string internalName,
+            string displayNameKey,
+            string descriptionKey)
+        {
+            var existing = _blueprints.Get<BlueprintProgression>(newGuid);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            var donor = _blueprints.Require<BlueprintProgression>(donorGuid, internalName + " donor");
+            var clone = _blueprints.CloneBlueprint(donor, newGuid, internalName);
+            _blueprints.SetUnitFactDisplay(
+                clone,
+                _localization.Text(displayNameKey),
+                _localization.Text(descriptionKey));
+            _blueprints.AddCachedBlueprint(newGuid, clone);
+            return clone;
+        }
+
+        private void AddUndeadBloodline(BlueprintProgression progression)
+        {
+            var undeadBloodline = _blueprints.Require<BlueprintProgression>(
+                GameBlueprintIds.Progressions.UndeadBloodline,
+                "Undead bloodline progression");
+
+            var firstLevelEntry = progression.LevelEntries.FirstOrDefault(e => e.Level == 1);
+            if (firstLevelEntry != null)
+            {
+                var features = firstLevelEntry.Features.ToList();
+                features.Add(undeadBloodline);
+                firstLevelEntry.SetFeatures(features);
             }
         }
 

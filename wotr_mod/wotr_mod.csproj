@@ -74,7 +74,10 @@
         <Compile Include="Classes\EvokerScalingInstaller.cs" />
         <Compile Include="Classes\EvokerSpellRegistry.cs"/>
         <Compile Include="Classes\IClassContentInstaller.cs" />
-        <Compile Include="Classes\NecromancerSpellRegistry.cs"/>
+        <Compile Include="Classes\Necromancer\NecromancerInstaller.cs" />
+        <Compile Include="Classes\Necromancer\NecromancerSpellRegistry.cs" />
+        <Compile Include="Classes\Necromancer\Archetypes\GravebladeInstaller.cs" />
+        <Compile Include="Classes\Necromancer\Archetypes\SepulchritInstaller.cs" />
         <Compile Include="Content\ModContentPatch.cs"/>
         <Compile Include="Content\BillyReactivityLines.cs" />
         <Compile Include="Content\CompanionInstaller.cs" />
@@ -88,6 +91,7 @@
         <Compile Include="Features\ShadowbornNegativeEnergyHealing.cs" />
         <Compile Include="Features\SelectedRaceStatBonus.cs" />
         <Compile Include="Features\SkillPointsPerCharacterLevel.cs" />
+        <Compile Include="Infrastructure\ClassFactory.cs" />
         <Compile Include="Infrastructure\HeritageFactory.cs" />
         <Compile Include="Main.cs" />
         <Compile Include="Infrastructure\BlueprintFields.cs" />

@@ -44,6 +44,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 archetype,
                 _localization.Text(LocalizationIds.Mod.SepulchritName),
                 _localization.Text(LocalizationIds.Mod.SepulchritDescription));
+            _blueprints.SetArchetypeParentClass(archetype, characterClass);
             _blueprints.SetArchetypeReplaceSpellbook(archetype, sepulchritSpellbook);
             _blueprints.SetArchetypeFeatureChanges(archetype, Array.Empty<LevelEntry>(), Array.Empty<LevelEntry>());
             _blueprints.SetArchetypeBuildChanging(archetype, true);
@@ -63,18 +64,14 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var spellbook = _blueprints.Get<BlueprintSpellbook>(ModBlueprintIds.Spellbooks.Sepulchrit);
             if (spellbook == null)
             {
-                spellbook = _blueprints.CloneBlueprint(baseSpellbook, ModBlueprintIds.Spellbooks.Sepulchrit, "WotrMod_SepulchritSpellbook");
+                spellbook = _blueprints.CloneBlueprint(
+                    baseSpellbook, ModBlueprintIds.Spellbooks.Sepulchrit, "WotrMod_NecromancerSepulchritSpellbook");
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Spellbooks.Sepulchrit, spellbook);
             }
 
-            spellbook.SpellList = spellList;
-            spellbook.CastingStat = StatType.Intelligence;
-            spellbook.CharacterClass = characterClass;
-            _blueprints.SetUnitFactDisplay(
-                spellbook,
-                _localization.Text(LocalizationIds.Mod.SepulchritName),
-                _localization.Text(LocalizationIds.Mod.SepulchritDescription));
-
+            spellbook.CastingAttribute = StatType.Intelligence;
+            _blueprints.SetSpellbookSpellList(spellbook, spellList);
+            _blueprints.SetSpellbookCharacterClass(spellbook, characterClass);
             return spellbook;
         }
     }
