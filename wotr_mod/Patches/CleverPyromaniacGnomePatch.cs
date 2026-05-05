@@ -13,11 +13,13 @@ namespace wotr_mod.Patches
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
+        private readonly HeritageFactory _heritageFactory;
 
         public CleverPyromaniacGnomePatch(BlueprintTool blueprints, LocalizationTool localization)
         {
             _blueprints = blueprints;
             _localization = localization;
+            _heritageFactory = new HeritageFactory(blueprints, localization);
         }
 
         public string Name => "Clever Pyromaniac Gnome";
@@ -39,55 +41,23 @@ namespace wotr_mod.Patches
                 GameBlueprintIds.Features.PyromaniacGnome,
                 "Pyromaniac gnome heritage");
 
-            var cleverPyromaniac = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.CleverPyromaniacGnome);
-            if (cleverPyromaniac == null)
-            {
-                cleverPyromaniac = CreateFeature(pyromaniac);
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.CleverPyromaniacGnome, cleverPyromaniac);
-            }
-
-            _blueprints.AddFeatureToSelection(heritageSelection, cleverPyromaniac);
-        }
-
-        private BlueprintFeature CreateFeature(BlueprintFeature pyromaniac)
-        {
-            var feature = new BlueprintFeature
-            {
-                name = "CleverPyromaniacGnome",
-                AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.CleverPyromaniacGnome),
-                Groups = new[] { FeatureGroup.Racial },
-                Ranks = 1,
-                ReapplyOnLevelUp = false,
-                IsClassFeature = true
-            };
-
-            _blueprints.SetUnitFactDisplay(
-                feature,
-                _localization.Text(LocalizationIds.Mod.CleverPyromaniacName),
-                _localization.Text(LocalizationIds.Mod.CleverPyromaniacDescription));
+            var cleverPyromaniac = _heritageFactory.EnsureHeritage(
+                ModBlueprintIds.Features.CleverPyromaniacGnome,
+                "CleverPyromaniacGnome",
+                LocalizationIds.Mod.CleverPyromaniacName,
+                LocalizationIds.Mod.CleverPyromaniacDescription);
 
             var addPyromaniac = new AddFeatureOnApply { name = "$AddFeatureOnApply$CleverPyromaniacGnome" };
             _blueprints.SetAddFeatureOnApplyFeature(addPyromaniac, pyromaniac);
 
             _blueprints.SetComponents(
-                feature,
+                cleverPyromaniac,
                 addPyromaniac,
-                CreateStatBonus(StatType.Charisma, -2),
-                CreateStatBonus(StatType.Intelligence, 3));
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Charisma, -2),
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Intelligence, 3));
 
-            return feature;
+            _blueprints.AddFeatureToSelection(heritageSelection, cleverPyromaniac);
         }
 
-        private static AddStatBonus CreateStatBonus(StatType stat, int value)
-        {
-            return new AddStatBonus
-            {
-                name = $"$AddStatBonus$CleverPyromaniacGnome${stat}",
-                Descriptor = ModifierDescriptor.Racial,
-                Stat = stat,
-                Value = value,
-                ScaleByBasicAttackBonus = false
-            };
-        }
     }
 }

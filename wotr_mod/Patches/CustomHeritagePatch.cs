@@ -16,11 +16,13 @@ namespace wotr_mod.Patches
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
+        private readonly HeritageFactory _heritageFactory;
 
         public CustomHeritagePatch(BlueprintTool blueprints, LocalizationTool localization)
         {
             _blueprints = blueprints;
             _localization = localization;
+            _heritageFactory = new HeritageFactory(blueprints, localization);
         }
 
         public string Name => "Custom Heritages";
@@ -90,75 +92,75 @@ namespace wotr_mod.Patches
             var humanRace = _blueprints.Require<BlueprintRace>(
                 GameBlueprintIds.Races.Human,
                 "Human race");
-            var humanHeritageSelection = EnsureHeritageSelection(
+            var humanHeritageSelection = _heritageFactory.EnsureSelection(
                 ModBlueprintIds.Selections.HumanHeritage,
                 "WotrMod_HumanHeritageSelection",
                 LocalizationIds.Mod.HumanHeritageName,
                 LocalizationIds.Mod.HumanHeritageDescription);
 
-            var umbralDhampir = EnsureHeritage(
+            var umbralDhampir = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.UmbralDhampirHeritage,
                 "WotrMod_UmbralDhampirHeritage",
                 LocalizationIds.Mod.UmbralDhampirHeritageName,
                 LocalizationIds.Mod.UmbralDhampirHeritageDescription,
-                CreateStatBonus("UmbralDhampir", StatType.Charisma, 3),
-                CreateStatBonus("UmbralDhampir", StatType.Dexterity, 3),
-                CreateStatBonus("UmbralDhampir", StatType.Constitution, 2));
+                _heritageFactory.CreateStatBonus("UmbralDhampir", StatType.Charisma, 3),
+                _heritageFactory.CreateStatBonus("UmbralDhampir", StatType.Dexterity, 3),
+                _heritageFactory.CreateStatBonus("UmbralDhampir", StatType.Constitution, 2));
 
-            var cryptguardDhampir = EnsureHeritage(
+            var cryptguardDhampir = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.CryptguardDhampirHeritage,
                 "WotrMod_CryptguardDhampirHeritage",
                 LocalizationIds.Mod.CryptguardDhampirHeritageName,
                 LocalizationIds.Mod.CryptguardDhampirHeritageDescription,
-                CreateStatBonus("CryptguardDhampir", StatType.Strength, 3),
-                CreateStatBonus("CryptguardDhampir", StatType.Dexterity, 2),
-                CreateStatBonus("CryptguardDhampir", StatType.Charisma, 3));
+                _heritageFactory.CreateStatBonus("CryptguardDhampir", StatType.Strength, 3),
+                _heritageFactory.CreateStatBonus("CryptguardDhampir", StatType.Dexterity, 2),
+                _heritageFactory.CreateStatBonus("CryptguardDhampir", StatType.Charisma, 3));
 
-            var graveltoeGnome = EnsureHeritage(
+            var graveltoeGnome = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.GraveltoeGnomeHeritage,
                 "WotrMod_GraveltoeGnomeHeritage",
                 LocalizationIds.Mod.GraveltoeGnomeHeritageName,
                 LocalizationIds.Mod.GraveltoeGnomeHeritageDescription,
-                CreateStatBonus("GraveltoeGnome", StatType.Charisma, 1),
-                CreateStatBonus("GraveltoeGnome", StatType.Strength, 3));
+                _heritageFactory.CreateStatBonus("GraveltoeGnome", StatType.Charisma, 1),
+                _heritageFactory.CreateStatBonus("GraveltoeGnome", StatType.Strength, 3));
 
-            var shadowGnome = EnsureHeritage(
+            var shadowGnome = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.ShadowGnomeHeritage,
                 "WotrMod_ShadowGnomeHeritage",
                 LocalizationIds.Mod.ShadowGnomeHeritageName,
                 LocalizationIds.Mod.ShadowGnomeHeritageDescription,
-                CreateStatBonus("ShadowGnome", StatType.Charisma, 1),
-                CreateStatBonus("ShadowGnome", StatType.Dexterity, 2));
+                _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Charisma, 1),
+                _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Dexterity, 2));
 
-                var normalHuman = EnsureHeritage(
+                var normalHuman = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.NormalHumanHeritage,
                 "WotrMod_NormalHumanHeritage",
                 LocalizationIds.Mod.NormalHumanHeritageName,
                 LocalizationIds.Mod.NormalHumanHeritageDescription);
 
-            var descendantOfKings = EnsureHeritage(
+            var descendantOfKings = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.DescendantOfKingsHeritage,
                 "WotrMod_DescendantOfKingsHeritage",
                 LocalizationIds.Mod.DescendantOfKingsHeritageName,
                 LocalizationIds.Mod.DescendantOfKingsHeritageDescription,
-                CreateStatBonus("DescendantOfKings", StatType.Constitution, 2),
-                CreateSelectedRaceStatBonus("DescendantOfKings", 2));
+                _heritageFactory.CreateStatBonus("DescendantOfKings", StatType.Constitution, 2),
+                _heritageFactory.CreateSelectedRaceStatBonus("DescendantOfKings", 2));
 
-            var orcLordsBlood = EnsureHeritage(
+            var orcLordsBlood = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.OrcLordsBloodHeritage,
                 "WotrMod_OrcLordsBloodHeritage",
                 LocalizationIds.Mod.OrcLordsBloodHeritageName,
                 LocalizationIds.Mod.OrcLordsBloodHeritageDescription,
-                CreateStatBonus("OrcLordsBlood", StatType.Constitution, 2),
-                CreateSelectedRaceStatBonus("OrcLordsBlood", 2));
+                _heritageFactory.CreateStatBonus("OrcLordsBlood", StatType.Constitution, 2),
+                _heritageFactory.CreateSelectedRaceStatBonus("OrcLordsBlood", 2));
 
-            var trueHighElf = EnsureHeritage(
+            var trueHighElf = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.TrueHighElfHeritage,
                 "WotrMod_TrueHighElfHeritage",
                 LocalizationIds.Mod.TrueHighElfHeritageName,
                 LocalizationIds.Mod.TrueHighElfHeritageDescription,
-                CreateStatBonus("TrueHighElf", StatType.Constitution, 2),
-                CreateSelectedRaceStatBonus("TrueHighElf", 2));
+                _heritageFactory.CreateStatBonus("TrueHighElf", StatType.Constitution, 2),
+                _heritageFactory.CreateSelectedRaceStatBonus("TrueHighElf", 2));
 
             RemoveGnomeStrengthPenalty(graveltoeGnome, shadowGnome);
 
@@ -171,72 +173,6 @@ namespace wotr_mod.Patches
             _blueprints.AddFeatureToSelection(humanHeritageSelection, normalHuman);
             _blueprints.AddFeatureToSelection(humanHeritageSelection, descendantOfKings);
             _blueprints.AddFeatureToRace(humanRace, humanHeritageSelection);
-        }
-
-        private BlueprintFeatureSelection EnsureHeritageSelection(
-            string guid,
-            string internalName,
-            string displayNameKey,
-            string descriptionKey)
-        {
-            var selection = _blueprints.Get<BlueprintFeatureSelection>(guid);
-            if (selection == null)
-            {
-                selection = new BlueprintFeatureSelection
-                {
-                    name = internalName,
-                    AssetGuid = BlueprintGuid.Parse(guid),
-                    Groups = new[] { FeatureGroup.Racial },
-                    Ranks = 1,
-                    IsClassFeature = true
-                };
-                _blueprints.AddCachedBlueprint(guid, selection);
-            }
-
-            selection.Groups = new[] { FeatureGroup.Racial };
-            selection.Ranks = 1;
-            selection.IsClassFeature = true;
-            _blueprints.SetUnitFactDisplay(
-                selection,
-                _localization.Text(displayNameKey),
-                _localization.Text(descriptionKey));
-
-            return selection;
-        }
-
-        private BlueprintFeature EnsureHeritage(
-            string guid,
-            string internalName,
-            string displayNameKey,
-            string descriptionKey,
-            params BlueprintComponent[] components)
-        {
-            var feature = _blueprints.Get<BlueprintFeature>(guid);
-            if (feature == null)
-            {
-                feature = new BlueprintFeature
-                {
-                    name = internalName,
-                    AssetGuid = BlueprintGuid.Parse(guid),
-                    Groups = new[] { FeatureGroup.Racial },
-                    Ranks = 1,
-                    ReapplyOnLevelUp = false,
-                    IsClassFeature = true
-                };
-                _blueprints.AddCachedBlueprint(guid, feature);
-            }
-
-            feature.Groups = new[] { FeatureGroup.Racial };
-            feature.Ranks = 1;
-            feature.ReapplyOnLevelUp = false;
-            feature.IsClassFeature = true;
-            _blueprints.SetUnitFactDisplay(
-                feature,
-                _localization.Text(displayNameKey),
-                _localization.Text(descriptionKey));
-            _blueprints.SetComponents(feature, components);
-
-            return feature;
         }
 
         private void RemoveGnomeStrengthPenalty(params BlueprintFeature[] heritages)
@@ -269,27 +205,5 @@ namespace wotr_mod.Patches
             }
         }
 
-        private static AddStatBonus CreateStatBonus(string heritageName, StatType stat, int value)
-        {
-            return new AddStatBonus
-            {
-                name = $"$AddStatBonus${heritageName}${stat}",
-                Descriptor = ModifierDescriptor.Racial,
-                Stat = stat,
-                Value = value,
-                ScaleByBasicAttackBonus = false
-            };
-        }
-
-
-        private static SelectedRaceStatBonus CreateSelectedRaceStatBonus(string heritageName, int value)
-        {
-            return new SelectedRaceStatBonus
-            {
-                name = $"$SelectedRaceStatBonus${heritageName}",
-                Descriptor = ModifierDescriptor.Racial,
-                Value = value
-            };
-        }
     }
 }

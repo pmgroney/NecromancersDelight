@@ -14,10 +14,10 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.RuleSystem;
-using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Abilities.Components.CasterCheckers;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Commands.Base;
 using Kingmaker.UnitLogic.FactLogic;
@@ -153,7 +153,8 @@ namespace wotr_mod.Classes
                             }
                             catch (Exception ex)
                             {
-                                _blueprints.ReportError($"ERROR installing class content for {definition.InternalName}: {ex}");
+                                _blueprints.ReportError(
+                                    $"ERROR installing class content for {definition.InternalName}: {ex}");
                             }
                         }
                     }
@@ -203,7 +204,8 @@ namespace wotr_mod.Classes
         private BlueprintSpellList EnsureSpellList(CharacterClassDefinition definition, BlueprintSpellList donor)
         {
             var existing = _blueprints.Get<BlueprintSpellList>(definition.SpellListGuid);
-            var clone = existing ?? _blueprints.CloneBlueprint(donor, definition.SpellListGuid, definition.InternalName + "_SpellList");
+            var clone = existing ?? _blueprints.CloneBlueprint(donor, definition.SpellListGuid,
+                definition.InternalName + "_SpellList");
 
             if (definition.UseEvokerBloodlines)
             {
@@ -370,7 +372,7 @@ namespace wotr_mod.Classes
                 GameBlueprintIds.Selections.FighterFeat,
                 "Fighter Bonus Feat");
             var necromancerBonusFeat = EnsureNecromancerBonusFeatSelection();
-            
+
             // Register all archetype-specific features with the class
             _blueprints.SetProgressionClasses(proficiencies, characterClass);
             _blueprints.SetProgressionClasses(reapingEdge, characterClass);
@@ -439,7 +441,8 @@ namespace wotr_mod.Classes
             AddLevelEntryIfAny(
                 entries,
                 2,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell,
+                    "Bone Spike granted spell"));
             AddLevelEntryIfAny(
                 entries,
                 3,
@@ -447,12 +450,14 @@ namespace wotr_mod.Classes
             AddLevelEntryIfAny(
                 entries,
                 4,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell,
+                    "Corpse Explosion granted spell"));
             AddLevelEntryIfAny(entries, 6, necromancerBonusFeat);
             AddLevelEntryIfAny(
                 entries,
                 7,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror granted spell"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell,
+                    "Eldritch Horror granted spell"));
             AddLevelEntryIfAny(
                 entries,
                 9,
@@ -468,7 +473,8 @@ namespace wotr_mod.Classes
             AddLevelEntryIfAny(
                 entries,
                 19,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth granted spell"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell,
+                    "Hell on Earth granted spell"));
             AddLevelEntryIfAny(
                 entries,
                 20,
@@ -540,7 +546,10 @@ namespace wotr_mod.Classes
                 new[] { deathsGift },
                 new[] { necromancerBonusFeat },
                 new[] { armorTraining, armorMastery },
-                new[] { twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery },
+                new[]
+                {
+                    twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery
+                },
                 new[] { reapingEdge },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, hellOnEarth });
@@ -608,7 +617,8 @@ namespace wotr_mod.Classes
 
         private static void SetBuffOnArmorBuff(BuffOnArmor component, BlueprintBuff buff)
         {
-            var field = typeof(BuffOnArmor).GetField("m_Buff", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var field = typeof(BuffOnArmor).GetField("m_Buff",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
             field?.SetValue(component, buff.ToReference<BlueprintBuffReference>());
         }
 
@@ -716,10 +726,14 @@ namespace wotr_mod.Classes
             var addFacts = new AddFacts { name = "$AddFacts$GravebladeProficiencies" };
             _blueprints.SetAddFacts(
                 addFacts,
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight, "Light Armor Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyMedium, "Medium Armor Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyHeavy, "Heavy Armor Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency, "Martial Weapon Proficiency"));
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight,
+                    "Light Armor Proficiency"),
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyMedium,
+                    "Medium Armor Proficiency"),
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyHeavy,
+                    "Heavy Armor Proficiency"),
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency,
+                    "Martial Weapon Proficiency"));
 
             _blueprints.SetComponents(feature, addFacts);
 
@@ -822,10 +836,12 @@ namespace wotr_mod.Classes
             ability.CanTargetEnemies = false;
             ability.CanTargetPoint = false;
             ability.NotOffensive = true;
+
             _blueprints.SetAbilityDisplay(
                 ability,
                 _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeName),
                 _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeDescription));
+
             var icon = _icons.Load("Icons\\reaping_edge.png");
             if (icon != null)
             {
@@ -843,11 +859,13 @@ namespace wotr_mod.Classes
             var applyBuff = new ContextActionApplyBuff
             {
                 name = "$ContextActionApplyBuff$GravebladeReapingEdge",
-                UseDurationSeconds = true,
-                DurationSeconds = 60f,
-                AsChild = false,
-                IgnoreParentContext = true,
-                IsNotDispelable = true
+                Permanent = true,
+                UseDurationSeconds = false,
+                AsChild = true,
+                IgnoreParentContext = false,
+                IsNotDispelable = false,
+                ToCaster = false,
+                SameDuration = false,
             };
             _blueprints.SetApplyBuffActionBuff(applyBuff, buff);
 
@@ -856,8 +874,16 @@ namespace wotr_mod.Classes
                 name = "$AbilityEffectRunAction$GravebladeReapingEdge",
                 Actions = new ActionList { Actions = new GameAction[] { applyBuff } }
             };
-            _blueprints.SetComponents(ability, resourceLogic, runAction);
-            ability.OnEnable();
+
+            var hasNoBuff = new AbilityCasterHasNoFacts
+            {
+                name = "$AbilityCasterHasNoFacts$GravebladeReapingEdge"
+            };
+
+            AccessTools.Field(typeof(AbilityCasterHasNoFacts), "m_Facts")
+                ?.SetValue(hasNoBuff, new[] { buff.ToReference<BlueprintUnitFactReference>() });
+
+            _blueprints.SetComponents(ability, resourceLogic, runAction, hasNoBuff);
 
             return ability;
         }
@@ -879,10 +905,15 @@ namespace wotr_mod.Classes
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Buffs.ReapingEdge, buff);
             }
 
+            buff.IsClassFeature = true;
+            buff.Stacking = StackingType.Replace;
+            buff.Ranks = 0;
+
             _blueprints.SetUnitFactDisplay(
                 buff,
                 _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeBuffName),
                 _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeBuffDescription));
+
             var icon = _icons.Load("Icons\\reaping_edge.png");
             if (icon != null)
             {
@@ -890,37 +921,6 @@ namespace wotr_mod.Classes
             }
 
             ReapingEdgeComponent.Logger = _logger;
-            
-            var removeBuff = new ContextActionRemoveBuff
-            {
-                name = "$ContextActionRemoveBuff$GravebladeReapingEdge",
-                ToCaster = false,
-                RemoveRank = false,
-                OnlyFromCaster = false
-            };
-
-            var removeBuffField = AccessTools.Field(typeof(ContextActionRemoveBuff), "m_Buff");
-
-            removeBuffField.SetValue(
-                removeBuff,
-                buff.ToReference<BlueprintBuffReference>());
-
-            var assigned = removeBuffField.GetValue(removeBuff) != null;
-            //_logger.Warning($"!!!![ReapingEdge] RemoveBuff m_Buff assigned: {assigned}");
-            
-            var removeOnHit = new AddInitiatorAttackWithWeaponTrigger
-            {
-                name = "$AddInitiatorAttackWithWeaponTrigger$GravebladeReapingEdge",
-                TriggerBeforeAttack = false,
-                OnlyHit = true,
-                CheckWeaponRangeType = true,
-                RangeType = WeaponRangeType.Melee,
-                ActionsOnInitiator = true,
-                Action = new ActionList
-                {
-                    Actions = new GameAction[] { removeBuff }
-                }
-            };
 
             _blueprints.SetComponents(
                 buff,
@@ -931,8 +931,7 @@ namespace wotr_mod.Classes
                     BrittleBoneBuff = brittleBoneBuff,
                     FatigueBuff = fatigueBuff,
                     ExhaustionBuff = exhaustionBuff
-                },
-                removeOnHit);
+                });
 
             return buff;
         }
@@ -1106,7 +1105,8 @@ namespace wotr_mod.Classes
                 return existing;
             }
 
-            var clone = _blueprints.CloneBlueprint(donor, definition.SpellbookGuid, definition.InternalName + "_Spellbook");
+            var clone = _blueprints.CloneBlueprint(donor, definition.SpellbookGuid,
+                definition.InternalName + "_Spellbook");
             clone.CastingAttribute = definition.CastingStat;
             _blueprints.SetSpellbookSpellList(clone, spellList);
             _blueprints.AddCachedBlueprint(definition.SpellbookGuid, clone);
@@ -1278,7 +1278,8 @@ namespace wotr_mod.Classes
             var hellOnEarth = features[11];
             var necromancerBonusFeat = features[12];
 
-            AddFeaturesToLevel(progression, 1, necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
+            AddFeaturesToLevel(progression, 1, necromancerProficiencies, masterOfDeath, witheringRay, boneArmor,
+                necromancerBonusFeat);
             AddFeaturesToLevel(progression, 2, boneSpike);
             AddFeaturesToLevel(progression, 3, deathsGift);
             AddFeaturesToLevel(progression, 4, corpseExplosion);
@@ -1367,7 +1368,8 @@ namespace wotr_mod.Classes
             {
                 entry = new LevelEntry { Level = level };
                 entry.SetFeatures(featuresToAdd);
-                progression.LevelEntries = progression.LevelEntries.Concat(new[] { entry }).OrderBy(e => e.Level).ToArray();
+                progression.LevelEntries =
+                    progression.LevelEntries.Concat(new[] { entry }).OrderBy(e => e.Level).ToArray();
                 return;
             }
 
@@ -1515,11 +1517,21 @@ namespace wotr_mod.Classes
 
             var bloodlines = new[]
             {
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ArcaneBloodline, ModBlueprintIds.Progressions.EvokerArcaneBloodline, "WotrMod_EvokerBloodline_Arcane", LocalizationIds.Mod.EvokerArcaneName, LocalizationIds.Mod.EvokerArcaneDescription),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalAirBloodline, ModBlueprintIds.Progressions.EvokerAirBloodline, "WotrMod_EvokerBloodline_Air", LocalizationIds.Mod.EvokerAirName, LocalizationIds.Mod.EvokerAirDescription),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalEarthBloodline, ModBlueprintIds.Progressions.EvokerEarthBloodline, "WotrMod_EvokerBloodline_Earth", LocalizationIds.Mod.EvokerEarthName, LocalizationIds.Mod.EvokerEarthDescription),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalFireBloodline, ModBlueprintIds.Progressions.EvokerFireBloodline, "WotrMod_EvokerBloodline_Fire", LocalizationIds.Mod.EvokerFireName, LocalizationIds.Mod.EvokerFireDescription),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalWaterBloodline, ModBlueprintIds.Progressions.EvokerWaterBloodline, "WotrMod_EvokerBloodline_Water", LocalizationIds.Mod.EvokerWaterName, LocalizationIds.Mod.EvokerWaterDescription)
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ArcaneBloodline,
+                    ModBlueprintIds.Progressions.EvokerArcaneBloodline, "WotrMod_EvokerBloodline_Arcane",
+                    LocalizationIds.Mod.EvokerArcaneName, LocalizationIds.Mod.EvokerArcaneDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalAirBloodline,
+                    ModBlueprintIds.Progressions.EvokerAirBloodline, "WotrMod_EvokerBloodline_Air",
+                    LocalizationIds.Mod.EvokerAirName, LocalizationIds.Mod.EvokerAirDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalEarthBloodline,
+                    ModBlueprintIds.Progressions.EvokerEarthBloodline, "WotrMod_EvokerBloodline_Earth",
+                    LocalizationIds.Mod.EvokerEarthName, LocalizationIds.Mod.EvokerEarthDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalFireBloodline,
+                    ModBlueprintIds.Progressions.EvokerFireBloodline, "WotrMod_EvokerBloodline_Fire",
+                    LocalizationIds.Mod.EvokerFireName, LocalizationIds.Mod.EvokerFireDescription),
+                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalWaterBloodline,
+                    ModBlueprintIds.Progressions.EvokerWaterBloodline, "WotrMod_EvokerBloodline_Water",
+                    LocalizationIds.Mod.EvokerWaterName, LocalizationIds.Mod.EvokerWaterDescription)
             };
 
             foreach (var bloodline in bloodlines)
@@ -1573,11 +1585,11 @@ namespace wotr_mod.Classes
             var necromancerClass = _blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer);
 
             var clone = existing ?? _blueprints.CloneBlueprint(
-                    _blueprints.Require<BlueprintProgression>(
-                        GameBlueprintIds.Progressions.UndeadBloodline,
-                        "Undead bloodline donor"),
-                    ModBlueprintIds.Progressions.NecromancerBloodline,
-                    "WotrMod_NecromancerBloodline");
+                _blueprints.Require<BlueprintProgression>(
+                    GameBlueprintIds.Progressions.UndeadBloodline,
+                    "Undead bloodline donor"),
+                ModBlueprintIds.Progressions.NecromancerBloodline,
+                "WotrMod_NecromancerBloodline");
             _blueprints.SetComponents(clone);
 
             _blueprints.SetUnitFactDisplay(
@@ -1848,7 +1860,8 @@ namespace wotr_mod.Classes
             return feature;
         }
 
-        private BlueprintAbility EnsureWitheringRayAbility(BlueprintCharacterClass characterClass, BlueprintAbilityResource resource)
+        private BlueprintAbility EnsureWitheringRayAbility(BlueprintCharacterClass characterClass,
+            BlueprintAbilityResource resource)
         {
             var ability = _blueprints.Get<BlueprintAbility>(ModBlueprintIds.Abilities.WitheringRay);
             if (ability == null)
@@ -1872,7 +1885,8 @@ namespace wotr_mod.Classes
             PatchWitheringRayDamage(ability);
             PatchAbilityResource(ability, resource);
 
-            var rank = _blueprints.EnsureComponent(ability, () => new ContextRankConfig { name = "$ContextRankConfig$NecromancerWitheringRay" });
+            var rank = _blueprints.EnsureComponent(ability,
+                () => new ContextRankConfig { name = "$ContextRankConfig$NecromancerWitheringRay" });
             _blueprints.ConfigureContextRankConfig(
                 rank,
                 AbilityRankType.Default,
@@ -1942,7 +1956,8 @@ namespace wotr_mod.Classes
             return feature;
         }
 
-        private BlueprintAbilityResource EnsureAbilityResource(string donorGuid, string resourceGuid, string internalName)
+        private BlueprintAbilityResource EnsureAbilityResource(string donorGuid, string resourceGuid,
+            string internalName)
         {
             var resource = _blueprints.Get<BlueprintAbilityResource>(resourceGuid);
             if (resource != null)
@@ -2104,6 +2119,7 @@ namespace wotr_mod.Classes
             {
                 _blueprints.SetUnitFactIcon(feature, icon);
             }
+
             _blueprints.SetComponents(
                 feature,
                 new AddStatBonus
@@ -2175,7 +2191,7 @@ namespace wotr_mod.Classes
                 ValueRank = AbilityRankType.Default
             };
         }
-        
+
         private static SkillPointsPerCharacterLevel CreateSkillPointBonus(string className)
         {
             return new SkillPointsPerCharacterLevel
@@ -2184,7 +2200,7 @@ namespace wotr_mod.Classes
                 SkillPointsPerLevel = 3
             };
         }
-        
+
         private static LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)
         {
             var entry = new LevelEntry { Level = level };

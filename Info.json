@@ -1,0 +1,10 @@
+{
+  "Id": "NecromancersDelight",
+  "DisplayName": "Necromancer's Delight",
+  "Author": "Paul",
+  "Version": "0.4.1",
+  "ManagerVersion": "0.27.10",
+  "GameVersion": "2.0.0",
+  "AssemblyName": "wotr_mod.dll",
+  "EntryMethod": "wotr_mod.Main.Load"
+}

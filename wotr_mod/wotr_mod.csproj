@@ -83,10 +83,12 @@
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
         <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
+        <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
         <Compile Include="Features\ShadowbornNegativeEnergyHealing.cs" />
         <Compile Include="Features\SelectedRaceStatBonus.cs" />
         <Compile Include="Features\SkillPointsPerCharacterLevel.cs" />
+        <Compile Include="Infrastructure\HeritageFactory.cs" />
         <Compile Include="Main.cs" />
         <Compile Include="Infrastructure\BlueprintFields.cs" />
         <Compile Include="Infrastructure\GameBlueprintIds.cs" />

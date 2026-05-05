@@ -1,7 +1,6 @@
 using System;
-using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
-using Kingmaker.Designers;
+using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
@@ -11,51 +10,44 @@ using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.Utility;
+using Kingmaker.UnitLogic.Mechanics.Actions;
+using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
-using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Features
 {
     public sealed class ReapingEdgeComponent :
-        UnitFactComponentDelegate,
-        IInitiatorRulebookHandler<RuleCalculateDamage>,
-        IRulebookHandler<RuleCalculateDamage>,
+        OneTimeMeleeDamageBonusComponent,
         IInitiatorRulebookHandler<RuleAttackWithWeapon>,
-        IRulebookHandler<RuleAttackWithWeapon>,
-        IInitiatorRulebookHandler<RuleDealDamage>,
-        IRulebookHandler<RuleDealDamage>,
-        IInitiatorRulebookSubscriber
+        IInitiatorRulebookHandler<RuleDealDamage>
     {
-        public BlueprintCharacterClass CharacterClass;
         public BlueprintBuff BrittleBoneBuff;
         public BlueprintBuff FatigueBuff;
         public BlueprintBuff ExhaustionBuff;
-        private bool _used;
         public static UnityModManager.ModEntry.ModLogger Logger;
         
-        
-        
-        public void OnEventAboutToTrigger(RuleCalculateDamage evt)
+        public override void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
-            if (_used)
+            if (Used)
             {
+                Logger?.Warning("!!!! ReapingEdge damage ignored: already used");
                 return;
             }
-            
+
             var attack = evt.ParentRule?.AttackRoll?.RuleAttackWithWeapon;
             if (attack == null || attack.Weapon == null || !IsMeleeWeapon(attack.Weapon))
             {
+                Logger?.Warning("!!!! ReapingEdge damage ignored: invalid attack/weapon");
                 return;
             }
 
-            var weapon = attack.Weapon;
-            if (weapon == null)
-            {
-                return;
-            }
+            base.OnEventAboutToTrigger(evt);
+        }
 
+        protected override void ApplyDamageBonus(RuleCalculateDamage evt, ItemEntityWeapon weapon)
+        {
             foreach (var damage in evt.DamageBundle)
             {
                 var physical = damage as PhysicalDamage;
@@ -74,29 +66,29 @@ namespace wotr_mod.Features
             }
 
             var bonusDice = GetBonusDice(weapon);
-
             var extraDamage = new EnergyDamage(
                 new DiceFormula(bonusDice, DiceType.D6),
                 DamageEnergyType.NegativeEnergy);
+
             if (evt.DamageBundle is DamageBundle bundle)
             {
                 bundle.Add(extraDamage);
-                _used = true;
+            }
+            else
+            {
+                evt.ParentRule?.Add(extraDamage);
+            }
+        }
+        
+        public override void OnEventDidTrigger(RuleCalculateDamage evt)
+        {
+            if (ConsumedRule != evt)
+            {
                 return;
             }
 
-            evt.ParentRule?.Add(extraDamage);
-            _used = true;
-        }
-        
-        private static bool IsMeleeWeapon(ItemEntityWeapon weapon)
-        {
-            return weapon.Blueprint.IsMelee;
-        }
-
-        public void OnEventDidTrigger(RuleCalculateDamage evt)
-        {
- 
+            base.OnEventDidTrigger(evt);
+            ConsumedRule = null;
         }
 
         public void OnEventAboutToTrigger(RuleAttackWithWeapon evt)
@@ -148,47 +140,10 @@ namespace wotr_mod.Features
 
         public void OnEventDidTrigger(RuleDealDamage evt)
         {
-            Logger.Warning("!!!ReapingEdge RuleDealDamage fired");
-
             if (evt == null)
             {
-                Logger.Warning("[ReapingEdge] RuleDealDamage evt is null");
                 return;
             }
-
-            var weapon = GetWeapon(evt);
-            if (weapon == null)
-            {
-                Logger.Warning("[ReapingEdge] Weapon is null");
-                return;
-            }
-
-            if (weapon.Blueprint == null)
-            {
-                Logger.Warning("[ReapingEdge] Weapon blueprint is null");
-                return;
-            }
-
-            if (!IsMeleeWeapon(weapon))
-            {
-                Logger.Warning("[ReapingEdge] Weapon is not melee");
-                return;
-            }
-
-            if (evt.AttackRoll == null)
-            {
-                Logger.Warning("[ReapingEdge] AttackRoll is null");
-                return;
-            }
-
-            if (!evt.AttackRoll.IsHit)
-            {
-                Logger.Warning("[ReapingEdge] Attack was not a hit");
-                return;
-            }
-
-            Logger.Warning("[ReapingEdge] Valid melee damage hit, spending");
-            // level 20 explosion logic can go below this later
         }
 
         private int GetBonusDice(ItemEntityWeapon weapon)
@@ -208,16 +163,6 @@ namespace wotr_mod.Features
             return CharacterClass == null
                 ? Owner.Progression.CharacterLevel
                 : Owner.Progression.GetClassLevel(CharacterClass);
-        }
-
-        private int RollWeaponBaseDamage(ItemEntityWeapon weapon)
-        {
-            return Rulebook.Trigger(new RuleRollDice(Owner, weapon.DamageDice)).Result;
-        }
-
-        private static ItemEntityWeapon GetWeapon(RuleDealDamage evt)
-        {
-            return evt?.AttackRoll?.RuleAttackWithWeapon?.Weapon;
         }
 
         private static bool IsScythe(ItemEntityWeapon weapon)
