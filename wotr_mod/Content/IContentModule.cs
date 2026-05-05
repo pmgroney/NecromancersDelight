@@ -6,4 +6,9 @@ namespace wotr_mod.Content
         void RegisterLocalization();
         void Install();
     }
+
+    internal interface IAreaLoadModule
+    {
+        void OnAreaLoaded();
+    }
 }

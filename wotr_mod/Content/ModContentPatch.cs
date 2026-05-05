@@ -9,7 +9,7 @@ using wotr_mod.Spells;
 
 namespace wotr_mod.Content
 {
-    internal sealed class ModContentPatch : IGamePatch
+    internal sealed class ModContentPatch : IGamePatch, IAreaLoadHandler
     {
         private readonly UnityModManager.ModEntry.ModLogger _logger;
         private readonly LocalizationTool _localization;
@@ -63,6 +63,21 @@ namespace wotr_mod.Content
             }
 
             _logger.Log("Content modules: " + string.Join(", ", _modules.Select(m => m.Name).ToArray()));
+        }
+
+        public void OnAreaLoaded()
+        {
+            foreach (var module in _modules.OfType<IAreaLoadModule>())
+            {
+                try
+                {
+                    module.OnAreaLoaded();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Failed area load for {((IContentModule)module).Name}: {ex}");
+                }
+            }
         }
     }
 }

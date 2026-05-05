@@ -13,7 +13,7 @@ using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Items
 {
-    internal sealed class CustomItemInstaller : IContentModule
+    internal sealed class CustomItemInstaller : IContentModule, IAreaLoadModule
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
@@ -78,11 +78,60 @@ namespace wotr_mod.Items
                         AddToUnitLoot(definition, placement, item);
                         break;
                     case ItemPlacementKind.MapObjectLoot:
-                        AddToMapObjectLoot(placement, item);
+                        // Applied in OnAreaLoaded — requires a loaded area state.
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+            }
+        }
+
+        public void OnAreaLoaded()
+        {
+            DumpMapObjectsWithLoot();
+
+            foreach (var definition in CustomItemRegistry.GetAll())
+            {
+                var item = _blueprints.Get<BlueprintItem>(definition.ItemGuid);
+                if (item == null)
+                {
+                    continue;
+                }
+
+                foreach (var placement in definition.Placements)
+                {
+                    if (placement.Kind == ItemPlacementKind.MapObjectLoot)
+                    {
+                        AddToMapObjectLoot(placement, item);
+                    }
+                }
+            }
+        }
+
+        private void DumpMapObjectsWithLoot()
+        {
+            try
+            {
+                var mapObjects = Game.Instance?.State?.LoadedAreaState?.AllEntityData
+                    ?.OfType<MapObjectEntityData>()
+                    ?.Where(obj => obj.Parts.Get<InteractionLootPart>() != null)
+                    ?.ToList();
+
+                if (mapObjects == null || mapObjects.Count == 0)
+                {
+                    _logger.Log("[ItemDebug] No map objects with loot found in current area.");
+                    return;
+                }
+
+                _logger.Log($"[ItemDebug] Map objects with loot in current area ({mapObjects.Count}):");
+                foreach (var obj in mapObjects)
+                {
+                    _logger.Log($"[ItemDebug]   UniqueId={obj.UniqueId} | Blueprint={obj.Blueprint?.name ?? "?"}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Log($"[ItemDebug] Error dumping map objects: {ex.Message}");
             }
         }
 
