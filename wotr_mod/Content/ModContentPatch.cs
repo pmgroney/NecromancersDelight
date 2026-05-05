@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using UnityModManagerNet;
 using wotr_mod.Classes;
+using wotr_mod.Content.Localization;
 using wotr_mod.Infrastructure;
+using wotr_mod.Items;
 using wotr_mod.Spells;
 
 namespace wotr_mod.Content
@@ -10,6 +12,7 @@ namespace wotr_mod.Content
     internal sealed class ModContentPatch : IGamePatch
     {
         private readonly UnityModManager.ModEntry.ModLogger _logger;
+        private readonly LocalizationTool _localization;
         private readonly IContentModule[] _modules;
 
         public ModContentPatch(
@@ -19,9 +22,11 @@ namespace wotr_mod.Content
             string modPath)
         {
             _logger = logger;
+            _localization = localization;
             _modules = new IContentModule[]
             {
                 new SpellInstaller(blueprints, localization, logger, modPath),
+                new CustomItemInstaller(blueprints, localization, logger),
                 new CharacterClassInstaller(blueprints, localization, logger, modPath),
                 new CompanionInstaller(blueprints, localization, modPath)
             };
@@ -31,6 +36,7 @@ namespace wotr_mod.Content
 
         public void RegisterLocalization()
         {
+            ModText.Register(_localization);
             foreach (var module in _modules)
             {
                 module.RegisterLocalization();

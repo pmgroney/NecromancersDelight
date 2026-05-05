@@ -5,6 +5,8 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
@@ -53,6 +55,12 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo UnitFactDescriptionShort =
             typeof(BlueprintUnitFact).GetField("m_DescriptionShort", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ItemDisplayName =
+            typeof(BlueprintItem).GetField("m_DisplayNameText", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ItemDescription =
+            typeof(BlueprintItem).GetField("m_DescriptionText", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AbilityDisplayName = UnitFactDisplayName;
 
@@ -220,6 +228,27 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo AddStartingEquipmentRestrictedByClass =
             typeof(AddStartingEquipment).GetField("m_RestrictedByClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LootEntryItem =
+            typeof(LootEntry).GetField("m_Item", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LootItemType =
+            typeof(LootItem).GetField("m_Type", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LootItemItem =
+            typeof(LootItem).GetField("m_Item", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LootItemLoot =
+            typeof(LootItem).GetField("m_Loot", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LootItemsPackFixedItem =
+            typeof(LootItemsPackFixed).GetField("m_Item", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LootItemsPackFixedCount =
+            typeof(LootItemsPackFixed).GetField("m_Count", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddLootLoot =
+            typeof(AddLoot).GetField("m_Loot", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AddStatBonusIfHasFactCheckedFacts =
             typeof(AddStatBonusIfHasFact).GetField("m_CheckedFacts", BindingFlags.Instance | BindingFlags.NonPublic);

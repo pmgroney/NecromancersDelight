@@ -1136,6 +1136,25 @@ namespace wotr_mod.Infrastructure
                     : BlueprintReferenceBase.CreateTyped<BlueprintBuffReference>(buff));
         }
 
+        public void SetBuffOnArmorBuff(BuffOnArmor component, BlueprintBuff buff)
+        {
+            BlueprintFields.BuffOnArmorBuff.SetValue(
+                component,
+                buff == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintBuffReference>(buff));
+        }
+
+        public void SetAbilityCasterHasNoFacts(AbilityCasterHasNoFacts component, params BlueprintUnitFact[] facts)
+        {
+            BlueprintFields.AbilityCasterHasNoFactsFacts.SetValue(
+                component,
+                (facts ?? Array.Empty<BlueprintUnitFact>())
+                .Where(fact => fact != null)
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>)
+                .ToArray());
+        }
+
         public void BindAbilityComponentsToClass(BlueprintFeature feature, BlueprintCharacterClass characterClass)
         {
             foreach (var component in GetComponents<BindAbilitiesToClass>(feature))

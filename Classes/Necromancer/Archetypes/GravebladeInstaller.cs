@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -260,15 +259,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 _localization.Text(LocalizationIds.Mod.GravebladeArmorMasteryName),
                 _localization.Text(LocalizationIds.Mod.GravebladeArmorMasteryDescription));
             foreach (var component in _blueprints.GetComponents<BuffOnArmor>(feature))
-                SetBuffOnArmorBuff(component, buff);
+                _blueprints.SetBuffOnArmorBuff(component, buff);
             return feature;
-        }
-
-        private static void SetBuffOnArmorBuff(BuffOnArmor component, BlueprintBuff buff)
-        {
-            var field = typeof(BuffOnArmor).GetField("m_Buff",
-                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-            field?.SetValue(component, buff.ToReference<BlueprintBuffReference>());
         }
 
         private BlueprintBuff EnsureGravebladeArmorMasteryBuff()
@@ -460,8 +452,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             };
 
             var hasNoBuff = new AbilityCasterHasNoFacts { name = "$AbilityCasterHasNoFacts$GravebladeReapingEdge" };
-            HarmonyLib.AccessTools.Field(typeof(AbilityCasterHasNoFacts), "m_Facts")
-                ?.SetValue(hasNoBuff, new[] { buff.ToReference<BlueprintUnitFactReference>() });
+            _blueprints.SetAbilityCasterHasNoFacts(hasNoBuff, buff);
 
             _blueprints.SetComponents(ability, resourceLogic, runAction, hasNoBuff);
             return ability;

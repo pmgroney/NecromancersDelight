@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.RuleSystem;
@@ -7,22 +8,21 @@ namespace wotr_mod.Classes
 {
     internal static class CharacterClassRegistry
     {
-        public static IReadOnlyList<CharacterClassDefinition> GetAll()
-        {
-            return new[]
+        private static readonly IReadOnlyList<CharacterClassDefinition> AllDefinitions =
+            Array.AsReadOnly(new[]
             {
                 CreateEvoker(),
                 CreateNecromancer()
-            };
+            });
+
+        public static IReadOnlyList<CharacterClassDefinition> GetAll()
+        {
+            return AllDefinitions;
         }
 
         public static IReadOnlyList<CharacterClassDefinition> GetActive()
         {
-            return new[]
-            {
-                CreateEvoker(),
-                CreateNecromancer()
-            };
+            return AllDefinitions;
         }
 
         private static CharacterClassDefinition CreateEvoker()

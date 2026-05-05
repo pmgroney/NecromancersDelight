@@ -13,6 +13,11 @@ namespace wotr_mod.Infrastructure
             public const string UndeadCiarCompanion = "ad4b1f09c2e84f6db7a19305c8d62e4f";
         }
 
+        internal static class Items
+        {
+            public const string ScythePlus1 = "ff9cbddecbd54932a73734f47d5c99cf";
+        }
+
         internal static class Dialogs
         {
             public const string BillyDialog = "96850f6d4f4e444a80c0675c76d37c5d";

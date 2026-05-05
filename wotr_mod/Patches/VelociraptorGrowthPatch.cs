@@ -16,16 +16,13 @@ namespace wotr_mod.Patches
         private static readonly BlueprintGuid VelociraptorUnitGuid = BlueprintGuid.Parse(GameBlueprintIds.Units.VelociraptorCompanion);
 
         private readonly BlueprintTool _blueprints;
-        private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
 
         public VelociraptorGrowthPatch(
             BlueprintTool blueprints,
-            LocalizationTool localization,
             UnityModManager.ModEntry.ModLogger logger)
         {
             _blueprints = blueprints;
-            _localization = localization;
             _logger = logger;
         }
 
@@ -33,9 +30,6 @@ namespace wotr_mod.Patches
 
         public void RegisterLocalization()
         {
-            _localization.Put(
-                LocalizationIds.Game.AnimalCompanionVelociraptorDescription,
-                "{g|Encyclopedia:Size}Size{/g}: Small\n{g|Encyclopedia:Speed}Speed{/g}: 60 ft.\n{g|Encyclopedia:Armor_Class}AC{/g}: +3 natural armor\n{g|Encyclopedia:Attack}Attacks{/g}: bite ({g|Encyclopedia:Dice}1d4{/g}), 2 talons (1d6)\n{g|Encyclopedia:Ability_Scores}Ability scores{/g}: {g|Encyclopedia:Strength}Str{/g} 11, {g|Encyclopedia:Dexterity}Dex{/g} 17, {g|Encyclopedia:Constitution}Con{/g} 17, {g|Encyclopedia:Intelligence}Int{/g} 2, {g|Encyclopedia:Wisdom}Wis{/g} 12, {g|Encyclopedia:Charisma}Cha{/g} 14\nSpecial qualities: {g|Encyclopedia:Scent}scent{/g}.\nAt 4th level, a velociraptor's size becomes Medium and it gains Str +4, Dex -2, Con +2, +2 to its natural armor {g|Encyclopedia:Bonus}bonus{/g} to AC, and the {g|FeaturePounce}pounce{/g} ability.\nAgile Movement: A velociraptor can move through {g|Encyclopedia:Threatened_Area}threatened areas{/g} without provoking {g|Encyclopedia:Attack_Of_Opportunity}attacks of opportunity{/g}.");
         }
 
         public void Apply()

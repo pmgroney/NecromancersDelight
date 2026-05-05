@@ -14,16 +14,13 @@ namespace wotr_mod.Patches
         private static readonly BlueprintGuid LeopardUnitGuid = BlueprintGuid.Parse(GameBlueprintIds.Units.LeopardCompanion);
 
         private readonly BlueprintTool _blueprints;
-        private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
 
         public LeopardTripPatch(
             BlueprintTool blueprints,
-            LocalizationTool localization,
             UnityModManager.ModEntry.ModLogger logger)
         {
             _blueprints = blueprints;
-            _localization = localization;
             _logger = logger;
         }
 
@@ -31,9 +28,6 @@ namespace wotr_mod.Patches
 
         public void RegisterLocalization()
         {
-            _localization.Put(
-                LocalizationIds.Game.AnimalCompanionLeopardDescription,
-                "{g|Encyclopedia:Size}Size{/g}: Small\n{g|Encyclopedia:Speed}Speed{/g}: 50 ft.\n{g|Encyclopedia:Armor_Class}AC{/g}: +4 natural armor\n{g|Encyclopedia:Attack}Attacks{/g}: bite ({g|Encyclopedia:Dice}1d4{/g} plus trip), 2 claws (1d2)\n{g|Encyclopedia:Ability_Scores}Ability scores{/g}: {g|Encyclopedia:Strength}Str{/g} 12, {g|Encyclopedia:Dexterity}Dex{/g} 21, {g|Encyclopedia:Constitution}Con{/g} 13, {g|Encyclopedia:Intelligence}Int{/g} 2, {g|Encyclopedia:Wisdom}Wis{/g} 12, {g|Encyclopedia:Charisma}Cha{/g} 6\nSpecial qualities: {g|Encyclopedia:Scent}scent{/g}.\nAt 4th level, a leopard's size becomes Medium and it gains Str +4, Dex -2, Con +2, and the {g|FeaturePounce}pounce{/g} ability.\nSneak Attack: A leopard deals an additional 1d6 precision {g|Encyclopedia:Damage}damage{/g} to {g|Encyclopedia:Flat_Footed}flat-footed{/g} or {g|Encyclopedia:Flanking}flanked{/g} targets (2d6 at 4th level).");
         }
 
         public void Apply()

@@ -15,13 +15,11 @@ namespace wotr_mod.Patches
     internal sealed class CustomHeritagePatch : IGamePatch
     {
         private readonly BlueprintTool _blueprints;
-        private readonly LocalizationTool _localization;
         private readonly HeritageFactory _heritageFactory;
 
         public CustomHeritagePatch(BlueprintTool blueprints, LocalizationTool localization)
         {
             _blueprints = blueprints;
-            _localization = localization;
             _heritageFactory = new HeritageFactory(blueprints, localization);
         }
 
@@ -29,50 +27,6 @@ namespace wotr_mod.Patches
 
         public void RegisterLocalization()
         {
-            _localization.Put(LocalizationIds.Mod.UmbralDhampirHeritageName, "Umbral Dhampir");
-            _localization.Put(
-                LocalizationIds.Mod.UmbralDhampirHeritageDescription,
-                "These dhampirs carry an unusually deep shadow in their blood. They gain a +3 racial bonus to Charisma, a +3 racial bonus to Dexterity, and a +2 racial bonus to Constitution.");
-
-            _localization.Put(LocalizationIds.Mod.CryptguardDhampirHeritageName, "Cryptguard");
-            _localization.Put(
-                LocalizationIds.Mod.CryptguardDhampirHeritageDescription,
-                "These dhampirs are born to be guardians of the dead, possessing unnatural strength. They gain a +3 racial bonus to Strength, a +2 racial bonus to Dexterity, and a +3 racial bonus to Charisma.");
-
-            _localization.Put(LocalizationIds.Mod.GraveltoeGnomeHeritageName, "Graveltoe Gnome");
-            _localization.Put(
-                LocalizationIds.Mod.GraveltoeGnomeHeritageDescription,
-                "These gnomes are bright-eyed, quick, and have the strength of the earth. They gain a +3 racial bonus to Charisma, a +2 racial bonus to Dexterity, and a +3 racial bonus to Strength.");
-
-            _localization.Put(LocalizationIds.Mod.ShadowGnomeHeritageName, "Shadow Gnome");
-            _localization.Put(
-                LocalizationIds.Mod.ShadowGnomeHeritageDescription,
-                "These gnomes move like living silhouettes, charming and elusive. They gain a +3 racial bonus to Charisma and a +2 racial bonus to Dexterity.");
-
-            _localization.Put(LocalizationIds.Mod.HumanHeritageName, "Human Heritage");
-            _localization.Put(
-                LocalizationIds.Mod.HumanHeritageDescription,
-                "The circumstances of a human's birth and ancestry can shape their natural gifts.");
-
-            _localization.Put(LocalizationIds.Mod.NormalHumanHeritageName, "Normal");
-            _localization.Put(
-                LocalizationIds.Mod.NormalHumanHeritageDescription,
-                "These humans follow the standard human heritage.");
-
-            _localization.Put(LocalizationIds.Mod.DescendantOfKingsHeritageName, "Descendant of Kings");
-            _localization.Put(
-                LocalizationIds.Mod.DescendantOfKingsHeritageDescription,
-                "These humans descend from old lines of rulers and conquerors. They gain a +2 racial bonus to Constitution, and their selectable human ability score bonus increases from +2 to +4.");
-
-            _localization.Put(LocalizationIds.Mod.OrcLordsBloodHeritageName, "Orc Lords Blood");
-            _localization.Put(
-                LocalizationIds.Mod.OrcLordsBloodHeritageDescription,
-                "These half-orcs carry the blood of ancient warlords. They gain a +2 racial bonus to Constitution, and their selectable half-orc ability score bonus increases from +2 to +4.");
-
-            _localization.Put(LocalizationIds.Mod.TrueHighElfHeritageName, "True High Elf");
-            _localization.Put(
-                LocalizationIds.Mod.TrueHighElfHeritageDescription,
-                "These half-elves are touched by an old and potent elven lineage. They gain a +2 racial bonus to Constitution, and their selectable half-elf ability score bonus increases from +2 to +4.");
         }
 
         public void Apply()

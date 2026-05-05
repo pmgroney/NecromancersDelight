@@ -7,7 +7,6 @@ using Kingmaker.Blueprints.Classes.Spells;
 using UnityModManagerNet;
 using wotr_mod.Classes.Necromancer;
 using wotr_mod.Content;
-using wotr_mod.Content.Localization;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
 
@@ -49,7 +48,6 @@ namespace wotr_mod.Classes
 
         public void RegisterLocalization()
         {
-            ModText.Register(_localization);
             foreach (var installer in _contentInstallers)
             {
                 installer.RegisterLocalization();

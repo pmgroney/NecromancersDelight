@@ -93,6 +93,10 @@
         <Compile Include="Features\SkillPointsPerCharacterLevel.cs" />
         <Compile Include="Infrastructure\ClassFactory.cs" />
         <Compile Include="Infrastructure\HeritageFactory.cs" />
+        <Compile Include="Items\CustomItemDefinition.cs" />
+        <Compile Include="Items\CustomItemInstaller.cs" />
+        <Compile Include="Items\CustomItemRegistry.cs" />
+        <Compile Include="Items\ItemPlacementDefinition.cs" />
         <Compile Include="Main.cs" />
         <Compile Include="Infrastructure\BlueprintFields.cs" />
         <Compile Include="Infrastructure\GameBlueprintIds.cs" />

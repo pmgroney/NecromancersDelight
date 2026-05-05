@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Kingmaker.Blueprints;
 using Kingmaker.EntitySystem.Stats;
 
 namespace wotr_mod.Classes
@@ -12,17 +15,30 @@ namespace wotr_mod.Classes
             string[] signatureAbilityGuids = null,
             string defaultBuildGuid = null)
         {
+            if (signatureAbilityGuids != null)
+            {
+                foreach (var guid in signatureAbilityGuids.Where(guid => !string.IsNullOrWhiteSpace(guid)))
+                {
+                    BlueprintGuid.Parse(guid);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(defaultBuildGuid))
+            {
+                BlueprintGuid.Parse(defaultBuildGuid);
+            }
+
             Difficulty = difficulty;
-            RecommendedAttributes = recommendedAttributes ?? Array.Empty<StatType>();
-            NotRecommendedAttributes = notRecommendedAttributes ?? Array.Empty<StatType>();
-            SignatureAbilityGuids = signatureAbilityGuids ?? Array.Empty<string>();
+            RecommendedAttributes = Array.AsReadOnly((recommendedAttributes ?? Array.Empty<StatType>()).ToArray());
+            NotRecommendedAttributes = Array.AsReadOnly((notRecommendedAttributes ?? Array.Empty<StatType>()).ToArray());
+            SignatureAbilityGuids = Array.AsReadOnly((signatureAbilityGuids ?? Array.Empty<string>()).ToArray());
             DefaultBuildGuid = defaultBuildGuid;
         }
 
         public int Difficulty { get; }
-        public StatType[] RecommendedAttributes { get; }
-        public StatType[] NotRecommendedAttributes { get; }
-        public string[] SignatureAbilityGuids { get; }
+        public IReadOnlyList<StatType> RecommendedAttributes { get; }
+        public IReadOnlyList<StatType> NotRecommendedAttributes { get; }
+        public IReadOnlyList<string> SignatureAbilityGuids { get; }
         public string DefaultBuildGuid { get; }
     }
 }

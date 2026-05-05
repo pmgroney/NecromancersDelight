@@ -8,6 +8,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
@@ -322,6 +323,12 @@ namespace wotr_mod.Infrastructure
         {
             BlueprintFields.AbilityDisplayName.SetValue(ability, name);
             BlueprintFields.AbilityDescription.SetValue(ability, description);
+        }
+
+        public void SetItemDisplay(BlueprintItem item, LocalizedString name, LocalizedString description)
+        {
+            BlueprintFields.ItemDisplayName.SetValue(item, name);
+            BlueprintFields.ItemDescription.SetValue(item, description);
         }
 
         public void SetUnitFactIcon(BlueprintUnitFact fact, Sprite icon)
@@ -944,6 +951,88 @@ namespace wotr_mod.Infrastructure
                     .ToArray());
             component.CategoryItems = Array.Empty<WeaponCategory>();
             component.ParametrizedCategory = false;
+        }
+
+        public bool AddItemToLoot(BlueprintLoot loot, BlueprintItem item, int count, bool identify)
+        {
+            if (loot == null || item == null)
+            {
+                return false;
+            }
+
+            var entries = loot.Items ?? Array.Empty<LootEntry>();
+            if (entries.Any(entry => LootEntryMatches(entry, item)))
+            {
+                return false;
+            }
+
+            var newEntry = new LootEntry
+            {
+                Count = count,
+                Identify = identify
+            };
+            BlueprintFields.LootEntryItem.SetValue(
+                newEntry,
+                BlueprintReferenceBase.CreateTyped<BlueprintItemReference>(item));
+
+            loot.Items = entries.Concat(new[] { newEntry }).ToArray();
+            return true;
+        }
+
+        public LootItemsPackFixed CreateFixedLootItem(
+            BlueprintItem item,
+            int count,
+            bool identify,
+            string nameSuffix)
+        {
+            var lootItem = new LootItem();
+            BlueprintFields.LootItemType.SetValue(lootItem, LootItemType.Item);
+            BlueprintFields.LootItemItem.SetValue(
+                lootItem,
+                item == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintItemReference>(item));
+            BlueprintFields.LootItemLoot.SetValue(lootItem, null);
+
+            var pack = new LootItemsPackFixed
+            {
+                name = "$LootItemsPackFixed$" + nameSuffix
+            };
+            BlueprintFields.LootItemsPackFixedItem.SetValue(pack, lootItem);
+            BlueprintFields.LootItemsPackFixedCount.SetValue(pack, count);
+            return pack;
+        }
+
+        public bool AddLootToUnit(BlueprintUnit unit, BlueprintUnitLoot loot, string componentName)
+        {
+            if (unit == null || loot == null)
+            {
+                return false;
+            }
+
+            if (GetComponents<AddLoot>(unit).Any(component => AddLootMatches(component, loot)))
+            {
+                return false;
+            }
+
+            var newComponent = new AddLoot { name = componentName };
+            BlueprintFields.AddLootLoot.SetValue(
+                newComponent,
+                BlueprintReferenceBase.CreateTyped<BlueprintUnitLootReference>(loot));
+            AddComponent(unit, newComponent);
+            return true;
+        }
+
+        private static bool LootEntryMatches(LootEntry entry, BlueprintItem item)
+        {
+            var reference = BlueprintFields.LootEntryItem.GetValue(entry) as BlueprintItemReference;
+            return reference?.Get()?.AssetGuid == item.AssetGuid;
+        }
+
+        private static bool AddLootMatches(AddLoot component, BlueprintUnitLoot loot)
+        {
+            var reference = BlueprintFields.AddLootLoot.GetValue(component) as BlueprintUnitLootReference;
+            return reference?.Get()?.AssetGuid == loot.AssetGuid;
         }
 
         public void AddCheckedFact(AddStatBonusIfHasFact component, BlueprintUnitFact fact)

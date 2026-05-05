@@ -27,8 +27,6 @@ namespace wotr_mod.Patches
 
         public void RegisterLocalization()
         {
-            _localization.Put(LocalizationIds.Mod.CompanionPetName, "Companion Pet");
-            _localization.Put(LocalizationIds.Mod.CompanionPetDescription, "Select an animal companion.");
         }
 
         public void Apply()

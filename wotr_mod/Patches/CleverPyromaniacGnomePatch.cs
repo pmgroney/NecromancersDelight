@@ -12,13 +12,11 @@ namespace wotr_mod.Patches
     internal sealed class CleverPyromaniacGnomePatch : IGamePatch
     {
         private readonly BlueprintTool _blueprints;
-        private readonly LocalizationTool _localization;
         private readonly HeritageFactory _heritageFactory;
 
         public CleverPyromaniacGnomePatch(BlueprintTool blueprints, LocalizationTool localization)
         {
             _blueprints = blueprints;
-            _localization = localization;
             _heritageFactory = new HeritageFactory(blueprints, localization);
         }
 
@@ -26,10 +24,6 @@ namespace wotr_mod.Patches
 
         public void RegisterLocalization()
         {
-            _localization.Put(LocalizationIds.Mod.CleverPyromaniacName, "Clever Pyromaniac");
-            _localization.Put(
-                LocalizationIds.Mod.CleverPyromaniacDescription,
-                "These gnomes are as dangerously fascinated by fire as pyromaniacs, but their experiments sharpen the mind instead of charm. They gain the Pyromaniac heritage benefits and replace the gnome racial +2 Charisma bonus with a +2 Intelligence bonus.");
         }
 
         public void Apply()

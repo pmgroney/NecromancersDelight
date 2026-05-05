@@ -49,6 +49,8 @@ namespace wotr_mod.Infrastructure
             public const string BillyWayOfTheBowDescription = "wotr_mod.companion.billy.feature.way_of_the_bow.description";
             public const string CompanionPetName = "wotr_mod.feature.companion_pet.name";
             public const string CompanionPetDescription = "wotr_mod.feature.companion_pet.description";
+            public const string ScythePlus1Name = "wotr_mod.item.scythe_plus1.name";
+            public const string ScythePlus1Description = "wotr_mod.item.scythe_plus1.description";
             public const string EvokerName = "wotr_mod.class.evoker.name";
             public const string EvokerDescription = "wotr_mod.class.evoker.description";
             public const string ShadowbornName = "wotr_mod.archetype.shadowborn.name";

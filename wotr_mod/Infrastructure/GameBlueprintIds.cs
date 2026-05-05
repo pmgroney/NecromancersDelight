@@ -29,6 +29,11 @@ namespace wotr_mod.Infrastructure
             public const string BlueprintRoot = "2d77316c72b9ed44f888ceefc2a131f6";
         }
 
+        internal static class Loot
+        {
+            public const string ShieldMazeShittyCultistScytheLoot = "3538022738594a4eae08e72d5a611577";
+        }
+        
         internal static class UnitAsks
         {
             public const string ZombieCiarBarks = "cb71c3e13d52b8843b2906109d08f788";
@@ -173,8 +178,10 @@ namespace wotr_mod.Infrastructure
             public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
+            public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
         }
-
+   
+        
         internal static class Abilities
         {
             public const string BloodlineElementalFireArcanaAbility = "924dfcd481c0be54c959c2846b3fb7da";
@@ -208,6 +215,7 @@ namespace wotr_mod.Infrastructure
             public const string MythicLichSkeletonArcher = "2b0c36c34172ac440a8e6d373094c3bd";
             public const string LeopardCompanion = "54cf380dee486ff42b803174d1b9da1b";
             public const string VelociraptorCompanion = "28d1986d57a7081439fbb581aa6f960c";
+            public const string ShieldMazeShittyCultist = "fa09c09aeff05b34ba4252911a507888";
         }
 
         internal static class Dialogs

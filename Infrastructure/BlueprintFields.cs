@@ -256,6 +256,12 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo ContextActionApplyBuffBuff =
             typeof(ContextActionApplyBuff).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo BuffOnArmorBuff =
+            typeof(BuffOnArmor).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AbilityCasterHasNoFactsFacts =
+            typeof(AbilityCasterHasNoFacts).GetField("m_Facts", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo BindAbilitiesToClassCharacterClass =
             typeof(BindAbilitiesToClass).GetField("m_CharacterClass", BindingFlags.Instance | BindingFlags.NonPublic);
 

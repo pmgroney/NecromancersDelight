@@ -1,3 +1,4 @@
+using Kingmaker.Blueprints;
 using Kingmaker.RuleSystem;
 
 namespace wotr_mod.Classes
@@ -6,6 +7,11 @@ namespace wotr_mod.Classes
     {
         public ClassChassisDefinition(DiceType? hitDie = null, string baseAttackBonusGuid = null)
         {
+            if (!string.IsNullOrWhiteSpace(baseAttackBonusGuid))
+            {
+                BlueprintGuid.Parse(baseAttackBonusGuid);
+            }
+
             HitDie = hitDie;
             BaseAttackBonusGuid = baseAttackBonusGuid;
         }
