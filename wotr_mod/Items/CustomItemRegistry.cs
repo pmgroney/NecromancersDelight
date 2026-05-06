@@ -10,6 +10,25 @@ namespace wotr_mod.Items
             Array.AsReadOnly(new[]
             {
                 new CustomItemDefinition(
+                    "WotrMod_NeophytesLongbowOfDiscipline",
+                    ModBlueprintIds.Items.NeophytesLongbowOfDiscipline,
+                    GameBlueprintIds.Items.CompositeLongbowPlus1,
+                    LocalizationIds.Mod.NeophytesLongbowOfDisciplineName,
+                    LocalizationIds.Mod.NeophytesLongbowOfDisciplineDescription,
+                    enchantmentGuids: new[]
+                    {
+                        ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage
+                    },
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.OnUnit(
+                            GameBlueprintIds.Units.Hosilla,
+                            "Hosilla",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
                     "WotrMod_ScythePlus1",
                     ModBlueprintIds.Items.ScythePlus1,
                     GameBlueprintIds.Items.ScythePlus1,
@@ -17,15 +36,9 @@ namespace wotr_mod.Items
                     LocalizationIds.Mod.ScythePlus1Description,
                     placements: new[]
                     {
-                        ItemPlacementDefinition.OnUnit(
-                            GameBlueprintIds.Units.ShieldMazeShittyCultist,
-                            "Shield Maze Cultist",
-                            GameBlueprintIds.Loot.ShieldMazeShittyCultistScytheLoot,
-                            count: 1,
-                            identify: true),
                         ItemPlacementDefinition.InMapObjectLoot(
-                            "1d94f397-8b18-412c-a90c-43e414f71f0a",
-                            "Shield Maze Visible Shelf",
+                            "bcfce8e8-f634-446f-9a7f-9974d5c51c01",
+                            "Shield Maze Weapon Rack",
                             count: 1,
                             identify: true)
                     }),

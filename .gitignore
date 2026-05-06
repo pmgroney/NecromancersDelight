@@ -1,5 +1,6 @@
 # Local agent/project instructions
 AGENTS.md
+.claude/
 
 # IDE and editor state
 .idea/

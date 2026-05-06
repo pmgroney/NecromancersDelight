@@ -13,6 +13,7 @@ namespace wotr_mod.Items
             string sourceItemGuid,
             string displayNameKey,
             string descriptionKey,
+            IEnumerable<string> enchantmentGuids = null,
             IEnumerable<ItemPlacementDefinition> placements = null)
         {
             InternalName = RequireText(internalName, nameof(internalName));
@@ -20,6 +21,9 @@ namespace wotr_mod.Items
             SourceItemGuid = RequireGuid(sourceItemGuid, nameof(sourceItemGuid));
             DisplayNameKey = RequireText(displayNameKey, nameof(displayNameKey));
             DescriptionKey = RequireText(descriptionKey, nameof(descriptionKey));
+            EnchantmentGuids = (enchantmentGuids ?? Enumerable.Empty<string>())
+                .Select(guid => RequireGuid(guid, nameof(enchantmentGuids)))
+                .ToArray();
             Placements = (placements ?? Enumerable.Empty<ItemPlacementDefinition>()).ToArray();
         }
 
@@ -28,6 +32,7 @@ namespace wotr_mod.Items
         public string SourceItemGuid { get; }
         public string DisplayNameKey { get; }
         public string DescriptionKey { get; }
+        public IReadOnlyList<string> EnchantmentGuids { get; }
         public IReadOnlyList<ItemPlacementDefinition> Placements { get; }
 
         private static string RequireText(string value, string parameterName)

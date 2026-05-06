@@ -3,9 +3,18 @@ using System.Linq;
 using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.Blueprints.Items.Equipment;
+using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Loot;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.ElementsSystem;
+using Kingmaker.Enums;
 using Kingmaker.Items;
+using Kingmaker.RuleSystem;
+using Kingmaker.RuleSystem.Rules.Damage;
+using Kingmaker.UnitLogic.Mechanics.Conditions;
 using Kingmaker.View.MapObjects;
 using UnityModManagerNet;
 using wotr_mod.Content;
@@ -37,6 +46,8 @@ namespace wotr_mod.Items
 
         public void Install()
         {
+            EnsureSupportBlueprints();
+
             foreach (var definition in CustomItemRegistry.GetAll())
             {
                 var item = EnsureItem(definition);
@@ -57,12 +68,95 @@ namespace wotr_mod.Items
                 _localization.Text(definition.DisplayNameKey),
                 _localization.Text(definition.DescriptionKey));
 
+            if (item is BlueprintItemEquipment equipment)
+            {
+                equipment.DC = 0;
+            }
+
+            if (item is BlueprintItemWeapon weapon)
+            {
+                foreach (var enchantmentGuid in definition.EnchantmentGuids)
+                {
+                    var enchantment = _blueprints.Require<BlueprintWeaponEnchantment>(
+                        enchantmentGuid,
+                        definition.InternalName + " enchantment");
+                    _blueprints.AddWeaponEnchantment(weapon, enchantment);
+                }
+            }
+
             if (existing == null)
             {
                 _blueprints.AddCachedBlueprint(definition.ItemGuid, item);
             }
 
             return item;
+        }
+
+        private void EnsureSupportBlueprints()
+        {
+            EnsureNeophytesLongbowOfDisciplineEnchantment();
+        }
+
+        private void EnsureNeophytesLongbowOfDisciplineEnchantment()
+        {
+            var existing = _blueprints.Get<BlueprintWeaponEnchantment>(
+                ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage);
+            var enchantment = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintWeaponEnchantment>(
+                    GameBlueprintIds.Enchantments.LongswordOfRightEnchantment,
+                    "Longsword of Right donor enchantment"),
+                ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage,
+                "WotrMod_NeophytesLongbowOfDiscipline_ForceDamage");
+
+            ConfigureDisciplineForceDamage(enchantment);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage,
+                    enchantment);
+            }
+        }
+
+        private BlueprintWeaponEnchantment ConfigureDisciplineForceDamage(BlueprintWeaponEnchantment enchantment)
+        {
+            var component = _blueprints.EnsureComponent(
+                enchantment,
+                () => new WeaponConditionalDamageDice
+                {
+                    name = "$WeaponConditionalDamageDice$WotrMod_NeophytesLongbowOfDiscipline_ForceDamage"
+                });
+
+            component.Damage = new DamageDescription
+            {
+                Dice = new DiceFormula(1, DiceType.D6),
+                Bonus = 0,
+                TypeDescription = new DamageTypeDescription
+                {
+                    Type = DamageType.Force,
+                    Common = new DamageTypeDescription.CommomData(),
+                    Physical = new DamageTypeDescription.PhysicalData()
+                },
+                IgnoreReduction = false,
+                IgnoreImmunities = false
+            };
+            component.CheckWielder = false;
+            component.IsBane = false;
+            component.Conditions = new ConditionsChecker
+            {
+                Operation = Operation.And,
+                Conditions = new Condition[]
+                {
+                    new ContextConditionAlignment
+                    {
+                        name = "$ContextConditionAlignment$WotrMod_NeophytesLongbowOfDiscipline_Chaotic",
+                        CheckCaster = false,
+                        Alignment = AlignmentComponent.Chaotic
+                    }
+                }
+            };
+
+            return enchantment;
         }
 
         private void ApplyPlacements(CustomItemDefinition definition, BlueprintItem item)
@@ -75,7 +169,7 @@ namespace wotr_mod.Items
                         AddToChestLoot(placement, item);
                         break;
                     case ItemPlacementKind.UnitLoot:
-                        AddToUnitLoot(definition, placement, item);
+                        // Applied in OnAreaLoaded — unit runtime inventory needs a loaded area state.
                         break;
                     case ItemPlacementKind.MapObjectLoot:
                         // Applied in OnAreaLoaded — requires a loaded area state.
@@ -88,8 +182,6 @@ namespace wotr_mod.Items
 
         public void OnAreaLoaded()
         {
-            DumpMapObjectsWithLoot();
-
             foreach (var definition in CustomItemRegistry.GetAll())
             {
                 var item = _blueprints.Get<BlueprintItem>(definition.ItemGuid);
@@ -100,39 +192,16 @@ namespace wotr_mod.Items
 
                 foreach (var placement in definition.Placements)
                 {
-                    if (placement.Kind == ItemPlacementKind.MapObjectLoot)
+                    switch (placement.Kind)
                     {
-                        AddToMapObjectLoot(placement, item);
+                        case ItemPlacementKind.UnitLoot:
+                            AddToLoadedUnitInventory(placement, item);
+                            break;
+                        case ItemPlacementKind.MapObjectLoot:
+                            AddToMapObjectLoot(placement, item);
+                            break;
                     }
                 }
-            }
-        }
-
-        private void DumpMapObjectsWithLoot()
-        {
-            try
-            {
-                var mapObjects = Game.Instance?.State?.LoadedAreaState?.AllEntityData
-                    ?.OfType<MapObjectEntityData>()
-                    ?.Where(obj => obj.Parts.Get<InteractionLootPart>() != null)
-                    ?.ToList();
-
-                if (mapObjects == null || mapObjects.Count == 0)
-                {
-                    _logger.Log("[ItemDebug] No map objects with loot found in current area.");
-                    return;
-                }
-
-                _logger.Log($"[ItemDebug] Map objects with loot in current area ({mapObjects.Count}):");
-                foreach (var obj in mapObjects)
-                {
-                    var pos = obj.View != null ? obj.View.transform.position : default;
-                    _logger.Log($"[ItemDebug]   UniqueId={obj.UniqueId} x={pos.x:F1} y={pos.y:F1} z={pos.z:F1}");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Log($"[ItemDebug] Error dumping map objects: {ex.Message}");
             }
         }
 
@@ -166,55 +235,50 @@ namespace wotr_mod.Items
                 return;
             }
 
-            var lootEntry = new LootEntry
+            if (lootPart.Loot == null)
             {
-                Item = item.ToReference<BlueprintItemReference>(),
-                Count = placement.Count,
-                Identify = placement.Identify
-            };
+                lootPart.Loot = new ItemsCollection(mapObject);
+            }
 
-            lootPart.AddItems(new[] { lootEntry });
+            if (lootPart.Loot.Items.Any(existing => existing?.Blueprint?.AssetGuid == item.AssetGuid))
+            {
+                _logger.Log($"Map object loot already contains {item.name}: {placement.TargetName}.");
+                return;
+            }
+
+            lootPart.Loot.Add(item, placement.Count, placement.Identify, null);
 
             _logger.Log($"Added {item.name} to map object loot {placement.TargetName}.");
         }
-        
-        private void AddToUnitLoot(
-            CustomItemDefinition definition,
-            ItemPlacementDefinition placement,
-            BlueprintItem item)
-        {
-            var unit = _blueprints.Require<BlueprintUnit>(placement.TargetGuid, placement.TargetName);
-            var loot = EnsureUnitLoot(definition, placement, item);
-            if (_blueprints.AddLootToUnit(unit, loot, "$AddLoot$" + definition.InternalName))
-            {
-                _logger.Log($"Added {item.name} to unit loot for {placement.TargetName}.");
-            }
-        }
 
-        private BlueprintUnitLoot EnsureUnitLoot(
-            CustomItemDefinition definition,
-            ItemPlacementDefinition placement,
-            BlueprintItem item)
+        private void AddToLoadedUnitInventory(ItemPlacementDefinition placement, BlueprintItem item)
         {
-            var existing = _blueprints.Get<BlueprintUnitLoot>(placement.UnitLootGuid);
-            if (existing != null)
+            var unitGuid = BlueprintGuid.Parse(placement.TargetGuid);
+            var unit = Game.Instance?.State?.LoadedAreaState?.AllEntityData
+                ?.OfType<UnitEntityData>()
+                ?.FirstOrDefault(entity => entity?.Blueprint?.AssetGuid == unitGuid);
+
+            if (unit == null)
             {
-                _blueprints.SetComponents(
-                    existing,
-                    _blueprints.CreateFixedLootItem(item, placement.Count, placement.Identify, definition.InternalName));
-                return existing;
+                _logger.Log($"Loaded unit target not found: {placement.TargetName} / {placement.TargetGuid}");
+                return;
             }
 
-            var loot = new BlueprintUnitLoot
+            if (unit.Inventory.Items.Any(existing => existing?.Blueprint?.AssetGuid == item.AssetGuid))
             {
-                name = definition.InternalName + "_UnitLoot",
-                AssetGuid = BlueprintGuid.Parse(placement.UnitLootGuid)
-            };
-            _blueprints.SetComponents(
-                loot,
-                _blueprints.CreateFixedLootItem(item, placement.Count, placement.Identify, definition.InternalName));
-            _blueprints.AddCachedBlueprint(placement.UnitLootGuid, loot);
-            return loot;
+                _logger.Log($"Loaded unit inventory already contains {item.name}: {placement.TargetName}.");
+                return;
+            }
+
+            unit.Inventory.Add(item, placement.Count, placement.Identify, createdItem =>
+            {
+                if (placement.Identify)
+                {
+                    createdItem.Identify();
+                }
+            });
+
+            _logger.Log($"Added {item.name} to loaded unit inventory for {placement.TargetName}.");
         }
     }
 }

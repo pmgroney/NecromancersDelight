@@ -19,6 +19,8 @@ using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.Localization;
 using Kingmaker.ResourceManagement;
+using Kingmaker.ResourceLinks;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using UnityEngine;
@@ -31,6 +33,11 @@ namespace wotr_mod.Content
 {
     internal sealed class CompanionInstaller : IContentModule
     {
+        private const string BillyStoryBundlePath = "Assets\\billystory";
+
+        private static readonly Dictionary<string, Sprite> StorySpriteCache =
+            new Dictionary<string, Sprite>(StringComparer.OrdinalIgnoreCase);
+
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
         private readonly string _modPath;
@@ -184,6 +191,7 @@ namespace wotr_mod.Content
                 "WotrMod_BillyCompanion");
 
             var dialog = EnsureBillyDialog(unit);
+            EnsureBillyBowQuestDialog(unit);
             CopyCompanionShell(unit, companionCiar, undeadCiar, dialog);
             SetUnitName(unit, LocalizationIds.Mod.BillyName);
             ConfigureBillyUnit(unit);
@@ -198,6 +206,7 @@ namespace wotr_mod.Content
 
         private BlueprintDialog EnsureBillyDialog(BlueprintUnit speaker)
         {
+            var story = EnsureBillyStory(speaker);
             var dialog = GetOrClone<BlueprintDialog>(
                 GameBlueprintIds.Dialogs.CiarZombieDialog,
                 ModBlueprintIds.Dialogs.BillyDialog,
@@ -290,7 +299,7 @@ namespace wotr_mod.Content
             joinCue.Speaker = new DialogSpeaker();
             SetSpeakerBlueprint(joinCue.Speaker, speaker);
             joinCue.OnShow = new ActionList();
-            joinCue.OnStop = CreateRecruitActions(speaker);
+            joinCue.OnStop = CreateRecruitActions(speaker, story);
             joinCue.Answers = new List<BlueprintAnswerBaseReference>();
             joinCue.Continue = CreateEmptyCueSelection();
             joinCue.ShowOnce = false;
@@ -342,6 +351,149 @@ namespace wotr_mod.Content
             return dialog;
         }
 
+        private BlueprintDialog EnsureBillyBowQuestDialog(BlueprintUnit speaker)
+        {
+            var dialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyBowQuestDialog,
+                "WotrMod_BillyBowQuestDialog",
+                "Ciar zombie dialog");
+            var startCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyBowQuestStartCue,
+                "WotrMod_BillyBowQuestStartCue",
+                "Ciar zombie greeting cue");
+            var answers = GetOrClone<BlueprintAnswersList>(
+                GameBlueprintIds.Dialogs.CiarZombieAnswers,
+                ModBlueprintIds.Dialogs.BillyBowQuestAnswers,
+                "WotrMod_BillyBowQuestAnswers",
+                "Ciar zombie answers");
+            var templeAnswer = CreateBillyBowQuestAnswer(
+                ModBlueprintIds.Dialogs.BillyBowQuestTempleAnswer,
+                "WotrMod_BillyBowQuestTempleAnswer");
+            var templeCue = CreateBillyBowQuestCue(
+                ModBlueprintIds.Dialogs.BillyBowQuestTempleCue,
+                "WotrMod_BillyBowQuestTempleCue");
+            var hosillaAnswer = CreateBillyBowQuestAnswer(
+                ModBlueprintIds.Dialogs.BillyBowQuestHosillaAnswer,
+                "WotrMod_BillyBowQuestHosillaAnswer");
+            var hosillaCue = CreateBillyBowQuestCue(
+                ModBlueprintIds.Dialogs.BillyBowQuestHosillaCue,
+                "WotrMod_BillyBowQuestHosillaCue");
+            var disciplineAnswer = CreateBillyBowQuestAnswer(
+                ModBlueprintIds.Dialogs.BillyBowQuestDisciplineAnswer,
+                "WotrMod_BillyBowQuestDisciplineAnswer");
+            var disciplineCue = CreateBillyBowQuestCue(
+                ModBlueprintIds.Dialogs.BillyBowQuestDisciplineCue,
+                "WotrMod_BillyBowQuestDisciplineCue");
+            var endAnswer = CreateBillyBowQuestAnswer(
+                ModBlueprintIds.Dialogs.BillyBowQuestEndAnswer,
+                "WotrMod_BillyBowQuestEndAnswer");
+            var endCue = CreateBillyBowQuestCue(
+                ModBlueprintIds.Dialogs.BillyBowQuestEndCue,
+                "WotrMod_BillyBowQuestEndCue");
+
+            dialog.FirstCue = CreateCueSelection(startCue);
+            dialog.Conditions = new ConditionsChecker();
+            dialog.StartActions = new ActionList();
+            dialog.FinishActions = new ActionList();
+            dialog.ReplaceActions = new ActionList();
+
+            startCue.Text = _localization.Text(LocalizationIds.Mod.BillyBowQuestStartCue);
+            ConfigureBillyBowQuestCue(startCue, speaker, answers);
+
+            answers.Conditions = new ConditionsChecker();
+            answers.Answers = new List<BlueprintAnswerBaseReference>
+            {
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(templeAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(hosillaAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(disciplineAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(endAnswer)
+            };
+
+            ConfigureBillyBowQuestAnswer(templeAnswer, LocalizationIds.Mod.BillyBowQuestTempleAnswer, templeCue);
+            ConfigureBillyBowQuestResponse(templeCue, LocalizationIds.Mod.BillyBowQuestTempleCue, speaker, answers);
+            ConfigureBillyBowQuestAnswer(hosillaAnswer, LocalizationIds.Mod.BillyBowQuestHosillaAnswer, hosillaCue);
+            ConfigureBillyBowQuestResponse(hosillaCue, LocalizationIds.Mod.BillyBowQuestHosillaCue, speaker, answers);
+            ConfigureBillyBowQuestAnswer(disciplineAnswer, LocalizationIds.Mod.BillyBowQuestDisciplineAnswer, disciplineCue);
+            ConfigureBillyBowQuestResponse(disciplineCue, LocalizationIds.Mod.BillyBowQuestDisciplineCue, speaker, answers);
+            ConfigureBillyBowQuestAnswer(endAnswer, LocalizationIds.Mod.BillyBowQuestEndAnswer, endCue);
+            ConfigureBillyBowQuestResponse(endCue, LocalizationIds.Mod.BillyBowQuestEndCue, speaker, null);
+
+            return dialog;
+        }
+
+        private BlueprintAnswer CreateBillyBowQuestAnswer(string guid, string name)
+        {
+            return GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                guid,
+                name,
+                "Ciar zombie leave answer");
+        }
+
+        private BlueprintCue CreateBillyBowQuestCue(string guid, string name)
+        {
+            return GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                guid,
+                name,
+                "Ciar zombie greeting cue");
+        }
+
+        private void ConfigureBillyBowQuestCue(
+            BlueprintCue cue,
+            BlueprintUnit speaker,
+            BlueprintAnswersList answers)
+        {
+            cue.Speaker = new DialogSpeaker();
+            SetSpeakerBlueprint(cue.Speaker, speaker);
+            cue.OnShow = new ActionList();
+            cue.OnStop = new ActionList();
+            cue.Answers = new List<BlueprintAnswerBaseReference>
+            {
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(answers)
+            };
+            cue.Continue = CreateEmptyCueSelection();
+            cue.ShowOnce = false;
+            cue.ShowOnceCurrentDialog = false;
+        }
+
+        private void ConfigureBillyBowQuestResponse(
+            BlueprintCue cue,
+            string localizationKey,
+            BlueprintUnit speaker,
+            BlueprintAnswersList answers)
+        {
+            cue.Text = _localization.Text(localizationKey);
+            cue.Speaker = new DialogSpeaker();
+            SetSpeakerBlueprint(cue.Speaker, speaker);
+            cue.OnShow = new ActionList();
+            cue.OnStop = new ActionList();
+            cue.Answers = answers == null
+                ? new List<BlueprintAnswerBaseReference>()
+                : new List<BlueprintAnswerBaseReference>
+                {
+                    BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(answers)
+                };
+            cue.Continue = CreateEmptyCueSelection();
+            cue.ShowOnce = false;
+            cue.ShowOnceCurrentDialog = false;
+        }
+
+        private void ConfigureBillyBowQuestAnswer(BlueprintAnswer answer, string localizationKey, BlueprintCue cue)
+        {
+            answer.Text = _localization.Text(localizationKey);
+            answer.ShowConditions = new ConditionsChecker();
+            answer.SelectConditions = new ConditionsChecker();
+            answer.OnSelect = new ActionList();
+            answer.NextCue = CreateCueSelection(cue);
+            answer.ShowOnce = false;
+            answer.ShowOnceCurrentDialog = false;
+            answer.RequireValidCue = false;
+            answer.AddToHistory = true;
+        }
+
         private void ConfigureBillyInfoCue(
             BlueprintCue cue,
             string localizationKey,
@@ -375,7 +527,114 @@ namespace wotr_mod.Content
             answer.AddToHistory = true;
         }
 
-        private static ActionList CreateRecruitActions(BlueprintUnit companion)
+        private BlueprintCompanionStory EnsureBillyStory(BlueprintUnit companion)
+        {
+            var story = _blueprints.Get<BlueprintCompanionStory>(ModBlueprintIds.CompanionStories.Billy);
+            if (story == null)
+            {
+                story = new BlueprintCompanionStory
+                {
+                    name = "WotrMod_BillyStory",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.CompanionStories.Billy)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.CompanionStories.Billy, story);
+            }
+
+            story.Title = _localization.Text(LocalizationIds.Mod.BillyStoryTitle);
+            story.Description = _localization.Text(LocalizationIds.Mod.BillyStoryDescription);
+            story.Gender = Gender.Male;
+            SetField(
+                story,
+                "m_Companion",
+                BlueprintReferenceBase.CreateTyped<BlueprintUnitReference>(companion));
+            SetField(
+                story,
+                "m_ImageLink",
+                CreateStoryImageLink(BillyStoryBundlePath));
+
+            return story;
+        }
+
+        private SpriteLink CreateStoryImageLink(string relativeBundlePath)
+        {
+            try
+            {
+                var sprite = LoadStoryBundleSprite(relativeBundlePath);
+                if (sprite == null)
+                {
+                    return null;
+                }
+
+                var link = new SpriteLink
+                {
+                    AssetId = "wotr_mod:" + relativeBundlePath.Replace('\\', '/')
+                };
+                var handle = (BundledResourceHandle<Sprite>)Activator.CreateInstance(
+                    typeof(BundledResourceHandle<Sprite>),
+                    true);
+                SetField(handle, "m_AssetId", link.AssetId);
+                SetField(handle, "m_Held", true);
+                SetField(handle, "m_Object", new WeakReference<Sprite>(sprite));
+                SetProperty(link, "m_Handle", handle);
+                return link;
+            }
+            catch (Exception ex)
+            {
+                Main.Warning($"Billy story image could not be loaded from {relativeBundlePath}: {ex.Message}");
+                return null;
+            }
+        }
+
+        private Sprite LoadStoryBundleSprite(string relativeBundlePath)
+        {
+            if (string.IsNullOrWhiteSpace(relativeBundlePath) || string.IsNullOrWhiteSpace(_modPath))
+            {
+                return null;
+            }
+
+            var fullPath = Path.Combine(_modPath, relativeBundlePath);
+            if (StorySpriteCache.TryGetValue(fullPath, out var cached))
+            {
+                return cached;
+            }
+
+            if (!File.Exists(fullPath))
+            {
+                return null;
+            }
+
+            var bundle = AssetBundle.GetAllLoadedAssetBundles()
+                .FirstOrDefault(loaded => string.Equals(
+                    loaded.name,
+                    Path.GetFileName(relativeBundlePath),
+                    StringComparison.OrdinalIgnoreCase));
+            var ownsBundle = bundle == null;
+            bundle = bundle ?? AssetBundle.LoadFromFile(fullPath);
+            if (bundle == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                var sprite = bundle.LoadAllAssets<Sprite>().FirstOrDefault();
+                if (sprite != null)
+                {
+                    StorySpriteCache[fullPath] = sprite;
+                }
+
+                return sprite;
+            }
+            finally
+            {
+                if (ownsBundle)
+                {
+                    bundle.Unload(false);
+                }
+            }
+        }
+
+        private static ActionList CreateRecruitActions(BlueprintUnit companion, BlueprintCompanionStory story)
         {
             var recruitData = new Recruit.RecruitData
             {
@@ -406,6 +665,11 @@ namespace wotr_mod.Content
                     new BillyRecruitmentFallbackAction
                     {
                         name = "WotrMod_BillyRecruitFallback"
+                    },
+                    new UnlockCompanionStory
+                    {
+                        name = "WotrMod_UnlockBillyStory",
+                        Story = story
                     }
                 }
             };
@@ -952,8 +1216,23 @@ namespace wotr_mod.Content
                 StatType.SkillThievery,
                 StatType.SkillLoreNature
             };
+            var protectionFromChaos = _blueprints.Require<BlueprintAbility>(
+                GameBlueprintIds.Spells.ProtectionFromChaos,
+                "Protection from Chaos spell");
+            var cureLightWounds = _blueprints.Require<BlueprintAbility>(
+                GameBlueprintIds.Spells.CureLightWounds,
+                "Cure Light Wounds spell");
             SetField(addClassLevels, "m_SelectSpells", Array.Empty<BlueprintAbilityReference>());
-            SetField(addClassLevels, "m_MemorizeSpells", Array.Empty<BlueprintAbilityReference>());
+            SetField(
+                addClassLevels,
+                "m_MemorizeSpells",
+                new[]
+                {
+                    BlueprintReferenceBase.CreateTyped<BlueprintAbilityReference>(protectionFromChaos),
+                    BlueprintReferenceBase.CreateTyped<BlueprintAbilityReference>(cureLightWounds),
+                    BlueprintReferenceBase.CreateTyped<BlueprintAbilityReference>(cureLightWounds),
+                    BlueprintReferenceBase.CreateTyped<BlueprintAbilityReference>(cureLightWounds)
+                });
             addClassLevels.Selections = new[]
             {
                 CreateSelectionEntry(
@@ -1145,6 +1424,12 @@ namespace wotr_mod.Content
             field?.SetValue(target, value);
         }
 
+        private static void SetProperty(object target, string propertyName, object value)
+        {
+            var property = FindProperty(target.GetType(), propertyName);
+            property?.SetValue(target, value, null);
+        }
+
         private static void SetField(object target, string fieldName, object value)
         {
             var field = FindField(target.GetType(), fieldName);
@@ -1166,6 +1451,21 @@ namespace wotr_mod.Content
                 if (field != null)
                 {
                     return field;
+                }
+            }
+
+            return null;
+        }
+
+        private static PropertyInfo FindProperty(Type type, string propertyName)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            for (var current = type; current != null; current = current.BaseType)
+            {
+                var property = current.GetProperty(propertyName, flags);
+                if (property != null)
+                {
+                    return property;
                 }
             }
 

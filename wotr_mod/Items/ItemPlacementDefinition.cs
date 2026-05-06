@@ -34,10 +34,6 @@ namespace wotr_mod.Items
                 ? null
                 : RequireGuid(unitLootGuid, nameof(unitLootGuid));
 
-            if (Kind == ItemPlacementKind.UnitLoot && string.IsNullOrWhiteSpace(UnitLootGuid))
-            {
-                throw new ArgumentException("Unit loot placement requires a unit loot blueprint GUID.", nameof(unitLootGuid));
-            }
         }
         
         public static ItemPlacementDefinition InMapObjectLoot(
@@ -72,6 +68,21 @@ namespace wotr_mod.Items
                 ItemPlacementKind.ChestLoot,
                 lootGuid,
                 lootName,
+                count,
+                identify,
+                unitLootGuid: null);
+        }
+
+        public static ItemPlacementDefinition OnUnit(
+            string unitGuid,
+            string unitName,
+            int count = 1,
+            bool identify = true)
+        {
+            return new ItemPlacementDefinition(
+                ItemPlacementKind.UnitLoot,
+                unitGuid,
+                unitName,
                 count,
                 identify,
                 unitLootGuid: null);

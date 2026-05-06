@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -61,6 +62,9 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo ItemDescription =
             typeof(BlueprintItem).GetField("m_DescriptionText", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ItemWeaponEnchantments =
+            typeof(BlueprintItemWeapon).GetField("m_Enchantments", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AbilityDisplayName = UnitFactDisplayName;
 

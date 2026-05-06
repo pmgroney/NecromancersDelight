@@ -84,9 +84,11 @@ namespace wotr_mod.Infrastructure
         internal static class Spells
         {
             public const string BurningHands = "4783c3709a74a794dbe7c8e7e0b1b038";
+            public const string CureLightWounds = "47808d23c67033d4bbab86a1070fd62f";
             public const string Entangle = "0fd00984a2c0e0a429cf1a911b4ec5ca";
             public const string Fireball = "2d81362af43aeac4387a3d4fced489c3";
             public const string MagicMissile = "4ac47ddb9fa1eaf43a1b6809980cfbd2";
+            public const string ProtectionFromChaos = "1eaf1020e82028d4db55e6e464269e00";
             public const string ScorchingRay = "cdb106d53c65bbc4086183d54c3b97c7";
         }
 
@@ -176,9 +178,15 @@ namespace wotr_mod.Infrastructure
         internal static class Items
         {
             public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
+            public const string CompositeLongbowPlus1 = "2753a0159681be94da3a5eeabc8c8d1a";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
+        }
+
+        internal static class Enchantments
+        {
+            public const string LongswordOfRightEnchantment = "59c2b96ee4525144e9ba7b8063ae20bb";
         }
    
         
@@ -212,6 +220,7 @@ namespace wotr_mod.Infrastructure
             public const string CiarUndead = "1f341d3068d6b7a429134125f7141e18";
             public const string CiarCompanion = "7ece3afabe2b6f343b17d1eaa409d273";
             public const string CiarFeatureList = "ec014b7a7a6cd814090c1cd6c7a599d8";
+            public const string Hosilla = "64dcc27d70edc1148b31257fcc2241ce";
             public const string MythicLichSkeletonArcher = "2b0c36c34172ac440a8e6d373094c3bd";
             public const string LeopardCompanion = "54cf380dee486ff42b803174d1b9da1b";
             public const string VelociraptorCompanion = "28d1986d57a7081439fbb581aa6f960c";

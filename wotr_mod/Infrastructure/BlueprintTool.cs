@@ -8,6 +8,8 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -329,6 +331,27 @@ namespace wotr_mod.Infrastructure
         {
             BlueprintFields.ItemDisplayName.SetValue(item, name);
             BlueprintFields.ItemDescription.SetValue(item, description);
+        }
+
+        public void AddWeaponEnchantment(BlueprintItemWeapon weapon, BlueprintWeaponEnchantment enchantment)
+        {
+            if (weapon == null || enchantment == null || BlueprintFields.ItemWeaponEnchantments == null)
+            {
+                return;
+            }
+
+            var enchantments = (BlueprintWeaponEnchantmentReference[])BlueprintFields.ItemWeaponEnchantments.GetValue(weapon)
+                               ?? Array.Empty<BlueprintWeaponEnchantmentReference>();
+            if (enchantments.Any(reference => reference?.Get()?.AssetGuid == enchantment.AssetGuid))
+            {
+                return;
+            }
+
+            BlueprintFields.ItemWeaponEnchantments.SetValue(
+                weapon,
+                enchantments
+                    .Concat(new[] { BlueprintReferenceBase.CreateTyped<BlueprintWeaponEnchantmentReference>(enchantment) })
+                    .ToArray());
         }
 
         public void SetUnitFactIcon(BlueprintUnitFact fact, Sprite icon)

@@ -15,12 +15,29 @@ namespace wotr_mod.Infrastructure
 
         internal static class Items
         {
+            public const string NeophytesLongbowOfDiscipline = "067f5d63c7ec42f08207b6c5189e1715";
             public const string ScythePlus1 = "ff9cbddecbd54932a73734f47d5c99cf";
+        }
+
+        internal static class Enchantments
+        {
+            public const string NeophytesLongbowOfDisciplineForceDamage = "52524073c51a4ec8bd5109751c85056a";
         }
 
         internal static class Dialogs
         {
             public const string BillyDialog = "96850f6d4f4e444a80c0675c76d37c5d";
+            public const string BillyBowQuestDialog = "5cefa4cfb52c46849b65512cac66bc68";
+            public const string BillyBowQuestStartCue = "5dc6d10dc05c4868a5d5ff9d62b35439";
+            public const string BillyBowQuestAnswers = "dd81f3ce9f6343c88323e5ab4d622bce";
+            public const string BillyBowQuestTempleAnswer = "2936b784fa51474d880853e5f8cc9465";
+            public const string BillyBowQuestTempleCue = "b2aee15efe184dbeadd94fe4f3493c26";
+            public const string BillyBowQuestHosillaAnswer = "0c2510f6f79e4e31a8e48a2f23f5f2da";
+            public const string BillyBowQuestHosillaCue = "df8562f1cab7479b9b36f0faf23c39ea";
+            public const string BillyBowQuestDisciplineAnswer = "4fa0dfd8140046b5aa2f0b2313505ec4";
+            public const string BillyBowQuestDisciplineCue = "94a99cc68792436e8636261fb5b6ac31";
+            public const string BillyBowQuestEndAnswer = "dfac0584903a4e5c8a2702d30699630e";
+            public const string BillyBowQuestEndCue = "ba2afe2b5e7c4e158d4dd1389c4b256c";
             public const string BillyGreetingCue = "8f6a33462ad8422a8884a767110fc6a3";
             public const string BillyJoinCue = "4e1ad2f0b8c44f9aa5a66c3d7f8210b9";
             public const string BillyAnswers = "1327a2fbb2b84f0694fe6e9212f77b8c";
@@ -41,9 +58,19 @@ namespace wotr_mod.Infrastructure
             public const string Billy = "dc4b32165f4e4e269031dafbffd22d05";
         }
 
+        internal static class CompanionStories
+        {
+            public const string Billy = "cc0956a1823e43a1ac0fe2ee1a1ec985";
+        }
+
         internal static class UnitAsks
         {
             public const string BillyBarks = "06404cabe50b4de5b3aaea72bb259cdd";
+        }
+
+        internal static class Flags
+        {
+            public const string BillyBowQuestStarted = "e1f39ce3152c439080ac6f2565e1f861";
         }
 
         internal static class Progressions
