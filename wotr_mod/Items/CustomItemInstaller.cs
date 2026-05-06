@@ -126,7 +126,7 @@ namespace wotr_mod.Items
                 _logger.Log($"[ItemDebug] Map objects with loot in current area ({mapObjects.Count}):");
                 foreach (var obj in mapObjects)
                 {
-                    _logger.Log($"[ItemDebug]   UniqueId={obj.UniqueId} | Blueprint={obj.Blueprint?.name ?? "?"}");
+                    _logger.Log($"[ItemDebug]   UniqueId={obj.UniqueId}");
                 }
             }
             catch (Exception ex)
