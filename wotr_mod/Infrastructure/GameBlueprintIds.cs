@@ -41,6 +41,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Races
         {
+            public const string Fetchling = "e29497e082014f35b0ef32e1560f1e8b";
             public const string Gnome = "ef35a22c9a27da345a4528f0d5889157";
             public const string Human = "0a5d473ead98b0646b94495af250fdc4";
         }
@@ -54,6 +55,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string Ranger = "762858a4a28eaaf43aa00f50441d7027";
             public const string Sorcerer = "b3db3766a4b605040b366265e2af0e50";
+            public const string Wizard = "5a38c9ac8607890409fcb8f6342da6f4";
         }
 
         internal static class SpellLists
@@ -83,9 +85,11 @@ namespace wotr_mod.Infrastructure
 
         internal static class Spells
         {
+            public const string AuraOfGreaterCourage = "acb787cf9f76e924a9a93bbd011af040";
             public const string BurningHands = "4783c3709a74a794dbe7c8e7e0b1b038";
             public const string CureLightWounds = "47808d23c67033d4bbab86a1070fd62f";
             public const string Entangle = "0fd00984a2c0e0a429cf1a911b4ec5ca";
+            public const string FalseLife = "7a5b5bf845779a941a67251539545762";
             public const string Fireball = "2d81362af43aeac4387a3d4fced489c3";
             public const string MagicMissile = "4ac47ddb9fa1eaf43a1b6809980cfbd2";
             public const string ProtectionFromChaos = "1eaf1020e82028d4db55e6e464269e00";
@@ -123,8 +127,10 @@ namespace wotr_mod.Infrastructure
             public const string ArmorProficiencyHeavy = "1b0f68188dcc435429fb87a022239681";
             public const string ArmorProficiencyLight = "6d3728d4e9c9898458fe5e9532951132";
             public const string ArmorProficiencyMedium = "46f4fb320f35704488ba3d513397789d";
+            public const string BloodragerProficiencies = "7aa59f5998e5baf4182cac3ff7998974";
             public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
             public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
+            public const string SpellFocus = "16fa59cc9a72a6043b566b49184f53fe";
             public const string ChannelNegative = "3adb2c906e031ee41a01bfc1d5fb7eea";
             public const string ChannelPositive = "a79013ff4bcd4864cb669622a29ddafb";
             public const string DeathDomainProgressionSecondary = "023794a8386506c49aad142846700594";
@@ -177,8 +183,10 @@ namespace wotr_mod.Infrastructure
 
         internal static class Items
         {
+            public const string ColdIronMasterworkRapier = "47ee06073c429ad46916bf75e7455a5e";
             public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
             public const string CompositeLongbowPlus1 = "2753a0159681be94da3a5eeabc8c8d1a";
+            public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";

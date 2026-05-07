@@ -41,9 +41,15 @@ namespace wotr_mod.Features
                     continue;
                 }
 
+                var bonusPerDie = GetBonusPerDie(characterClass);
+                if (bonusPerDie <= 0)
+                {
+                    return;
+                }
+
                 foreach (var baseDamage in evt.DamageBundle)
                 {
-                    baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls, Fact);
+                    baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls * bonusPerDie, Fact);
                 }
 
                 return;
@@ -58,6 +64,18 @@ namespace wotr_mod.Features
         {
             var memorizedSource = spellbook?.Blueprint.GetComponent<GetKnownSpellsFromMemorizationSpellbook>()?.Spellbook;
             return memorizedSource != null ? Owner.GetSpellbook(memorizedSource) : spellbook;
+        }
+
+        private int GetBonusPerDie(BlueprintCharacterClass characterClass)
+        {
+            var classLevel = characterClass == null ? 0 : Owner.Progression.GetClassLevel(characterClass);
+            if (classLevel <= 0)
+            {
+                return 0;
+            }
+
+            var bonus = 1 + classLevel / 4;
+            return bonus > 6 ? 6 : bonus;
         }
     }
 

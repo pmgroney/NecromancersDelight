@@ -76,12 +76,33 @@ namespace wotr_mod.Classes
             BlueprintSpellList spellList)
         {
             EnsureEvokerBloodlineSelection(characterClass);
+            EnsureEvocationSpellFocusRecommendation(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
 
             _blueprints.SetCharacterClassArchetypes(
                 characterClass,
                 EnsureArchetypes(definition, characterClass, spellbook, spellList));
             new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
+        }
+
+        private void EnsureEvocationSpellFocusRecommendation(BlueprintCharacterClass characterClass)
+        {
+            var spellFocus = _blueprints.Require<BlueprintParametrizedFeature>(
+                GameBlueprintIds.Features.SpellFocus,
+                "Spell Focus");
+            var recommendation = _blueprints.GetComponents<SpellFocusSchoolRecommendation>(spellFocus)
+                .FirstOrDefault();
+
+            if (recommendation == null)
+            {
+                recommendation = new SpellFocusSchoolRecommendation
+                {
+                    name = "$SpellFocusSchoolRecommendation$ClassSchools"
+                };
+                _blueprints.AddComponent(spellFocus, recommendation);
+            }
+
+            recommendation.AddRecommendedClass(characterClass, SpellSchool.Evocation);
         }
 
         private void ConfigureEvokerSpellList(BlueprintSpellList spellList)

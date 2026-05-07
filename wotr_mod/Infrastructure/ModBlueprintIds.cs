@@ -99,6 +99,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string Evoker = "32ff2af163ef47a98414c1f2c40d3b55";
             public const string Necromancer = "d5ac5f898a2b4a7c804db407fba710a3";
+            public const string Sepulchrit = "817ca4f5309b4d6c8e2f1a70b5c934d2";
             public const string Graveblade = "6b7c8d9e0f1a4b2c8d9e0f1a2b3c4d5e";
         }
 
@@ -109,12 +110,14 @@ namespace wotr_mod.Infrastructure
             public const string CausticBeam = "fb782b9cf4c4426d9e86df1128bbee0a";
             public const string CorpseExplosion = "78133a1f0218401a8fd254e0923014f3";
             public const string DeathRay = "d15284d0111b46b2a8ff6a62e5bc0654";
+            public const string DespairOfTheSepulchre = "6b0333d16cb04ad5b3bdeca82976144c";
             public const string ElectricMissile = "9b3f6c1d4e2a4f8b9c7d5e6a1b2c3d40";
             public const string EldritchHorror = "02e182703b3340edab2d88331da63f3b";
             public const string EmperorsWrath = "bc5adee5c6554c449c14ec7b9adcb7e7";
             public const string FireMissile = "c7d84e5a1b9f4c7aa6e92f3d5b8c0142";
             public const string ForceRay = "64511260f449426787a68ada088e5fcd";
             public const string FrostBlast = "47fceb9475c443c497a9f44376aaab11";
+            public const string HarvestTheFallen = "e8eaaaf029bb46408a183b700b81bc4e";
             public const string HellOnEarth = "462cb107e84141afa6ac45aeebdbf1bf";
             public const string IceMissile = "4a7c2e9f8d6b4c1aa3f5e7d9b2c8e014";
             public const string ShadowbornBurningHands = "8df963eadcb64726b953f20ee028b47d";
@@ -151,6 +154,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class AreaEffects
         {
+            public const string DespairOfTheSepulchre = "cf21429b2cb74c648b646f285e00b6ef";
             public const string EldritchHorror = "bcb6329cefc66da41b011299a43cc681";
             public const string HellOnEarth = "9b1a5b53f5a94e0d9a5c8a9cbe4d2b8a";
         }
@@ -159,6 +163,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string CompanionPet = "13dc7dba1250470ea2f717f2340c6535";
             public const string EvokerBloodline = "dc4f77e8d0f3476aad11bda78da721c7";
+            public const string FetchlingHeritage = "3f4a5b6c7d8e4901a2b3c4d5e6f70123";
             public const string HumanHeritage = "2f4a6c8e0b134d57a9c1e3f5b7d90246";
             public const string NecromancerBloodline = "a1b2c3d4e5f64758b9c0d1e2f3a4b5c6";
             public const string NecromancerBonusFeat = "c3d4e5f6a7b84960d1e2f3a4b5c6d7e8";
@@ -176,6 +181,8 @@ namespace wotr_mod.Infrastructure
             public const string CryptguardDhampirHeritage = "9102837465af4e3d2c1b0a9b8c7d6e5f";
             public const string GraveltoeGnomeHeritage = "f28b0d5e7a3c4921b6d4e8f0a2c71593";
             public const string ShadowGnomeHeritage = "0a9c1e6f8b4d4032a7e5f901b3d826a4";
+            public const string DefaultFetchlingHeritage = "4a5b6c7d8e9f5012b3c4d5e6f7081234";
+            public const string ShadowWarriorFetchlingHeritage = "5b6c7d8e9f0a6123c4d5e6f708192345";
             public const string NormalHumanHeritage = "3a5c7e9f1b244e68a0d2f4b6c8e01357";
             public const string DescendantOfKingsHeritage = "4b6d8f102c354f79b1e3a5c7d9f02468";
             public const string OrcLordsBloodHeritage = "5c8e102a4b6d4f78a9c1e3d5f7092468";
@@ -205,10 +212,12 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBoneSpikeKnownSpell = "de8225e0126746c7880b95f957159f19";
             public const string NecromancerCorpseExplosionKnownSpell = "afa9787ecde14b13a74c4b0344e3a905";
             public const string NecromancerEldritchHorrorKnownSpell = "e68ad047a48644488b30597ee522e652";
+            public const string NecromancerHarvestTheFallenKnownSpell = "10eb39090e5241df9fb688e75fa1c3c6";
             public const string NecromancerHellOnEarthKnownSpell = "f879a75258924ef6a37ef95bb4794c8f";
             public const string NecromancerProficiencies = "6e5d4c3b2a1a4b5c6d7e8f9a0b1c2d3e";
             public const string GravebladeArmorMastery = "34c0f9a8d2e14f6b9c7a5e3d1b8024ac";
             public const string GravebladeArmorTraining = "7a4e6c2f9b1348d5a0c7e1f3b6d8c902";
+            public const string GravebladeArcaneArmorProficiency = "5f8d2a6c4b7e41d9a0c3e5f7192b6d84";
             public const string GravebladeFighterTraining = "1f3a5c7e9b204d6f8a0c2e4b6d8f0132";
             public const string GravebladeProficiencies = "0e2f4a6c8b104d3e9f1a2c5b7d9e0f31";
             public const string GravebladeReapingEdge = "c6f5e4d3a2b14c8d9e0f1a3b5c7d9e02";
@@ -218,7 +227,10 @@ namespace wotr_mod.Infrastructure
         internal static class Buffs
         {
             public const string BillyMonkAcBonusBuffUnarmored = "c95f1a2b3c4d5e6f8091a2b3c4d5e6f7";
+            public const string DespairOfTheSepulchreAura = "28f9602f7fcf4b5e8f21083b7555dec3";
+            public const string DespairOfTheSepulchreDebuff = "3be11a63425a4da4889fcafb3672e512";
             public const string GravebladeArmorMastery = "d0b8a6f4c2e1437a9b5d1f3c8e0a6247";
+            public const string HarvestTheFallenTemporaryHitPoints = "5f3354ded7aa47099793031dbf459009";
             public const string ReapingEdge = "d7a6f5e4c3b24d9e8f0a1b3c5d7e9f10";
             public const string ReapingEdgeBrittleBone = "e8b7a6f5d4c34e0f9a1b2c4d6e8f0132";
             public const string ReapingEdgeFatigue = "f9c8b7a6e5d44f10ab2c3d5e7f901243";

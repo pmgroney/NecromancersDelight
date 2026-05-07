@@ -5,8 +5,11 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Designers.Mechanics.Buffs;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
@@ -158,6 +161,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead"));
             AddLevelEntryIfAny(entries, 10, necromancerBonusFeat);
+            AddLevelEntryIfAny(entries, 11,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen granted spell"));
             AddLevelEntryIfAny(entries, 15,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form"));
@@ -207,8 +212,9 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var boneSpike           = features[8];
             var corpseExplosion     = features[9];
             var eldritchHorror      = features[10];
-            var hellOnEarth         = features[11];
-            var necromancerBonusFeat = features[12];
+            var harvestTheFallen    = features[11];
+            var hellOnEarth         = features[12];
+            var necromancerBonusFeat = features[13];
 
             _blueprints.SetProgressionUiGroups(
                 progression,
@@ -219,7 +225,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 new[] { twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery },
                 new[] { reapingEdge },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
-                new[] { boneSpike, corpseExplosion, eldritchHorror, hellOnEarth });
+                new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
         }
 
         // ─── Graveblade-specific features ────────────────────────────────────
@@ -298,6 +304,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
         private BlueprintFeature EnsureGravebladeFighterTraining(
             BlueprintCharacterClass characterClass, BlueprintFeatureSelection bonusFeatSelection)
         {
+            var arcaneArmorProficiency = EnsureGravebladeArcaneArmorProficiency();
             var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.GravebladeFighterTraining);
             if (feature == null)
             {
@@ -315,7 +322,74 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 feature,
                 _blueprints.Require<BlueprintCharacterClass>(GameBlueprintIds.Classes.Fighter, "Fighter class"),
                 characterClass, bonusFeatSelection, 1.0, 0);
+            EnsureFeatureGrantsFact(feature, arcaneArmorProficiency, "$AddFacts$GravebladeArcaneArmorProficiency");
             return feature;
+        }
+
+        private BlueprintFeature EnsureGravebladeArcaneArmorProficiency()
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.GravebladeArcaneArmorProficiency);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerGravebladeArcaneArmorProficiency",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.GravebladeArcaneArmorProficiency),
+                    IsClassFeature = true,
+                    Ranks = 1,
+                    HideInUI = true,
+                    HideInCharacterSheetAndLevelUp = true
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.GravebladeArcaneArmorProficiency, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            feature.HideInUI = true;
+            feature.HideInCharacterSheetAndLevelUp = true;
+            _blueprints.SetUnitFactDisplay(feature,
+                _localization.Text(LocalizationIds.Mod.GravebladeFighterTrainingName),
+                _localization.Text(LocalizationIds.Mod.GravebladeFighterTrainingDescription));
+
+            var bloodragerProficiencies = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.BloodragerProficiencies, "Bloodrager Proficiencies");
+            var sourceComponent = _blueprints.GetComponents<BlueprintComponent>(bloodragerProficiencies)
+                .FirstOrDefault(candidate => candidate.GetType().Name == "ArcaneArmorProficiency");
+            if (sourceComponent == null)
+            {
+                _logger.Error("Bloodrager Proficiencies has no ArcaneArmorProficiency component to clone.");
+                _blueprints.SetComponents(feature);
+                return feature;
+            }
+
+            var clonedComponent = _blueprints.CloneComponent(sourceComponent);
+            clonedComponent.name = "$ArcaneArmorProficiency$GravebladeArmor";
+            if (clonedComponent is ArcaneArmorProficiency armorProficiency)
+            {
+                armorProficiency.Armor = new[]
+                {
+                    ArmorProficiencyGroup.Light,
+                    ArmorProficiencyGroup.Medium,
+                    ArmorProficiencyGroup.Heavy
+                };
+            }
+            _blueprints.SetComponents(feature, clonedComponent);
+            return feature;
+        }
+
+        private void EnsureFeatureGrantsFact(BlueprintFeature feature, BlueprintUnitFact fact, string componentName)
+        {
+            var existing = _blueprints.GetComponents<AddFacts>(feature)
+                .FirstOrDefault(component => component.name == componentName);
+            if (existing != null)
+            {
+                _blueprints.SetAddFacts(existing, fact);
+                return;
+            }
+
+            var addFacts = new AddFacts { name = componentName };
+            _blueprints.SetAddFacts(addFacts, fact);
+            _blueprints.AddComponent(feature, addFacts);
         }
 
         private BlueprintFeature EnsureGravebladeProficiencies(BlueprintCharacterClass characterClass)

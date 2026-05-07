@@ -83,6 +83,7 @@ namespace wotr_mod.Classes.Necromancer
 
             EnsureNecromancerBloodline();
             RegisterNecromancerFeatures(characterClass);
+            EnsureNecromancySpellFocusRecommendation(characterClass);
 
             if (characterClass.Progression != null)
             {
@@ -132,6 +133,26 @@ namespace wotr_mod.Classes.Necromancer
                 new GravebladeInstaller(_blueprints, _localization, _logger, _icons)
                     .Ensure(characterClass, spellbook, spellList)
             };
+        }
+
+        private void EnsureNecromancySpellFocusRecommendation(BlueprintCharacterClass characterClass)
+        {
+            var spellFocus = _blueprints.Require<BlueprintParametrizedFeature>(
+                GameBlueprintIds.Features.SpellFocus,
+                "Spell Focus");
+            var recommendation = _blueprints.GetComponents<SpellFocusSchoolRecommendation>(spellFocus)
+                .FirstOrDefault();
+
+            if (recommendation == null)
+            {
+                recommendation = new SpellFocusSchoolRecommendation
+                {
+                    name = "$SpellFocusSchoolRecommendation$ClassSchools"
+                };
+                _blueprints.AddComponent(spellFocus, recommendation);
+            }
+
+            recommendation.AddRecommendedClass(characterClass, SpellSchool.Necromancy);
         }
 
         private BlueprintProgression EnsureNecromancerBloodline()
@@ -194,11 +215,18 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Spells.HellOnEarth, "Hell on Earth",
                 LocalizationIds.Mod.SpellHellOnEarthName, LocalizationIds.Mod.SpellHellOnEarthDescription,
                 9, necromancerClass);
+            var harvestTheFallen = EnsureKnownSpellFeature(
+                GameBlueprintIds.Features.BloodlineUndeadSpellLevel9,
+                ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell,
+                "WotrMod_NecromancerKnownSpell_HarvestTheFallen", "Harvest the Fallen donor",
+                ModBlueprintIds.Spells.HarvestTheFallen, "Harvest the Fallen",
+                LocalizationIds.Mod.SpellHarvestTheFallenName, LocalizationIds.Mod.SpellHarvestTheFallenDescription,
+                5, necromancerClass);
 
             var visibleFeatures = new BlueprintFeatureBase[]
             {
                 arcana, power1, power3, boneSpike, corpseExplosion,
-                eldritchHorror, power9, power15, hellOnEarth, power20
+                eldritchHorror, power9, harvestTheFallen, power15, hellOnEarth, power20
             };
             clone.LevelEntries = new[]
             {
@@ -209,6 +237,7 @@ namespace wotr_mod.Classes.Necromancer
                 CreateLevelEntry(5, boneArmor),
                 CreateLevelEntry(7, eldritchHorror),
                 CreateLevelEntry(9, power3, power9, boneArmor),
+                CreateLevelEntry(11, harvestTheFallen),
                 CreateLevelEntry(13, boneArmor),
                 CreateLevelEntry(15, power3, power15),
                 CreateLevelEntry(17, boneArmor),
@@ -239,6 +268,7 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror"),
+                _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth"),
                 EnsureNecromancerBonusFeatSelection()
             };
@@ -264,8 +294,9 @@ namespace wotr_mod.Classes.Necromancer
             var boneSpike             = features[8];
             var corpseExplosion       = features[9];
             var eldritchHorror        = features[10];
-            var hellOnEarth           = features[11];
-            var necromancerBonusFeat  = features[12];
+            var harvestTheFallen      = features[11];
+            var hellOnEarth           = features[12];
+            var necromancerBonusFeat  = features[13];
 
             AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
             AddFeaturesToLevel(progression, 2,  boneSpike);
@@ -276,6 +307,7 @@ namespace wotr_mod.Classes.Necromancer
             AddFeaturesToLevel(progression, 7,  eldritchHorror);
             AddFeaturesToLevel(progression, 9,  deathsGift, graspOfTheDead, boneArmor);
             AddFeaturesToLevel(progression, 10, necromancerBonusFeat);
+            AddFeaturesToLevel(progression, 11, harvestTheFallen);
             AddFeaturesToLevel(progression, 13, boneArmor);
             AddFeaturesToLevel(progression, 15, deathsGift, incorporealForm);
             AddFeaturesToLevel(progression, 16, necromancerBonusFeat);
@@ -290,7 +322,7 @@ namespace wotr_mod.Classes.Necromancer
                 new[] { deathsGift },
                 new[] { necromancerBonusFeat },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
-                new[] { boneSpike, corpseExplosion, eldritchHorror, hellOnEarth });
+                new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
         }
 
         internal BlueprintFeatureSelection EnsureNecromancerBonusFeatSelection()

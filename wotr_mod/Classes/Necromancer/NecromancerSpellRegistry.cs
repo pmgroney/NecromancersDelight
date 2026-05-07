@@ -60,6 +60,8 @@ namespace wotr_mod.Classes.Necromancer
             Spell("VampiricShadowShield", "a34921035f2a6714e9be5ca76c5e34b5", 5),
             Spell("WavesOfFatigue", "8878d0c46dfbd564e9d5756349d5e439", 5),
             Spell("WrackingRay", "1cde0691195feae45bab5b83ea3f221e", 5),
+            Spell("DespairOfTheSepulchre", ModBlueprintIds.Spells.DespairOfTheSepulchre, 5),
+            Spell("HarvestTheFallen", ModBlueprintIds.Spells.HarvestTheFallen, 5),
 
             Spell("BansheeBlast", "d42c6d3f29e07b6409d670792d72bc82", 6),
             Spell("CircleOfDeath", "a89dcbbab8f40e44e920cc60636097cf", 6),

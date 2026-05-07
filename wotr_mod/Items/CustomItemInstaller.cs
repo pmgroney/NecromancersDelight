@@ -182,6 +182,26 @@ namespace wotr_mod.Items
 
         public void OnAreaLoaded()
         {
+            AddToMapObjectLoot(
+                ItemPlacementDefinition.InMapObjectLoot(
+                    "71c5f42a-f490-4d9d-a3ff-1cf0702b1caf",
+                    "Weapon Rack",
+                    count: 1,
+                    identify: true),
+                _blueprints.Require<BlueprintItem>(
+                    GameBlueprintIds.Items.ColdIronMasterworkRapier,
+                    "Cold-iron masterwork rapier"));
+
+            AddToMapObjectLoot(
+                ItemPlacementDefinition.InMapObjectLoot(
+                    "55508648-91b4-47c0-9245-f625cb333473",
+                    "Weapon Rack",
+                    count: 1,
+                    identify: true),
+                _blueprints.Require<BlueprintItem>(
+                    GameBlueprintIds.Items.MasterworkGreatsword,
+                    "Masterwork greatsword"));
+
             foreach (var definition in CustomItemRegistry.GetAll())
             {
                 var item = _blueprints.Get<BlueprintItem>(definition.ItemGuid);

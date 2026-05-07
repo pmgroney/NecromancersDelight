@@ -94,6 +94,7 @@
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
         <Compile Include="Features\ShadowbornNegativeEnergyHealing.cs" />
+        <Compile Include="Features\SpellFocusSchoolRecommendation.cs" />
         <Compile Include="Features\SelectedRaceStatBonus.cs" />
         <Compile Include="Features\SkillPointsPerCharacterLevel.cs" />
         <Compile Include="Infrastructure\ClassFactory.cs" />
@@ -122,6 +123,8 @@
         <Compile Include="Spells\Modifiers\ConfigureSpellModifier.cs" />
         <Compile Include="Spells\Modifiers\CorpseExplosionModifier.cs" />
         <Compile Include="Spells\Modifiers\DamageTypeSpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\DespairOfTheSepulchreModifier.cs" />
+        <Compile Include="Spells\Modifiers\HarvestTheFallenModifier.cs" />
         <Compile Include="Spells\Modifiers\ISpellModifier.cs" />
         <Compile Include="Spells\Modifiers\SpellModifierContext.cs" />
         <Compile Include="Spells\Modifiers\SpellModifierUtility.cs" />
@@ -135,6 +138,7 @@
         <Compile Include="Patches\GravebladeStartingEquipmentPatch.cs" />
         <Compile Include="Patches\StartingEquipmentPatch.cs" />
         <Compile Include="Patches\CustomHeritagePatch.cs" />
+        <Compile Include="Patches\FetchlingRacePatch.cs" />
         <Compile Include="Patches\CompanionSelectionPatch.cs" />
         <Compile Include="Patches\LeopardTripPatch.cs" />
         <Compile Include="Patches\ReapingEdgeProgressionFramePatch.cs" />
@@ -178,6 +182,9 @@
         <Content Include="Icons\death_ray.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\despair_of_sepulchre.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\eldritch_horror.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -188,6 +195,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\glacial_dominion.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\harvest_the_fallen.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\hell_on_earth.png">
@@ -214,9 +224,11 @@
         <Content Include="Icons\tempest_surge.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\umbral_arcana.png" />
         <Content Include="Icons\umbral_blast.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\umbral_potency.png" />
         <Content Include="Icons\umbral_ray.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

@@ -5,6 +5,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using UnityModManagerNet;
 using wotr_mod.Infrastructure;
@@ -38,7 +39,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Archetypes.Sepulchrit, archetype);
             }
 
-            var sepulchritSpellbook = EnsureSepulchritSpellbook(baseSpellbook, spellList, characterClass);
+            var sepulchritSpellList = EnsureSepulchritSpellList(spellList);
+            var sepulchritSpellbook = EnsureSepulchritSpellbook(baseSpellbook, sepulchritSpellList, characterClass);
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
                 archetype,
@@ -56,6 +58,26 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             return archetype;
         }
 
+        private BlueprintSpellList EnsureSepulchritSpellList(BlueprintSpellList necromancerSpellList)
+        {
+            var spellList = _blueprints.Get<BlueprintSpellList>(ModBlueprintIds.SpellLists.Sepulchrit);
+            if (spellList == null)
+            {
+                spellList = _blueprints.CloneBlueprint(
+                    necromancerSpellList,
+                    ModBlueprintIds.SpellLists.Sepulchrit,
+                    "WotrMod_NecromancerSepulchritSpellList");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.SpellLists.Sepulchrit, spellList);
+            }
+
+            var wizardSpellList = _blueprints.Require<BlueprintSpellList>(
+                GameBlueprintIds.SpellLists.Wizard, "Wizard spell list");
+            _blueprints.SetSpellListSpells(
+                spellList,
+                MergeSpellLists(necromancerSpellList, wizardSpellList));
+            return spellList;
+        }
+
         private BlueprintSpellbook EnsureSepulchritSpellbook(
             BlueprintSpellbook baseSpellbook,
             BlueprintSpellList spellList,
@@ -69,10 +91,40 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Spellbooks.Sepulchrit, spellbook);
             }
 
+            var wizardSpellbook = _blueprints.Require<BlueprintSpellbook>(
+                GameBlueprintIds.Spellbooks.Wizard, "Wizard spellbook");
+            _blueprints.CopySpellbookProgression(spellbook, wizardSpellbook);
             spellbook.CastingAttribute = StatType.Intelligence;
+            spellbook.CanCopyScrolls = true;
+            spellbook.IsArcane = true;
             _blueprints.SetSpellbookSpellList(spellbook, spellList);
             _blueprints.SetSpellbookCharacterClass(spellbook, characterClass);
             return spellbook;
+        }
+
+        private static IEnumerable<KeyValuePair<BlueprintAbility, int>> MergeSpellLists(
+            params BlueprintSpellList[] spellLists)
+        {
+            var spells = new Dictionary<BlueprintGuid, KeyValuePair<BlueprintAbility, int>>();
+            foreach (var spellList in spellLists ?? Array.Empty<BlueprintSpellList>())
+            {
+                foreach (var levelList in spellList?.SpellsByLevel ?? Array.Empty<SpellLevelList>())
+                {
+                    foreach (var spell in levelList.Spells ?? Enumerable.Empty<BlueprintAbility>())
+                    {
+                        if (spell == null || spells.ContainsKey(spell.AssetGuid))
+                        {
+                            continue;
+                        }
+
+                        spells.Add(spell.AssetGuid, new KeyValuePair<BlueprintAbility, int>(spell, levelList.SpellLevel));
+                    }
+                }
+            }
+
+            return spells.Values
+                .OrderBy(pair => pair.Value)
+                .ThenBy(pair => pair.Key.name);
         }
     }
 }

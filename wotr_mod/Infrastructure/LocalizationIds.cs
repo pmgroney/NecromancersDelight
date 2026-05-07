@@ -30,6 +30,12 @@ namespace wotr_mod.Infrastructure
             public const string OrcLordsBloodHeritageDescription = "wotr_mod.heritage.half_orc.orc_lords_blood.description";
             public const string TrueHighElfHeritageName = "wotr_mod.heritage.half_elf.true_high_elf.name";
             public const string TrueHighElfHeritageDescription = "wotr_mod.heritage.half_elf.true_high_elf.description";
+            public const string FetchlingHeritageName = "wotr_mod.heritage.fetchling.name";
+            public const string FetchlingHeritageDescription = "wotr_mod.heritage.fetchling.description";
+            public const string DefaultFetchlingHeritageName = "wotr_mod.heritage.fetchling.default.name";
+            public const string DefaultFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.default.description";
+            public const string ShadowWarriorFetchlingHeritageName = "wotr_mod.heritage.fetchling.shadow_warrior.name";
+            public const string ShadowWarriorFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.shadow_warrior.description";
             public const string BillyName = "wotr_mod.companion.billy.name";
             public const string BillyGreeting = "wotr_mod.companion.billy.dialog.greeting";
             public const string BillyJoinCue = "wotr_mod.companion.billy.dialog.join_cue";
@@ -160,6 +166,8 @@ namespace wotr_mod.Infrastructure
             public const string SpellCorpseExplosionDescription = "wotr_mod.spell.corpse_explosion.description";
             public const string SpellEldritchHorrorName = "wotr_mod.spell.eldritch_horror.name";
             public const string SpellEldritchHorrorDescription = "wotr_mod.spell.eldritch_horror.description";
+            public const string SpellHarvestTheFallenName = "wotr_mod.spell.harvest_the_fallen.name";
+            public const string SpellHarvestTheFallenDescription = "wotr_mod.spell.harvest_the_fallen.description";
             public const string SpellHellOnEarthName = "wotr_mod.spell.hell_on_earth.name";
             public const string SpellHellOnEarthDescription = "wotr_mod.spell.hell_on_earth.description";
         }

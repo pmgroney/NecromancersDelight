@@ -21,6 +21,7 @@ using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Components.CasterCheckers;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Buffs.Components;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -306,6 +307,24 @@ namespace wotr_mod.Infrastructure
         {
             BlueprintFields.UnitFactDisplayName.SetValue(fact, name);
             BlueprintFields.UnitFactDescription.SetValue(fact, description);
+        }
+
+        public void CopyUnitFactDisplay(BlueprintUnitFact target, BlueprintUnitFact source)
+        {
+            if (target == null || source == null)
+            {
+                return;
+            }
+
+            SetUnitFactDisplay(
+                target,
+                (LocalizedString)BlueprintFields.UnitFactDisplayName.GetValue(source),
+                (LocalizedString)BlueprintFields.UnitFactDescription.GetValue(source));
+
+            if (source.Icon != null)
+            {
+                SetUnitFactIcon(target, source.Icon);
+            }
         }
 
         public void SetUnitFactShortDescription(BlueprintUnitFact fact, LocalizedString description)
@@ -1249,6 +1268,24 @@ namespace wotr_mod.Infrastructure
                     : BlueprintReferenceBase.CreateTyped<BlueprintBuffReference>(buff));
         }
 
+        public void SetRemoveBuffActionBuff(ContextActionRemoveBuff action, BlueprintBuff buff)
+        {
+            BlueprintFields.ContextActionRemoveBuffBuff.SetValue(
+                action,
+                buff == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintBuffReference>(buff));
+        }
+
+        public void SetAddAreaEffect(AddAreaEffect component, BlueprintAbilityAreaEffect areaEffect)
+        {
+            BlueprintFields.AddAreaEffectArea.SetValue(
+                component,
+                areaEffect == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintAbilityAreaEffectReference>(areaEffect));
+        }
+
         public void SetBuffOnArmorBuff(BuffOnArmor component, BlueprintBuff buff)
         {
             BlueprintFields.BuffOnArmorBuff.SetValue(
@@ -1424,6 +1461,46 @@ namespace wotr_mod.Infrastructure
         public void AddCharacterClassToRoot(BlueprintCharacterClass characterClass)
         {
             _classRegistration.AddCharacterClassToRoot(characterClass);
+        }
+
+        public void AddRaceToRoot(BlueprintRace race, int insertAt = -1)
+        {
+            var root = Require<Kingmaker.Blueprints.Root.BlueprintRoot>(
+                GameBlueprintIds.Root.BlueprintRoot, "BlueprintRoot");
+
+            var rootType = root.GetType();
+            var progressionProp = rootType.GetProperty(
+                "Progression", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var progressionRoot = progressionProp != null
+                ? progressionProp.GetValue(root, null)
+                : rootType.GetField("Progression", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(root);
+
+            if (progressionRoot == null)
+            {
+                Error("BlueprintRoot.Progression was not available.");
+                return;
+            }
+
+            var racesField = progressionRoot.GetType()
+                .GetField("m_CharacterRaces", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (racesField == null)
+            {
+                Error("ProgressionRoot.m_CharacterRaces field not found.");
+                return;
+            }
+
+            var reference = BlueprintReferenceBase.CreateTyped<BlueprintRaceReference>(race);
+            var races = ((BlueprintRaceReference[])racesField.GetValue(progressionRoot)
+                        ?? Array.Empty<BlueprintRaceReference>()).ToList();
+            if (races.Any(r => r?.Get()?.AssetGuid == race.AssetGuid))
+                return;
+
+            if (insertAt >= 0 && insertAt <= races.Count)
+                races.Insert(insertAt, reference);
+            else
+                races.Add(reference);
+
+            racesField.SetValue(progressionRoot, races.ToArray());
         }
 
         public void ReportCharacterClassRegistrationErrors(BlueprintCharacterClass characterClass, string contextName)

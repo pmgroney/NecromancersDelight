@@ -110,4 +110,18 @@
   <data name="wotr_mod.spell.death_ray.description" xml:space="preserve">
     <value>You fire a ray of deathly energy. You may fire one ray, plus one additional ray for every four caster levels beyond 3rd, to a maximum of three rays at 11th level. Each ray requires a ranged touch attack and deals 4d6 negative energy damage.</value>
   </data>
+
+  <data name="wotr_mod.spell.despair_of_sepulchre.name" xml:space="preserve">
+    <value>Despair of the Sepulchre</value>
+  </data>
+  <data name="wotr_mod.spell.despair_of_sepulchre.description" xml:space="preserve">
+    <value>You emanate the terror of death in a 20-foot aura for 1 round per caster level. Enemies inside the aura take a -4 penalty to attack rolls, take a -4 penalty on saving throws against death effects, and become fatigued while they remain inside.</value>
+  </data>
+
+  <data name="wotr_mod.spell.harvest_the_fallen.name" xml:space="preserve">
+    <value>Harvest the Fallen</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_the_fallen.description" xml:space="preserve">
+    <value>You siphon lingering life essence from nearby corpses and dying enemies in a 30-foot radius. For each dead enemy or enemy below 25% hit points in the area, you heal yourself for 1d8 + caster level and gain temporary hit points equal to twice your caster level for 10 minutes per caster level. You can gain a maximum of 5 temporary hit point stacks from this spell.</value>
+  </data>
 </root>

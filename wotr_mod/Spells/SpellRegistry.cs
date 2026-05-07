@@ -26,7 +26,9 @@ namespace wotr_mod.Spells
                 Spell(GameBlueprintIds.Spells.Fireball, ModBlueprintIds.Spells.CorpseExplosion, "WotrMod_CorpseExplosion", 2, SpellSchool.Necromancy, "corpse_explosion", "Icons\\corpse_explosion.png", new CorpseExplosionModifier()),
                 Spell(GameBlueprintIds.Spells.Entangle, ModBlueprintIds.Spells.EldritchHorror, "WotrMod_EldritchHorror", 3, SpellSchool.Necromancy, "eldritch_horror", "Icons\\eldritch_horror.png", EldritchHorror()),
                 Spell(GameBlueprintIds.Spells.Entangle, ModBlueprintIds.Spells.HellOnEarth, "WotrMod_HellOnEarth", 9, SpellSchool.Necromancy, "hell_on_earth", "Icons\\hell_on_earth.png", HellOnEarth()),
-                Spell(GameBlueprintIds.Spells.ScorchingRay, ModBlueprintIds.Spells.DeathRay, "WotrMod_DeathRay", 2, SpellSchool.Necromancy, "death_ray", "Icons\\death_ray.png", DeathRay())
+                Spell(GameBlueprintIds.Spells.ScorchingRay, ModBlueprintIds.Spells.DeathRay, "WotrMod_DeathRay", 2, SpellSchool.Necromancy, "death_ray", "Icons\\death_ray.png", DeathRay()),
+                Spell(GameBlueprintIds.Spells.AuraOfGreaterCourage, ModBlueprintIds.Spells.DespairOfTheSepulchre, "WotrMod_DespairOfTheSepulchre", 5, SpellSchool.Necromancy, "despair_of_sepulchre", "Icons\\despair_of_sepulchre.png", new DespairOfTheSepulchreModifier()),
+                Spell(GameBlueprintIds.Spells.FalseLife, ModBlueprintIds.Spells.HarvestTheFallen, "WotrMod_HarvestTheFallen", 5, SpellSchool.Necromancy, "harvest_the_fallen", "Icons\\harvest_the_fallen.png", new HarvestTheFallenModifier())
             };
         }
 

@@ -41,6 +41,7 @@ namespace wotr_mod.Infrastructure
                             ModBlueprintIds.Progressions.Necromancer)),
                     new BillyPlacementPatch(blueprints, logger),
                     new GravebladeStartingEquipmentPatch(blueprints, logger),
+                    new FetchlingRacePatch(blueprints, localization),
                     new CustomHeritagePatch(blueprints, localization),
                     new LeopardTripPatch(blueprints, logger),
                     new VelociraptorGrowthPatch(blueprints, logger)
