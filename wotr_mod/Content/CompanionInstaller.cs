@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,9 +35,14 @@ namespace wotr_mod.Content
     internal sealed class CompanionInstaller : IContentModule
     {
         private const string BillyStoryBundlePath = "Assets\\billystory";
+        private const string BillyStoryAssetId = "wotr_mod:Assets/billystory";
 
         private static readonly Dictionary<string, Sprite> StorySpriteCache =
             new Dictionary<string, Sprite>(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, AssetBundle> StoryBundleCache =
+            new Dictionary<string, AssetBundle>(StringComparer.OrdinalIgnoreCase);
+        private static readonly List<UnityEngine.Object> StoryImageRoots =
+            new List<UnityEngine.Object>();
 
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
@@ -547,10 +553,14 @@ namespace wotr_mod.Content
                 story,
                 "m_Companion",
                 BlueprintReferenceBase.CreateTyped<BlueprintUnitReference>(companion));
+            var imageLink = CreateStoryImageLink(BillyStoryBundlePath);
+            Main.Log(
+                "Billy story image link " +
+                (imageLink == null ? "was not created." : $"created with AssetId '{imageLink.AssetId}'."));
             SetField(
                 story,
                 "m_ImageLink",
-                CreateStoryImageLink(BillyStoryBundlePath));
+                imageLink);
 
             return story;
         }
@@ -565,17 +575,21 @@ namespace wotr_mod.Content
                     return null;
                 }
 
+                if (!RegisterStorySpriteResource(BillyStoryAssetId, sprite))
+                {
+                    return null;
+                }
+
+                Main.Log($"Billy story image creating SpriteLink with AssetId '{BillyStoryAssetId}'.");
                 var link = new SpriteLink
                 {
-                    AssetId = "wotr_mod:" + relativeBundlePath.Replace('\\', '/')
+                    AssetId = BillyStoryAssetId
                 };
-                var handle = (BundledResourceHandle<Sprite>)Activator.CreateInstance(
-                    typeof(BundledResourceHandle<Sprite>),
-                    true);
-                SetField(handle, "m_AssetId", link.AssetId);
-                SetField(handle, "m_Held", true);
-                SetField(handle, "m_Object", new WeakReference<Sprite>(sprite));
+                var handle = CreateHeldStoryImageHandle(BillyStoryAssetId, sprite);
                 SetProperty(link, "m_Handle", handle);
+                Main.Log(
+                    $"Billy story image seeded held handle for '{BillyStoryAssetId}': " +
+                    (handle == null ? "<null>" : $"held={handle.IsHeld}, assetId='{handle.AssetId}', loaded={DescribeSprite(link.Load(false, false))}"));
                 return link;
             }
             catch (Exception ex)
@@ -589,48 +603,177 @@ namespace wotr_mod.Content
         {
             if (string.IsNullOrWhiteSpace(relativeBundlePath) || string.IsNullOrWhiteSpace(_modPath))
             {
+                var loggedBundlePath = string.IsNullOrWhiteSpace(relativeBundlePath) ? "<null>" : relativeBundlePath;
+                var loggedModPath = string.IsNullOrWhiteSpace(_modPath) ? "<null>" : _modPath;
+                Main.Warning(
+                    $"Billy story image skipped: bundle path or mod path is blank. " +
+                    $"relative='{loggedBundlePath}', modPath='{loggedModPath}'.");
                 return null;
             }
 
             var fullPath = Path.Combine(_modPath, relativeBundlePath);
             if (StorySpriteCache.TryGetValue(fullPath, out var cached))
             {
+                var cachedName = cached == null ? "<null>" : cached.name;
+                Main.Log($"Billy story image using cached sprite '{cachedName}' from '{fullPath}'.");
                 return cached;
             }
 
             if (!File.Exists(fullPath))
             {
+                Main.Warning($"Billy story image bundle file was not found at '{fullPath}'.");
                 return null;
             }
 
-            var bundle = AssetBundle.GetAllLoadedAssetBundles()
-                .FirstOrDefault(loaded => string.Equals(
-                    loaded.name,
-                    Path.GetFileName(relativeBundlePath),
-                    StringComparison.OrdinalIgnoreCase));
-            var ownsBundle = bundle == null;
-            bundle = bundle ?? AssetBundle.LoadFromFile(fullPath);
+            var fileInfo = new FileInfo(fullPath);
+            Main.Log($"Billy story image loading bundle '{fullPath}' ({fileInfo.Length} bytes).");
+
+            var loadedBundles = AssetBundle.GetAllLoadedAssetBundles().ToArray();
+            Main.Log(
+                "Billy story image loaded bundles: " +
+                (loadedBundles.Length == 0
+                    ? "<none>"
+                    : string.Join(
+                        ", ",
+                        loadedBundles
+                            .Select(loaded => string.IsNullOrWhiteSpace(loaded.name) ? "<unnamed>" : loaded.name)
+                            .ToArray())));
+
+            var bundle = StoryBundleCache.TryGetValue(fullPath, out var cachedBundle) ? cachedBundle : null;
+            if (bundle != null)
+            {
+                Main.Log($"Billy story image reusing cached bundle '{bundle.name}'.");
+            }
+            else
+            {
+                bundle = loadedBundles
+                    .FirstOrDefault(loaded => string.Equals(
+                        loaded.name,
+                        Path.GetFileName(relativeBundlePath),
+                        StringComparison.OrdinalIgnoreCase));
+                Main.Log(
+                    bundle == null
+                        ? $"Billy story image did not find a loaded bundle named '{Path.GetFileName(relativeBundlePath)}'; loading from file."
+                        : $"Billy story image reusing loaded bundle '{bundle.name}'.");
+                bundle = bundle ?? AssetBundle.LoadFromFile(fullPath);
+            }
+
             if (bundle == null)
             {
+                Main.Warning($"Billy story image AssetBundle.LoadFromFile returned null for '{fullPath}'.");
                 return null;
             }
 
             try
             {
-                var sprite = bundle.LoadAllAssets<Sprite>().FirstOrDefault();
+                StoryBundleCache[fullPath] = bundle;
+                Main.Log($"Billy story image bundle loaded as '{bundle.name}'.");
+                var assetNames = bundle.GetAllAssetNames();
+                Main.Log(
+                    "Billy story image bundle assets: " +
+                    (assetNames.Length == 0 ? "<none>" : string.Join(", ", assetNames)));
+
+                var sprites = bundle.LoadAllAssets<Sprite>();
+                Main.Log(
+                    "Billy story image sprites found: " +
+                    (sprites.Length == 0
+                        ? "<none>"
+                        : string.Join(", ", sprites.Select(DescribeSprite).ToArray())));
+
+                var sprite = sprites.FirstOrDefault();
                 if (sprite != null)
                 {
                     StorySpriteCache[fullPath] = sprite;
+                    Main.Log($"Billy story image selected sprite {DescribeSprite(sprite)}.");
+                }
+                else
+                {
+                    Main.Warning($"Billy story image bundle '{fullPath}' did not contain any Sprite assets.");
                 }
 
                 return sprite;
             }
-            finally
+            catch
             {
-                if (ownsBundle)
+                if (!loadedBundles.Contains(bundle))
                 {
-                    bundle.Unload(false);
+                    StoryBundleCache.Remove(fullPath);
+                    bundle.Unload(true);
                 }
+
+                throw;
+            }
+        }
+
+        private static string DescribeSprite(Sprite sprite)
+        {
+            if (sprite == null)
+            {
+                return "<null>";
+            }
+
+            var texture = sprite.texture;
+            var textureSize = texture == null ? "no texture" : $"{texture.width}x{texture.height}";
+            return $"'{sprite.name}' rect={sprite.rect.width}x{sprite.rect.height} texture={textureSize}";
+        }
+
+        private static bool RegisterStorySpriteResource(string assetId, Sprite sprite)
+        {
+            if (string.IsNullOrWhiteSpace(assetId) || sprite == null)
+            {
+                return false;
+            }
+
+            RootStoryImage(sprite);
+
+            var loadedResourcesField = typeof(ResourcesLibrary).GetField(
+                "s_LoadedResources",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            var loadedResources = loadedResourcesField?.GetValue(null) as IDictionary;
+            var loadedResourceType = typeof(ResourcesLibrary).GetNestedType(
+                "LoadedResource",
+                BindingFlags.Public | BindingFlags.NonPublic);
+            if (loadedResources == null || loadedResourceType == null)
+            {
+                Main.Warning($"Billy story image could not access ResourcesLibrary loaded resource cache for '{assetId}'.");
+                return false;
+            }
+
+            var loadedResource = Activator.CreateInstance(loadedResourceType, sprite);
+            SetField(loadedResource, "AssetId", assetId);
+            loadedResources[assetId] = loadedResource;
+            ResourcesLibrary.HoldResource(assetId);
+            Main.Log($"Billy story image registered ResourcesLibrary asset '{assetId}' from sprite {DescribeSprite(sprite)}.");
+            return true;
+        }
+
+        private static BundledResourceHandle<Sprite> CreateHeldStoryImageHandle(string assetId, Sprite sprite)
+        {
+            var handle = (BundledResourceHandle<Sprite>)Activator.CreateInstance(
+                typeof(BundledResourceHandle<Sprite>),
+                true);
+            SetField(handle, "m_AssetId", assetId);
+            SetField(handle, "m_Held", true);
+            SetField(handle, "m_Object", new WeakReference<Sprite>(sprite));
+            return handle;
+        }
+
+        private static void RootStoryImage(Sprite sprite)
+        {
+            if (sprite == null)
+            {
+                return;
+            }
+
+            if (!StoryImageRoots.Contains(sprite))
+            {
+                StoryImageRoots.Add(sprite);
+            }
+
+            var texture = sprite.texture;
+            if (texture != null && !StoryImageRoots.Contains(texture))
+            {
+                StoryImageRoots.Add(texture);
             }
         }
 

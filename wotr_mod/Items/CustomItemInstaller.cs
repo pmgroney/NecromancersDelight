@@ -240,13 +240,25 @@ namespace wotr_mod.Items
                 lootPart.Loot = new ItemsCollection(mapObject);
             }
 
-            if (lootPart.Loot.Items.Any(existing => existing?.Blueprint?.AssetGuid == item.AssetGuid))
+            var existingItem = lootPart.Loot.Items.FirstOrDefault(existing => existing?.Blueprint?.AssetGuid == item.AssetGuid);
+            if (existingItem != null)
             {
+                if (placement.Identify)
+                {
+                    existingItem.Identify();
+                }
+
                 _logger.Log($"Map object loot already contains {item.name}: {placement.TargetName}.");
                 return;
             }
 
-            lootPart.Loot.Add(item, placement.Count, placement.Identify, null);
+            lootPart.Loot.Add(item, placement.Count, placement.Identify, createdItem =>
+            {
+                if (placement.Identify)
+                {
+                    createdItem.Identify();
+                }
+            });
 
             _logger.Log($"Added {item.name} to map object loot {placement.TargetName}.");
         }

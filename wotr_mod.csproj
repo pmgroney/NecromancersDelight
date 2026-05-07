@@ -114,7 +114,6 @@
         <Compile Include="Spells\SpellInstaller.cs" />
         <Compile Include="Spells\SpellRegistry.cs" />
         <Compile Include="Spells\SpellSchoolFilter.cs" />
-        <Compile Include="Patches\CleverPyromaniacGnomePatch.cs" />
         <Compile Include="Patches\BillyReactivityBarkAction.cs" />
         <Compile Include="Patches\BillyRecruitmentFallbackAction.cs" />
         <Compile Include="Patches\BillyPlacementPatch.cs" />

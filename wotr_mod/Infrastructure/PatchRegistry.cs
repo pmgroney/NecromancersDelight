@@ -42,7 +42,6 @@ namespace wotr_mod.Infrastructure
                     new BillyPlacementPatch(blueprints, logger),
                     new GravebladeStartingEquipmentPatch(blueprints, logger),
                     new CustomHeritagePatch(blueprints, localization),
-                    new CleverPyromaniacGnomePatch(blueprints, localization),
                     new LeopardTripPatch(blueprints, logger),
                     new VelociraptorGrowthPatch(blueprints, logger)
                 });

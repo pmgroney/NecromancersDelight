@@ -37,6 +37,9 @@ namespace wotr_mod.Patches
             var gnomeHeritageSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 GameBlueprintIds.Selections.GnomeHeritage,
                 "Gnome heritage selection");
+            var pyromaniacGnome = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.PyromaniacGnome,
+                "Pyromaniac gnome heritage");
             var halfElfHeritageSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 GameBlueprintIds.Selections.HalfElfHeritage,
                 "Half-elf heritage selection");
@@ -86,7 +89,18 @@ namespace wotr_mod.Patches
                 _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Charisma, 1),
                 _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Dexterity, 2));
 
-                var normalHuman = _heritageFactory.EnsureHeritage(
+            var addPyromaniac = new AddFeatureOnApply { name = "$AddFeatureOnApply$CleverPyromaniacGnome" };
+            _blueprints.SetAddFeatureOnApplyFeature(addPyromaniac, pyromaniacGnome);
+            var cleverPyromaniac = _heritageFactory.EnsureHeritage(
+                ModBlueprintIds.Features.CleverPyromaniacGnome,
+                "CleverPyromaniacGnome",
+                LocalizationIds.Mod.CleverPyromaniacName,
+                LocalizationIds.Mod.CleverPyromaniacDescription,
+                addPyromaniac,
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Charisma, -2),
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Intelligence, 3));
+
+            var normalHuman = _heritageFactory.EnsureHeritage(
                 ModBlueprintIds.Features.NormalHumanHeritage,
                 "WotrMod_NormalHumanHeritage",
                 LocalizationIds.Mod.NormalHumanHeritageName,
@@ -122,6 +136,7 @@ namespace wotr_mod.Patches
             _blueprints.AddFeatureToSelection(dhampirHeritageSelection, cryptguardDhampir);
             _blueprints.AddFeatureToSelection(gnomeHeritageSelection, graveltoeGnome);
             _blueprints.AddFeatureToSelection(gnomeHeritageSelection, shadowGnome);
+            _blueprints.AddFeatureToSelection(gnomeHeritageSelection, cleverPyromaniac);
             _blueprints.AddFeatureToSelection(halfElfHeritageSelection, trueHighElf);
             _blueprints.AddFeatureToSelection(halfOrcHeritageSelection, orcLordsBlood);
             _blueprints.AddFeatureToSelection(humanHeritageSelection, normalHuman);

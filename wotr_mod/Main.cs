@@ -19,6 +19,11 @@ namespace wotr_mod
 
         internal static string ModPath { get; private set; }
 
+        internal static void Log(string message)
+        {
+            _logger?.Log(message);
+        }
+
         internal static void Warning(string message)
         {
             _logger?.Warning(message);

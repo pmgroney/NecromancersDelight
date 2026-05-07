@@ -27,6 +27,11 @@ namespace wotr_mod.Patches
 
         public void RegisterLocalization()
         {
+            _localization.Put(LocalizationIds.Mod.CleverPyromaniacName, "Clever Pyromaniac");
+            _localization.Put(
+                LocalizationIds.Mod.CleverPyromaniacDescription,
+                "These gnomes are as dangerously fascinated by fire as pyromaniacs, but their experiments sharpen the mind instead of charm. They gain the Pyromaniac heritage benefits and replace the gnome racial +2 Charisma bonus with a +2 Intelligence bonus.");
+
             _localization.Put(LocalizationIds.Mod.UmbralDhampirHeritageName, "Umbral Dhampir");
             _localization.Put(
                 LocalizationIds.Mod.UmbralDhampirHeritageDescription,
@@ -81,6 +86,9 @@ namespace wotr_mod.Patches
             var gnomeHeritageSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 GameBlueprintIds.Selections.GnomeHeritage,
                 "Gnome heritage selection");
+            var pyromaniacGnome = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.PyromaniacGnome,
+                "Pyromaniac gnome heritage");
             var halfElfHeritageSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 GameBlueprintIds.Selections.HalfElfHeritage,
                 "Half-elf heritage selection");
@@ -130,7 +138,18 @@ namespace wotr_mod.Patches
                 CreateStatBonus("ShadowGnome", StatType.Charisma, 1),
                 CreateStatBonus("ShadowGnome", StatType.Dexterity, 2));
 
-                var normalHuman = EnsureHeritage(
+            var addPyromaniac = new AddFeatureOnApply { name = "$AddFeatureOnApply$CleverPyromaniacGnome" };
+            _blueprints.SetAddFeatureOnApplyFeature(addPyromaniac, pyromaniacGnome);
+            var cleverPyromaniac = EnsureHeritage(
+                ModBlueprintIds.Features.CleverPyromaniacGnome,
+                "CleverPyromaniacGnome",
+                LocalizationIds.Mod.CleverPyromaniacName,
+                LocalizationIds.Mod.CleverPyromaniacDescription,
+                addPyromaniac,
+                CreateStatBonus("CleverPyromaniacGnome", StatType.Charisma, -2),
+                CreateStatBonus("CleverPyromaniacGnome", StatType.Intelligence, 3));
+
+            var normalHuman = EnsureHeritage(
                 ModBlueprintIds.Features.NormalHumanHeritage,
                 "WotrMod_NormalHumanHeritage",
                 LocalizationIds.Mod.NormalHumanHeritageName,
@@ -166,6 +185,7 @@ namespace wotr_mod.Patches
             _blueprints.AddFeatureToSelection(dhampirHeritageSelection, cryptguardDhampir);
             _blueprints.AddFeatureToSelection(gnomeHeritageSelection, graveltoeGnome);
             _blueprints.AddFeatureToSelection(gnomeHeritageSelection, shadowGnome);
+            _blueprints.AddFeatureToSelection(gnomeHeritageSelection, cleverPyromaniac);
             _blueprints.AddFeatureToSelection(halfElfHeritageSelection, trueHighElf);
             _blueprints.AddFeatureToSelection(halfOrcHeritageSelection, orcLordsBlood);
             _blueprints.AddFeatureToSelection(humanHeritageSelection, normalHuman);
