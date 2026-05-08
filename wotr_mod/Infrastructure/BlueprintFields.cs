@@ -288,6 +288,9 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo AbilityResourceLogicIsSpendResource =
             typeof(AbilityResourceLogic).GetField("m_IsSpendResource", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo AbilityDeliverProjectileProjectiles =
+            typeof(AbilityDeliverProjectile).GetField("m_Projectiles", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo ContextActionApplyBuffBuff =
             typeof(ContextActionApplyBuff).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
 

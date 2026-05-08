@@ -57,6 +57,10 @@
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
         <Reference Include="UnityEngine.ImageConversionModule">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
             <Private>False</Private>
@@ -117,6 +121,9 @@
         <Compile Include="Infrastructure\LocalizationTool.cs" />
         <Compile Include="Infrastructure\PatchRegistry.cs" />
         <Compile Include="Infrastructure\SelectionRecommendation.cs" />
+        <Compile Include="Infrastructure\SpellEffectTheme.cs" />
+        <Compile Include="Infrastructure\SpellEffectThemes.cs" />
+        <Compile Include="Infrastructure\SpellEffectTintRegistry.cs" />
         <Compile Include="Spells\SpellDefinition.cs" />
         <Compile Include="Spells\Modifiers\AbilityTargetMustBeDead.cs" />
         <Compile Include="Spells\Modifiers\ActionListPatcher.cs" />
@@ -144,6 +151,7 @@
         <Compile Include="Patches\CompanionSelectionPatch.cs" />
         <Compile Include="Patches\LeopardTripPatch.cs" />
         <Compile Include="Patches\ReapingEdgeProgressionFramePatch.cs" />
+        <Compile Include="Patches\SpellEffectTintPatch.cs" />
         <Compile Include="Patches\VelociraptorGrowthPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

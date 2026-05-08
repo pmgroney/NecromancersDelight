@@ -198,6 +198,11 @@ namespace wotr_mod.Infrastructure
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
         }
 
+        internal static class Projectiles
+        {
+            public const string Enervation = "72aa6191e153a31468d76668cbc72fc7";
+        }
+
         internal static class Enchantments
         {
             public const string LongswordOfRightEnchantment = "59c2b96ee4525144e9ba7b8063ae20bb";

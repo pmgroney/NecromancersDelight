@@ -125,6 +125,11 @@ namespace wotr_mod.Infrastructure
             public const string VitriolicBlast = "46b78b46dac94683b4bb58ab21a6cc96";
         }
 
+        internal static class Projectiles
+        {
+            public const string ShadowbornUmbralRay = "5ac7dbf06e2a4c96a93b8071e3d4f285";
+        }
+
         internal static class Abilities
         {
             public const string WitheringRay = "e5a4af76f4c54a50af1b4b83fc2404e3";

@@ -2,6 +2,7 @@
 using System.Linq;
 using System;
 using System.Reflection;
+using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -10,6 +11,7 @@ using Kingmaker.Blueprints.Facts;
 using Kingmaker.Enums.Damage;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -498,8 +500,7 @@ namespace wotr_mod.Classes
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.ShadowbornLivingGhost, feature);
             }
 
-            var addFacts = _blueprints.GetComponents<AddFacts>(feature).FirstOrDefault()
-                ?? new AddFacts { name = "$AddFacts$ShadowbornLivingGhostFeature" };
+            var addFacts = new AddFacts { name = "$AddFacts$ShadowbornLivingGhostFeature" };
             _blueprints.SetAddFacts(addFacts, EnsureShadowbornLivingGhostAbility());
             _blueprints.SetComponents(feature, addFacts);
             _blueprints.SetUnitFactDisplay(
@@ -927,8 +928,72 @@ namespace wotr_mod.Classes
             SpellModifierUtility.ReplaceDescriptor(ability, SpellDescriptor.Fire, SpellDescriptor.Death, _blueprints);
             BindAbilityRankConfigsToClass(ability, characterClass);
             PatchFireDamageToNegativeEnergy(ability);
+            ConfigureShadowbornDamageVisuals(abilityGuid, ability);
 
             return ability;
+        }
+
+        private static readonly FieldInfo CasterAppearProjectileField =
+            AccessTools.Field(typeof(BlueprintProjectile), "m_CasterAppearProjectile");
+
+        private void ConfigureShadowbornDamageVisuals(string abilityGuid, BlueprintAbility ability)
+        {
+            if (abilityGuid != ModBlueprintIds.Abilities.ShadowbornUmbralRay)
+            {
+                return;
+            }
+
+            var projectile = EnsureShadowbornUmbralRayProjectile();
+            SpellEffectTintRegistry.RegisterProjectileTint(
+                projectile.AssetGuid.ToString(),
+                SpellEffectTheme.Shadow);
+
+            RegisterCasterAppearTint(projectile);
+
+            foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
+            {
+                _blueprints.SetAbilityDeliverProjectiles(delivery, projectile);
+            }
+
+            ability.OnEnable();
+        }
+
+        private static void RegisterCasterAppearTint(BlueprintProjectile projectile)
+        {
+            if (CasterAppearProjectileField == null)
+            {
+                return;
+            }
+
+            var reference = CasterAppearProjectileField.GetValue(projectile) as BlueprintProjectileReference;
+            var casterAppear = reference?.Get() as BlueprintProjectile;
+            if (casterAppear != null)
+            {
+                SpellEffectTintRegistry.RegisterProjectileTint(
+                    casterAppear.AssetGuid.ToString(),
+                    SpellEffectTheme.Shadow);
+            }
+        }
+
+        private BlueprintProjectile EnsureShadowbornUmbralRayProjectile()
+        {
+            var projectile = _blueprints.Get<BlueprintProjectile>(ModBlueprintIds.Projectiles.ShadowbornUmbralRay);
+            if (projectile != null)
+            {
+                return projectile;
+            }
+
+            var donor = _blueprints.Require<BlueprintProjectile>(
+                GameBlueprintIds.Projectiles.Enervation,
+                "Enervation projectile donor");
+            projectile = _blueprints.CloneBlueprint(
+                donor,
+                ModBlueprintIds.Projectiles.ShadowbornUmbralRay,
+                "WotrMod_ShadowbornUmbralRayProjectile");
+            projectile.OnEnable();
+            _blueprints.AddCachedBlueprint(ModBlueprintIds.Projectiles.ShadowbornUmbralRay, projectile);
+
+            return projectile;
         }
 
         private static void PatchFireDamageToNegativeEnergy(BlueprintAbility ability)

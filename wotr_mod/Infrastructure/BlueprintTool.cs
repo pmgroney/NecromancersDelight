@@ -1259,6 +1259,18 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.AbilityResourceLogicIsSpendResource.SetValue(component, spendResource);
         }
 
+        public void SetAbilityDeliverProjectiles(
+            AbilityDeliverProjectile component,
+            params BlueprintProjectile[] projectiles)
+        {
+            var references = (projectiles ?? Array.Empty<BlueprintProjectile>())
+                .Where(projectile => projectile != null)
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintProjectileReference>)
+                .ToArray();
+
+            BlueprintFields.AbilityDeliverProjectileProjectiles.SetValue(component, references);
+        }
+
         public void SetApplyBuffActionBuff(ContextActionApplyBuff action, BlueprintBuff buff)
         {
             BlueprintFields.ContextActionApplyBuffBuff.SetValue(
