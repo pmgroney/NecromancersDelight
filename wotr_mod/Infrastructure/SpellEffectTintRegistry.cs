@@ -7,6 +7,7 @@ namespace wotr_mod.Infrastructure
     {
         private static readonly Dictionary<string, Color> ProjectileTints = new Dictionary<string, Color>();
         private static readonly Dictionary<string, Color> AreaEffectTints = new Dictionary<string, Color>();
+        private static readonly Dictionary<string, Color> AbilitySpawnFxTints = new Dictionary<string, Color>();
 
         public static void RegisterProjectileTint(string projectileGuid, Color tint)
         {
@@ -36,6 +37,21 @@ namespace wotr_mod.Infrastructure
         public static bool TryGetAreaEffectTint(string areaEffectGuid, out Color tint)
         {
             return TryGet(AreaEffectTints, areaEffectGuid, out tint);
+        }
+
+        public static void RegisterAbilitySpawnFxTint(string abilityGuid, Color tint)
+        {
+            Register(AbilitySpawnFxTints, abilityGuid, tint);
+        }
+
+        public static void RegisterAbilitySpawnFxTint(string abilityGuid, SpellEffectTheme theme)
+        {
+            Register(AbilitySpawnFxTints, abilityGuid, SpellEffectThemes.ColorFor(theme));
+        }
+
+        public static bool TryGetAbilitySpawnFxTint(string abilityGuid, out Color tint)
+        {
+            return TryGet(AbilitySpawnFxTints, abilityGuid, out tint);
         }
 
         private static void Register(Dictionary<string, Color> registry, string guid, Color tint)

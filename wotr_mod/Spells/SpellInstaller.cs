@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
+using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components;
 using UnityEngine;
 using UnityModManagerNet;
 using wotr_mod.Content;
@@ -76,6 +80,7 @@ namespace wotr_mod.Spells
             {
                 ApplyMetadata(existing, definition);
                 definition.Modifier?.Apply(new SpellModifierContext(existing, definition, _blueprints, _logger));
+                ConfigureSpellVisuals(existing, definition);
                 return existing;
             }
 
@@ -88,8 +93,74 @@ namespace wotr_mod.Spells
             definition.Modifier?.Apply(new SpellModifierContext(clone, definition, _blueprints, _logger));
             clone.OnEnable();
             _blueprints.AddCachedBlueprint(definition.NewSpellGuid, clone);
+            ConfigureSpellVisuals(clone, definition);
 
             return clone;
+        }
+
+        private static readonly FieldInfo CasterAppearProjectileField =
+            AccessTools.Field(typeof(BlueprintProjectile), "m_CasterAppearProjectile");
+
+        private void ConfigureSpellVisuals(BlueprintAbility spell, SpellDefinition definition)
+        {
+            if (definition.NewSpellGuid == ModBlueprintIds.Spells.VitriolicBlast)
+                ConfigureVitriolicBurstVisuals(spell);
+        }
+
+        private void ConfigureVitriolicBurstVisuals(BlueprintAbility ability)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Acid);
+
+            var projectile = EnsureVitriolicBlastProjectile(ability);
+            if (projectile == null) return;
+
+            SpellEffectTintRegistry.RegisterProjectileTint(
+                projectile.AssetGuid.ToString(),
+                SpellEffectTheme.Acid);
+            RegisterProjectileCasterAppearTint(projectile, SpellEffectTheme.Acid);
+
+            foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
+            {
+                _blueprints.SetAbilityDeliverProjectiles(delivery, projectile);
+            }
+
+            ability.OnEnable();
+        }
+
+        private BlueprintProjectile EnsureVitriolicBlastProjectile(BlueprintAbility ability)
+        {
+            var existing = _blueprints.Get<BlueprintProjectile>(ModBlueprintIds.Projectiles.VitriolicBlast);
+            if (existing != null) return existing;
+
+            var delivery = _blueprints.GetComponents<AbilityDeliverProjectile>(ability).FirstOrDefault();
+            var projectileRefs = delivery != null
+                ? BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(delivery) as BlueprintProjectileReference[]
+                : null;
+            var donor = projectileRefs?.FirstOrDefault()?.Get() as BlueprintProjectile;
+            if (donor == null) return null;
+
+            var projectile = _blueprints.CloneBlueprint(
+                donor,
+                ModBlueprintIds.Projectiles.VitriolicBlast,
+                "WotrMod_VitriolicBlastProjectile");
+            projectile.OnEnable();
+            _blueprints.AddCachedBlueprint(ModBlueprintIds.Projectiles.VitriolicBlast, projectile);
+            return projectile;
+        }
+
+        private static void RegisterProjectileCasterAppearTint(BlueprintProjectile projectile, SpellEffectTheme theme)
+        {
+            if (CasterAppearProjectileField == null) return;
+            var reference = CasterAppearProjectileField.GetValue(projectile) as BlueprintProjectileReference;
+            var casterAppear = reference?.Get() as BlueprintProjectile;
+            if (casterAppear != null)
+            {
+                SpellEffectTintRegistry.RegisterProjectileTint(
+                    casterAppear.AssetGuid.ToString(),
+                    theme);
+            }
         }
 
         private static bool IsGrantedOnlySpell(SpellDefinition definition)

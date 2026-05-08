@@ -943,6 +943,10 @@ namespace wotr_mod.Classes
                 return;
             }
 
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Shadow);
+
             var projectile = EnsureShadowbornUmbralRayProjectile();
             SpellEffectTintRegistry.RegisterProjectileTint(
                 projectile.AssetGuid.ToString(),
