@@ -128,11 +128,16 @@ namespace wotr_mod.Infrastructure
         internal static class Abilities
         {
             public const string WitheringRay = "e5a4af76f4c54a50af1b4b83fc2404e3";
+            public const string LivingDarkness1 = "a1b2c3d4e5f648901a2b3c4d5e6f0011";
+            public const string LivingDarkness2 = "a1b2c3d4e5f648901a2b3c4d5e6f0012";
+            public const string LivingDarkness3 = "a1b2c3d4e5f648901a2b3c4d5e6f0013";
+            public const string LivingDarkness4 = "a1b2c3d4e5f648901a2b3c4d5e6f0014";
             public const string GraspOfTheDead = "6bd1d04aafdb4459812b1a4ed7910a89";
             public const string IncorporealForm = "2b4514f3866845ab871a4055bcb77b7a";
             public const string ReapingEdge = "a4f3c2d1e0b94f6a8c7d5e3f1a2b4c6d";
             public const string ReapingEdgeAbility = "1faef653ffb44bf0a29193b9298c6448";
             public const string ShadowbornArcana = "5f58f3ee60f44ec0bdc4a85190d11883";
+            public const string ShadowbornLivingGhost = "b340122d4aa945b8a7193080f0f06827";
             public const string ShadowbornUmbralRay = "70e2d1d47f924bd1ac3721b3905f0035";
             public const string ShadowbornUmbralBlast = "8e6bea96313f40b2a217bc43ade2b99a";
         }
@@ -155,6 +160,10 @@ namespace wotr_mod.Infrastructure
         internal static class AreaEffects
         {
             public const string DespairOfTheSepulchre = "cf21429b2cb74c648b646f285e00b6ef";
+            public const string LivingDarkness1Area = "a1b2c3d4e5f648901a2b3c4d5e6f0041";
+            public const string LivingDarkness2Area = "a1b2c3d4e5f648901a2b3c4d5e6f0042";
+            public const string LivingDarkness3Area = "a1b2c3d4e5f648901a2b3c4d5e6f0043";
+            public const string LivingDarkness4Area = "a1b2c3d4e5f648901a2b3c4d5e6f0044";
             public const string EldritchHorror = "bcb6329cefc66da41b011299a43cc681";
             public const string HellOnEarth = "9b1a5b53f5a94e0d9a5c8a9cbe4d2b8a";
         }
@@ -166,6 +175,7 @@ namespace wotr_mod.Infrastructure
             public const string FetchlingHeritage = "3f4a5b6c7d8e4901a2b3c4d5e6f70123";
             public const string HumanHeritage = "2f4a6c8e0b134d57a9c1e3f5b7d90246";
             public const string NecromancerBloodline = "a1b2c3d4e5f64758b9c0d1e2f3a4b5c6";
+            public const string ShadowbornBonusFeat = "18134c5d585741aabcf13b57e9a705b2";
             public const string NecromancerBonusFeat = "c3d4e5f6a7b84960d1e2f3a4b5c6d7e8";
             public const string GravebladeBonusFeat = "9d1b3c5e7f804a2b9c0d1e3f5a6b8c02";
         }
@@ -173,6 +183,10 @@ namespace wotr_mod.Infrastructure
         internal static class Features
         {
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
+            public const string LivingDarknessFeature1 = "a1b2c3d4e5f648901a2b3c4d5e6f0001";
+            public const string LivingDarknessFeature2 = "a1b2c3d4e5f648901a2b3c4d5e6f0002";
+            public const string LivingDarknessFeature3 = "a1b2c3d4e5f648901a2b3c4d5e6f0003";
+            public const string LivingDarknessFeature4 = "a1b2c3d4e5f648901a2b3c4d5e6f0004";
             public const string BillyMonkAcBonus = "a73f9c2d4e5849a5bc6d7e8f9012a3b4";
             public const string BillyPositiveEnergyImmunity = "e009f36b497c489c9faeeac27d115a82";
             public const string BillyWayOfTheBowLongbow = "b84e0f6a1c2d4e3f95a7b8c9d0e1f234";
@@ -199,6 +213,7 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornUmbralRay = "0a40fbba68d24db5aebdf1afbcc57cc8";
             public const string ShadowbornUmbralBlast = "e15bcd7b82b94cdab66c629b4adb7cb9";
             public const string ShadowbornElementalBody = "4f8b1d2c6e934a70a5c9e3f217bd4608";
+            public const string ShadowbornLivingGhost = "3b870e78634a4949a7b6e5dff802a3ab";
             public const string ShadowbornResistance = "4d5e6f7081924a3bb4c5d6e7f8091a2b";
             public const string ShadowbornResistanceLevel1 = "5e6f708192a34b4cc5d6e7f8091a2b3c";
             public const string ShadowbornResistanceLevel2 = "6f708192a3b44c5dd6e7f8091a2b3c4d";
@@ -227,6 +242,15 @@ namespace wotr_mod.Infrastructure
         internal static class Buffs
         {
             public const string BillyMonkAcBonusBuffUnarmored = "c95f1a2b3c4d5e6f8091a2b3c4d5e6f7";
+            public const string LivingDarkness1AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0021";
+            public const string LivingDarkness2AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0022";
+            public const string LivingDarkness3AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0023";
+            public const string LivingDarkness4AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0024";
+            public const string LivingDarkness1Debuff = "a1b2c3d4e5f648901a2b3c4d5e6f0031";
+            public const string LivingDarkness2Debuff = "a1b2c3d4e5f648901a2b3c4d5e6f0032";
+            public const string LivingDarkness3Debuff = "a1b2c3d4e5f648901a2b3c4d5e6f0033";
+            public const string LivingDarkness4Debuff = "a1b2c3d4e5f648901a2b3c4d5e6f0034";
+            public const string LivingDarknessShakenDebuff = "a1b2c3d4e5f648901a2b3c4d5e6f0035";
             public const string DespairOfTheSepulchreAura = "28f9602f7fcf4b5e8f21083b7555dec3";
             public const string DespairOfTheSepulchreDebuff = "3be11a63425a4da4889fcafb3672e512";
             public const string GravebladeArmorMastery = "d0b8a6f4c2e1437a9b5d1f3c8e0a6247";
@@ -236,6 +260,7 @@ namespace wotr_mod.Infrastructure
             public const string ReapingEdgeFatigue = "f9c8b7a6e5d44f10ab2c3d5e7f901243";
             public const string ReapingEdgeExhaustion = "0ad9c8b7f6e55021bc3d4e6f80912354";
             public const string ShadowbornArcana = "973702c1b9e74b9e8ddcc3e580e192f9";
+            public const string ShadowbornLivingGhost = "23ca9c026754444499d9b30238873d97";
         }
     }
 }

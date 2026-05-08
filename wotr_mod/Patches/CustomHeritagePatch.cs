@@ -87,7 +87,7 @@ namespace wotr_mod.Patches
                 LocalizationIds.Mod.ShadowGnomeHeritageName,
                 LocalizationIds.Mod.ShadowGnomeHeritageDescription,
                 _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Charisma, 1),
-                _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Dexterity, 2));
+                _heritageFactory.CreateStatBonus("ShadowGnome", StatType.Dexterity, 3));
 
             var addPyromaniac = new AddFeatureOnApply { name = "$AddFeatureOnApply$CleverPyromaniacGnome" };
             _blueprints.SetAddFeatureOnApplyFeature(addPyromaniac, pyromaniacGnome);
@@ -97,7 +97,8 @@ namespace wotr_mod.Patches
                 LocalizationIds.Mod.CleverPyromaniacName,
                 LocalizationIds.Mod.CleverPyromaniacDescription,
                 addPyromaniac,
-                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Charisma, -2),
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Wisdom, 3),
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Constitution, 2),
                 _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Intelligence, 3));
 
             var normalHuman = _heritageFactory.EnsureHeritage(

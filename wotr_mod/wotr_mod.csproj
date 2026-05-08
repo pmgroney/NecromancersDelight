@@ -76,6 +76,7 @@
         <Compile Include="Classes\ClassSpellDefinition.cs" />
         <Compile Include="Classes\EvokerInstaller.cs" />
         <Compile Include="Classes\EvokerScalingInstaller.cs" />
+        <Compile Include="Classes\LivingDarknessInstaller.cs" />
         <Compile Include="Classes\EvokerSpellRegistry.cs"/>
         <Compile Include="Classes\IClassContentInstaller.cs" />
         <Compile Include="Classes\Necromancer\NecromancerInstaller.cs" />
@@ -93,6 +94,7 @@
         <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
+        <Compile Include="Features\LivingDarknessComponents.cs" />
         <Compile Include="Features\ShadowbornNegativeEnergyHealing.cs" />
         <Compile Include="Features\SpellFocusSchoolRecommendation.cs" />
         <Compile Include="Features\SelectedRaceStatBonus.cs" />
@@ -206,6 +208,12 @@
         <Content Include="Icons\infernal_potency.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\living_darkness.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\living_ghost.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\necromancer.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -221,14 +229,24 @@
         <Content Include="Icons\shadow_ray.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\shadow_resistance.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\tempest_surge.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="Icons\umbral_arcana.png" />
+        <Content Include="Icons\umbral_arcana.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\umbral_blast.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Include="Icons\umbral_potency.png" />
+        <Content Include="Icons\umbral_body.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\umbral_potency.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\umbral_ray.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>

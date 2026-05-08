@@ -159,6 +159,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineUndeadGraveTouch = "ba799554aff764243adcc03c5714d88e";
             public const string BloodlineUndeadIncorporealForm = "eafdc6762cbfa7d4d8220c6d6372973d";
             public const string BloodlineUndeadOneOfUs = "b3e403ebbdad8314386270fefc4b4cc8";
+            public const string Incorporeal = "c4a7f98d743bc784c9d4cf2105852c39";
             public const string BloodlineElementalFireArcana = "c33b319082a7edc468d3eda248a527f3";
             public const string BloodlineElementalFireElementalRayFeature = "ce0889b5c1b392e48baf1e004d1efd67";
             public const string BloodlineElementalFireElementalBlastFeature = "3022a5066a5604a498dd289b37dfd8aa";
@@ -168,6 +169,11 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalFireResistanceLevel2 = "bcfbd2e30b6df7d4eab9414dd0f2c6e4";
             public const string BloodlineElementalFireSpellLevel1 = "ba93d41e98b58bc49b2fcb443bfaf5cf";
             public const string BloodlineElementalFireSpellLevel2 = "e8f0a50b4549a764eb0264ed6b181ce6";
+            public const string BloodlineElementalSpellLevel4 = "725c27fba6a877e4ba4de0136f927888";
+            public const string BloodlineElementalSpellLevel5 = "053df94db3c29444b96c0c50592e4cc1";
+            public const string BloodlineElementalSpellLevel6 = "7c479457662909e4f8023742b6df1447";
+            public const string BloodlineElementalSpellLevel7 = "06adbfd3dde3f8a40896224e3d0822b1";
+            public const string BloodlineElementalSpellLevel9 = "1ed7c112f89d1024ea6c4e862f1d28d7";
             public const string PyromaniacGnome = "fc74a68e18a8479a9e8af34e761a70b3";
             public const string TrippingBite = "f957b4444b6fb404e84ae2a5765797bb";
             public const string VelociraptorCompanion = "89420de28b6bb9443b62ce489ae5423b";

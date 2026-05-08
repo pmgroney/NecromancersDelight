@@ -86,10 +86,11 @@ namespace wotr_mod.Classes
                 "WotrMod_EvokerScaling_Shadowborn",
                 LocalizationIds.Mod.ShadowbornScalingName,
                 LocalizationIds.Mod.ShadowbornScalingDescription,
-                "Icons\\glacial_dominion.png",
+                "Icons\\umbral_potency.png",
                 DamageEnergyType.NegativeEnergy,
                 conversionBuffGuid: ModBlueprintIds.Buffs.ShadowbornArcana,
-                characterClass);
+                characterClass: characterClass,
+                bindProgressionToClass: false);
         }
 
         private void ApplyElement(
@@ -101,7 +102,8 @@ namespace wotr_mod.Classes
             string iconPath,
             DamageEnergyType energyType,
             string conversionBuffGuid,
-            BlueprintCharacterClass characterClass)
+            BlueprintCharacterClass characterClass,
+            bool bindProgressionToClass = true)
         {
             var progression = _blueprints.Get<BlueprintProgression>(progressionGuid);
             if (progression == null)
@@ -119,7 +121,7 @@ namespace wotr_mod.Classes
                 energyType,
                 conversionBuffGuid,
                 characterClass);
-            AddScalingFeature(progression, feature, characterClass);
+            AddScalingFeature(progression, feature, characterClass, bindProgressionToClass);
         }
 
         private void ApplyElement(
@@ -261,30 +263,21 @@ namespace wotr_mod.Classes
 
         private UnityEngine.Sprite GetScalingIcon(string featureGuid, string internalName, string iconPath)
         {
-            var icon = _icons.Load(iconPath);
-            if (icon == null || featureGuid != ModBlueprintIds.Features.ShadowbornScaling)
-            {
-                return icon;
-            }
-
-            return _icons.Tint(
-                icon,
-                internalName + "Icon",
-                new Color(0.45f, 0.2f, 0.85f, 1f),
-                0.72f);
+            return _icons.Load(iconPath);
         }
 
         private void AddScalingFeature(
             BlueprintProgression progression,
             BlueprintFeatureBase feature,
-            BlueprintCharacterClass characterClass)
+            BlueprintCharacterClass characterClass,
+            bool bindProgressionToClass = true)
         {
             foreach (var level in ScalingLevels)
             {
                 AddFeatureToLevel(progression, level, feature);
             }
 
-            if (characterClass != null)
+            if (characterClass != null && bindProgressionToClass)
             {
                 _blueprints.SetProgressionClasses(progression, characterClass);
             }

@@ -92,6 +92,10 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornElementalBodyDescription = "wotr_mod.archetype.shadowborn.elemental_body.description";
             public const string ShadowbornScalingName = "wotr_mod.archetype.shadowborn.scaling.name";
             public const string ShadowbornScalingDescription = "wotr_mod.archetype.shadowborn.scaling.description";
+            public const string ShadowbornBonusFeatName = "wotr_mod.archetype.shadowborn.bonus_feat.name";
+            public const string ShadowbornBonusFeatDescription = "wotr_mod.archetype.shadowborn.bonus_feat.description";
+            public const string ShadowbornLivingGhostName = "wotr_mod.archetype.shadowborn.living_ghost.name";
+            public const string ShadowbornLivingGhostDescription = "wotr_mod.archetype.shadowborn.living_ghost.description";
             public const string NecromancerName = "wotr_mod.class.necromancer.name";
             public const string NecromancerDescription = "wotr_mod.class.necromancer.description";
             public const string SepulchritName = "wotr_mod.archetype.sepulchrit.name";
@@ -170,6 +174,16 @@ namespace wotr_mod.Infrastructure
             public const string SpellHarvestTheFallenDescription = "wotr_mod.spell.harvest_the_fallen.description";
             public const string SpellHellOnEarthName = "wotr_mod.spell.hell_on_earth.name";
             public const string SpellHellOnEarthDescription = "wotr_mod.spell.hell_on_earth.description";
+            public const string LivingDarknessName1 = "wotr_mod.archetype.shadowborn.living_darkness_1.name";
+            public const string LivingDarknessDescription1 = "wotr_mod.archetype.shadowborn.living_darkness_1.description";
+            public const string LivingDarknessName2 = "wotr_mod.archetype.shadowborn.living_darkness_2.name";
+            public const string LivingDarknessDescription2 = "wotr_mod.archetype.shadowborn.living_darkness_2.description";
+            public const string LivingDarknessName3 = "wotr_mod.archetype.shadowborn.living_darkness_3.name";
+            public const string LivingDarknessDescription3 = "wotr_mod.archetype.shadowborn.living_darkness_3.description";
+            public const string LivingDarknessName4 = "wotr_mod.archetype.shadowborn.living_darkness_4.name";
+            public const string LivingDarknessDescription4 = "wotr_mod.archetype.shadowborn.living_darkness_4.description";
+            public const string LivingDarknessShakenName = "wotr_mod.archetype.shadowborn.living_darkness.shaken.name";
+            public const string LivingDarknessShakenDescription = "wotr_mod.archetype.shadowborn.living_darkness.shaken.description";
         }
     }
 }

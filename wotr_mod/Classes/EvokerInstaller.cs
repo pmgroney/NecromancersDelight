@@ -79,10 +79,11 @@ namespace wotr_mod.Classes
             EnsureEvocationSpellFocusRecommendation(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
 
+            EnsureShadowbornBloodline(characterClass);
+            new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
             _blueprints.SetCharacterClassArchetypes(
                 characterClass,
                 EnsureArchetypes(definition, characterClass, spellbook, spellList));
-            new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
         }
 
         private void EnsureEvocationSpellFocusRecommendation(BlueprintCharacterClass characterClass)
@@ -240,7 +241,15 @@ namespace wotr_mod.Classes
             var evokerBloodlineSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 ModBlueprintIds.Selections.EvokerBloodline,
                 "Evoker bloodline selection");
+            var sorcererFeatSelection = _blueprints.Require<BlueprintFeatureSelection>(
+                GameBlueprintIds.Selections.SorcererFeatSelection,
+                "Sorcerer feat selection");
+            var sorcererBonusFeat = _blueprints.Require<BlueprintFeatureSelection>(
+                GameBlueprintIds.Selections.SorcererBonusFeat,
+                "Sorcerer bonus feat");
             var shadowbornBloodline = EnsureShadowbornBloodline(characterClass);
+            var shadowbornBonusFeat = EnsureShadowbornBonusFeatSelection(characterClass);
+            var shadowbornLivingGhost = EnsureShadowbornLivingGhostFeature(characterClass);
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
@@ -251,11 +260,87 @@ namespace wotr_mod.Classes
             _blueprints.SetArchetypeReplaceSpellbook(archetype, null);
             _blueprints.SetArchetypeFeatureChanges(
                 archetype,
-                new[] { CreateLevelEntry(1, shadowbornBloodline) },
-                new[] { CreateLevelEntry(1, evokerBloodlineSelection) });
+                CreateShadowbornArchetypeFeatureEntries(
+                    shadowbornBloodline,
+                    shadowbornBonusFeat,
+                    shadowbornLivingGhost),
+                CreateShadowbornArchetypeRemoveFeatureEntries(evokerBloodlineSelection, sorcererBonusFeat, sorcererFeatSelection));
+            if (characterClass.Progression != null)
+            {
+                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornBonusFeat);
+                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornLivingGhost);
+            }
+
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
+        }
+
+        private static LevelEntry[] CreateShadowbornArchetypeRemoveFeatureEntries(
+            BlueprintFeatureBase evokerBloodlineSelection,
+            BlueprintFeatureBase sorcererBonusFeat,
+            BlueprintFeatureBase sorcererFeatSelection)
+        {
+            return new[]
+            {
+                CreateLevelEntry(1, evokerBloodlineSelection, sorcererBonusFeat),
+                CreateLevelEntry(7, sorcererFeatSelection),
+                CreateLevelEntry(13, sorcererFeatSelection),
+                CreateLevelEntry(19, sorcererFeatSelection)
+            };
+        }
+
+        private static LevelEntry[] CreateShadowbornArchetypeFeatureEntries(
+            BlueprintProgression shadowbornBloodline,
+            BlueprintFeatureSelection shadowbornBonusFeat,
+            BlueprintFeature shadowbornLivingGhost)
+        {
+            var entries = (shadowbornBloodline.LevelEntries ?? Array.Empty<LevelEntry>())
+                .Select(entry =>
+                {
+                    var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                        .Where(feature => feature != null)
+                        .ToArray();
+                    return features.Length == 0 ? null : CreateLevelEntry(entry.Level, features);
+                })
+                .Where(entry => entry != null)
+                .ToList();
+
+            AddFeatureToLevel(entries, 1, shadowbornBonusFeat);
+            AddFeatureToLevel(entries, 6, shadowbornBonusFeat);
+            AddFeatureToLevel(entries, 10, shadowbornBonusFeat);
+            AddFeatureToLevel(entries, 16, shadowbornBonusFeat);
+            AddFeatureToLevel(entries, 20, shadowbornBonusFeat);
+            AddFeatureToLevel(entries, 20, shadowbornLivingGhost);
+            return entries
+                .OrderBy(entry => entry.Level)
+                .ToArray();
+        }
+
+        private static void AddFeatureToLevel(
+            ICollection<LevelEntry> entries,
+            int level,
+            BlueprintFeatureBase feature)
+        {
+            if (feature == null)
+            {
+                return;
+            }
+
+            var entry = entries.FirstOrDefault(levelEntry => levelEntry.Level == level);
+            if (entry == null)
+            {
+                entries.Add(CreateLevelEntry(level, feature));
+                return;
+            }
+
+            var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>()).ToList();
+            if (features
+                .All(existing => existing == null || existing.AssetGuid != feature.AssetGuid))
+            {
+                features.Add(feature);
+                entry.SetFeatures(features);
+            }
         }
 
         private BlueprintProgression EnsureShadowbornBloodline(BlueprintCharacterClass characterClass)
@@ -283,7 +368,7 @@ namespace wotr_mod.Classes
                 LocalizationIds.Mod.ShadowbornUmbralRayName,
                 LocalizationIds.Mod.ShadowbornUmbralRayDescription,
                 characterClass,
-                GameBlueprintIds.Features.BloodlineElementalEarthElementalRayFeature);
+                "Icons\\umbral_ray.png");
             var umbralBlast = EnsureShadowbornDamageFeature(
                 GameBlueprintIds.Features.BloodlineElementalFireElementalBlastFeature,
                 GameBlueprintIds.Abilities.BloodlineElementalFireElementalBlastAbility,
@@ -294,7 +379,7 @@ namespace wotr_mod.Classes
                 LocalizationIds.Mod.ShadowbornUmbralBlastName,
                 LocalizationIds.Mod.ShadowbornUmbralBlastDescription,
                 characterClass,
-                GameBlueprintIds.Features.BloodlineElementalFireElementalBlastFeature);
+                "Icons\\umbral_blast.png");
             var resistance = EnsureShadowbornResistanceFeature(characterClass);
             var elementalBody = EnsureShadowbornElementalBodyFeature();
             var arcana = EnsureShadowbornArcanaFeature(characterClass);
@@ -325,6 +410,9 @@ namespace wotr_mod.Classes
                 bloodline,
                 _localization.Text(LocalizationIds.Mod.ShadowbornBloodlineName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornBloodlineDescription));
+            bloodline.HideInUI = true;
+            bloodline.HideInCharacterSheetAndLevelUp = true;
+            bloodline.HideNotAvailibleInUI = true;
             SetIcon(bloodline, "Icons\\shadowborn_bloodline.png");
             ReplaceProgressionFeature(
                 bloodline,
@@ -340,8 +428,15 @@ namespace wotr_mod.Classes
                 umbralBlast);
             ReplaceProgressionFeature(
                 bloodline,
-                GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature,
+                GameBlueprintIds.Features.BloodlineElementalSpellLevel9,
                 elementalBody);
+            RemoveProgressionFeature(
+                bloodline,
+                GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature);
+            RemoveProgressionFeatureExceptLevel(
+                bloodline,
+                elementalBody,
+                19);
             ReplaceProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireResistanceFeature,
@@ -354,9 +449,145 @@ namespace wotr_mod.Classes
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireSpellLevel2,
                 shadowRay);
-            _blueprints.SetProgressionClasses(bloodline, characterClass);
+            new LivingDarknessInstaller(_blueprints, _localization, _logger, _icons).Install(bloodline, characterClass);
+            SetProgressionClassesForLevelEntryFeatures(bloodline, characterClass);
 
             return bloodline;
+        }
+
+        private BlueprintFeatureSelection EnsureShadowbornBonusFeatSelection(BlueprintCharacterClass characterClass)
+        {
+            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.ShadowbornBonusFeat);
+            if (selection == null)
+            {
+                var donor = _blueprints.Require<BlueprintFeatureSelection>(
+                    GameBlueprintIds.Selections.SorcererBonusFeat,
+                    "Sorcerer Bonus Feat");
+                selection = _blueprints.CloneBlueprint(
+                    donor,
+                    ModBlueprintIds.Selections.ShadowbornBonusFeat,
+                    "WotrMod_ShadowbornBonusFeatSelection");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Selections.ShadowbornBonusFeat, selection);
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                selection,
+                _localization.Text(LocalizationIds.Mod.ShadowbornBonusFeatName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornBonusFeatDescription));
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(selection, characterClass);
+            }
+
+            return selection;
+        }
+
+        private BlueprintFeature EnsureShadowbornLivingGhostFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.ShadowbornLivingGhost);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_ShadowbornLivingGhostFeature",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.ShadowbornLivingGhost),
+                    IsClassFeature = true,
+                    Ranks = 1,
+                    ReapplyOnLevelUp = false
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.ShadowbornLivingGhost, feature);
+            }
+
+            var addFacts = _blueprints.GetComponents<AddFacts>(feature).FirstOrDefault()
+                ?? new AddFacts { name = "$AddFacts$ShadowbornLivingGhostFeature" };
+            _blueprints.SetAddFacts(addFacts, EnsureShadowbornLivingGhostAbility());
+            _blueprints.SetComponents(feature, addFacts);
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostDescription));
+            SetIcon(feature, "Icons\\living_ghost.png");
+            _blueprints.SetProgressionClasses(feature, characterClass);
+
+            return feature;
+        }
+
+        private BlueprintActivatableAbility EnsureShadowbornLivingGhostAbility()
+        {
+            var ability = _blueprints.Get<BlueprintActivatableAbility>(ModBlueprintIds.Abilities.ShadowbornLivingGhost);
+            if (ability == null)
+            {
+                var source = _blueprints.Require<BlueprintActivatableAbility>(
+                    GameBlueprintIds.Abilities.BloodlineElementalFireArcanaAbility,
+                    "Fire bloodline arcana ability donor");
+                ability = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Abilities.ShadowbornLivingGhost,
+                    "WotrMod_ShadowbornLivingGhostAbility");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Abilities.ShadowbornLivingGhost, ability);
+            }
+
+            var buff = EnsureShadowbornLivingGhostBuff();
+            ReplaceBuffReferences(ability, GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff, buff);
+            _blueprints.SetComponents(ability);
+            _blueprints.SetUnitFactDisplay(
+                ability,
+                _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostDescription));
+            SetIcon(ability, "Icons\\living_ghost.png");
+
+            return ability;
+        }
+
+        private BlueprintBuff EnsureShadowbornLivingGhostBuff()
+        {
+            var buff = _blueprints.Get<BlueprintBuff>(ModBlueprintIds.Buffs.ShadowbornLivingGhost);
+            if (buff == null)
+            {
+                var source = _blueprints.Require<BlueprintBuff>(
+                    GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
+                    "Fire bloodline arcana buff donor");
+                buff = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Buffs.ShadowbornLivingGhost,
+                    "WotrMod_ShadowbornLivingGhostBuff");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Buffs.ShadowbornLivingGhost, buff);
+            }
+
+            var incorporeal = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.Incorporeal,
+                "Incorporeal creature feature");
+            var addFacts = new AddFacts { name = "$AddFacts$ShadowbornLivingGhostBuff" };
+            _blueprints.SetAddFacts(addFacts, incorporeal);
+            _blueprints.SetComponents(buff, addFacts);
+            _blueprints.SetUnitFactDisplay(
+                buff,
+                _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostDescription));
+            SetIcon(buff, "Icons\\living_ghost.png");
+
+            return buff;
+        }
+
+        private void SetProgressionClassesForLevelEntryFeatures(
+            BlueprintProgression progression,
+            BlueprintCharacterClass characterClass)
+        {
+            if (characterClass == null)
+            {
+                return;
+            }
+
+            var seen = new HashSet<BlueprintGuid>();
+            foreach (var feature in (progression.LevelEntries ?? Array.Empty<LevelEntry>())
+                         .SelectMany(entry => entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                         .Where(feature => feature != null))
+            {
+                if (seen.Add(feature.AssetGuid))
+                {
+                    _blueprints.SetProgressionClasses(feature, characterClass);
+                }
+            }
         }
 
         private BlueprintFeature EnsureShadowbornElementalBodyFeature()
@@ -404,10 +635,7 @@ namespace wotr_mod.Classes
                             "Shadowborn negative energy resistance 20")
                     }
                 });
-            SetShadowTintedIcon(
-                feature,
-                GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature,
-                "ShadowbornElementalBody");
+            SetIcon(feature, "Icons\\umbral_body.png");
 
             return feature;
         }
@@ -446,10 +674,7 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceDescription));
-            SetShadowTintedIcon(
-                feature,
-                GameBlueprintIds.Features.BloodlineElementalFireResistanceFeature,
-                "ShadowbornResistance");
+            SetIcon(feature, "Icons\\shadow_resistance.png");
             _blueprints.SetProgressionClasses(feature, characterClass);
 
             return feature;
@@ -477,7 +702,7 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornResistanceDescription));
-            SetShadowTintedIcon(feature, sourceFeatureGuid, featureName);
+            SetIcon(feature, "Icons\\shadow_resistance.png");
 
             return feature;
         }
@@ -507,10 +732,7 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaDescription));
-            SetShadowTintedIcon(
-                feature,
-                GameBlueprintIds.Features.BloodlineElementalFireArcana,
-                "ShadowbornArcanaFeature");
+            SetIcon(feature, "Icons\\umbral_arcana.png");
             _blueprints.SetProgressionClasses(feature, characterClass);
 
             return feature;
@@ -537,10 +759,7 @@ namespace wotr_mod.Classes
                 ability,
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaDescription));
-            SetShadowTintedIcon(
-                ability,
-                GameBlueprintIds.Abilities.BloodlineElementalFireArcanaAbility,
-                "ShadowbornArcanaAbility");
+            SetIcon(ability, "Icons\\umbral_arcana.png");
 
             return ability;
         }
@@ -572,10 +791,7 @@ namespace wotr_mod.Classes
                 buff,
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornArcanaDescription));
-            SetShadowTintedIcon(
-                buff,
-                GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
-                "ShadowbornArcanaBuff");
+            SetIcon(buff, "Icons\\umbral_arcana.png");
 
             return buff;
         }
@@ -652,7 +868,7 @@ namespace wotr_mod.Classes
             string displayNameKey,
             string descriptionKey,
             BlueprintCharacterClass characterClass,
-            string iconSourceFeatureGuid)
+            string iconPath)
         {
             var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
             if (feature == null)
@@ -669,7 +885,7 @@ namespace wotr_mod.Classes
                 displayNameKey,
                 descriptionKey,
                 characterClass,
-                iconSourceFeatureGuid);
+                iconPath);
             foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
             {
                 _blueprints.SetAddFacts(addFacts, ability);
@@ -681,7 +897,7 @@ namespace wotr_mod.Classes
                 feature,
                 _localization.Text(displayNameKey),
                 _localization.Text(descriptionKey));
-            SetShadowTintedIcon(feature, iconSourceFeatureGuid, featureName);
+            SetIcon(feature, iconPath);
 
             return feature;
         }
@@ -693,7 +909,7 @@ namespace wotr_mod.Classes
             string displayNameKey,
             string descriptionKey,
             BlueprintCharacterClass characterClass,
-            string iconSourceFeatureGuid)
+            string iconPath)
         {
             var ability = _blueprints.Get<BlueprintAbility>(abilityGuid);
             if (ability == null)
@@ -707,7 +923,7 @@ namespace wotr_mod.Classes
                 ability,
                 _localization.Text(displayNameKey),
                 _localization.Text(descriptionKey));
-            SetShadowTintedIcon(ability, iconSourceFeatureGuid, abilityName);
+            SetIcon(ability, iconPath);
             SpellModifierUtility.ReplaceDescriptor(ability, SpellDescriptor.Fire, SpellDescriptor.Death, _blueprints);
             BindAbilityRankConfigsToClass(ability, characterClass);
             PatchFireDamageToNegativeEnergy(ability);
@@ -753,43 +969,6 @@ namespace wotr_mod.Classes
             {
                 _blueprints.SetUnitFactIcon(fact, icon);
             }
-        }
-
-        private void SetShadowTintedIcon(BlueprintUnitFact fact, string sourceFeatureGuid, string cacheKey)
-        {
-            var source = _blueprints.Require<BlueprintUnitFact>(sourceFeatureGuid, cacheKey + " icon source");
-            var tint = GetShadowIconTint(cacheKey);
-            var icon = _icons.Tint(source.Icon, cacheKey, tint.Color, tint.Strength);
-            if (icon != null)
-            {
-                _blueprints.SetUnitFactIcon(fact, icon);
-            }
-        }
-
-        private static ShadowIconTint GetShadowIconTint(string cacheKey)
-        {
-            if (cacheKey != null &&
-                (cacheKey.Contains("UmbralBlast") ||
-                 cacheKey.Contains("ShadowbornArcana") ||
-                 cacheKey.Contains("ShadowbornResistance") ||
-                 cacheKey.Contains("ShadowbornElementalBody")))
-            {
-                return new ShadowIconTint(new Color(0.32f, 0.06f, 0.78f, 1f), 0.86f);
-            }
-
-            return new ShadowIconTint(new Color(0.45f, 0.2f, 0.85f, 1f), 0.65f);
-        }
-
-        private readonly struct ShadowIconTint
-        {
-            public ShadowIconTint(Color color, float strength)
-            {
-                Color = color;
-                Strength = strength;
-            }
-
-            public Color Color { get; }
-            public float Strength { get; }
         }
 
         private static void ReplaceBuffReferences(
@@ -902,6 +1081,40 @@ namespace wotr_mod.Classes
             {
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
                     .Select(feature => feature != null && feature.AssetGuid == oldGuid ? newFeature : feature));
+            }
+        }
+
+        private static void RemoveProgressionFeature(
+            BlueprintProgression progression,
+            string featureGuid)
+        {
+            var guid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(featureGuid));
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(feature => feature == null || feature.AssetGuid != guid));
+            }
+        }
+
+        private static void RemoveProgressionFeatureExceptLevel(
+            BlueprintProgression progression,
+            BlueprintFeatureBase featureToRemove,
+            int levelToKeep)
+        {
+            if (featureToRemove == null)
+            {
+                return;
+            }
+
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                if (entry.Level == levelToKeep)
+                {
+                    continue;
+                }
+
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(feature => feature == null || feature.AssetGuid != featureToRemove.AssetGuid));
             }
         }
 
