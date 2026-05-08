@@ -222,27 +222,32 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Spells.HarvestTheFallen, "Harvest the Fallen",
                 LocalizationIds.Mod.SpellHarvestTheFallenName, LocalizationIds.Mod.SpellHarvestTheFallenDescription,
                 5, necromancerClass);
+            var stygianPrecision = EnsureStygianPrecisionFeature(necromancerClass);
+            var reapersJudgement = EnsureReapersJudgementFeature(necromancerClass);
 
             var visibleFeatures = new BlueprintFeatureBase[]
             {
                 arcana, power1, power3, boneSpike, corpseExplosion,
-                eldritchHorror, power9, harvestTheFallen, power15, hellOnEarth, power20
+                eldritchHorror, power9, harvestTheFallen, power15, hellOnEarth, power20, stygianPrecision, reapersJudgement
             };
             clone.LevelEntries = new[]
             {
                 CreateLevelEntry(1, arcana, power1, boneArmor),
                 CreateLevelEntry(2, boneSpike),
                 CreateLevelEntry(3, power3),
-                CreateLevelEntry(4, corpseExplosion),
+                CreateLevelEntry(4, corpseExplosion, stygianPrecision),
                 CreateLevelEntry(5, boneArmor),
                 CreateLevelEntry(7, eldritchHorror),
+                CreateLevelEntry(8, stygianPrecision),
                 CreateLevelEntry(9, power3, power9, boneArmor),
                 CreateLevelEntry(11, harvestTheFallen),
+                CreateLevelEntry(12, stygianPrecision),
                 CreateLevelEntry(13, boneArmor),
                 CreateLevelEntry(15, power3, power15),
+                CreateLevelEntry(16, stygianPrecision),
                 CreateLevelEntry(17, boneArmor),
                 CreateLevelEntry(19, hellOnEarth),
-                CreateLevelEntry(20, power20)
+                CreateLevelEntry(20, power20, reapersJudgement)
             };
             _blueprints.SetProgressionUiDeterminators(clone, visibleFeatures);
             _blueprints.SetProgressionUiGroups(clone, new[] { visibleFeatures });
@@ -270,7 +275,9 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth"),
-                EnsureNecromancerBonusFeatSelection()
+                EnsureNecromancerBonusFeatSelection(),
+                EnsureStygianPrecisionFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer)),
+                EnsureReapersJudgementFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer))
             };
         }
 
@@ -297,23 +304,27 @@ namespace wotr_mod.Classes.Necromancer
             var harvestTheFallen      = features[11];
             var hellOnEarth           = features[12];
             var necromancerBonusFeat  = features[13];
+            var stygianPrecision      = features[14];
+            var reapersJudgement      = features[15];
 
             AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
             AddFeaturesToLevel(progression, 2,  boneSpike);
             AddFeaturesToLevel(progression, 3,  deathsGift);
-            AddFeaturesToLevel(progression, 4,  corpseExplosion);
+            AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision);
             AddFeaturesToLevel(progression, 5,  boneArmor);
             AddFeaturesToLevel(progression, 6,  necromancerBonusFeat);
             AddFeaturesToLevel(progression, 7,  eldritchHorror);
+            AddFeaturesToLevel(progression, 8,  stygianPrecision);
             AddFeaturesToLevel(progression, 9,  deathsGift, graspOfTheDead, boneArmor);
             AddFeaturesToLevel(progression, 10, necromancerBonusFeat);
             AddFeaturesToLevel(progression, 11, harvestTheFallen);
+            AddFeaturesToLevel(progression, 12, stygianPrecision);
             AddFeaturesToLevel(progression, 13, boneArmor);
             AddFeaturesToLevel(progression, 15, deathsGift, incorporealForm);
-            AddFeaturesToLevel(progression, 16, necromancerBonusFeat);
+            AddFeaturesToLevel(progression, 16, necromancerBonusFeat, stygianPrecision);
             AddFeaturesToLevel(progression, 17, boneArmor);
             AddFeaturesToLevel(progression, 19, hellOnEarth);
-            AddFeaturesToLevel(progression, 20, oneOfUs);
+            AddFeaturesToLevel(progression, 20, oneOfUs, reapersJudgement);
 
             _blueprints.SetProgressionUiDeterminators(progression, new List<BlueprintFeatureBase> { masterOfDeath });
             _blueprints.SetProgressionUiGroups(
@@ -321,8 +332,85 @@ namespace wotr_mod.Classes.Necromancer
                 new[] { boneArmor },
                 new[] { deathsGift },
                 new[] { necromancerBonusFeat },
+                new[] { stygianPrecision, reapersJudgement },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
+        }
+
+        internal BlueprintFeature EnsureStygianPrecisionFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerStygianPrecision);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerStygianPrecision",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.NecromancerStygianPrecision)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerStygianPrecision, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 4;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.NecromancerStygianPrecisionName),
+                _localization.Text(LocalizationIds.Mod.NecromancerStygianPrecisionDescription));
+            var icon = _icons.Load("Icons\\stygian_precision.png");
+            if (icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, icon);
+            }
+
+            _blueprints.SetComponents(feature, new StygianPrecisionComponent
+            {
+                name = "$StygianPrecisionComponent$Necromancer"
+            });
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
+        internal BlueprintFeature EnsureReapersJudgementFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerReapersJudgement);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerReapersJudgement",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.NecromancerReapersJudgement)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerReapersJudgement, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.NecromancerReapersJudgementName),
+                _localization.Text(LocalizationIds.Mod.NecromancerReapersJudgementDescription));
+            var icon = _icons.Load("Icons\\reapers_judgement.png");
+            if (icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, icon);
+            }
+
+            _blueprints.SetComponents(feature, new StygianPrecisionComponent
+            {
+                name = "$StygianPrecisionComponent$ReapersJudgement",
+                CriticalEdgeBonus = 1,
+                AutoConfirmCriticalHits = true
+            });
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
         }
 
         internal BlueprintFeatureSelection EnsureNecromancerBonusFeatSelection()
@@ -482,7 +570,50 @@ namespace wotr_mod.Classes.Necromancer
             var rank = _blueprints.EnsureComponent(ability, () => new ContextRankConfig { name = "$ContextRankConfig$NecromancerWitheringRay" });
             _blueprints.ConfigureContextRankConfig(rank, AbilityRankType.Default, ContextRankBaseValueType.ClassLevel, ContextRankProgression.StartPlusDivStep, 1, 2, characterClass);
             _blueprints.SetContextRankMinimum(rank, 1);
+            ConfigureWitheringRayVisuals(ability);
             return ability;
+        }
+
+        private void ConfigureWitheringRayVisuals(BlueprintAbility ability)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Necro);
+
+            var projectile = EnsureWitheringRayProjectile(ability);
+            if (projectile == null) return;
+
+            SpellEffectTintRegistry.RegisterProjectileTint(
+                projectile.AssetGuid.ToString(),
+                SpellEffectTheme.Necro);
+
+            foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
+            {
+                _blueprints.SetAbilityDeliverProjectiles(delivery, projectile);
+            }
+
+            ability.OnEnable();
+        }
+
+        private BlueprintProjectile EnsureWitheringRayProjectile(BlueprintAbility ability)
+        {
+            var existing = _blueprints.Get<BlueprintProjectile>(ModBlueprintIds.Projectiles.WitheringRay);
+            if (existing != null) return existing;
+
+            var delivery = _blueprints.GetComponents<AbilityDeliverProjectile>(ability).FirstOrDefault();
+            var projectileRefs = delivery != null
+                ? BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(delivery) as BlueprintProjectileReference[]
+                : null;
+            var donor = projectileRefs?.FirstOrDefault()?.Get() as BlueprintProjectile;
+            if (donor == null) return null;
+
+            var projectile = _blueprints.CloneBlueprint(
+                donor,
+                ModBlueprintIds.Projectiles.WitheringRay,
+                "WotrMod_WitheringRayProjectile");
+            projectile.OnEnable();
+            _blueprints.AddCachedBlueprint(ModBlueprintIds.Projectiles.WitheringRay, projectile);
+            return projectile;
         }
 
         private BlueprintFeature EnsureGraspOfTheDeadFeature(BlueprintCharacterClass characterClass)

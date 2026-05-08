@@ -21,6 +21,16 @@ namespace wotr_mod.Infrastructure
             public const string ElementalEarthBloodline = "32393034410fb2f4d9c8beaa5c8c8ab7";
             public const string ElementalFireBloodline = "17cc794d47408bc4986c55265475c06f";
             public const string ElementalWaterBloodline = "7c692e90592257a4e901d12ae6ec1e41";
+            public const string BlackDragonBloodline = "7bd143ead2d6c3a409aad6ee22effe34";
+            public const string BlueDragonBloodline = "8a7f100c02d0b254d8f5f3affc8ef386";
+            public const string BrassDragonBloodline = "5f9ecbee67db8364985e9d0500eb25f1";
+            public const string BronzeDragonBloodline = "7e0f57d8d00464441974e303b84238ac";
+            public const string CopperDragonBloodline = "b522759a265897b4f8f7a1a180a692e4";
+            public const string GoldDragonBloodline = "6c67ef823db8d7d45bb0ef82f959743d";
+            public const string GreenDragonBloodline = "7181be57d1cc3bc40bc4b552e4e4ce24";
+            public const string RedDragonBloodline = "8c6e5b3cf12f71e43949f52c41ae70a8";
+            public const string SilverDragonBloodline = "c7d2f393e6574874bb3fc728a69cc73a";
+            public const string WhiteDragonBloodline = "b0f79497a0d1f4f4b8293e82c8f8fa0c";
             public const string UndeadBloodline = "a1a8bf61cadaa4143b2d4966f2d1142e";
         }
 
@@ -147,6 +157,7 @@ namespace wotr_mod.Infrastructure
             public const string PointBlankShot = "0da0c194d6e1d43419eb8d990b28e0ab";
             public const string PreciseShot = "8f3d1e6b4be006f4d896081f2f889665";
             public const string RedDragonBloodlineArcana = "a8baee8eb681d53438cc17bd1d125890";
+            public const string WeaponFocusClaw = "153937f44fcd42a429a286a10babd82d";
             public const string ShortbowProficiency = "e8096942d950c8843857c2545f8dc18f";
             public const string UndeadType = "734a29b693e9ec346ba2951b27987e33";
             public const string BloodlineElementalEarthElementalRayFeature = "cb15c04cf43b93a4589077078b4188eb";
@@ -161,6 +172,9 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineUndeadOneOfUs = "b3e403ebbdad8314386270fefc4b4cc8";
             public const string Incorporeal = "c4a7f98d743bc784c9d4cf2105852c39";
             public const string BloodlineElementalFireArcana = "c33b319082a7edc468d3eda248a527f3";
+            public const string BloodlineElementalAirArcana = "54ae8876bb5d78242beec0752592a018";
+            public const string BloodlineElementalEarthArcana = "5282afee8f3dfda49a34e36c3cee9d2c";
+            public const string BloodlineElementalWaterArcana = "68d7772fa2f03e247ad1676ddd5eb4e2";
             public const string BloodlineElementalFireElementalRayFeature = "ce0889b5c1b392e48baf1e004d1efd67";
             public const string BloodlineElementalFireElementalBlastFeature = "3022a5066a5604a498dd289b37dfd8aa";
             public const string BloodlineElementalFireElementalBodyFeature = "5d974328297021a479b4e3a1de749126";
@@ -212,6 +226,9 @@ namespace wotr_mod.Infrastructure
         internal static class Abilities
         {
             public const string BloodlineElementalFireArcanaAbility = "924dfcd481c0be54c959c2846b3fb7da";
+            public const string BloodlineElementalAirArcanaAbility = "5f6315dfeb74a564f96f460d72f7206c";
+            public const string BloodlineElementalEarthArcanaAbility = "94ce51ed666fc8d42830aa9fe48897f9";
+            public const string BloodlineElementalWaterArcanaAbility = "dd484f0706325de40aee5dba15fbce45";
             public const string BloodlineElementalEarthElementalRayAbility = "8c2a0033a591b9247b45af575f12af77";
             public const string BloodlineElementalFireElementalRayAbility = "1b4989258e5964149a909e47c72b7f67";
             public const string BloodlineElementalFireElementalBlastAbility = "b2d1d39cd406e0f4185c52fecc73c3b5";
@@ -229,6 +246,9 @@ namespace wotr_mod.Infrastructure
         internal static class Buffs
         {
             public const string BloodlineElementalFireArcanaBuff = "b3e3882ab6829e34983f31e989c00dfc";
+            public const string BloodlineElementalAirArcanaBuff = "3f5763ac8b4e080469f9a41adf3a16c3";
+            public const string BloodlineElementalEarthArcanaBuff = "3d700f97e681b014e894d9ff9c972a83";
+            public const string BloodlineElementalWaterArcanaBuff = "912fbab5b3579e9409fcb0f750bb6f2b";
             public const string FighterArmorMastery = "0794e96a6c5da8f41979d809bb4a9a8c";
             public const string MonkAcBonusBuff = "f132c4c4279e4646a05de26635941bfe";
             public const string MonkAcBonusBuffUnarmored = "d7ff7a9f1fe84e679f98b36e4bacd63c";

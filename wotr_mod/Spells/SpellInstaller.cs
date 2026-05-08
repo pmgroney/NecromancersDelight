@@ -104,7 +104,29 @@ namespace wotr_mod.Spells
         private void ConfigureSpellVisuals(BlueprintAbility spell, SpellDefinition definition)
         {
             if (definition.NewSpellGuid == ModBlueprintIds.Spells.VitriolicBlast)
+            {
                 ConfigureVitriolicBurstVisuals(spell);
+                return;
+            }
+
+            if (definition.NewSpellGuid == ModBlueprintIds.Spells.EldritchHorror)
+            {
+                ConfigureEldritchHorrorVisuals(spell);
+                return;
+            }
+
+            var necroProjectileVisuals = GetNecroProjectileVisuals(definition.NewSpellGuid);
+            if (necroProjectileVisuals.HasValue)
+            {
+                ConfigureProjectileVisuals(spell, necroProjectileVisuals.Value);
+                return;
+            }
+
+            var missileVisuals = GetMissileVisuals(definition.NewSpellGuid);
+            if (missileVisuals.HasValue)
+            {
+                ConfigureProjectileVisuals(spell, missileVisuals.Value);
+            }
         }
 
         private void ConfigureVitriolicBurstVisuals(BlueprintAbility ability)
@@ -148,6 +170,118 @@ namespace wotr_mod.Spells
             projectile.OnEnable();
             _blueprints.AddCachedBlueprint(ModBlueprintIds.Projectiles.VitriolicBlast, projectile);
             return projectile;
+        }
+
+        private void ConfigureProjectileVisuals(BlueprintAbility ability, ProjectileVisuals visuals)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                visuals.Theme);
+
+            var projectile = EnsureProjectile(ability, visuals.ProjectileGuid, visuals.ProjectileName);
+            if (projectile == null) return;
+
+            SpellEffectTintRegistry.RegisterProjectileTint(
+                projectile.AssetGuid.ToString(),
+                visuals.Theme);
+
+            foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
+            {
+                _blueprints.SetAbilityDeliverProjectiles(delivery, projectile);
+            }
+
+            ability.OnEnable();
+        }
+
+        private static void ConfigureEldritchHorrorVisuals(BlueprintAbility ability)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Necro);
+            SpellEffectTintRegistry.RegisterAreaEffectTint(
+                ModBlueprintIds.AreaEffects.EldritchHorror,
+                SpellEffectTheme.Necro);
+        }
+
+        private BlueprintProjectile EnsureProjectile(BlueprintAbility ability, string projectileGuid, string projectileName)
+        {
+            var existing = _blueprints.Get<BlueprintProjectile>(projectileGuid);
+            if (existing != null) return existing;
+
+            var donor = GetFirstProjectile(ability);
+            if (donor == null) return null;
+
+            var projectile = _blueprints.CloneBlueprint(donor, projectileGuid, projectileName);
+            projectile.OnEnable();
+            _blueprints.AddCachedBlueprint(projectileGuid, projectile);
+            return projectile;
+        }
+
+        private static BlueprintProjectile GetFirstProjectile(BlueprintAbility ability)
+        {
+            var delivery = ability?.GetComponent<AbilityDeliverProjectile>();
+            var projectileRefs = delivery != null
+                ? BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(delivery) as BlueprintProjectileReference[]
+                : null;
+            return projectileRefs?.FirstOrDefault()?.Get() as BlueprintProjectile;
+        }
+
+        private static ProjectileVisuals? GetNecroProjectileVisuals(string spellGuid)
+        {
+            if (spellGuid == ModBlueprintIds.Spells.BoneSpike)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.BoneSpike,
+                    "WotrMod_BoneSpikeProjectile",
+                    SpellEffectTheme.Necro);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.DeathRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.DeathRay,
+                    "WotrMod_DeathRayProjectile",
+                    SpellEffectTheme.Necro);
+            }
+
+            return null;
+        }
+
+        private static ProjectileVisuals? GetMissileVisuals(string spellGuid)
+        {
+            if (spellGuid == ModBlueprintIds.Spells.AcidMissile)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.AcidMissile,
+                    "WotrMod_AcidMissileProjectile",
+                    SpellEffectTheme.Acid);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ElectricMissile)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.ElectricMissile,
+                    "WotrMod_ElectricMissileProjectile",
+                    SpellEffectTheme.Electric);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.FireMissile)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.FireMissile,
+                    "WotrMod_FireMissileProjectile",
+                    SpellEffectTheme.Fire);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.IceMissile)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.IceMissile,
+                    "WotrMod_IceMissileProjectile",
+                    SpellEffectTheme.Cold);
+            }
+
+            return null;
         }
 
         private static void RegisterProjectileCasterAppearTint(BlueprintProjectile projectile, SpellEffectTheme theme)
@@ -249,6 +383,20 @@ namespace wotr_mod.Spells
 
             public Color Color { get; }
             public float Strength { get; }
+        }
+
+        private readonly struct ProjectileVisuals
+        {
+            public ProjectileVisuals(string projectileGuid, string projectileName, SpellEffectTheme theme)
+            {
+                ProjectileGuid = projectileGuid;
+                ProjectileName = projectileName;
+                Theme = theme;
+            }
+
+            public string ProjectileGuid { get; }
+            public string ProjectileName { get; }
+            public SpellEffectTheme Theme { get; }
         }
     }
 }

@@ -74,6 +74,10 @@ namespace wotr_mod.Infrastructure
             public const string EvokerDescription = "wotr_mod.class.evoker.description";
             public const string ShadowbornName = "wotr_mod.archetype.shadowborn.name";
             public const string ShadowbornDescription = "wotr_mod.archetype.shadowborn.description";
+            public const string DraconicEvokerName = "wotr_mod.archetype.draconic_evoker.name";
+            public const string DraconicEvokerDescription = "wotr_mod.archetype.draconic_evoker.description";
+            public const string DraconicEvokerBloodlineName = "wotr_mod.archetype.draconic_evoker.bloodline.name";
+            public const string DraconicEvokerBloodlineDescription = "wotr_mod.archetype.draconic_evoker.bloodline.description";
             public const string ShadowbornBloodlineName = "wotr_mod.archetype.shadowborn.bloodline.name";
             public const string ShadowbornBloodlineDescription = "wotr_mod.archetype.shadowborn.bloodline.description";
             public const string ShadowbornArcanaName = "wotr_mod.archetype.shadowborn.arcana.name";
@@ -110,6 +114,10 @@ namespace wotr_mod.Infrastructure
             public const string GravebladeFighterTrainingDescription = "wotr_mod.archetype.graveblade.fighter_training.description";
             public const string GravebladeArmorMasteryName = "wotr_mod.archetype.graveblade.armor_mastery.name";
             public const string GravebladeArmorMasteryDescription = "wotr_mod.archetype.graveblade.armor_mastery.description";
+            public const string NecromancerStygianPrecisionName = "wotr_mod.class.necromancer.stygian_precision.name";
+            public const string NecromancerStygianPrecisionDescription = "wotr_mod.class.necromancer.stygian_precision.description";
+            public const string NecromancerReapersJudgementName = "wotr_mod.class.necromancer.reapers_judgement.name";
+            public const string NecromancerReapersJudgementDescription = "wotr_mod.class.necromancer.reapers_judgement.description";
             public const string GravebladeReapingEdgeName = "wotr_mod.archetype.graveblade.reaping_edge.name";
             public const string GravebladeReapingEdgeDescription = "wotr_mod.archetype.graveblade.reaping_edge.description";
             public const string GravebladeReapingEdgeBuffName = "wotr_mod.archetype.graveblade.reaping_edge.buff.name";

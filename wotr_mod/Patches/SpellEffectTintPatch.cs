@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using Kingmaker.Controllers.Projectiles;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic.Abilities;
 using Kingmaker.UnitLogic.Abilities.Components.Base;
+using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.Utility;
 using Kingmaker.View.MapObjects;
 using Kingmaker.Visual.HitSystem;
@@ -18,9 +20,9 @@ namespace wotr_mod.Patches
         private static readonly AccessTools.FieldRef<AreaEffectView, IFxHandle> AreaEffectSpawnedFx =
             AccessTools.FieldRefAccess<AreaEffectView, IFxHandle>("m_SpawnedFx");
 
-        private static Color? _pendingAbilityFxTint;
-        private static Color? _pendingProjectileCastFxTint;
-        private static Color? _pendingProjectileHitTint;
+        private static readonly List<Color?> PendingAbilityFxTints = new List<Color?>();
+        private static readonly List<Color?> PendingProjectileCastFxTints = new List<Color?>();
+        private static readonly List<Color?> PendingProjectileHitTints = new List<Color?>();
 
         public static void ApplyTint(GameObject fx, Color tint)
         {
@@ -60,31 +62,143 @@ namespace wotr_mod.Patches
             }
         }
 
+        private static bool TryGetRuntimeTint(UnitEntityData caster, bool sourceIsSpell, out Color tint)
+        {
+            tint = default(Color);
+            if (!sourceIsSpell ||
+                !SpellEffectRuntimeTintRegistry.TryGetActiveTheme(caster, out var theme))
+            {
+                return false;
+            }
+
+            tint = SpellEffectThemes.ColorFor(theme);
+            return true;
+        }
+
+        private static bool TryGetProjectileTint(Projectile projectile, out Color tint)
+        {
+            if (TryGetRuntimeTint(projectile?.Launcher?.Unit, IsSpellSource(projectile), out tint))
+            {
+                return true;
+            }
+
+            var blueprint = projectile?.Blueprint;
+            return blueprint != null &&
+                   SpellEffectTintRegistry.TryGetProjectileTint(blueprint.AssetGuid.ToString(), out tint);
+        }
+
+        private static bool TryGetAbilitySpawnFxTint(AbilityExecutionContext context, out Color tint)
+        {
+            if (TryGetRuntimeTint(context?.MaybeCaster, IsSpellSource(context), out tint))
+            {
+                return true;
+            }
+
+            var guid = context?.Ability?.Blueprint?.AssetGuid.ToString();
+            return guid != null &&
+                   SpellEffectTintRegistry.TryGetAbilitySpawnFxTint(guid, out tint);
+        }
+
+        private static bool IsSpellSource(AbilityExecutionContext context)
+        {
+            return context != null &&
+                   (context.AbilityBlueprint?.IsSpell == true ||
+                    context.SourceAbility?.IsSpell == true ||
+                    IsSpellAbility(context.Ability) ||
+                    IsSpellAbility(context.SourceAbilityContext?.Ability));
+        }
+
+        private static bool IsSpellSource(Projectile projectile)
+        {
+            var reason = projectile?.SavedContext?.CurrentEvent?.Reason;
+            if (reason == null)
+            {
+                return true;
+            }
+
+            if (reason.Ability != null)
+            {
+                return IsSpellAbility(reason.Ability) ||
+                       (reason.Context != null && IsSpellSource(reason.Context));
+            }
+
+            return IsSpellSource(reason.Context);
+        }
+
+        private static bool IsSpellSource(MechanicsContext context)
+        {
+            if (context == null)
+            {
+                return true;
+            }
+
+            return context.SourceAbility?.IsSpell == true ||
+                   context.SourceAbilityContext?.AbilityBlueprint?.IsSpell == true ||
+                   IsSpellAbility(context.SourceAbilityContext?.Ability);
+        }
+
+        private static bool IsSpellAbility(AbilityData ability)
+        {
+            return ability?.Blueprint?.IsSpell == true || ability?.Spellbook != null;
+        }
+
+        private static void PushPendingTint(List<Color?> stack, Color? tint)
+        {
+            stack.Add(tint);
+        }
+
+        private static Color? PopPendingTint(List<Color?> stack)
+        {
+            if (stack.Count == 0)
+            {
+                return null;
+            }
+
+            var tint = stack[stack.Count - 1];
+            stack.RemoveAt(stack.Count - 1);
+            return tint;
+        }
+
+        private static Color? PeekPendingTint(List<Color?> stack)
+        {
+            return stack.Count == 0 ? null : stack[stack.Count - 1];
+        }
+
+        private static void ApplyPendingTint(IFxHandle handle, Color? tint)
+        {
+            if (handle == null || tint == null)
+            {
+                return;
+            }
+
+            var tintValue = tint.Value;
+            handle.RunAfterSpawn(obj => ApplyTint(obj, tintValue));
+        }
+
         [HarmonyPatch(typeof(ProjectileController), "CreateView")]
         private static class ProjectileControllerCreateViewPatch
         {
             private static void Prefix(Projectile projectile)
             {
-                var blueprint = projectile?.Blueprint;
-                if (blueprint != null &&
-                    SpellEffectTintRegistry.TryGetProjectileTint(blueprint.AssetGuid.ToString(), out var tint))
+                Color tint;
+                if (TryGetProjectileTint(projectile, out tint))
                 {
-                    _pendingProjectileCastFxTint = tint;
+                    PushPendingTint(PendingProjectileCastFxTints, tint);
+                    return;
                 }
+
+                PushPendingTint(PendingProjectileCastFxTints, null);
             }
 
             private static void Postfix(Projectile projectile)
             {
-                _pendingProjectileCastFxTint = null;
-
-                var blueprint = projectile?.Blueprint;
-                if (blueprint == null ||
-                    !SpellEffectTintRegistry.TryGetProjectileTint(blueprint.AssetGuid.ToString(), out var tint))
+                var tint = PopPendingTint(PendingProjectileCastFxTints);
+                if (tint == null)
                 {
                     return;
                 }
 
-                ApplyTint(projectile.View, tint);
+                ApplyTint(projectile?.View, tint.Value);
             }
         }
 
@@ -95,8 +209,10 @@ namespace wotr_mod.Patches
             {
                 var data = __instance?.Data as AreaEffectEntityData;
                 var blueprint = data?.Blueprint;
-                if (blueprint == null ||
-                    !SpellEffectTintRegistry.TryGetAreaEffectTint(blueprint.AssetGuid.ToString(), out var tint))
+                var context = data?.Context ?? __instance?.Context;
+                if (!TryGetRuntimeTint(context?.MaybeCaster, IsSpellSource(context), out var tint) &&
+                    (blueprint == null ||
+                     !SpellEffectTintRegistry.TryGetAreaEffectTint(blueprint.AssetGuid.ToString(), out tint)))
                 {
                     return;
                 }
@@ -116,17 +232,27 @@ namespace wotr_mod.Patches
         {
             private static void Prefix(Projectile projectile)
             {
-                var blueprint = projectile?.Blueprint;
-                if (blueprint != null &&
-                    SpellEffectTintRegistry.TryGetProjectileTint(blueprint.AssetGuid.ToString(), out var tint))
+                if (TryGetProjectileTint(projectile, out var tint))
                 {
-                    _pendingProjectileHitTint = tint;
+                    PushPendingTint(PendingProjectileHitTints, tint);
+                    return;
                 }
+
+                PushPendingTint(PendingProjectileHitTints, null);
             }
 
             private static void Postfix()
             {
-                _pendingProjectileHitTint = null;
+                PopPendingTint(PendingProjectileHitTints);
+            }
+        }
+
+        [HarmonyPatch(typeof(HitPlayer), "PlayHit")]
+        private static class HitPlayerPlayHitPatch
+        {
+            private static void Postfix(IFxHandle __result)
+            {
+                ApplyPendingTint(__result, PeekPendingTint(PendingProjectileHitTints));
             }
         }
 
@@ -135,14 +261,18 @@ namespace wotr_mod.Patches
         {
             private static void Prefix(AbilityExecutionContext context)
             {
-                var guid = context?.Ability?.Blueprint?.AssetGuid.ToString();
-                if (guid != null && SpellEffectTintRegistry.TryGetAbilitySpawnFxTint(guid, out var tint))
-                    _pendingAbilityFxTint = tint;
+                if (TryGetAbilitySpawnFxTint(context, out var tint))
+                {
+                    PushPendingTint(PendingAbilityFxTints, tint);
+                    return;
+                }
+
+                PushPendingTint(PendingAbilityFxTints, null);
             }
 
             private static void Postfix()
             {
-                _pendingAbilityFxTint = null;
+                PopPendingTint(PendingAbilityFxTints);
             }
         }
 
@@ -151,11 +281,10 @@ namespace wotr_mod.Patches
         {
             private static void Postfix(IFxHandle __result)
             {
-                if (__result == null) return;
-                var tint = _pendingAbilityFxTint ?? _pendingProjectileCastFxTint ?? _pendingProjectileHitTint;
-                if (tint == null) return;
-                var tintValue = tint.Value;
-                __result.RunAfterSpawn(obj => ApplyTint(obj, tintValue));
+                var tint = PeekPendingTint(PendingAbilityFxTints) ??
+                           PeekPendingTint(PendingProjectileCastFxTints) ??
+                           PeekPendingTint(PendingProjectileHitTints);
+                ApplyPendingTint(__result, tint);
             }
         }
 
@@ -164,11 +293,9 @@ namespace wotr_mod.Patches
         {
             private static void Postfix(IFxHandle __result)
             {
-                if (__result == null) return;
-                var tint = _pendingAbilityFxTint ?? _pendingProjectileHitTint;
-                if (tint == null) return;
-                var tintValue = tint.Value;
-                __result.RunAfterSpawn(obj => ApplyTint(obj, tintValue));
+                var tint = PeekPendingTint(PendingAbilityFxTints) ??
+                           PeekPendingTint(PendingProjectileHitTints);
+                ApplyPendingTint(__result, tint);
             }
         }
     }

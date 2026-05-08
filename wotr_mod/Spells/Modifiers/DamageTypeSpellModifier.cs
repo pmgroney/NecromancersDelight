@@ -1,5 +1,3 @@
-using System.Linq;
-using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
@@ -27,7 +25,6 @@ namespace wotr_mod.Spells.Modifiers
             public ContextRankProgression Progression;
             public int StartLevel;
             public int StepLevel;
-            public string[] AdditionalClasses;
         }
 
         public DamageTypeSpellModifier(
@@ -59,18 +56,12 @@ namespace wotr_mod.Spells.Modifiers
             if (_scaling.RankType != default || _scaling.Progression != default)
             {
                 var rank = context.Blueprints.EnsureComponent(spell, () => new ContextRankConfig());
-                var additionalClasses = _scaling.AdditionalClasses?
-                    .Select(guid => context.Blueprints.Get<BlueprintCharacterClass>(guid))
-                    .Where(c => c != null)
-                    .ToArray();
-
                 context.Blueprints.ConfigureContextRankConfig(
                     rank,
                     type: _scaling.RankType,
                     progression: _scaling.Progression,
                     startLevel: _scaling.StartLevel,
-                    stepLevel: _scaling.StepLevel,
-                    additionalClasses: additionalClasses);
+                    stepLevel: _scaling.StepLevel);
             }
         }
 

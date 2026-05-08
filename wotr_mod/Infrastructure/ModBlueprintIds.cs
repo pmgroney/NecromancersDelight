@@ -82,6 +82,16 @@ namespace wotr_mod.Infrastructure
             public const string EvokerEarthBloodline = "8b523bc28a4c4533bf79bced25ee347f";
             public const string EvokerFireBloodline = "690424d00f644fe68db965d70b446242";
             public const string EvokerWaterBloodline = "5aab61736c324eaa9112dbb8c43440a9";
+            public const string EvokerBlackDragonBloodline = "921e2d600a1348dcba49f8d674b910a3";
+            public const string EvokerBlueDragonBloodline = "b0375b7dfaff4f38a42330dcd935a535";
+            public const string EvokerBrassDragonBloodline = "05344f40514940b48d9b1abe9da6e2b3";
+            public const string EvokerBronzeDragonBloodline = "4747681c87f94664970939b58548018a";
+            public const string EvokerCopperDragonBloodline = "e7732f0e7d3842d78b73df84fc5bae14";
+            public const string EvokerGoldDragonBloodline = "b0d0a03104484de59dbc7bf4be709799";
+            public const string EvokerGreenDragonBloodline = "dc97c311397e49ddabe90bca0b4dc79a";
+            public const string EvokerRedDragonBloodline = "dc0c1035639e450e92f7cbf57353d085";
+            public const string EvokerSilverDragonBloodline = "ed7eaec026d94b7e8d8f6d8d7426d59d";
+            public const string EvokerWhiteDragonBloodline = "05eeb30a6484497d994d5458736de443";
             public const string ShadowbornBloodline = "c030e509679940aa9132e6fa0a15430a";
             public const string NecromancerBloodline = "9c2a3d4e5f6a7b8c9d0e1f2a3b4c5d6e";
             public const string Graveblade = "2e9f6a8c4b714d0a9c3e5f7b1d82604a";
@@ -127,8 +137,17 @@ namespace wotr_mod.Infrastructure
 
         internal static class Projectiles
         {
+            public const string AcidMissile = "259d387547ce4a3d9df1bb8fb62006fd";
+            public const string BoneSpike = "7f49f55df7b944fcb5b946b61ec918d0";
+            public const string DeathRay = "e5f0a0fb9d4242e89f3f42a8b07d1406";
+            public const string ElectricMissile = "1ec58be251f84f7486a47f1f30e39d78";
+            public const string FireMissile = "19b643561dc04970ab1e8f2b8d79084c";
+            public const string IceMissile = "0ef61bb5e46f4b27a249fe631c272ee8";
+            public const string ShadowbornScorchingRay = "4d54317c3e0c47f5a619de136939af6d";
             public const string ShadowbornUmbralRay = "5ac7dbf06e2a4c96a93b8071e3d4f285";
+            public const string ShadowbornUmbralBlast = "40179d4b6dd54f42b9350ac693578525";
             public const string VitriolicBlast = "b6c7d8e9f0a14b9c8d7e6f5a4b3c2d1e";
+            public const string WitheringRay = "59e6c8d2778d41e6b379b63cae9e7e12";
         }
 
         internal static class Abilities
@@ -142,6 +161,10 @@ namespace wotr_mod.Infrastructure
             public const string IncorporealForm = "2b4514f3866845ab871a4055bcb77b7a";
             public const string ReapingEdge = "a4f3c2d1e0b94f6a8c7d5e3f1a2b4c6d";
             public const string ReapingEdgeAbility = "1faef653ffb44bf0a29193b9298c6448";
+            public const string EvokerAirArcana = "9646b545e05345a1a6e631728acaae4a";
+            public const string EvokerEarthArcana = "c6c2ac07fe9941378cba51811b90715d";
+            public const string EvokerFireArcana = "e4ceefc1300d4e94a9ee904759396368";
+            public const string EvokerWaterArcana = "be13bd160a8a481e8e44b7cac5a2b82c";
             public const string ShadowbornArcana = "5f58f3ee60f44ec0bdc4a85190d11883";
             public const string ShadowbornLivingGhost = "b340122d4aa945b8a7193080f0f06827";
             public const string ShadowbornUmbralRay = "70e2d1d47f924bd1ac3721b3905f0035";
@@ -159,6 +182,7 @@ namespace wotr_mod.Infrastructure
         internal static class Archetypes
         {
             public const string Shadowborn = "a4e91c3f7b2d4e6a9c0f1b8d5e327640";
+            public const string DraconicEvoker = "7c9a8cf2f3db467883f704ad969b5866";
             public const string Sepulchrit = "7b9d1e3f5a6c4b08a2d7e9f103c5b864";
             public const string Graveblade = "8c0a2b4d6e7f49b1a3c5d8e0f2a4b6c9";
         }
@@ -178,6 +202,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string CompanionPet = "13dc7dba1250470ea2f717f2340c6535";
             public const string EvokerBloodline = "dc4f77e8d0f3476aad11bda78da721c7";
+            public const string DraconicEvokerBloodline = "749216d4dee346aea4268b8799ad7eff";
             public const string FetchlingHeritage = "3f4a5b6c7d8e4901a2b3c4d5e6f70123";
             public const string HumanHeritage = "2f4a6c8e0b134d57a9c1e3f5b7d90246";
             public const string NecromancerBloodline = "a1b2c3d4e5f64758b9c0d1e2f3a4b5c6";
@@ -213,6 +238,13 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower9 = "e5f6a7b8c9d04b82e3f4a5b6c7d8e9f0";
             public const string NecromancerBloodlinePower15 = "f6a7b8c9d0e14c93f4a5b6c7d8e9f0a1";
             public const string NecromancerBloodlinePower20 = "07b8c9d0e1f24da405b6c7d8e9f0a1b2";
+            public const string DraconicEvokerArcaneArmorProficiency = "492a7ad0f6fd4a9fbed41066230ecd73";
+            public const string EvokerAirArcana = "f5a250ec11b041d89ae9e94fb1d7a18d";
+            public const string EvokerEarthArcana = "0ade6c9634c24d188a6b9b27056c8ade";
+            public const string EvokerFireArcana = "74a6035aab8a42bf963cd508f52a136f";
+            public const string EvokerWaterArcana = "d46d14b765934f1a93e9aaec4ec74ed7";
+            public const string NecromancerStygianPrecision = "a40b2428f0794b2badf02505fd227882";
+            public const string NecromancerReapersJudgement = "d6a00e17db544a0188902e26499a7f6f";
             public const string ShadowbornArcana = "e4ba41b250a94b988444c0b452e88030";
             public const string ShadowbornBurningHandsKnownSpell = "09a7b2d0c117473285e132ff12dfd26f";
             public const string ShadowbornScorchingRayKnownSpell = "3f90afb837764ec3beb8cb555bb33eb2";
@@ -265,6 +297,10 @@ namespace wotr_mod.Infrastructure
             public const string ReapingEdgeBrittleBone = "e8b7a6f5d4c34e0f9a1b2c4d6e8f0132";
             public const string ReapingEdgeFatigue = "f9c8b7a6e5d44f10ab2c3d5e7f901243";
             public const string ReapingEdgeExhaustion = "0ad9c8b7f6e55021bc3d4e6f80912354";
+            public const string EvokerAirArcana = "75e8bf2b8bfe4aab97e7b8174d1de5ba";
+            public const string EvokerEarthArcana = "3ed9d661d943463c965bca3f8630c697";
+            public const string EvokerFireArcana = "ca95c7b081294b3880e1a4a8c36c6a8c";
+            public const string EvokerWaterArcana = "92efd294eff14c6f9d6ed2be3781e12d";
             public const string ShadowbornArcana = "973702c1b9e74b9e8ddcc3e580e192f9";
             public const string ShadowbornLivingGhost = "23ca9c026754444499d9b30238873d97";
         }

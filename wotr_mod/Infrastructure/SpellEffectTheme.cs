@@ -1,10 +1,12 @@
 namespace wotr_mod.Infrastructure
 {
-    internal enum SpellEffectTheme
+    public enum SpellEffectTheme
     {
         Electric,
         Shadow,
         Acid,
-        Necro
+        Necro,
+        Cold,
+        Fire
     }
 }

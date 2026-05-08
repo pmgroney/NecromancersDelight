@@ -104,18 +104,18 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             {
                 CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, firstLevelFighterBonusFeat),
                 CreateLevelEntry(2,  bonusFeat),
-                CreateLevelEntry(3,  armorTraining, reapingEdge, overhandChop),
-                CreateLevelEntry(5,  reapingEdge, twoHandedWeaponTraining),
+                CreateLevelEntry(3,  armorTraining, overhandChop),
+                CreateLevelEntry(5,  twoHandedWeaponTraining),
                 CreateLevelEntry(6,  bonusFeat),
-                CreateLevelEntry(7,  armorTraining, reapingEdge, backswing),
-                CreateLevelEntry(9,  reapingEdge, twoHandedWeaponTraining),
+                CreateLevelEntry(7,  armorTraining, backswing),
+                CreateLevelEntry(9,  twoHandedWeaponTraining),
                 CreateLevelEntry(10, bonusFeat),
-                CreateLevelEntry(11, armorTraining, reapingEdge, piledriver),
-                CreateLevelEntry(13, reapingEdge, twoHandedWeaponTraining),
-                CreateLevelEntry(15, armorTraining, reapingEdge, greaterPowerAttack),
+                CreateLevelEntry(11, armorTraining, piledriver),
+                CreateLevelEntry(13, twoHandedWeaponTraining),
+                CreateLevelEntry(15, armorTraining, greaterPowerAttack),
                 CreateLevelEntry(16, bonusFeat),
-                CreateLevelEntry(17, reapingEdge, twoHandedWeaponTraining),
-                CreateLevelEntry(19, armorMastery, reapingEdge, weaponMastery)
+                CreateLevelEntry(17, twoHandedWeaponTraining),
+                CreateLevelEntry(19, armorMastery, weaponMastery)
             };
 
             _blueprints.SetArchetypeReplaceSpellbook(archetype, gravebladeSpellbook);
@@ -215,6 +215,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var harvestTheFallen    = features[11];
             var hellOnEarth         = features[12];
             var necromancerBonusFeat = features[13];
+            var stygianPrecision    = features[14];
+            var reapersJudgement    = features[15];
 
             _blueprints.SetProgressionUiGroups(
                 progression,
@@ -223,6 +225,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 new[] { necromancerBonusFeat },
                 new[] { armorTraining, armorMastery },
                 new[] { twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery },
+                new[] { stygianPrecision, reapersJudgement },
                 new[] { reapingEdge },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
@@ -449,7 +452,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var ability = EnsureReapingEdgeAbility(resource, buff);
 
             feature.IsClassFeature = true;
-            feature.Ranks = 10;
+            feature.Ranks = 1;
             _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeName),
                 _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeDescription));
