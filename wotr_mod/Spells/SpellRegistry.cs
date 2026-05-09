@@ -28,6 +28,10 @@ namespace wotr_mod.Spells
                 Spell(GameBlueprintIds.Spells.Sirocco, ModBlueprintIds.Spells.Thunderhead, "WotrMod_Thunderhead", 4, SpellSchool.Evocation, "thunderhead", "Icons\\thunderhead_256.png", new ThunderheadModifier()),
                 Spell(GameBlueprintIds.Spells.Fireball, ModBlueprintIds.Spells.VitriolicSphere, "WotrMod_VitriolicSphere", 5, SpellSchool.Evocation, "vitriolic_sphere", "Icons\\vitriolic_sphere.png", new VitriolicSphereModifier()),
                 Spell(GameBlueprintIds.Spells.ConeOfCold, ModBlueprintIds.Spells.AbsoluteZero, "WotrMod_AbsoluteZero", 6, SpellSchool.Evocation, "absolute_zero", "Icons\\absolute_zero.png", new AbsoluteZeroModifier()),
+                Spell(GameBlueprintIds.Spells.HellfireRay, ModBlueprintIds.Spells.AcidHellfireRay, "WotrMod_AcidHellfireRay", 6, SpellSchool.Evocation, "acid_hellfire_ray", null, HellfireRayVariant(DamageEnergyType.Acid, SpellDescriptor.Acid)),
+                Spell(GameBlueprintIds.Spells.HellfireRay, ModBlueprintIds.Spells.ColdHellfireRay, "WotrMod_ColdHellfireRay", 6, SpellSchool.Evocation, "cold_hellfire_ray", null, HellfireRayVariant(DamageEnergyType.Cold, SpellDescriptor.Cold)),
+                Spell(GameBlueprintIds.Spells.HellfireRay, ModBlueprintIds.Spells.ElectricHellfireRay, "WotrMod_ElectricHellfireRay", 6, SpellSchool.Evocation, "electric_hellfire_ray", null, HellfireRayVariant(DamageEnergyType.Electricity, SpellDescriptor.Electricity)),
+                Spell(GameBlueprintIds.Spells.HellfireRay, ModBlueprintIds.Spells.FireHellfireRay, "WotrMod_FireHellfireRay", 6, SpellSchool.Evocation, "fire_hellfire_ray", null, new ConfigureSpellModifier(SpellSchool.Evocation)),
                 Spell(GameBlueprintIds.Spells.ConeOfCold, ModBlueprintIds.Spells.DissolutionWave, "WotrMod_DissolutionWave", 7, SpellSchool.Evocation, "dissolution_wave", "Icons\\dissolution_wave.png", new DissolutionWaveModifier()),
                 Spell(GameBlueprintIds.Spells.Sirocco, ModBlueprintIds.Spells.GlacialPrison, "WotrMod_GlacialPrison", 7, SpellSchool.Evocation, "glacial_prison", "Icons\\glacial_prison.png", new GlacialPrisonModifier()),
                 Spell(GameBlueprintIds.Spells.Sirocco, ModBlueprintIds.Spells.CataclysmicStorm, "WotrMod_CataclysmicStorm", 8, SpellSchool.Evocation, "cataclysmic_storm", "Icons\\cataclysmic_storm.png", new CataclysmicStormModifier()),
@@ -38,6 +42,7 @@ namespace wotr_mod.Spells
                 Spell(GameBlueprintIds.Spells.Entangle, ModBlueprintIds.Spells.EldritchHorror, "WotrMod_EldritchHorror", 3, SpellSchool.Necromancy, "eldritch_horror", "Icons\\eldritch_horror.png", EldritchHorror()),
                 Spell(GameBlueprintIds.Spells.Entangle, ModBlueprintIds.Spells.HellOnEarth, "WotrMod_HellOnEarth", 9, SpellSchool.Necromancy, "hell_on_earth", "Icons\\hell_on_earth.png", HellOnEarth()),
                 Spell(GameBlueprintIds.Spells.ScorchingRay, ModBlueprintIds.Spells.DeathRay, "WotrMod_DeathRay", 2, SpellSchool.Necromancy, "death_ray", "Icons\\death_ray.png", DeathRay()),
+                Spell(GameBlueprintIds.Spells.HellfireRay, ModBlueprintIds.Spells.ShadowHellfireRay, "WotrMod_ShadowHellfireRay", 6, SpellSchool.Necromancy, "shadow_hellfire_ray", null, HellfireRayVariant(DamageEnergyType.NegativeEnergy, SpellDescriptor.Death, SpellSchool.Necromancy)),
                 Spell(GameBlueprintIds.Spells.AuraOfGreaterCourage, ModBlueprintIds.Spells.DespairOfTheSepulchre, "WotrMod_DespairOfTheSepulchre", 5, SpellSchool.Necromancy, "despair_of_sepulchre", "Icons\\despair_of_sepulchre.png", new DespairOfTheSepulchreModifier()),
                 Spell(GameBlueprintIds.Spells.FalseLife, ModBlueprintIds.Spells.HarvestTheFallen, "WotrMod_HarvestTheFallen", 5, SpellSchool.Necromancy, "harvest_the_fallen", "Icons\\harvest_the_fallen.png", new HarvestTheFallenModifier())
             };
@@ -119,6 +124,20 @@ namespace wotr_mod.Spells
                         StartLevel = 1,
                         StepLevel = 4
                     }));
+        }
+
+        private static ISpellModifier HellfireRayVariant(
+            DamageEnergyType energy,
+            SpellDescriptor descriptor,
+            SpellSchool school = SpellSchool.Evocation)
+        {
+            return new CompositeSpellModifier(
+                new ConfigureSpellModifier(school),
+                new DamageTypeSpellModifier(
+                    SpellDescriptor.Fire,
+                    descriptor,
+                    DamageEnergyType.Fire,
+                    energy));
         }
 
         private static ISpellModifier Missile(DamageEnergyType energy, SpellDescriptor descriptor, SpellSchool school)

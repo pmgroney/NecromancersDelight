@@ -76,6 +76,7 @@ namespace wotr_mod.Spells
                 var spell = EnsureSpell(definition);
                 if (IsGrantedOnlySpell(definition))
                 {
+                    _blueprints.RemoveComponents<SpellListComponent>(spell);
                     _blueprints.RemoveSpellFromList(wizardList, spell);
                     _blueprints.RemoveSpellFromList(clericList, spell);
                     continue;
@@ -165,6 +166,20 @@ namespace wotr_mod.Spells
             if (definition.NewSpellGuid == ModBlueprintIds.Spells.VitriolicApocalypse)
             {
                 ConfigureVitriolicApocalypseVisuals(spell);
+                return;
+            }
+
+            var rayVisuals = GetRayVisuals(definition.NewSpellGuid);
+            if (rayVisuals.HasValue)
+            {
+                ConfigureProjectileVisuals(spell, rayVisuals.Value);
+                return;
+            }
+
+            var hellfireRayVisuals = GetHellfireRayVisuals(definition.NewSpellGuid);
+            if (hellfireRayVisuals.HasValue)
+            {
+                ConfigureProjectileVisuals(spell, hellfireRayVisuals.Value);
                 return;
             }
 
@@ -347,6 +362,88 @@ namespace wotr_mod.Spells
             return projectileRefs?.FirstOrDefault()?.Get() as BlueprintProjectile;
         }
 
+        private static ProjectileVisuals? GetRayVisuals(string spellGuid)
+        {
+            if (spellGuid == ModBlueprintIds.Spells.CausticBeam)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.CausticBeam,
+                    "WotrMod_CausticBeamProjectile",
+                    SpellEffectTheme.Acid);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.EmperorsWrath)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.EmperorsWrath,
+                    "WotrMod_EmperorsWrathProjectile",
+                    SpellEffectTheme.Electric);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ForceRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.ForceRay,
+                    "WotrMod_ForceRayProjectile",
+                    SpellEffectTheme.Arcane);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.FrostBlast)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.FrostBlast,
+                    "WotrMod_FrostBlastProjectile",
+                    SpellEffectTheme.Cold);
+            }
+
+            return null;
+        }
+
+        private static ProjectileVisuals? GetHellfireRayVisuals(string spellGuid)
+        {
+            if (spellGuid == ModBlueprintIds.Spells.AcidHellfireRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.AcidHellfireRay,
+                    "WotrMod_AcidHellfireRayProjectile",
+                    SpellEffectTheme.Acid);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ColdHellfireRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.ColdHellfireRay,
+                    "WotrMod_ColdHellfireRayProjectile",
+                    SpellEffectTheme.Cold);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ElectricHellfireRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.ElectricHellfireRay,
+                    "WotrMod_ElectricHellfireRayProjectile",
+                    SpellEffectTheme.Electric);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.FireHellfireRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.FireHellfireRay,
+                    "WotrMod_FireHellfireRayProjectile",
+                    SpellEffectTheme.Fire);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ShadowHellfireRay)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.ShadowHellfireRay,
+                    "WotrMod_ShadowHellfireRayProjectile",
+                    SpellEffectTheme.Shadow);
+            }
+
+            return null;
+        }
+
         private static ProjectileVisuals? GetNecroProjectileVisuals(string spellGuid)
         {
             if (spellGuid == ModBlueprintIds.Spells.BoneSpike)
@@ -460,7 +557,12 @@ namespace wotr_mod.Spells
 
         private static bool IsGrantedOnlySpell(SpellDefinition definition)
         {
-            return definition.NewSpellGuid == ModBlueprintIds.Spells.BoneSpike;
+            return definition.NewSpellGuid == ModBlueprintIds.Spells.BoneSpike ||
+                   definition.NewSpellGuid == ModBlueprintIds.Spells.AcidHellfireRay ||
+                   definition.NewSpellGuid == ModBlueprintIds.Spells.ColdHellfireRay ||
+                   definition.NewSpellGuid == ModBlueprintIds.Spells.ElectricHellfireRay ||
+                   definition.NewSpellGuid == ModBlueprintIds.Spells.FireHellfireRay ||
+                   definition.NewSpellGuid == ModBlueprintIds.Spells.ShadowHellfireRay;
         }
 
         private static bool IsDivineListSpell(SpellDefinition definition)
@@ -497,12 +599,14 @@ namespace wotr_mod.Spells
         private Sprite GetIcon(SpellDefinition definition)
         {
             var icon = _icons.Load(definition.IconPath);
+            var tint = GetIconTint(definition.NewSpellGuid);
             if (icon != null)
             {
-                return icon;
+                return tint.HasValue
+                    ? _icons.Tint(icon, definition.InternalName + "Icon", tint.Value.Color, tint.Value.Strength)
+                    : icon;
             }
 
-            var tint = GetMissileIconTint(definition.NewSpellGuid);
             if (!tint.HasValue)
             {
                 return null;
@@ -514,7 +618,7 @@ namespace wotr_mod.Spells
             return _icons.Tint(source.Icon, definition.InternalName + "Icon", tint.Value.Color, tint.Value.Strength);
         }
 
-        private static MissileIconTint? GetMissileIconTint(string spellGuid)
+        private static MissileIconTint? GetIconTint(string spellGuid)
         {
             if (spellGuid == ModBlueprintIds.Spells.FireMissile)
             {
@@ -534,6 +638,51 @@ namespace wotr_mod.Spells
             if (spellGuid == ModBlueprintIds.Spells.IceMissile)
             {
                 return new MissileIconTint(new Color(0.65f, 0.95f, 1f, 1f), 0.74f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.CausticBeam)
+            {
+                return new MissileIconTint(SpellEffectThemes.Acid, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.EmperorsWrath)
+            {
+                return new MissileIconTint(SpellEffectThemes.Electric, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ForceRay)
+            {
+                return new MissileIconTint(SpellEffectThemes.Arcane, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.FrostBlast)
+            {
+                return new MissileIconTint(SpellEffectThemes.Cold, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.AcidHellfireRay)
+            {
+                return new MissileIconTint(SpellEffectThemes.Acid, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ColdHellfireRay)
+            {
+                return new MissileIconTint(SpellEffectThemes.Cold, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ElectricHellfireRay)
+            {
+                return new MissileIconTint(SpellEffectThemes.Electric, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.FireHellfireRay)
+            {
+                return new MissileIconTint(SpellEffectThemes.Fire, 0.72f);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.ShadowHellfireRay)
+            {
+                return new MissileIconTint(SpellEffectThemes.Shadow, 0.72f);
             }
 
             return null;

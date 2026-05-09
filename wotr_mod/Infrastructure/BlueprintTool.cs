@@ -966,6 +966,13 @@ namespace wotr_mod.Infrastructure
                 BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(feature));
         }
 
+        public void SetRemoveFeatureOnApplyFeature(RemoveFeatureOnApply component, BlueprintFeature feature)
+        {
+            BlueprintFields.RemoveFeatureOnApplyFeature.SetValue(
+                component,
+                BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(feature));
+        }
+
         public void SetAddFacts(AddFacts component, params BlueprintUnitFact[] facts)
         {
             var references = (facts ?? Array.Empty<BlueprintUnitFact>())

@@ -25,7 +25,6 @@ using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
-using wotr_mod.Classes.Necromancer.Archetypes;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
@@ -33,7 +32,7 @@ using wotr_mod.Spells.Modifiers;
 
 namespace wotr_mod.Classes.Necromancer
 {
-    internal sealed class NecromancerInstaller : IClassContentInstaller
+    internal sealed partial class NecromancerInstaller : IClassContentInstaller
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
@@ -119,20 +118,6 @@ namespace wotr_mod.Classes.Necromancer
                 blueprint,
                 definition.Recommendation.Value,
                 $"$PureRecommendation${definition.DisplayName}");
-        }
-
-        private BlueprintArchetype[] EnsureArchetypes(
-            BlueprintCharacterClass characterClass,
-            BlueprintSpellbook spellbook,
-            BlueprintSpellList spellList)
-        {
-            return new[]
-            {
-                new SepulchritInstaller(_blueprints, _localization)
-                    .Ensure(characterClass, spellbook, spellList),
-                new GravebladeInstaller(_blueprints, _localization, _logger, _icons)
-                    .Ensure(characterClass, spellbook, spellList)
-            };
         }
 
         private void EnsureNecromancySpellFocusRecommendation(BlueprintCharacterClass characterClass)

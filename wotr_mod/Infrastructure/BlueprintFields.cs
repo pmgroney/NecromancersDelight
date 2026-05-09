@@ -225,6 +225,9 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo AddFeatureOnApplyFeature =
             typeof(AddFeatureOnApply).GetField("m_Feature", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo RemoveFeatureOnApplyFeature =
+            typeof(RemoveFeatureOnApply).GetField("m_Feature", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo AddFactsFacts =
             typeof(AddFacts).GetField("m_Facts", BindingFlags.Instance | BindingFlags.NonPublic);
 

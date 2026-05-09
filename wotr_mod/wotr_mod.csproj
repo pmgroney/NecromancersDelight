@@ -82,11 +82,13 @@
         <Compile Include="Classes\ClassChassisDefinition.cs"/>
         <Compile Include="Classes\ClassComponentInstallers.cs" />
         <Compile Include="Classes\ClassSpellDefinition.cs" />
+        <Compile Include="Classes\EvokerInstaller.Archetypes.cs" />
         <Compile Include="Classes\EvokerInstaller.cs" />
         <Compile Include="Classes\EvokerScalingInstaller.cs" />
         <Compile Include="Classes\LivingDarknessInstaller.cs" />
         <Compile Include="Classes\EvokerSpellRegistry.cs"/>
         <Compile Include="Classes\IClassContentInstaller.cs" />
+        <Compile Include="Classes\Necromancer\NecromancerInstaller.Archetypes.cs" />
         <Compile Include="Classes\Necromancer\NecromancerInstaller.cs" />
         <Compile Include="Classes\Necromancer\NecromancerSpellRegistry.cs" />
         <Compile Include="Classes\Necromancer\Archetypes\GravebladeInstaller.cs" />
@@ -98,6 +100,7 @@
         <Compile Include="Content\IContentModule.cs"/>
         <Compile Include="Content\Localization\ModText.cs"/>
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
+        <Compile Include="Features\DraconicEvokerBreathDamage.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
         <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
         <Compile Include="Features\EvokerSpellShaping.cs" />

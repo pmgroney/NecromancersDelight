@@ -10,6 +10,7 @@ namespace wotr_mod.Infrastructure
         public static readonly Color Necro    = new Color(0.03f, 0.28f, 0.08f);
         public static readonly Color Cold     = new Color(0.05f, 0.35f, 1.00f);
         public static readonly Color Fire     = new Color(1.00f, 0.25f, 0.05f);
+        public static readonly Color Arcane   = new Color(0.62f, 0.34f, 1.00f);
 
         public static Color ColorFor(SpellEffectTheme theme)
         {
@@ -21,6 +22,7 @@ namespace wotr_mod.Infrastructure
                 case SpellEffectTheme.Necro:    return Necro;
                 case SpellEffectTheme.Cold:     return Cold;
                 case SpellEffectTheme.Fire:     return Fire;
+                case SpellEffectTheme.Arcane:   return Arcane;
                 default:                        return Color.white;
             }
         }

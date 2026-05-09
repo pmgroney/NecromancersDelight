@@ -115,11 +115,13 @@ namespace wotr_mod.Infrastructure
 
         internal static class Spells
         {
+            public const string AcidHellfireRay = "e383e8966a5549dd97deff4bc505181f";
             public const string AcidMissile = "a2c5020c703c4fe5a3b71522d39a8602";
             public const string BoneSpike = "b311c4d368bd4257916dd15b2438e804";
             public const string CausticBeam = "fb782b9cf4c4426d9e86df1128bbee0a";
             public const string CausticOblivion = "5bfb7e3e85c04f19ab63013dd1745258";
             public const string CataclysmicStorm = "405e3058396f4b5f892edcd54c0e241d";
+            public const string ColdHellfireRay = "0a418d8c393245fca365626edab20003";
             public const string CorrosiveCascade = "da3de32824374df99265414a31e13c7c";
             public const string CorpseExplosion = "78133a1f0218401a8fd254e0923014f3";
             public const string DeathRay = "d15284d0111b46b2a8ff6a62e5bc0654";
@@ -128,7 +130,9 @@ namespace wotr_mod.Infrastructure
             public const string DissolutionWave = "feaf20a29f224af6a6e2d7692a7d6fc7";
             public const string ElectricMissile = "9b3f6c1d4e2a4f8b9c7d5e6a1b2c3d40";
             public const string EldritchHorror = "02e182703b3340edab2d88331da63f3b";
+            public const string ElectricHellfireRay = "8c9ba02cacb745abb616021685800f9b";
             public const string EmperorsWrath = "bc5adee5c6554c449c14ec7b9adcb7e7";
+            public const string FireHellfireRay = "ef0b92caa47e40b7aaa9ea01f4a5c444";
             public const string FireMissile = "c7d84e5a1b9f4c7aa6e92f3d5b8c0142";
             public const string ForceRay = "64511260f449426787a68ada088e5fcd";
             public const string FrostBlast = "47fceb9475c443c497a9f44376aaab11";
@@ -140,6 +144,7 @@ namespace wotr_mod.Infrastructure
             public const string IceMissile = "4a7c2e9f8d6b4c1aa3f5e7d9b2c8e014";
             public const string ShadowbornBurningHands = "8df963eadcb64726b953f20ee028b47d";
             public const string ShadowbornScorchingRay = "c1096d20240448d8892f01d840dfa263";
+            public const string ShadowHellfireRay = "69365c2e41194605b2506ee5bbc89dda";
             public const string Thunderhead = "d4163070f0fb4cb2ba880498399ac5ec";
             public const string VitriolicApocalypse = "282b643e867a41af9569de76a62dd0e2";
             public const string VitriolicBlast = "46b78b46dac94683b4bb58ab21a6cc96";
@@ -148,17 +153,26 @@ namespace wotr_mod.Infrastructure
 
         internal static class Projectiles
         {
+            public const string CausticBeam = "9c31b880816f4d95a89e95223be4ad57";
             public const string AcidMissile = "259d387547ce4a3d9df1bb8fb62006fd";
+            public const string AcidHellfireRay = "63055aaede8644b8b0747ce5aaf441f4";
             public const string BoneSpike = "7f49f55df7b944fcb5b946b61ec918d0";
             public const string CausticOblivion = "6a2836d653d5459882a8de1a7075a235";
+            public const string ColdHellfireRay = "d81f778efbb54fea906681436dbe590f";
             public const string CorrosiveCascade = "72e89438d0ce4bbcaf67ab3c6b4aebd1";
             public const string DeathRay = "e5f0a0fb9d4242e89f3f42a8b07d1406";
             public const string DissolutionWave = "b081a4f10e1b43f3876564696e139e75";
+            public const string ElectricHellfireRay = "bd63948747bc4ab1bb0fdfcd6cebf3f3";
             public const string ElectricMissile = "1ec58be251f84f7486a47f1f30e39d78";
+            public const string EmperorsWrath = "ab3ccc6bf40542ff8d14bef05715ed3b";
+            public const string FireHellfireRay = "59bb38ce44784873b6b5733683b95950";
             public const string FireMissile = "19b643561dc04970ab1e8f2b8d79084c";
+            public const string ForceRay = "9f2875b1a83c4e4e8b47eab294999f31";
+            public const string FrostBlast = "839b2f16d37a46ba975555305c48f517";
             public const string FrozenLance = "b08d17aa58a74b798853e6175ff14140";
             public const string IceMissile = "0ef61bb5e46f4b27a249fe631c272ee8";
             public const string ShadowbornScorchingRay = "4d54317c3e0c47f5a619de136939af6d";
+            public const string ShadowHellfireRay = "451e4d759b694bd5892c62f9e545a837";
             public const string ShadowbornUmbralRay = "5ac7dbf06e2a4c96a93b8071e3d4f285";
             public const string ShadowbornUmbralBlast = "40179d4b6dd54f42b9350ac693578525";
             public const string VitriolicApocalypse = "21e97f3c18fb463d9365269c6265d439";
@@ -191,6 +205,7 @@ namespace wotr_mod.Infrastructure
         internal static class AbilityResources
         {
             public const string WitheringRay = "6e80f91fdc934a21b738938dc79a6b23";
+            public const string LivingDarkness = "a1b2c3d4e5f648901a2b3c4d5e6f0051";
             public const string GraspOfTheDead = "19cf2c6042b5460ab245cf140af7170b";
             public const string IncorporealForm = "fc36c9c832a24e038e301b4ba4aca748";
             public const string ReapingEdge = "b5e4d3c2f1a04b7c9d8e6f4a2b3c5d7e";
@@ -262,13 +277,19 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower20 = "07b8c9d0e1f24da405b6c7d8e9f0a1b2";
             public const string DraconicEvokerArcaneArmorProficiency = "492a7ad0f6fd4a9fbed41066230ecd73";
             public const string EvokerAirArcana = "f5a250ec11b041d89ae9e94fb1d7a18d";
+            public const string EvokerAirHellfireRayKnownSpell = "046af9036c0c4a9ab43c2ed3c11e8f55";
+            public const string EvokerProtectionFromEnergyCommunalKnownSpell = "2c6e9a4b8d5f4e70a1b3c5d7e9f10246";
             public const string EvokerEarthArcana = "0ade6c9634c24d188a6b9b27056c8ade";
+            public const string EvokerEarthHellfireRayKnownSpell = "6fd33930b06d4995a2370690507b61fc";
             public const string EvokerFireArcana = "74a6035aab8a42bf963cd508f52a136f";
+            public const string EvokerFireHellfireRayKnownSpell = "5b0f18110390440487ca602666805971";
             public const string EvokerWaterArcana = "d46d14b765934f1a93e9aaec4ec74ed7";
+            public const string EvokerWaterHellfireRayKnownSpell = "977cdb0fd2434478b94dd4522f2fb07b";
             public const string NecromancerStygianPrecision = "a40b2428f0794b2badf02505fd227882";
             public const string NecromancerReapersJudgement = "d6a00e17db544a0188902e26499a7f6f";
             public const string ShadowbornArcana = "e4ba41b250a94b988444c0b452e88030";
             public const string ShadowbornBurningHandsKnownSpell = "09a7b2d0c117473285e132ff12dfd26f";
+            public const string ShadowbornHellfireRayKnownSpell = "17854f9815e14af1bbe8c1c27529a331";
             public const string ShadowbornScorchingRayKnownSpell = "3f90afb837764ec3beb8cb555bb33eb2";
             public const string ShadowbornUmbralRay = "0a40fbba68d24db5aebdf1afbcc57cc8";
             public const string ShadowbornUmbralBlast = "e15bcd7b82b94cdab66c629b4adb7cb9";

@@ -8,3 +8,6 @@
 - Class content installer failures must be logged but must not prevent `ConfigureClassPresentation`, `AddCharacterClassToRoot`, or registration diagnostics from running. A partially configured class is easier to inspect than a class that never appears.
 - Local WotR class visibility fields are `HideInUI` and `HideIfRestricted`. Older guessed fields such as `m_HiddenInCharacterCreation` and `m_Hidden` are not the culprit in this install.
 - Recovery action 2026-05-01: `Classes\NecromancerInstaller.cs` was removed from the project compile list, and `CharacterClassInstaller` now calls its complete in-place Necromancer install path again. Do not re-enable the extracted installer until it creates every Necromancer feature and archetype that the old path creates.
+- Billy placement must tolerate a missing Billy companion unit during `Apply`; companion installation may log-and-continue, so unrelated downstream patches like Fetchling and custom heritages still need to run.
+- Handle `UIGroup.m_Features` as a `BlueprintFeatureBaseReference` enumerable, not `BlueprintFeatureReference[]`; otherwise progression UI chains can keep stale references when level-entry features are replaced.
+- Cloned custom bloodlines may reference mod-owned replacement features; replace both the original donor feature and the mod-owned replacement.

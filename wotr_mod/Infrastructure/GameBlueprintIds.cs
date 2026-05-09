@@ -103,11 +103,13 @@ namespace wotr_mod.Infrastructure
             public const string FalseLife = "7a5b5bf845779a941a67251539545762";
             public const string Fireball = "2d81362af43aeac4387a3d4fced489c3";
             public const string FireStorm = "e3d0dfe1c8527934294f241e0ae96a8d";
+            public const string HellfireRay = "700cfcbd0cb2975419bcab7dbb8c6210";
             public const string ConeOfCold = "e7c530f8137630f4d9d7ee1aa7b1edc0";
             public const string MagicMissile = "4ac47ddb9fa1eaf43a1b6809980cfbd2";
             public const string MeteorSwarm = "5e36df08c71748f7936bce310181fb71";
             public const string PolarRay = "17696c144a0194c478cbe402b496cb23";
             public const string ProtectionFromChaos = "1eaf1020e82028d4db55e6e464269e00";
+            public const string ProtectionFromEnergyCommunal = "76a629d019275b94184a1a8733cac45e";
             public const string ScorchingRay = "cdb106d53c65bbc4086183d54c3b97c7";
             public const string Sirocco = "093ed1d67a539ad4c939d9d05cfe192c";
             public const string Snowball = "9f10909f0be1f5141bf1c102041f93d9";
@@ -190,6 +192,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalFireResistanceLevel2 = "bcfbd2e30b6df7d4eab9414dd0f2c6e4";
             public const string BloodlineElementalFireSpellLevel1 = "ba93d41e98b58bc49b2fcb443bfaf5cf";
             public const string BloodlineElementalFireSpellLevel2 = "e8f0a50b4549a764eb0264ed6b181ce6";
+            public const string BloodlineElementalSpellLevel3 = "814670503f7b3ee43a2442e8e0a9f05d";
             public const string BloodlineElementalSpellLevel4 = "725c27fba6a877e4ba4de0136f927888";
             public const string BloodlineElementalSpellLevel5 = "053df94db3c29444b96c0c50592e4cc1";
             public const string BloodlineElementalSpellLevel6 = "7c479457662909e4f8023742b6df1447";

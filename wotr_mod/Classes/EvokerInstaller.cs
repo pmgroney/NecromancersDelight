@@ -2,6 +2,8 @@
 using System.Linq;
 using System;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
@@ -9,13 +11,16 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Armors;
+using Kingmaker.ElementsSystem;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Enums.Damage;
+using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityEngine;
@@ -27,7 +32,7 @@ using wotr_mod.Spells.Modifiers;
 
 namespace wotr_mod.Classes
 {
-    internal sealed class EvokerInstaller : IClassContentInstaller
+    internal sealed partial class EvokerInstaller : IClassContentInstaller
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
@@ -197,7 +202,8 @@ namespace wotr_mod.Classes
                     "WotrMod_EvokerAirArcanaFeature",
                     "WotrMod_EvokerAirArcanaAbility",
                     "WotrMod_EvokerAirArcanaBuff",
-                    SpellEffectTheme.Electric),
+                    SpellEffectTheme.Electric,
+                    characterClass),
                 EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalEarthBloodline,
                     ModBlueprintIds.Progressions.EvokerEarthBloodline, "WotrMod_EvokerBloodline_Earth",
                     LocalizationIds.Mod.EvokerEarthName, LocalizationIds.Mod.EvokerEarthDescription,
@@ -210,7 +216,8 @@ namespace wotr_mod.Classes
                     "WotrMod_EvokerEarthArcanaFeature",
                     "WotrMod_EvokerEarthArcanaAbility",
                     "WotrMod_EvokerEarthArcanaBuff",
-                    SpellEffectTheme.Acid),
+                    SpellEffectTheme.Acid,
+                    characterClass),
                 EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalFireBloodline,
                     ModBlueprintIds.Progressions.EvokerFireBloodline, "WotrMod_EvokerBloodline_Fire",
                     LocalizationIds.Mod.EvokerFireName, LocalizationIds.Mod.EvokerFireDescription,
@@ -223,7 +230,8 @@ namespace wotr_mod.Classes
                     "WotrMod_EvokerFireArcanaFeature",
                     "WotrMod_EvokerFireArcanaAbility",
                     "WotrMod_EvokerFireArcanaBuff",
-                    SpellEffectTheme.Fire),
+                    SpellEffectTheme.Fire,
+                    characterClass),
                 EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalWaterBloodline,
                     ModBlueprintIds.Progressions.EvokerWaterBloodline, "WotrMod_EvokerBloodline_Water",
                     LocalizationIds.Mod.EvokerWaterName, LocalizationIds.Mod.EvokerWaterDescription,
@@ -236,7 +244,8 @@ namespace wotr_mod.Classes
                     "WotrMod_EvokerWaterArcanaFeature",
                     "WotrMod_EvokerWaterArcanaAbility",
                     "WotrMod_EvokerWaterArcanaBuff",
-                    SpellEffectTheme.Cold)
+                    SpellEffectTheme.Cold,
+                    characterClass)
             };
 
             _blueprints.SetFeatureSelectionFeatures(selection, bloodlines);
@@ -293,7 +302,8 @@ namespace wotr_mod.Classes
             string arcanaFeatureName,
             string arcanaAbilityName,
             string arcanaBuffName,
-            SpellEffectTheme theme)
+            SpellEffectTheme theme,
+            BlueprintCharacterClass characterClass)
         {
             var progression = EnsureEvokerBloodline(
                 donorGuid,
@@ -313,7 +323,119 @@ namespace wotr_mod.Classes
                 arcanaBuffName,
                 theme);
             ReplaceProgressionFeature(progression, sourceArcanaFeatureGuid, arcana);
+            var hellfireRayKnownSpell = EnsureElementalHellfireRayKnownSpell(theme, characterClass);
+            if (hellfireRayKnownSpell != null)
+            {
+                MoveProgressionFeatureToLevel(
+                    progression,
+                    GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                    hellfireRayKnownSpell,
+                    12);
+            }
+
+            MoveProtectionFromEnergyToCommunal(progression, characterClass);
+            AddElementalBodySpellUiGroup(progression);
             return progression;
+        }
+
+        private void MoveProtectionFromEnergyToCommunal(
+            BlueprintProgression progression,
+            BlueprintCharacterClass characterClass)
+        {
+            var protectionFromEnergyCommunal = EnsureProtectionFromEnergyCommunalKnownSpell(characterClass);
+            MoveProgressionFeatureToLevel(
+                progression,
+                GameBlueprintIds.Features.BloodlineElementalSpellLevel3,
+                protectionFromEnergyCommunal,
+                8);
+        }
+
+        private BlueprintFeature EnsureProtectionFromEnergyCommunalKnownSpell(BlueprintCharacterClass characterClass)
+        {
+            if (characterClass == null)
+            {
+                return null;
+            }
+
+            var feature = _blueprints.Get<BlueprintFeature>(
+                ModBlueprintIds.Features.EvokerProtectionFromEnergyCommunalKnownSpell);
+            if (feature == null)
+            {
+                var source = _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.BloodlineElementalSpellLevel3,
+                    "Protection from Energy bloodline spell donor");
+                feature = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Features.EvokerProtectionFromEnergyCommunalKnownSpell,
+                    "WotrMod_EvokerProtectionFromEnergyCommunalKnownSpell");
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Features.EvokerProtectionFromEnergyCommunalKnownSpell,
+                    feature);
+            }
+
+            var spell = _blueprints.Require<BlueprintAbility>(
+                GameBlueprintIds.Spells.ProtectionFromEnergyCommunal,
+                "Protection from Energy Communal spell");
+            var addKnownSpell = new AddKnownSpell { name = "$AddKnownSpell$EvokerProtectionFromEnergyCommunal" };
+            _blueprints.SetAddKnownSpell(addKnownSpell, characterClass, spell, 4);
+            _blueprints.SetComponents(feature, addKnownSpell);
+            _blueprints.CopyUnitFactDisplay(feature, spell);
+            return feature;
+        }
+
+        private BlueprintFeature EnsureElementalHellfireRayKnownSpell(
+            SpellEffectTheme theme,
+            BlueprintCharacterClass characterClass)
+        {
+            switch (theme)
+            {
+                case SpellEffectTheme.Electric:
+                    return EnsureKnownSpellFeature(
+                        GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                        ModBlueprintIds.Features.EvokerAirHellfireRayKnownSpell,
+                        "WotrMod_EvokerAirHellfireRayKnownSpell",
+                        ModBlueprintIds.Spells.ElectricHellfireRay,
+                        "wotr_mod.spell.electric_hellfire_ray.name",
+                        "wotr_mod.spell.electric_hellfire_ray.description",
+                        6,
+                        null,
+                        characterClass);
+                case SpellEffectTheme.Acid:
+                    return EnsureKnownSpellFeature(
+                        GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                        ModBlueprintIds.Features.EvokerEarthHellfireRayKnownSpell,
+                        "WotrMod_EvokerEarthHellfireRayKnownSpell",
+                        ModBlueprintIds.Spells.AcidHellfireRay,
+                        "wotr_mod.spell.acid_hellfire_ray.name",
+                        "wotr_mod.spell.acid_hellfire_ray.description",
+                        6,
+                        null,
+                        characterClass);
+                case SpellEffectTheme.Fire:
+                    return EnsureKnownSpellFeature(
+                        GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                        ModBlueprintIds.Features.EvokerFireHellfireRayKnownSpell,
+                        "WotrMod_EvokerFireHellfireRayKnownSpell",
+                        ModBlueprintIds.Spells.FireHellfireRay,
+                        "wotr_mod.spell.fire_hellfire_ray.name",
+                        "wotr_mod.spell.fire_hellfire_ray.description",
+                        6,
+                        null,
+                        characterClass);
+                case SpellEffectTheme.Cold:
+                    return EnsureKnownSpellFeature(
+                        GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                        ModBlueprintIds.Features.EvokerWaterHellfireRayKnownSpell,
+                        "WotrMod_EvokerWaterHellfireRayKnownSpell",
+                        ModBlueprintIds.Spells.ColdHellfireRay,
+                        "wotr_mod.spell.cold_hellfire_ray.name",
+                        "wotr_mod.spell.cold_hellfire_ray.description",
+                        6,
+                        null,
+                        characterClass);
+                default:
+                    throw new InvalidOperationException($"Unsupported elemental bloodline theme {theme}.");
+            }
         }
 
         private BlueprintFeature EnsureEvokerElementalArcanaFeature(
@@ -426,34 +548,44 @@ namespace wotr_mod.Classes
             {
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BlackDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBlackDragonBloodline,
-                    "WotrMod_EvokerBloodline_BlackDragon"),
+                    "WotrMod_EvokerBloodline_BlackDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BlueDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBlueDragonBloodline,
-                    "WotrMod_EvokerBloodline_BlueDragon"),
+                    "WotrMod_EvokerBloodline_BlueDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BrassDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBrassDragonBloodline,
-                    "WotrMod_EvokerBloodline_BrassDragon"),
+                    "WotrMod_EvokerBloodline_BrassDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BronzeDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBronzeDragonBloodline,
-                    "WotrMod_EvokerBloodline_BronzeDragon"),
+                    "WotrMod_EvokerBloodline_BronzeDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.CopperDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerCopperDragonBloodline,
-                    "WotrMod_EvokerBloodline_CopperDragon"),
+                    "WotrMod_EvokerBloodline_CopperDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.GoldDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerGoldDragonBloodline,
-                    "WotrMod_EvokerBloodline_GoldDragon"),
+                    "WotrMod_EvokerBloodline_GoldDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.GreenDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerGreenDragonBloodline,
-                    "WotrMod_EvokerBloodline_GreenDragon"),
+                    "WotrMod_EvokerBloodline_GreenDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.RedDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerRedDragonBloodline,
-                    "WotrMod_EvokerBloodline_RedDragon"),
+                    "WotrMod_EvokerBloodline_RedDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.SilverDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerSilverDragonBloodline,
-                    "WotrMod_EvokerBloodline_SilverDragon"),
+                    "WotrMod_EvokerBloodline_SilverDragon",
+                    characterClass),
                 EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.WhiteDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerWhiteDragonBloodline,
-                    "WotrMod_EvokerBloodline_WhiteDragon")
+                    "WotrMod_EvokerBloodline_WhiteDragon",
+                    characterClass)
             };
 
             _blueprints.SetFeatureSelectionFeatures(selection, bloodlines);
@@ -475,7 +607,8 @@ namespace wotr_mod.Classes
         private BlueprintProgression EnsureEvokerDragonBloodline(
             string donorGuid,
             string newGuid,
-            string internalName)
+            string internalName,
+            BlueprintCharacterClass characterClass)
         {
             var donor = _blueprints.Require<BlueprintProgression>(donorGuid, internalName + " donor");
             var bloodline = _blueprints.Get<BlueprintProgression>(newGuid);
@@ -486,7 +619,242 @@ namespace wotr_mod.Classes
             }
 
             _blueprints.CopyUnitFactDisplay(bloodline, donor);
+            ConfigureDraconicEvokerBreathWeapon(bloodline, donor, internalName, characterClass);
             return bloodline;
+        }
+
+        private void ConfigureDraconicEvokerBreathWeapon(
+            BlueprintProgression bloodline,
+            BlueprintProgression donor,
+            string internalName,
+            BlueprintCharacterClass characterClass)
+        {
+            if (characterClass == null)
+            {
+                return;
+            }
+
+            var sourceBaseFeature = FindBreathBaseFeature(donor);
+            if (sourceBaseFeature == null)
+            {
+                throw new InvalidOperationException(internalName + " donor breath base feature was not found.");
+            }
+
+            var sourceFeature = FindGrantedFeature(sourceBaseFeature);
+            if (sourceFeature == null)
+            {
+                throw new InvalidOperationException(internalName + " donor breath feature was not found.");
+            }
+
+            var sourceAbility = FindGrantedAbility(sourceFeature);
+            if (sourceAbility == null)
+            {
+                throw new InvalidOperationException(internalName + " donor breath ability was not found.");
+            }
+
+            var ability = EnsureDraconicEvokerBreathAbility(sourceAbility, internalName, characterClass);
+            var feature = EnsureDraconicEvokerBreathFeature(sourceFeature, sourceAbility, ability, internalName, characterClass);
+            var baseFeature = EnsureDraconicEvokerBreathBaseFeature(sourceBaseFeature, sourceFeature, feature, internalName);
+            ReplaceProgressionFeature(bloodline, sourceBaseFeature, baseFeature);
+            ReplaceProgressionUiFeature(bloodline, sourceBaseFeature, baseFeature);
+
+            var sourceExtraUse = FindBreathExtraUseFeature(donor);
+            if (sourceExtraUse != null)
+            {
+                var extraUse = EnsureDraconicEvokerBreathExtraUseFeature(sourceExtraUse, internalName);
+                ReplaceProgressionFeature(bloodline, sourceExtraUse, extraUse);
+                ReplaceProgressionUiFeature(bloodline, sourceExtraUse, extraUse);
+            }
+        }
+
+        private BlueprintAbility EnsureDraconicEvokerBreathAbility(
+            BlueprintAbility sourceAbility,
+            string internalName,
+            BlueprintCharacterClass characterClass)
+        {
+            var abilityGuid = DeterministicGuid(internalName + ".BreathAbility");
+            var ability = _blueprints.Get<BlueprintAbility>(abilityGuid);
+            if (ability == null)
+            {
+                ability = _blueprints.CloneBlueprint(sourceAbility, abilityGuid, internalName + "_BreathAbility");
+                _blueprints.AddCachedBlueprint(abilityGuid, ability);
+            }
+
+            foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(ability))
+            {
+                _blueprints.ConfigureContextRankConfig(
+                    rank,
+                    baseValueType: ContextRankBaseValueType.ClassLevel,
+                    characterClass: characterClass);
+                _blueprints.SetContextRankMinimum(rank, 1);
+            }
+
+            foreach (var action in GetActions(ability).OfType<ContextActionDealDamage>())
+            {
+                if (action.Value == null)
+                {
+                    continue;
+                }
+
+                action.Value.DiceType = DiceType.D8;
+                action.Value.BonusValue = new ContextValue { ValueType = ContextValueType.Simple, Value = 0 };
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                ability,
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponName),
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponDescription));
+            return ability;
+        }
+
+        private BlueprintFeature EnsureDraconicEvokerBreathFeature(
+            BlueprintFeature sourceFeature,
+            BlueprintAbility sourceAbility,
+            BlueprintAbility ability,
+            string internalName,
+            BlueprintCharacterClass characterClass)
+        {
+            var featureGuid = DeterministicGuid(internalName + ".BreathFeature");
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(sourceFeature, featureGuid, internalName + "_BreathFeature");
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+
+            ReplaceAbilityReferences(feature, sourceAbility.AssetGuid.ToString(), ability);
+            _blueprints.BindAbilityComponentsToClass(feature, characterClass);
+
+            var damage = _blueprints.EnsureComponent(
+                feature,
+                () => new DraconicEvokerBreathDamage { name = "$DraconicEvokerBreathDamage$" + internalName });
+            damage.Ability = ability;
+            damage.CharacterClass = characterClass;
+
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponName),
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponDescription));
+            return feature;
+        }
+
+        private BlueprintFeature EnsureDraconicEvokerBreathBaseFeature(
+            BlueprintFeature sourceBaseFeature,
+            BlueprintFeature sourceFeature,
+            BlueprintFeature feature,
+            string internalName)
+        {
+            var baseFeatureGuid = DeterministicGuid(internalName + ".BreathBaseFeature");
+            var baseFeature = _blueprints.Get<BlueprintFeature>(baseFeatureGuid);
+            if (baseFeature == null)
+            {
+                baseFeature = _blueprints.CloneBlueprint(sourceBaseFeature, baseFeatureGuid, internalName + "_BreathBaseFeature");
+                _blueprints.AddCachedBlueprint(baseFeatureGuid, baseFeature);
+            }
+
+            ReplaceFeatureReferences(baseFeature, sourceFeature.AssetGuid, feature);
+            _blueprints.SetUnitFactDisplay(
+                baseFeature,
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponName),
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponDescription));
+            return baseFeature;
+        }
+
+        private BlueprintFeature EnsureDraconicEvokerBreathExtraUseFeature(
+            BlueprintFeature sourceFeature,
+            string internalName)
+        {
+            var featureGuid = DeterministicGuid(internalName + ".BreathExtraUseFeature");
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(sourceFeature, featureGuid, internalName + "_BreathExtraUseFeature");
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponName),
+                _localization.Text(LocalizationIds.Mod.DraconicEvokerBreathWeaponDescription));
+            return feature;
+        }
+
+        private static BlueprintFeature FindBreathBaseFeature(BlueprintProgression progression)
+        {
+            return (progression.LevelEntries ?? Array.Empty<LevelEntry>())
+                .Where(entry => entry.Level == 9)
+                .SelectMany(entry => entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                .OfType<BlueprintFeature>()
+                .FirstOrDefault(feature => (feature.ComponentsArray ?? Array.Empty<BlueprintComponent>())
+                    .Any(component => component.GetType().Name == "AddFeatureIfHasFact"));
+        }
+
+        private static BlueprintFeature FindBreathExtraUseFeature(BlueprintProgression progression)
+        {
+            return (progression.LevelEntries ?? Array.Empty<LevelEntry>())
+                .Where(entry => entry.Level >= 17)
+                .SelectMany(entry => entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                .OfType<BlueprintFeature>()
+                .FirstOrDefault(feature => (feature.ComponentsArray ?? Array.Empty<BlueprintComponent>())
+                    .Any(component => component.GetType().Name == "IncreaseResourceAmount"));
+        }
+
+        private static BlueprintFeature FindGrantedFeature(BlueprintFeature feature)
+        {
+            foreach (var component in feature.ComponentsArray ?? Array.Empty<BlueprintComponent>())
+            {
+                if (component.GetType().Name != "AddFeatureIfHasFact")
+                {
+                    continue;
+                }
+
+                var field = FindField(component.GetType(), "m_Feature");
+                var value = field?.GetValue(component);
+                var reference = value as BlueprintFeatureReference;
+                var factReference = value as BlueprintUnitFactReference;
+                var grantedFeature = reference?.Get();
+                if (grantedFeature == null)
+                {
+                    grantedFeature = factReference?.Get() as BlueprintFeature;
+                }
+
+                if (grantedFeature != null)
+                {
+                    return grantedFeature;
+                }
+            }
+
+            return null;
+        }
+
+        private static BlueprintAbility FindGrantedAbility(BlueprintFeature feature)
+        {
+            foreach (var component in feature.ComponentsArray ?? Array.Empty<BlueprintComponent>())
+            {
+                if (component.GetType().Name != "AddFacts")
+                {
+                    continue;
+                }
+
+                var field = FindField(component.GetType(), "m_Facts");
+                var references = field?.GetValue(component) as BlueprintUnitFactReference[];
+                var ability = references?
+                    .Select(reference => reference?.Get())
+                    .OfType<BlueprintAbility>()
+                    .FirstOrDefault();
+                if (ability != null)
+                {
+                    return ability;
+                }
+            }
+
+            return null;
+        }
+
+        private IEnumerable<GameAction> GetActions(BlueprintAbility ability)
+        {
+            return _blueprints.GetComponents<AbilityEffectRunAction>(ability)
+                .SelectMany(runAction => runAction.Actions?.Actions ?? Array.Empty<GameAction>());
         }
 
         private void AddUndeadBloodline(BlueprintProgression progression)
@@ -501,244 +869,6 @@ namespace wotr_mod.Classes
                 var features = firstLevelEntry.Features.ToList();
                 features.Add(undeadBloodline);
                 firstLevelEntry.SetFeatures(features);
-            }
-        }
-
-        private BlueprintArchetype[] EnsureArchetypes(
-            CharacterClassDefinition definition,
-            BlueprintCharacterClass characterClass,
-            BlueprintSpellbook spellbook,
-            BlueprintSpellList spellList)
-        {
-            return new[]
-            {
-                EnsureShadowbornArchetype(characterClass),
-                EnsureDraconicEvokerArchetype(characterClass)
-            };
-        }
-
-        private BlueprintArchetype EnsureDraconicEvokerArchetype(BlueprintCharacterClass characterClass)
-        {
-            var archetype = _blueprints.Get<BlueprintArchetype>(ModBlueprintIds.Archetypes.DraconicEvoker);
-            if (archetype == null)
-            {
-                archetype = new BlueprintArchetype
-                {
-                    name = "WotrMod_DraconicEvokerArchetype",
-                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Archetypes.DraconicEvoker)
-                };
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Archetypes.DraconicEvoker, archetype);
-            }
-
-            var evokerBloodlineSelection = _blueprints.Require<BlueprintFeatureSelection>(
-                ModBlueprintIds.Selections.EvokerBloodline,
-                "Evoker bloodline selection");
-            var draconicBloodlineSelection = EnsureDraconicEvokerBloodlineSelection(characterClass);
-            var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
-                GameBlueprintIds.StatProgressions.BaseAttackBonusMedium,
-                "Draconic Evoker base attack bonus progression");
-            var weaponFocusClaw = _blueprints.Require<BlueprintFeature>(
-                GameBlueprintIds.Features.WeaponFocusClaw,
-                "Weapon Focus (Claw)");
-            var lightArmorProficiency = _blueprints.Require<BlueprintFeature>(
-                GameBlueprintIds.Features.ArmorProficiencyLight,
-                "Light Armor Proficiency");
-            var arcaneArmorProficiency = EnsureDraconicEvokerArcaneArmorProficiency(characterClass);
-
-            _blueprints.SetComponents(archetype);
-            _blueprints.SetArchetypeDisplay(
-                archetype,
-                _localization.Text(LocalizationIds.Mod.DraconicEvokerName),
-                _localization.Text(LocalizationIds.Mod.DraconicEvokerDescription));
-            _blueprints.SetArchetypeParentClass(archetype, characterClass);
-            _blueprints.SetArchetypeReplaceSpellbook(archetype, null);
-            _blueprints.SetArchetypeFeatureChanges(
-                archetype,
-                new[]
-                {
-                    CreateLevelEntry(
-                        1,
-                        draconicBloodlineSelection,
-                        weaponFocusClaw,
-                        lightArmorProficiency,
-                        arcaneArmorProficiency)
-                },
-                new[] { CreateLevelEntry(1, evokerBloodlineSelection) });
-            _blueprints.SetArchetypeBaseAttackBonus(archetype, baseAttackBonus);
-            _blueprints.SetArchetypeBuildChanging(archetype, true);
-
-            return archetype;
-        }
-
-        private BlueprintFeature EnsureDraconicEvokerArcaneArmorProficiency(BlueprintCharacterClass characterClass)
-        {
-            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency);
-            if (feature == null)
-            {
-                feature = new BlueprintFeature
-                {
-                    name = "WotrMod_DraconicEvokerArcaneArmorProficiency",
-                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency),
-                    IsClassFeature = true,
-                    Ranks = 1,
-                    HideInUI = true,
-                    HideInCharacterSheetAndLevelUp = true
-                };
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency, feature);
-            }
-
-            feature.IsClassFeature = true;
-            feature.Ranks = 1;
-            feature.HideInUI = true;
-            feature.HideInCharacterSheetAndLevelUp = true;
-            _blueprints.SetUnitFactDisplay(
-                feature,
-                _localization.Text(LocalizationIds.Mod.DraconicEvokerName),
-                _localization.Text(LocalizationIds.Mod.DraconicEvokerDescription));
-
-            var bloodragerProficiencies = _blueprints.Require<BlueprintFeature>(
-                GameBlueprintIds.Features.BloodragerProficiencies,
-                "Bloodrager Proficiencies");
-            var sourceComponent = _blueprints.GetComponents<BlueprintComponent>(bloodragerProficiencies)
-                .FirstOrDefault(candidate => candidate.GetType().Name == "ArcaneArmorProficiency");
-            if (sourceComponent == null)
-            {
-                _logger.Error("Bloodrager Proficiencies has no ArcaneArmorProficiency component to clone.");
-                _blueprints.SetComponents(feature);
-                return feature;
-            }
-
-            var clonedComponent = _blueprints.CloneComponent(sourceComponent);
-            clonedComponent.name = "$ArcaneArmorProficiency$DraconicEvokerLightArmor";
-            if (clonedComponent is ArcaneArmorProficiency armorProficiency)
-            {
-                armorProficiency.Armor = new[] { ArmorProficiencyGroup.Light };
-            }
-
-            _blueprints.SetComponents(feature, clonedComponent);
-            if (characterClass != null)
-            {
-                _blueprints.SetProgressionClasses(feature, characterClass);
-            }
-
-            return feature;
-        }
-
-        private BlueprintArchetype EnsureShadowbornArchetype(BlueprintCharacterClass characterClass)
-        {
-            var archetype = _blueprints.Get<BlueprintArchetype>(ModBlueprintIds.Archetypes.Shadowborn);
-            if (archetype == null)
-            {
-                archetype = new BlueprintArchetype
-                {
-                    name = "WotrMod_EvokerShadowbornArchetype",
-                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Archetypes.Shadowborn)
-                };
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Archetypes.Shadowborn, archetype);
-            }
-
-            var evokerBloodlineSelection = _blueprints.Require<BlueprintFeatureSelection>(
-                ModBlueprintIds.Selections.EvokerBloodline,
-                "Evoker bloodline selection");
-            var sorcererFeatSelection = _blueprints.Require<BlueprintFeatureSelection>(
-                GameBlueprintIds.Selections.SorcererFeatSelection,
-                "Sorcerer feat selection");
-            var sorcererBonusFeat = _blueprints.Require<BlueprintFeatureSelection>(
-                GameBlueprintIds.Selections.SorcererBonusFeat,
-                "Sorcerer bonus feat");
-            var shadowbornBloodline = EnsureShadowbornBloodline(characterClass);
-            var shadowbornBonusFeat = EnsureShadowbornBonusFeatSelection(characterClass);
-            var shadowbornLivingGhost = EnsureShadowbornLivingGhostFeature(characterClass);
-
-            _blueprints.SetComponents(archetype);
-            _blueprints.SetArchetypeDisplay(
-                archetype,
-                _localization.Text(LocalizationIds.Mod.ShadowbornName),
-                _localization.Text(LocalizationIds.Mod.ShadowbornDescription));
-            _blueprints.SetArchetypeParentClass(archetype, characterClass);
-            _blueprints.SetArchetypeReplaceSpellbook(archetype, null);
-            _blueprints.SetArchetypeFeatureChanges(
-                archetype,
-                CreateShadowbornArchetypeFeatureEntries(
-                    shadowbornBloodline,
-                    shadowbornBonusFeat,
-                    shadowbornLivingGhost),
-                CreateShadowbornArchetypeRemoveFeatureEntries(evokerBloodlineSelection, sorcererBonusFeat, sorcererFeatSelection));
-            if (characterClass.Progression != null)
-            {
-                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornBonusFeat);
-                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornLivingGhost);
-            }
-
-            _blueprints.SetArchetypeBuildChanging(archetype, true);
-
-            return archetype;
-        }
-
-        private static LevelEntry[] CreateShadowbornArchetypeRemoveFeatureEntries(
-            BlueprintFeatureBase evokerBloodlineSelection,
-            BlueprintFeatureBase sorcererBonusFeat,
-            BlueprintFeatureBase sorcererFeatSelection)
-        {
-            return new[]
-            {
-                CreateLevelEntry(1, evokerBloodlineSelection, sorcererBonusFeat),
-                CreateLevelEntry(7, sorcererFeatSelection),
-                CreateLevelEntry(13, sorcererFeatSelection),
-                CreateLevelEntry(19, sorcererFeatSelection)
-            };
-        }
-
-        private static LevelEntry[] CreateShadowbornArchetypeFeatureEntries(
-            BlueprintProgression shadowbornBloodline,
-            BlueprintFeatureSelection shadowbornBonusFeat,
-            BlueprintFeature shadowbornLivingGhost)
-        {
-            var entries = (shadowbornBloodline.LevelEntries ?? Array.Empty<LevelEntry>())
-                .Select(entry =>
-                {
-                    var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                        .Where(feature => feature != null)
-                        .ToArray();
-                    return features.Length == 0 ? null : CreateLevelEntry(entry.Level, features);
-                })
-                .Where(entry => entry != null)
-                .ToList();
-
-            AddFeatureToLevel(entries, 1, shadowbornBonusFeat);
-            AddFeatureToLevel(entries, 6, shadowbornBonusFeat);
-            AddFeatureToLevel(entries, 10, shadowbornBonusFeat);
-            AddFeatureToLevel(entries, 16, shadowbornBonusFeat);
-            AddFeatureToLevel(entries, 20, shadowbornBonusFeat);
-            AddFeatureToLevel(entries, 20, shadowbornLivingGhost);
-            return entries
-                .OrderBy(entry => entry.Level)
-                .ToArray();
-        }
-
-        private static void AddFeatureToLevel(
-            ICollection<LevelEntry> entries,
-            int level,
-            BlueprintFeatureBase feature)
-        {
-            if (feature == null)
-            {
-                return;
-            }
-
-            var entry = entries.FirstOrDefault(levelEntry => levelEntry.Level == level);
-            if (entry == null)
-            {
-                entries.Add(CreateLevelEntry(level, feature));
-                return;
-            }
-
-            var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>()).ToList();
-            if (features
-                .All(existing => existing == null || existing.AssetGuid != feature.AssetGuid))
-            {
-                features.Add(feature);
-                entry.SetFeatures(features);
             }
         }
 
@@ -804,6 +934,16 @@ namespace wotr_mod.Classes
                 LocalizationIds.Mod.ShadowbornScorchingRayDescription,
                 2,
                 "Icons\\shadow_ray.png");
+            var shadowHellfireRay = EnsureKnownSpellFeature(
+                GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                ModBlueprintIds.Features.ShadowbornHellfireRayKnownSpell,
+                "WotrMod_ShadowbornHellfireRayKnownSpell",
+                ModBlueprintIds.Spells.ShadowHellfireRay,
+                "wotr_mod.spell.shadow_hellfire_ray.name",
+                "wotr_mod.spell.shadow_hellfire_ray.description",
+                6,
+                null,
+                characterClass);
 
             _blueprints.SetUnitFactDisplay(
                 bloodline,
@@ -816,6 +956,20 @@ namespace wotr_mod.Classes
             ReplaceProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireArcana,
+                arcana);
+            ReplaceProgressionUiFeature(
+                bloodline,
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.BloodlineElementalFireArcana,
+                    "Fire bloodline arcana"),
+                arcana);
+            ReplaceProgressionFeature(
+                bloodline,
+                ModBlueprintIds.Features.EvokerFireArcana,
+                arcana);
+            ReplaceProgressionUiFeature(
+                bloodline,
+                _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvokerFireArcana),
                 arcana);
             ReplaceProgressionFeature(
                 bloodline,
@@ -849,6 +1003,12 @@ namespace wotr_mod.Classes
                 GameBlueprintIds.Features.BloodlineElementalFireSpellLevel2,
                 shadowRay);
             new LivingDarknessInstaller(_blueprints, _localization, _logger, _icons).Install(bloodline, characterClass);
+            MoveProgressionFeatureToLevel(
+                bloodline,
+                GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
+                shadowHellfireRay,
+                12);
+            MoveProtectionFromEnergyToCommunal(bloodline, characterClass);
             SetProgressionClassesForLevelEntryFeatures(bloodline, characterClass);
 
             return bloodline;
@@ -1203,6 +1363,50 @@ namespace wotr_mod.Classes
             SetIcon(buff, "Icons\\umbral_arcana.png");
 
             return buff;
+        }
+
+        private BlueprintFeature EnsureKnownSpellFeature(
+            string sourceFeatureGuid,
+            string featureGuid,
+            string featureName,
+            string spellGuid,
+            string displayNameKey,
+            string descriptionKey,
+            int spellLevel,
+            string iconPath,
+            BlueprintCharacterClass characterClass)
+        {
+            if (characterClass == null)
+            {
+                return null;
+            }
+
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                var source = _blueprints.Require<BlueprintFeature>(sourceFeatureGuid, featureName + " donor");
+                feature = _blueprints.CloneBlueprint(source, featureGuid, featureName);
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+
+            var spell = _blueprints.Require<BlueprintAbility>(spellGuid, featureName + " spell");
+            var addKnownSpell = new AddKnownSpell { name = "$AddKnownSpell$" + featureName };
+            _blueprints.SetAddKnownSpell(addKnownSpell, characterClass, spell, spellLevel);
+            _blueprints.SetComponents(feature, addKnownSpell);
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(displayNameKey),
+                _localization.Text(descriptionKey));
+            if (!string.IsNullOrEmpty(iconPath))
+            {
+                SetIcon(feature, iconPath);
+            }
+            else if (spell.Icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, spell.Icon);
+            }
+
+            return feature;
         }
 
         private BlueprintFeature EnsureShadowbornKnownSpellFeature(
@@ -1632,11 +1836,127 @@ namespace wotr_mod.Classes
             }
         }
 
+        private static void ReplaceProgressionFeature(
+            BlueprintProgression progression,
+            BlueprintFeatureBase oldFeature,
+            BlueprintFeatureBase newFeature)
+        {
+            if (oldFeature == null || newFeature == null)
+            {
+                return;
+            }
+
+            var oldGuid = oldFeature.AssetGuid;
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Select(feature => feature != null && feature.AssetGuid == oldGuid ? newFeature : feature));
+            }
+        }
+
+        private void AddElementalBodySpellUiGroup(BlueprintProgression progression)
+        {
+            _blueprints.AddProgressionUiGroup(
+                progression,
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel4),
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel5),
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel6),
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel7));
+        }
+
+        private static BlueprintFeatureBase FindProgressionFeature(
+            BlueprintProgression progression,
+            string featureGuid)
+        {
+            var guid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(featureGuid));
+            return (progression.LevelEntries ?? Array.Empty<LevelEntry>())
+                .SelectMany(entry => entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                .FirstOrDefault(feature => feature != null && feature.AssetGuid == guid);
+        }
+
+        private static void ReplaceProgressionUiFeature(
+            BlueprintProgression progression,
+            BlueprintFeatureBase oldFeature,
+            BlueprintFeatureBase newFeature)
+        {
+            if (oldFeature == null || newFeature == null)
+            {
+                return;
+            }
+
+            var field = FindField(typeof(UIGroup), "m_Features");
+            if (field == null)
+            {
+                return;
+            }
+
+            var oldGuid = oldFeature.AssetGuid;
+            foreach (var group in progression.UIGroups ?? Array.Empty<UIGroup>())
+            {
+                var references = field.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
+                if (references == null || !references.Any(reference => reference?.Get()?.AssetGuid == oldGuid))
+                {
+                    continue;
+                }
+
+                field.SetValue(
+                    group,
+                    references
+                        .Select(reference => reference?.Get()?.AssetGuid == oldGuid
+                            ? BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(newFeature)
+                            : reference)
+                        .ToList());
+            }
+        }
+
+        private static void MoveProgressionFeatureToLevel(
+            BlueprintProgression progression,
+            string oldFeatureGuid,
+            BlueprintFeatureBase newFeature,
+            int level)
+        {
+            if (newFeature == null)
+            {
+                return;
+            }
+
+            RemoveProgressionFeature(progression, oldFeatureGuid);
+            RemoveProgressionFeature(progression, newFeature);
+            AddProgressionFeatureToLevel(progression, level, newFeature);
+        }
+
+        private static void AddProgressionFeatureToLevel(
+            BlueprintProgression progression,
+            int level,
+            BlueprintFeatureBase feature)
+        {
+            var entries = (progression.LevelEntries ?? Array.Empty<LevelEntry>()).ToList();
+            AddFeatureToLevel(entries, level, feature);
+            progression.LevelEntries = entries.OrderBy(entry => entry.Level).ToArray();
+        }
+
         private static void RemoveProgressionFeature(
             BlueprintProgression progression,
             string featureGuid)
         {
             var guid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(featureGuid));
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(feature => feature == null || feature.AssetGuid != guid));
+            }
+        }
+
+        private static void RemoveProgressionFeature(
+            BlueprintProgression progression,
+            BlueprintFeatureBase featureToRemove)
+        {
+            if (featureToRemove == null)
+            {
+                return;
+            }
+
+            var guid = featureToRemove.AssetGuid;
             foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
             {
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
@@ -1663,6 +1983,39 @@ namespace wotr_mod.Classes
 
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
                     .Where(feature => feature == null || feature.AssetGuid != featureToRemove.AssetGuid));
+            }
+        }
+
+        private static void ReplaceFeatureReferences(
+            BlueprintScriptableObject blueprint,
+            BlueprintGuid oldFeatureGuid,
+            BlueprintFeature newFeature)
+        {
+            foreach (var component in blueprint.ComponentsArray ?? Array.Empty<BlueprintComponent>())
+            {
+                foreach (var field in GetInstanceFields(component.GetType()))
+                {
+                    if (field.FieldType == typeof(BlueprintFeatureReference))
+                    {
+                        var reference = (BlueprintFeatureReference)field.GetValue(component);
+                        if (reference != null && reference.Get()?.AssetGuid == oldFeatureGuid)
+                        {
+                            field.SetValue(
+                                component,
+                                BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(newFeature));
+                        }
+                    }
+                    else if (field.FieldType == typeof(BlueprintUnitFactReference))
+                    {
+                        var reference = (BlueprintUnitFactReference)field.GetValue(component);
+                        if (reference != null && reference.Get()?.AssetGuid == oldFeatureGuid)
+                        {
+                            field.SetValue(
+                                component,
+                                BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(newFeature));
+                        }
+                    }
+                }
             }
         }
 
@@ -1736,6 +2089,15 @@ namespace wotr_mod.Classes
             }
 
             return null;
+        }
+
+        private static string DeterministicGuid(string seed)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes("wotr_mod:" + seed));
+                return new Guid(bytes).ToString("N");
+            }
         }
 
         private static LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)

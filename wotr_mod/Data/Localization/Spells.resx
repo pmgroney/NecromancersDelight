@@ -181,6 +181,41 @@
     <value>The creature takes 8d8 acid damage at the start of each turn, suffers a -6 penalty to AC, and has its movement speed reduced by 50%.</value>
   </data>
 
+  <data name="wotr_mod.spell.acid_hellfire_ray.name" xml:space="preserve">
+    <value>Hellfire Ray - Acid</value>
+  </data>
+  <data name="wotr_mod.spell.acid_hellfire_ray.description" xml:space="preserve">
+    <value>This spell functions like hellfire ray, except each ray deals acid damage instead of fire damage while retaining its unholy power.</value>
+  </data>
+
+  <data name="wotr_mod.spell.cold_hellfire_ray.name" xml:space="preserve">
+    <value>Hellfire Ray - Cold</value>
+  </data>
+  <data name="wotr_mod.spell.cold_hellfire_ray.description" xml:space="preserve">
+    <value>This spell functions like hellfire ray, except each ray deals cold damage instead of fire damage while retaining its unholy power.</value>
+  </data>
+
+  <data name="wotr_mod.spell.electric_hellfire_ray.name" xml:space="preserve">
+    <value>Hellfire Ray - Electric</value>
+  </data>
+  <data name="wotr_mod.spell.electric_hellfire_ray.description" xml:space="preserve">
+    <value>This spell functions like hellfire ray, except each ray deals electricity damage instead of fire damage while retaining its unholy power.</value>
+  </data>
+
+  <data name="wotr_mod.spell.fire_hellfire_ray.name" xml:space="preserve">
+    <value>Hellfire Ray</value>
+  </data>
+  <data name="wotr_mod.spell.fire_hellfire_ray.description" xml:space="preserve">
+    <value>This spell functions like hellfire ray.</value>
+  </data>
+
+  <data name="wotr_mod.spell.shadow_hellfire_ray.name" xml:space="preserve">
+    <value>Hellfire Ray - Shadow</value>
+  </data>
+  <data name="wotr_mod.spell.shadow_hellfire_ray.description" xml:space="preserve">
+    <value>This spell functions like hellfire ray, except each ray deals negative energy damage instead of fire damage while retaining its unholy power.</value>
+  </data>
+
   <data name="wotr_mod.spell.corpse_explosion.name" xml:space="preserve">
     <value>Corpse Explosion</value>
   </data>

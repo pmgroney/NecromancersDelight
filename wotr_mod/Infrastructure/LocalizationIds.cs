@@ -78,6 +78,8 @@ namespace wotr_mod.Infrastructure
             public const string DraconicEvokerDescription = "wotr_mod.archetype.draconic_evoker.description";
             public const string DraconicEvokerBloodlineName = "wotr_mod.archetype.draconic_evoker.bloodline.name";
             public const string DraconicEvokerBloodlineDescription = "wotr_mod.archetype.draconic_evoker.bloodline.description";
+            public const string DraconicEvokerBreathWeaponName = "wotr_mod.archetype.draconic_evoker.breath_weapon.name";
+            public const string DraconicEvokerBreathWeaponDescription = "wotr_mod.archetype.draconic_evoker.breath_weapon.description";
             public const string ShadowbornBloodlineName = "wotr_mod.archetype.shadowborn.bloodline.name";
             public const string ShadowbornBloodlineDescription = "wotr_mod.archetype.shadowborn.bloodline.description";
             public const string ShadowbornArcanaName = "wotr_mod.archetype.shadowborn.arcana.name";

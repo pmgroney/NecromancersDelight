@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 import requests
 from dotenv import load_dotenv
 
@@ -9,12 +10,23 @@ load_dotenv(os.path.join(ROOT, ".env"))
 api_key = os.getenv("KIMI_API_KEY")
 base_url = os.getenv("KIMI_BASE_URL", "https://api.moonshot.ai/v1").rstrip("/")
 model = os.getenv("KIMI_MODEL", "kimi-k2")
+default_timeout = int(os.getenv("KIMI_TIMEOUT_SECONDS", "30"))
 
 if not api_key:
     print("Missing KIMI_API_KEY in .codex-tools/.env", file=sys.stderr)
     sys.exit(1)
 
-prompt = " ".join(sys.argv[1:]).strip()
+parser = argparse.ArgumentParser(description="Ask Kimi a single prompt.")
+parser.add_argument(
+    "--timeout-seconds",
+    type=int,
+    default=default_timeout,
+    help="HTTP timeout for the Kimi request.",
+)
+parser.add_argument("prompt", nargs="*")
+args = parser.parse_args()
+
+prompt = " ".join(args.prompt).strip()
 if not prompt:
     prompt = sys.stdin.read().strip()
 
@@ -37,15 +49,22 @@ payload = {
     "temperature": 1
 }
 
-response = requests.post(
-    f"{base_url}/chat/completions",
-    headers={
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    },
-    json=payload,
-    timeout=120
-)
+try:
+    response = requests.post(
+        f"{base_url}/chat/completions",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        },
+        json=payload,
+        timeout=args.timeout_seconds
+    )
+except requests.Timeout:
+    print(
+        f"Kimi request timed out after {args.timeout_seconds} seconds. Retry with a narrower prompt or explicit files.",
+        file=sys.stderr,
+    )
+    sys.exit(124)
 
 if response.status_code != 200:
     print(f"HTTP {response.status_code}", file=sys.stderr)

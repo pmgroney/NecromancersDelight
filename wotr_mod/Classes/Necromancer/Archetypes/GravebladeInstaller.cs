@@ -482,7 +482,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             }
             resource.LocalizedName = _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeName);
             resource.LocalizedDescription = _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeDescription);
-            _blueprints.ConfigureAbilityResourceMaxAmount(resource, 0, StatType.Charisma, characterClass, 2);
+            _blueprints.ConfigureAbilityResourceMaxAmount(resource, 0, StatType.Charisma, characterClass, 1);
             return resource;
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
@@ -52,10 +53,11 @@ namespace wotr_mod.Classes
 
         public void Install(BlueprintProgression shadowbornBloodline, BlueprintCharacterClass characterClass)
         {
-            var feature1 = EnsureLivingDarknessFeature(1, characterClass);
-            var feature2 = EnsureLivingDarknessFeature(2, characterClass);
-            var feature3 = EnsureLivingDarknessFeature(3, characterClass);
-            var feature4 = EnsureLivingDarknessFeature(4, characterClass);
+            var resource = EnsureLivingDarknessResource(characterClass);
+            var feature1 = EnsureLivingDarknessFeature(1, characterClass, resource);
+            var feature2 = EnsureLivingDarknessFeature(2, characterClass, resource);
+            var feature3 = EnsureLivingDarknessFeature(3, characterClass, resource);
+            var feature4 = EnsureLivingDarknessFeature(4, characterClass, resource);
 
             ReplaceProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel4, feature1);
             ReplaceProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel5, feature2);
@@ -68,7 +70,10 @@ namespace wotr_mod.Classes
             }
         }
 
-        private BlueprintFeature EnsureLivingDarknessFeature(int tier, BlueprintCharacterClass characterClass)
+        private BlueprintFeature EnsureLivingDarknessFeature(
+            int tier,
+            BlueprintCharacterClass characterClass,
+            BlueprintAbilityResource resource)
         {
             var featureGuid = TierFeatureGuid(tier);
             var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
@@ -91,16 +96,54 @@ namespace wotr_mod.Classes
                 _localization.Text(TierNameKey(tier)),
                 _localization.Text(TierDescriptionKey(tier)));
 
-            var ability = EnsureLivingDarknessAbility(tier, characterClass);
+            var ability = EnsureLivingDarknessAbility(tier, characterClass, resource);
             var addFacts = new AddFacts { name = $"$AddFacts$LivingDarkness{tier}" };
             _blueprints.SetAddFacts(addFacts, ability);
-            _blueprints.SetComponents(feature, addFacts);
+            var addResources = new AddAbilityResources
+            {
+                name = $"$AddAbilityResources$LivingDarkness{tier}",
+                RestoreAmount = true
+            };
+            _blueprints.SetAddAbilityResourcesResource(addResources, resource);
+            if (tier > 1)
+            {
+                var previousFeature = _blueprints.Get<BlueprintFeature>(TierFeatureGuid(tier - 1));
+                var removePrevious = new RemoveFeatureOnApply { name = $"$RemoveFeatureOnApply$LivingDarkness{tier}" };
+                _blueprints.SetRemoveFeatureOnApplyFeature(removePrevious, previousFeature);
+                _blueprints.SetComponents(feature, addFacts, addResources, removePrevious);
+            }
+            else
+            {
+                _blueprints.SetComponents(feature, addFacts, addResources);
+            }
             SetIcon(feature, "Icons\\living_darkness.png");
 
             return feature;
         }
 
-        private BlueprintAbility EnsureLivingDarknessAbility(int tier, BlueprintCharacterClass characterClass)
+        private BlueprintAbilityResource EnsureLivingDarknessResource(BlueprintCharacterClass characterClass)
+        {
+            var resource = _blueprints.Get<BlueprintAbilityResource>(ModBlueprintIds.AbilityResources.LivingDarkness);
+            if (resource == null)
+            {
+                resource = new BlueprintAbilityResource
+                {
+                    name = "WotrMod_LivingDarknessResource",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.AbilityResources.LivingDarkness)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.AbilityResources.LivingDarkness, resource);
+            }
+
+            resource.LocalizedName = _localization.Text(LocalizationIds.Mod.LivingDarknessName1);
+            resource.LocalizedDescription = _localization.Text(LocalizationIds.Mod.LivingDarknessDescription1);
+            _blueprints.ConfigureAbilityResourceMaxAmount(resource, 0, StatType.Charisma, characterClass, 1);
+            return resource;
+        }
+
+        private BlueprintAbility EnsureLivingDarknessAbility(
+            int tier,
+            BlueprintCharacterClass characterClass,
+            BlueprintAbilityResource resource)
         {
             var abilityGuid = TierAbilityGuid(tier);
             var ability = _blueprints.Get<BlueprintAbility>(abilityGuid);
@@ -147,8 +190,13 @@ namespace wotr_mod.Classes
             var rank = new ContextRankConfig { name = $"$ContextRankConfig$LivingDarkness{tier}" };
             _blueprints.ConfigureContextRankConfig(rank);
 
+            var resourceLogic = new AbilityResourceLogic { name = $"$AbilityResourceLogic$LivingDarkness{tier}", Amount = 1 };
+            _blueprints.SetAbilityResourceLogicResource(resourceLogic, resource);
+            _blueprints.SetAbilityResourceLogicSpendResource(resourceLogic, true);
+
             _blueprints.SetComponents(
                 ability,
+                resourceLogic,
                 rank,
                 new AbilityEffectRunAction
                 {

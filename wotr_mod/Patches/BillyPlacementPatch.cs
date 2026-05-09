@@ -20,6 +20,7 @@ namespace wotr_mod.Patches
 
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
+        private bool _canPlaceBilly;
 
         public BillyPlacementPatch(BlueprintTool blueprints, UnityModManager.ModEntry.ModLogger logger)
         {
@@ -36,7 +37,11 @@ namespace wotr_mod.Patches
         public void Apply()
         {
             _blueprints.Require<BlueprintArea>(GameBlueprintIds.Areas.PrologueLabyrinth, "Shield Maze area");
-            _blueprints.Require<BlueprintUnit>(ModBlueprintIds.Units.UndeadCiarCompanion, "Billy companion unit");
+            _canPlaceBilly = _blueprints.Get<BlueprintUnit>(ModBlueprintIds.Units.UndeadCiarCompanion) != null;
+            if (!_canPlaceBilly)
+            {
+                _logger.Warning("Billy companion unit was not available; skipping Shield Maze placement.");
+            }
         }
 
         public void OnAreaLoaded()
@@ -44,6 +49,11 @@ namespace wotr_mod.Patches
             try
             {
                 if (!ShouldPlaceBilly())
+                {
+                    return;
+                }
+
+                if (!_canPlaceBilly)
                 {
                     return;
                 }
