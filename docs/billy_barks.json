@@ -1,0 +1,282 @@
+{
+  "companionInstaller": {
+    "BillyIdleBanterLines": {
+      "unitAskSlots": [
+        "Fatigue",
+        "Selected"
+      ],
+      "lines": [
+        "Breathing is optional. Still deciding if I miss it.",
+        "Step. Aim. Release. Repeat. Eternity's great for practice.",
+        "Irori teaches perfection. Unfortunately, he never covered spontaneous undeath.",
+        "You ever notice how the living waste a lot of motion?",
+        "No heartbeat. Fewer distractions.",
+        "Still me. Just... crunchier.",
+        "I don't get tired anymore. Honestly, huge upgrade.",
+        "I used to meditate to ignore discomfort. Now my nerves just gave up entirely.",
+        "Focus is easier when your knees stopped filing complaints.",
+        "I should probably be more alarmed by all this.",
+        "Good posture is important. Even when half your spine is decorative."
+      ]
+    },
+    "BillyMovementLines": {
+      "unitAskSlots": [
+        "OrderMove",
+        "Discovery"
+      ],
+      "lines": [
+        "Careful. I don't creak, but I still sneak.",
+        "Every step is intentional.",
+        "Stay sharp. I already dulled once.",
+        "Quiet. Let them embarrass themselves first.",
+        "Positioning wins fights.",
+        "Discipline over panic.",
+        "I don't rush. I disappoint enemies at a reasonable pace."
+      ]
+    },
+    "BillyCombatStartLines": {
+      "unitAskSlots": [
+        "Aggro"
+      ],
+      "lines": [
+        "Ah. Violence with structure.",
+        "Let's see who disappoints Irori first.",
+        "Targets acquired.",
+        "Focus.",
+        "Try not to die. Paperwork gets confusing.",
+        "Excellent. A teaching opportunity.",
+        "Form over fury. Fury pulls muscles."
+      ]
+    },
+    "BillyRangedAttackLines": {
+      "unitAskSlots": [],
+      "lines": [
+        "Breathe--oh. Right.",
+        "Release.",
+        "Stillness. Then strike.",
+        "Predictable.",
+        "You moved. Brave choice.",
+        "Center mass. Usually reliable.",
+        "Efficiency.",
+        "Missed. Disgusting."
+      ]
+    },
+    "BillyOnHitLines": {
+      "unitAskSlots": [
+        "CriticalHit",
+        "CheckSuccess"
+      ],
+      "lines": [
+        "There it is.",
+        "Correct.",
+        "Better.",
+        "That felt professional.",
+        "Progress.",
+        "Precision matters. Unlike enthusiasm."
+      ]
+    },
+    "BillyOnKillLines": {
+      "unitAskSlots": [],
+      "lines": [
+        "Rest. Properly this time.",
+        "Cycle corrected.",
+        "You can stop screaming now.",
+        "That's one less problem.",
+        "Remarkably fragile.",
+        "Still improving."
+      ]
+    },
+    "BillyTakingDamageLines": {
+      "unitAskSlots": [
+        "Pain"
+      ],
+      "lines": [
+        "Rude.",
+        "Structural integrity compromised.",
+        "I felt that. Which seems unnecessary.",
+        "Adjustment required.",
+        "Pain is... weird now."
+      ]
+    },
+    "BillyLowHealthLines": {
+      "unitAskSlots": [
+        "Death",
+        "Unconscious",
+        "LowHealth"
+      ],
+      "lines": [
+        "Pieces are becoming negotiable.",
+        "I should really tighten a few bolts.",
+        "This is getting medically irresponsible.",
+        "Losing cohesion."
+      ]
+    },
+    "BillyBuffingLines": {
+      "unitAskSlots": [
+        "RefuseCast"
+      ],
+      "lines": [
+        "Enhancement accepted.",
+        "Clarity.",
+        "Excellent. Magical cheating.",
+        "Focus restored.",
+        "Irori approves. Probably."
+      ]
+    },
+    "BillyPartyBanterLines": {
+      "unitAskSlots": [
+        "Selected",
+        "RefuseEquip"
+      ],
+      "lines": [
+        "If I fall apart, at least throw the useful pieces.",
+        "I don't sleep, so I'll take watch. Apparently forever.",
+        "Don't worry--I'm very stable. Emotionally less so.",
+        "I've stopped worrying about dying. Very freeing.",
+        "If you hear rattling, that's either me or a tactical warning."
+      ]
+    },
+    "BillyIroriFlavorLines": {
+      "unitAskSlots": [
+        "Selected",
+        "Discovery"
+      ],
+      "lines": [
+        "Perfection takes time. I apparently have plenty.",
+        "Discipline surviving death feels excessive.",
+        "Mastery doesn't require a pulse. Good to know.",
+        "The body failed. The will filed an appeal.",
+        "Irori probably did not intend this lesson."
+      ]
+    },
+    "InlineUnitAskLines": {
+      "CheckFail": [
+        "Missed. Disgusting.",
+        "Adjustment required.",
+        "That could have gone better."
+      ],
+      "Stealth": [
+        "Careful. I don't creak, but I still sneak.",
+        "Quiet. Let them embarrass themselves first."
+      ]
+    }
+  },
+  "billyReactivityLines": {
+    "GeneralDemonEncounter": [
+      "Chaotic. Predictable.",
+      "They lack form. And hygiene.",
+      "Noise without discipline.",
+      "Focus. They certainly won't."
+    ],
+    "DemonBoss": [
+      "Better. Maybe this one survives two minutes.",
+      "Finally, resistance.",
+      "Let's see if you're actually memorable."
+    ],
+    "Crusaders": [
+      "Order... trying its best.",
+      "They try. That's adorable.",
+      "Discipline without consistency. Still better than demons."
+    ],
+    "LawfulChoice": [
+      "Structure holds.",
+      "Correct decision.",
+      "Progress through order."
+    ],
+    "ChaoticChoice": [
+      "I would not have chosen that.",
+      "Bold. In the worst way.",
+      "We'll see how badly this goes."
+    ],
+    "EvilChoice": [
+      "Efficient. Concerning, but efficient.",
+      "Power without control always rots eventually.",
+      "Short-term gain. Future catastrophe."
+    ],
+    "GoodChoice": [
+      "Mercy requires discipline.",
+      "Restraint is harder than violence.",
+      "Acceptable."
+    ],
+    "UndeadEncounter": [
+      "Unfocused. Embarrassing.",
+      "Undeath without purpose is just flailing.",
+      "They stopped improving."
+    ],
+    "PowerfulUndead": [
+      "Closer... but still sloppy.",
+      "Control without discipline.",
+      "Power first. Wisdom never."
+    ],
+    "Pharasma": [
+      "Yes, yes, I'm aware she's unhappy.",
+      "I'll sort it out eventually.",
+      "One existential crisis at a time."
+    ],
+    "Irori": [
+      "Stillness. Even now.",
+      "The path continues.",
+      "Form persists beyond flesh."
+    ],
+    "MythicPower": [
+      "This changes the equation.",
+      "Power... usually makes people stupid.",
+      "We refine further."
+    ],
+    "MythicAngel": [
+      "Structured. Purposeful.",
+      "This aligns... mostly."
+    ],
+    "MythicDemon": [
+      "Power without restraint.",
+      "This feels like a terrible idea."
+    ],
+    "MythicAeon": [
+      "Correction. I respect that.",
+      "Balance enforced."
+    ],
+    "MythicLich": [
+      "I see the appeal.",
+      "...and the flaw."
+    ],
+    "MythicTrickster": [
+      "Unpredictable.",
+      "I miss reliable physics."
+    ],
+    "MythicAzata": [
+      "Freedom without structure.",
+      "Effective. Inconsistently."
+    ],
+    "MythicGoldDragon": [
+      "Discipline with compassion.",
+      "Rare."
+    ],
+    "MythicLegend": [
+      "No shortcuts. Good.",
+      "Pure refinement."
+    ],
+    "MythicSwarm": [
+      "No self. No mastery.",
+      "This is failure."
+    ],
+    "Drezen": [
+      "A foundation. Build it correctly.",
+      "Structures matter. So do habits."
+    ],
+    "WorldMap": [
+      "Distance is irrelevant.",
+      "We proceed.",
+      "Good. More walking. My favorite eternal activity."
+    ],
+    "Death": [
+      "Get up. Preferably less dramatically.",
+      "Death is rarely the end around here.",
+      "I'll handle this. Again."
+    ],
+    "Identity": [
+      "I am not a mistake. Probably.",
+      "The body failed. The discipline stayed stubborn.",
+      "I continue. Spite helps."
+    ]
+  }
+}

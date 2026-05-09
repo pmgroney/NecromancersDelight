@@ -118,6 +118,7 @@ namespace wotr_mod.Infrastructure
             public const string AcidMissile = "a2c5020c703c4fe5a3b71522d39a8602";
             public const string BoneSpike = "b311c4d368bd4257916dd15b2438e804";
             public const string CausticBeam = "fb782b9cf4c4426d9e86df1128bbee0a";
+            public const string CorrosiveCascade = "da3de32824374df99265414a31e13c7c";
             public const string CorpseExplosion = "78133a1f0218401a8fd254e0923014f3";
             public const string DeathRay = "d15284d0111b46b2a8ff6a62e5bc0654";
             public const string DespairOfTheSepulchre = "6b0333d16cb04ad5b3bdeca82976144c";
@@ -127,11 +128,13 @@ namespace wotr_mod.Infrastructure
             public const string FireMissile = "c7d84e5a1b9f4c7aa6e92f3d5b8c0142";
             public const string ForceRay = "64511260f449426787a68ada088e5fcd";
             public const string FrostBlast = "47fceb9475c443c497a9f44376aaab11";
+            public const string FrozenLance = "5f62173dd23841a9ae92737878ecf6b5";
             public const string HarvestTheFallen = "e8eaaaf029bb46408a183b700b81bc4e";
             public const string HellOnEarth = "462cb107e84141afa6ac45aeebdbf1bf";
             public const string IceMissile = "4a7c2e9f8d6b4c1aa3f5e7d9b2c8e014";
             public const string ShadowbornBurningHands = "8df963eadcb64726b953f20ee028b47d";
             public const string ShadowbornScorchingRay = "c1096d20240448d8892f01d840dfa263";
+            public const string Thunderhead = "d4163070f0fb4cb2ba880498399ac5ec";
             public const string VitriolicBlast = "46b78b46dac94683b4bb58ab21a6cc96";
         }
 
@@ -139,9 +142,11 @@ namespace wotr_mod.Infrastructure
         {
             public const string AcidMissile = "259d387547ce4a3d9df1bb8fb62006fd";
             public const string BoneSpike = "7f49f55df7b944fcb5b946b61ec918d0";
+            public const string CorrosiveCascade = "72e89438d0ce4bbcaf67ab3c6b4aebd1";
             public const string DeathRay = "e5f0a0fb9d4242e89f3f42a8b07d1406";
             public const string ElectricMissile = "1ec58be251f84f7486a47f1f30e39d78";
             public const string FireMissile = "19b643561dc04970ab1e8f2b8d79084c";
+            public const string FrozenLance = "b08d17aa58a74b798853e6175ff14140";
             public const string IceMissile = "0ef61bb5e46f4b27a249fe631c272ee8";
             public const string ShadowbornScorchingRay = "4d54317c3e0c47f5a619de136939af6d";
             public const string ShadowbornUmbralRay = "5ac7dbf06e2a4c96a93b8071e3d4f285";
@@ -196,6 +201,7 @@ namespace wotr_mod.Infrastructure
             public const string LivingDarkness4Area = "a1b2c3d4e5f648901a2b3c4d5e6f0044";
             public const string EldritchHorror = "bcb6329cefc66da41b011299a43cc681";
             public const string HellOnEarth = "9b1a5b53f5a94e0d9a5c8a9cbe4d2b8a";
+            public const string Thunderhead = "b66f364d5f6a46c1b762e45bb0fec60f";
         }
 
         internal static class Selections
@@ -291,6 +297,10 @@ namespace wotr_mod.Infrastructure
             public const string LivingDarknessShakenDebuff = "a1b2c3d4e5f648901a2b3c4d5e6f0035";
             public const string DespairOfTheSepulchreAura = "28f9602f7fcf4b5e8f21083b7555dec3";
             public const string DespairOfTheSepulchreDebuff = "3be11a63425a4da4889fcafb3672e512";
+            public const string CorrosiveCascadeCorrosion = "15243311ffa94443883a51ffef82eeb3";
+            public const string CorrosiveCascadeArmorDebuff = "daea64db9e5d4b4ea0eb0181e88169db";
+            public const string FrozenLanceImmobilized = "384de55300e54e6e8573f62e5fcf6374";
+            public const string ThunderheadDaze = "7e3e73a5983741289de2ac25b902d685";
             public const string GravebladeArmorMastery = "d0b8a6f4c2e1437a9b5d1f3c8e0a6247";
             public const string HarvestTheFallenTemporaryHitPoints = "5f3354ded7aa47099793031dbf459009";
             public const string ReapingEdge = "d7a6f5e4c3b24d9e8f0a1b3c5d7e9f10";

@@ -86,6 +86,9 @@ namespace wotr_mod.Classes
             Spell("Shout", "f09453607e683784c8fca646eec49162", 4),
             Spell("UnholyBlight", "a02cf51787df937489ef5d4cf5970335", 4),
             Spell("VolcanicStorm", "16ce660837fb2544e96c3b7eaad73c63", 4),
+            Spell("CorrosiveCascade", ModBlueprintIds.Spells.CorrosiveCascade, 4),
+            Spell("FrozenLance", ModBlueprintIds.Spells.FrozenLance, 4),
+            Spell("Thunderhead", ModBlueprintIds.Spells.Thunderhead, 4),
 
             Spell("AcidicSpray", "c543eef6d725b184ea8669dd09b3894c", 5),
             Spell("Cloudkill", "548d339ba87ee56459c98e80167bdf10", 5),

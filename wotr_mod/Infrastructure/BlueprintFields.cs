@@ -291,6 +291,9 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo AbilityDeliverProjectileProjectiles =
             typeof(AbilityDeliverProjectile).GetField("m_Projectiles", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo AbilityDeliverProjectileLength =
+            typeof(AbilityDeliverProjectile).GetField("m_Length", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo ContextActionApplyBuffBuff =
             typeof(ContextActionApplyBuff).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -323,6 +326,12 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo ReplaceCasterLevelOfAbilityArchetypes =
             typeof(ReplaceCasterLevelOfAbility).GetField("m_Archetypes", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ContextRankConfigUseMax =
+            typeof(ContextRankConfig).GetField("m_UseMax", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ContextRankConfigMax =
+            typeof(ContextRankConfig).GetField("m_Max", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo UnitAddFacts =
             typeof(BlueprintUnit).GetField("m_AddFacts", BindingFlags.Instance | BindingFlags.NonPublic);

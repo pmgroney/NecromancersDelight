@@ -37,7 +37,7 @@ namespace wotr_mod.Features
             }
 
             var attack = evt.ParentRule?.AttackRoll?.RuleAttackWithWeapon;
-            if (attack == null || attack.Weapon == null || !IsMeleeWeapon(attack.Weapon))
+            if (attack?.Weapon == null || !IsMeleeWeapon(attack.Weapon))
             {
                 Logger?.Warning("!!!! ReapingEdge damage ignored: invalid attack/weapon");
                 return;
@@ -50,8 +50,7 @@ namespace wotr_mod.Features
         {
             foreach (var damage in evt.DamageBundle)
             {
-                var physical = damage as PhysicalDamage;
-                if (physical == null)
+                if (!(damage is PhysicalDamage physical))
                 {
                     continue;
                 }
@@ -112,7 +111,7 @@ namespace wotr_mod.Features
 
         private void ApplyHitEffects(RuleAttackWithWeapon evt)
         {
-            if (evt.AttackRoll == null || !evt.AttackRoll.IsHit || evt.Target == null)
+            if (evt.AttackRoll == null || !evt.AttackRoll.IsHit)
             {
                 return;
             }

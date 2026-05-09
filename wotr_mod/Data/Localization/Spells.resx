@@ -83,6 +83,27 @@
     <value>A vitriolic mass flies to the target point and erupts. The caustic energy deals 1d6 acid damage per caster level, maximum 10d6, to creatures in the area. A successful Reflex save halves the damage.</value>
   </data>
 
+  <data name="wotr_mod.spell.corrosive_cascade.name" xml:space="preserve">
+    <value>Corrosive Cascade</value>
+  </data>
+  <data name="wotr_mod.spell.corrosive_cascade.description" xml:space="preserve">
+    <value>A line of acid tears through enemies in its path, dealing 1d6 acid damage per caster level, maximum 12d6. A successful Reflex save halves the damage. Creatures struck corrode for 2d6 acid damage each round for 2 rounds. Creatures that fail their save also take a -2 penalty to AC for 1 round.</value>
+  </data>
+
+  <data name="wotr_mod.spell.frozen_lance.name" xml:space="preserve">
+    <value>Frozen Lance</value>
+  </data>
+  <data name="wotr_mod.spell.frozen_lance.description" xml:space="preserve">
+    <value>A precise lance of cold strikes with a ranged touch attack, dealing 8d8 cold damage. A creature that fails its Fortitude save is staggered for 1 round. If the creature was already slowed or staggered, it is immobilized in ice for 1 round instead.</value>
+  </data>
+
+  <data name="wotr_mod.spell.thunderhead.name" xml:space="preserve">
+    <value>Thunderhead</value>
+  </data>
+  <data name="wotr_mod.spell.thunderhead.description" xml:space="preserve">
+    <value>You conjure a 20-foot-radius storm cloud that lasts 1 round per caster level. Enemies entering the cloud or beginning a round inside it take 4d6 electricity damage. Each round, lightning arcs from affected enemies to a random nearby enemy for 2d6 electricity damage. Enemies that fail a Fortitude save are dazed and dazzled for 1 round.</value>
+  </data>
+
   <data name="wotr_mod.spell.corpse_explosion.name" xml:space="preserve">
     <value>Corpse Explosion</value>
   </data>

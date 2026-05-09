@@ -133,13 +133,16 @@
         <Compile Include="Spells\Modifiers\AreaNecromancyModifier.cs" />
         <Compile Include="Spells\Modifiers\CompositeSpellModifier.cs" />
         <Compile Include="Spells\Modifiers\ConfigureSpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\CorrosiveCascadeModifier.cs" />
         <Compile Include="Spells\Modifiers\CorpseExplosionModifier.cs" />
         <Compile Include="Spells\Modifiers\DamageTypeSpellModifier.cs" />
         <Compile Include="Spells\Modifiers\DespairOfTheSepulchreModifier.cs" />
+        <Compile Include="Spells\Modifiers\FrozenLanceModifier.cs" />
         <Compile Include="Spells\Modifiers\HarvestTheFallenModifier.cs" />
         <Compile Include="Spells\Modifiers\ISpellModifier.cs" />
         <Compile Include="Spells\Modifiers\SpellModifierContext.cs" />
         <Compile Include="Spells\Modifiers\SpellModifierUtility.cs" />
+        <Compile Include="Spells\Modifiers\ThunderheadModifier.cs" />
         <Compile Include="Spells\SpellIconLoader.cs" />
         <Compile Include="Spells\SpellInstaller.cs" />
         <Compile Include="Spells\SpellRegistry.cs" />
@@ -159,6 +162,7 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
+        <Content Include="Icons\vitriolic_sphere.png" />
         <None Include="Info.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
@@ -183,6 +187,9 @@
         <Content Include="Icons\arcane_supremacy.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\corrosive_cascade.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\corrosive_mastery.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -205,6 +212,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\force_ray_arcane.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\frozen_lance.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\glacial_dominion.png">
@@ -250,6 +260,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\tempest_surge.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\thunderhead_256.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\umbral_arcana.png">

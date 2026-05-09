@@ -54,6 +54,9 @@ namespace wotr_mod.Spells
             var wizardList = _blueprints.Require<BlueprintSpellList>(
                 GameBlueprintIds.SpellLists.Wizard,
                 "Wizard spell list");
+            var clericList = _blueprints.Require<BlueprintSpellList>(
+                GameBlueprintIds.SpellLists.Cleric,
+                "Cleric/Oracle spell list");
 
             foreach (var definition in SpellRegistry.GetAll())
             {
@@ -61,10 +64,15 @@ namespace wotr_mod.Spells
                 if (IsGrantedOnlySpell(definition))
                 {
                     _blueprints.RemoveSpellFromList(wizardList, spell);
+                    _blueprints.RemoveSpellFromList(clericList, spell);
                     continue;
                 }
 
                 _blueprints.AddSpellToList(wizardList, spell, definition.SpellLevel);
+                if (IsDivineListSpell(definition))
+                {
+                    _blueprints.AddSpellToList(clericList, spell, definition.SpellLevel);
+                }
             }
         }
 
@@ -112,6 +120,12 @@ namespace wotr_mod.Spells
             if (definition.NewSpellGuid == ModBlueprintIds.Spells.EldritchHorror)
             {
                 ConfigureEldritchHorrorVisuals(spell);
+                return;
+            }
+
+            if (definition.NewSpellGuid == ModBlueprintIds.Spells.Thunderhead)
+            {
+                ConfigureThunderheadVisuals(spell);
                 return;
             }
 
@@ -203,6 +217,16 @@ namespace wotr_mod.Spells
                 SpellEffectTheme.Necro);
         }
 
+        private static void ConfigureThunderheadVisuals(BlueprintAbility ability)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Electric);
+            SpellEffectTintRegistry.RegisterAreaEffectTint(
+                ModBlueprintIds.AreaEffects.Thunderhead,
+                SpellEffectTheme.Electric);
+        }
+
         private BlueprintProjectile EnsureProjectile(BlueprintAbility ability, string projectileGuid, string projectileName)
         {
             var existing = _blueprints.Get<BlueprintProjectile>(projectileGuid);
@@ -257,6 +281,14 @@ namespace wotr_mod.Spells
                     SpellEffectTheme.Acid);
             }
 
+            if (spellGuid == ModBlueprintIds.Spells.CorrosiveCascade)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.CorrosiveCascade,
+                    "WotrMod_CorrosiveCascadeProjectile",
+                    SpellEffectTheme.Acid);
+            }
+
             if (spellGuid == ModBlueprintIds.Spells.ElectricMissile)
             {
                 return new ProjectileVisuals(
@@ -271,6 +303,14 @@ namespace wotr_mod.Spells
                     ModBlueprintIds.Projectiles.FireMissile,
                     "WotrMod_FireMissileProjectile",
                     SpellEffectTheme.Fire);
+            }
+
+            if (spellGuid == ModBlueprintIds.Spells.FrozenLance)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.FrozenLance,
+                    "WotrMod_FrozenLanceProjectile",
+                    SpellEffectTheme.Cold);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.IceMissile)
@@ -300,6 +340,11 @@ namespace wotr_mod.Spells
         private static bool IsGrantedOnlySpell(SpellDefinition definition)
         {
             return definition.NewSpellGuid == ModBlueprintIds.Spells.BoneSpike;
+        }
+
+        private static bool IsDivineListSpell(SpellDefinition definition)
+        {
+            return definition.School == SpellSchool.Necromancy;
         }
 
         private void ApplyMetadata(BlueprintAbility spell, SpellDefinition definition)

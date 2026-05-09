@@ -95,6 +95,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Spells
         {
+            public const string AcidicSpray = "c543eef6d725b184ea8669dd09b3894c";
             public const string AuraOfGreaterCourage = "acb787cf9f76e924a9a93bbd011af040";
             public const string BurningHands = "4783c3709a74a794dbe7c8e7e0b1b038";
             public const string CureLightWounds = "47808d23c67033d4bbab86a1070fd62f";
@@ -104,6 +105,8 @@ namespace wotr_mod.Infrastructure
             public const string MagicMissile = "4ac47ddb9fa1eaf43a1b6809980cfbd2";
             public const string ProtectionFromChaos = "1eaf1020e82028d4db55e6e464269e00";
             public const string ScorchingRay = "cdb106d53c65bbc4086183d54c3b97c7";
+            public const string Sirocco = "093ed1d67a539ad4c939d9d05cfe192c";
+            public const string Snowball = "9f10909f0be1f5141bf1c102041f93d9";
         }
 
         internal static class Selections
@@ -252,6 +255,7 @@ namespace wotr_mod.Infrastructure
             public const string FighterArmorMastery = "0794e96a6c5da8f41979d809bb4a9a8c";
             public const string MonkAcBonusBuff = "f132c4c4279e4646a05de26635941bfe";
             public const string MonkAcBonusBuffUnarmored = "d7ff7a9f1fe84e679f98b36e4bacd63c";
+            public const string SnowballStaggered = "f767ee03a6cb62943b59bacbd8ced2e0";
         }
 
         internal static class Units

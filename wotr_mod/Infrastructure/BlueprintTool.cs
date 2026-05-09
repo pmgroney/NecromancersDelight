@@ -25,6 +25,7 @@ using Kingmaker.UnitLogic.Buffs.Components;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
+using Kingmaker.Utility;
 using UnityModManagerNet;
 using UnityEngine;
 
@@ -1271,6 +1272,13 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.AbilityDeliverProjectileProjectiles.SetValue(component, references);
         }
 
+        public void SetAbilityDeliverProjectileLength(
+            AbilityDeliverProjectile component,
+            Feet length)
+        {
+            BlueprintFields.AbilityDeliverProjectileLength.SetValue(component, length);
+        }
+
         public void SetApplyBuffActionBuff(ContextActionApplyBuff action, BlueprintBuff buff)
         {
             BlueprintFields.ContextActionApplyBuffBuff.SetValue(
@@ -1410,6 +1418,19 @@ namespace wotr_mod.Infrastructure
             if (BlueprintFields.ContextRankConfigMin != null)
             {
                 BlueprintFields.ContextRankConfigMin.SetValue(config, minimum);
+            }
+        }
+
+        public void SetContextRankMaximum(ContextRankConfig config, int maximum)
+        {
+            if (BlueprintFields.ContextRankConfigUseMax != null)
+            {
+                BlueprintFields.ContextRankConfigUseMax.SetValue(config, true);
+            }
+
+            if (BlueprintFields.ContextRankConfigMax != null)
+            {
+                BlueprintFields.ContextRankConfigMax.SetValue(config, maximum);
             }
         }
 

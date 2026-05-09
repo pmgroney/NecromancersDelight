@@ -61,15 +61,15 @@ namespace wotr_mod.Content
         {
             "Breathing is optional. Still deciding if I miss it.",
             "Step. Aim. Release. Repeat. Eternity's great for practice.",
-            "Irori teaches perfection. I just have... more time than most.",
+            "Irori teaches perfection. Unfortunately, he never covered spontaneous undeath.",
             "You ever notice how the living waste a lot of motion?",
-            "No heartbeat. No distractions.",
-            "Still me. Just... quieter.",
-            "I don't get tired. Turns out that's a competitive advantage.",
-            "I used to need rest. Now I just need direction.",
-            "Focus is easier when your body stops complaining.",
-            "I should probably be more concerned about this situation.",
-            "Good posture is important. Even post-mortem."
+            "No heartbeat. Fewer distractions.",
+            "Still me. Just... crunchier.",
+            "I don't get tired anymore. Honestly, huge upgrade.",
+            "I used to meditate to ignore discomfort. Now my nerves just gave up entirely.",
+            "Focus is easier when your knees stopped filing complaints.",
+            "I should probably be more alarmed by all this.",
+            "Good posture is important. Even when half your spine is decorative."
         };
 
         private static readonly string[] BillyMovementLines =
@@ -77,21 +77,21 @@ namespace wotr_mod.Content
             "Careful. I don't creak, but I still sneak.",
             "Every step is intentional.",
             "Stay sharp. I already dulled once.",
-            "Quiet. Let them make the mistakes.",
+            "Quiet. Let them embarrass themselves first.",
             "Positioning wins fights.",
-            "Discipline over speed.",
-            "I don't rush. I arrive."
+            "Discipline over panic.",
+            "I don't rush. I disappoint enemies at a reasonable pace."
         };
 
         private static readonly string[] BillyCombatStartLines =
         {
-            "Ah. Practical application.",
-            "Let's improve.",
+            "Ah. Violence with structure.",
+            "Let's see who disappoints Irori first.",
             "Targets acquired.",
             "Focus.",
-            "Try not to die. It's inconvenient.",
-            "I'll demonstrate.",
-            "Form over fury."
+            "Try not to die. Paperwork gets confusing.",
+            "Excellent. A teaching opportunity.",
+            "Form over fury. Fury pulls muscles."
         };
 
         private static readonly string[] BillyRangedAttackLines =
@@ -100,10 +100,10 @@ namespace wotr_mod.Content
             "Release.",
             "Stillness. Then strike.",
             "Predictable.",
-            "You moved. That helped.",
-            "Center mass.",
+            "You moved. Brave choice.",
+            "Center mass. Usually reliable.",
             "Efficiency.",
-            "Missed. Noted."
+            "Missed. Disgusting."
         };
 
         private static readonly string[] BillyOnHitLines =
@@ -111,35 +111,35 @@ namespace wotr_mod.Content
             "There it is.",
             "Correct.",
             "Better.",
-            "That felt right.",
-            "Refinement.",
-            "Precision matters."
+            "That felt professional.",
+            "Progress.",
+            "Precision matters. Unlike enthusiasm."
         };
 
         private static readonly string[] BillyOnKillLines =
         {
             "Rest. Properly this time.",
             "Cycle corrected.",
-            "You can stop now.",
+            "You can stop screaming now.",
             "That's one less problem.",
-            "Final form achieved.",
+            "Remarkably fragile.",
             "Still improving."
         };
 
         private static readonly string[] BillyTakingDamageLines =
         {
-            "Not ideal.",
+            "Rude.",
             "Structural integrity compromised.",
-            "I felt that. Oddly.",
+            "I felt that. Which seems unnecessary.",
             "Adjustment required.",
-            "Pain is... inconsistent."
+            "Pain is... weird now."
         };
 
         private static readonly string[] BillyLowHealthLines =
         {
-            "Pieces are becoming optional.",
-            "I should address this.",
-            "This is inefficient.",
+            "Pieces are becoming negotiable.",
+            "I should really tighten a few bolts.",
+            "This is getting medically irresponsible.",
             "Losing cohesion."
         };
 
@@ -147,27 +147,27 @@ namespace wotr_mod.Content
         {
             "Enhancement accepted.",
             "Clarity.",
-            "Alignment maintained.",
+            "Excellent. Magical cheating.",
             "Focus restored.",
-            "Irori guides."
+            "Irori approves. Probably."
         };
 
         private static readonly string[] BillyPartyBanterLines =
         {
-            "If I fall apart, just point me toward the enemy first.",
-            "I don't sleep, so I'll take watch. Forever, apparently.",
-            "Don't worry--I'm very stable. Structurally.",
-            "I've stopped worrying about dying. Big time saver.",
-            "If you hear rattling, that's normal."
+            "If I fall apart, at least throw the useful pieces.",
+            "I don't sleep, so I'll take watch. Apparently forever.",
+            "Don't worry--I'm very stable. Emotionally less so.",
+            "I've stopped worrying about dying. Very freeing.",
+            "If you hear rattling, that's either me or a tactical warning."
         };
 
         private static readonly string[] BillyIroriFlavorLines =
         {
-            "Perfection isn't a destination. Good thing.",
-            "Discipline survives death. That's reassuring.",
-            "Mastery doesn't require a pulse.",
-            "The body failed. The will didn't.",
-            "Irori didn't promise this... but I'll make use of it."
+            "Perfection takes time. I apparently have plenty.",
+            "Discipline surviving death feels excessive.",
+            "Mastery doesn't require a pulse. Good to know.",
+            "The body failed. The will filed an appeal.",
+            "Irori probably did not intend this lesson."
         };
 
         private static readonly Dictionary<string, string> BillyBarkLocalizationKeys = BuildBillyBarkLocalizationKeys();
@@ -1108,12 +1108,12 @@ namespace wotr_mod.Content
             component.RefuseEquip = CreateBark(component, BillyPartyBanterLines, cooldown: 0f, interruptOthers: true);
             component.RefuseCast = CreateBark(component, BillyBuffingLines, cooldown: 0f, interruptOthers: true);
             component.CheckSuccess = CreateBark(component, BillyOnHitLines, cooldown: 0f);
-            component.CheckFail = CreateBark(component, new[] { "Missed. Noted.", "Adjustment required.", "This is inefficient." }, cooldown: 0f);
+            component.CheckFail = CreateBark(component, new[] { "Missed. Disgusting.", "Adjustment required.", "That could have gone better." }, cooldown: 0f);
             component.RefuseUnequip = CreateEmptyBark(component);
             component.Discovery = CreateBark(component, BillyMovementLines.Concat(BillyIroriFlavorLines), cooldown: 0f);
             component.Stealth = CreateBark(
                 component,
-                new[] { "Careful. I don't creak, but I still sneak.", "Quiet. Let them make the mistakes." },
+                new[] { "Careful. I don't creak, but I still sneak.", "Quiet. Let them embarrass themselves first." },
                 cooldown: 0f);
             component.StormRain = CreateEmptyBark(component);
             component.StormSnow = CreateEmptyBark(component);

@@ -43,27 +43,27 @@ namespace wotr_mod.Content
                     new[]
                     {
                         "Chaotic. Predictable.",
-                        "They lack form. I'll correct that.",
+                        "They lack form. And hygiene.",
                         "Noise without discipline.",
-                        "Focus. They won't."
+                        "Focus. They certainly won't."
                     }
                 },
                 {
                     BillyReactivityCategory.DemonBoss,
                     new[]
                     {
-                        "Better. This might teach me something.",
+                        "Better. Maybe this one survives two minutes.",
                         "Finally, resistance.",
-                        "Let's see if you're worth the effort."
+                        "Let's see if you're actually memorable."
                     }
                 },
                 {
                     BillyReactivityCategory.Crusaders,
                     new[]
                     {
-                        "Order... attempting to assert itself.",
-                        "They try. That matters.",
-                        "Discipline without consistency. Still better than chaos."
+                        "Order... trying its best.",
+                        "They try. That's adorable.",
+                        "Discipline without consistency. Still better than demons."
                     }
                 },
                 {
@@ -80,17 +80,17 @@ namespace wotr_mod.Content
                     new[]
                     {
                         "I would not have chosen that.",
-                        "Unstable path.",
-                        "We'll see if it holds."
+                        "Bold. In the worst way.",
+                        "We'll see how badly this goes."
                     }
                 },
                 {
                     BillyReactivityCategory.EvilChoice,
                     new[]
                     {
-                        "Efficient. Not optimal.",
-                        "Power without control degrades quickly.",
-                        "Short-term gain. Long-term cost."
+                        "Efficient. Concerning, but efficient.",
+                        "Power without control always rots eventually.",
+                        "Short-term gain. Future catastrophe."
                     }
                 },
                 {
@@ -106,8 +106,8 @@ namespace wotr_mod.Content
                     BillyReactivityCategory.UndeadEncounter,
                     new[]
                     {
-                        "Unfocused. That's the problem.",
-                        "Undeath without purpose is just decay.",
+                        "Unfocused. Embarrassing.",
+                        "Undeath without purpose is just flailing.",
                         "They stopped improving."
                     }
                 },
@@ -115,18 +115,18 @@ namespace wotr_mod.Content
                     BillyReactivityCategory.PowerfulUndead,
                     new[]
                     {
-                        "Closer... but still flawed.",
+                        "Closer... but still sloppy.",
                         "Control without discipline.",
-                        "They chose power. Not mastery."
+                        "Power first. Wisdom never."
                     }
                 },
                 {
                     BillyReactivityCategory.Pharasma,
                     new[]
                     {
-                        "Yes, I know. I'm on the list.",
-                        "I'll resolve it. Eventually.",
-                        "One problem at a time."
+                        "Yes, yes, I'm aware she's unhappy.",
+                        "I'll sort it out eventually.",
+                        "One existential crisis at a time."
                     }
                 },
                 {
@@ -143,7 +143,7 @@ namespace wotr_mod.Content
                     new[]
                     {
                         "This changes the equation.",
-                        "Power... requires control.",
+                        "Power... usually makes people stupid.",
                         "We refine further."
                     }
                 },
@@ -160,7 +160,7 @@ namespace wotr_mod.Content
                     new[]
                     {
                         "Power without restraint.",
-                        "I'll compensate."
+                        "This feels like a terrible idea."
                     }
                 },
                 {
@@ -184,7 +184,7 @@ namespace wotr_mod.Content
                     new[]
                     {
                         "Unpredictable.",
-                        "I dislike relying on luck."
+                        "I miss reliable physics."
                     }
                 },
                 {
@@ -233,25 +233,25 @@ namespace wotr_mod.Content
                     {
                         "Distance is irrelevant.",
                         "We proceed.",
-                        "Time is no longer a constraint."
+                        "Good. More walking. My favorite eternal activity."
                     }
                 },
                 {
                     BillyReactivityCategory.Death,
                     new[]
                     {
-                        "Get up. Preferably the correct way.",
-                        "Death is not the end. Usually.",
-                        "I'll handle this."
+                        "Get up. Preferably less dramatically.",
+                        "Death is rarely the end around here.",
+                        "I'll handle this. Again."
                     }
                 },
                 {
                     BillyReactivityCategory.Identity,
                     new[]
                     {
-                        "I am not a mistake. I am... unresolved.",
-                        "The body failed. The discipline didn't.",
-                        "I continue. That's enough."
+                        "I am not a mistake. Probably.",
+                        "The body failed. The discipline stayed stubborn.",
+                        "I continue. Spite helps."
                     }
                 }
             };
