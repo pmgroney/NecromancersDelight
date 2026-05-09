@@ -49,6 +49,10 @@
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityModManager\0Harmony.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="Owlcat.Runtime.Core">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Owlcat.Runtime.Core.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
         <Reference Include="UnityEngine">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.dll</HintPath>
             <Private>False</Private>
@@ -96,6 +100,7 @@
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
         <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
+        <Compile Include="Features\EvokerSpellShaping.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
         <Compile Include="Features\StygianPrecisionComponent.cs" />
@@ -131,18 +136,26 @@
         <Compile Include="Spells\Modifiers\AbilityTargetMustBeDead.cs" />
         <Compile Include="Spells\Modifiers\ActionListPatcher.cs" />
         <Compile Include="Spells\Modifiers\AreaNecromancyModifier.cs" />
+        <Compile Include="Spells\Modifiers\CausticOblivionModifier.cs" />
         <Compile Include="Spells\Modifiers\CompositeSpellModifier.cs" />
         <Compile Include="Spells\Modifiers\ConfigureSpellModifier.cs" />
+        <Compile Include="Spells\Modifiers\CataclysmicStormModifier.cs" />
         <Compile Include="Spells\Modifiers\CorrosiveCascadeModifier.cs" />
         <Compile Include="Spells\Modifiers\CorpseExplosionModifier.cs" />
         <Compile Include="Spells\Modifiers\DamageTypeSpellModifier.cs" />
         <Compile Include="Spells\Modifiers\DespairOfTheSepulchreModifier.cs" />
+        <Compile Include="Spells\Modifiers\AbsoluteZeroModifier.cs" />
+        <Compile Include="Spells\Modifiers\DissolutionWaveModifier.cs" />
         <Compile Include="Spells\Modifiers\FrozenLanceModifier.cs" />
+        <Compile Include="Spells\Modifiers\GlacialPrisonModifier.cs" />
         <Compile Include="Spells\Modifiers\HarvestTheFallenModifier.cs" />
+        <Compile Include="Spells\Modifiers\HeavensWrathModifier.cs" />
         <Compile Include="Spells\Modifiers\ISpellModifier.cs" />
         <Compile Include="Spells\Modifiers\SpellModifierContext.cs" />
         <Compile Include="Spells\Modifiers\SpellModifierUtility.cs" />
         <Compile Include="Spells\Modifiers\ThunderheadModifier.cs" />
+        <Compile Include="Spells\Modifiers\VitriolicApocalypseModifier.cs" />
+        <Compile Include="Spells\Modifiers\VitriolicSphereModifier.cs" />
         <Compile Include="Spells\SpellIconLoader.cs" />
         <Compile Include="Spells\SpellInstaller.cs" />
         <Compile Include="Spells\SpellRegistry.cs" />
@@ -162,7 +175,37 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="Icons\vitriolic_sphere.png" />
+        <Content Include="Icons\absolute_zero.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\ball_lightning.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\cataclysmic_storm.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\caustic_oblivion.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\dissolution_wave.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\glacial_prison.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\heavens_wrath.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\molecular_dissolution.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\polar_catastrophe.png" />
+        <Content Include="Icons\vitriolic_sphere.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\vitriolic_apocalypse.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <None Include="Info.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

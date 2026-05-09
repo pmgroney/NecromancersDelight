@@ -82,12 +82,48 @@ namespace wotr_mod.Classes
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
+            _blueprints.AddFeatureToLevel(
+                characterClass.Progression,
+                1,
+                EnsureSpellShapingFeature(characterClass));
 
             EnsureShadowbornBloodline(characterClass);
             new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
             _blueprints.SetCharacterClassArchetypes(
                 characterClass,
                 EnsureArchetypes(definition, characterClass, spellbook, spellList));
+        }
+
+        private BlueprintFeature EnsureSpellShapingFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvokerSpellShaping);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_EvokerSpellShaping",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.EvokerSpellShaping),
+                    IsClassFeature = true,
+                    Ranks = 1,
+                    HideInUI = true,
+                    HideInCharacterSheetAndLevelUp = true
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.EvokerSpellShaping, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            feature.HideInUI = true;
+            feature.HideInCharacterSheetAndLevelUp = true;
+            _blueprints.SetProgressionClasses(feature, characterClass);
+            _blueprints.SetComponents(
+                feature,
+                new EvokerSpellShaping
+                {
+                    name = "$EvokerSpellShaping$Evoker",
+                    Classes = new[] { characterClass }
+                });
+            return feature;
         }
 
         private void EnsureEvocationSpellFocusRecommendation(BlueprintCharacterClass characterClass)

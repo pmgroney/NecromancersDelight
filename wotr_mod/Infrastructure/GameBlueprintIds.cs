@@ -102,7 +102,11 @@ namespace wotr_mod.Infrastructure
             public const string Entangle = "0fd00984a2c0e0a429cf1a911b4ec5ca";
             public const string FalseLife = "7a5b5bf845779a941a67251539545762";
             public const string Fireball = "2d81362af43aeac4387a3d4fced489c3";
+            public const string FireStorm = "e3d0dfe1c8527934294f241e0ae96a8d";
+            public const string ConeOfCold = "e7c530f8137630f4d9d7ee1aa7b1edc0";
             public const string MagicMissile = "4ac47ddb9fa1eaf43a1b6809980cfbd2";
+            public const string MeteorSwarm = "5e36df08c71748f7936bce310181fb71";
+            public const string PolarRay = "17696c144a0194c478cbe402b496cb23";
             public const string ProtectionFromChaos = "1eaf1020e82028d4db55e6e464269e00";
             public const string ScorchingRay = "cdb106d53c65bbc4086183d54c3b97c7";
             public const string Sirocco = "093ed1d67a539ad4c939d9d05cfe192c";
@@ -212,6 +216,8 @@ namespace wotr_mod.Infrastructure
             public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
+            public const string PotionOfInflictLightWounds = "115c4dcc899ce9747a6e97335955092a";
+            public const string PotionOfInflictModerateWounds = "a9991bfea27096f46bb7b4ccf0fb7eb7";
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
         }
 

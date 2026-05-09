@@ -95,6 +95,7 @@ namespace wotr_mod.Classes
             Spell("HungryPit", "f63f4d1806b78604a952b3958892ce1c", 5),
             Spell("SummonElementalLargeBase", "89404dd71edc1aa42962824b44156fe5", 5),
             Spell("SummonMonsterVBase", "630c8b85d9f07a64f917d79cb5905741", 5),
+            Spell("VitriolicSphere", ModBlueprintIds.Spells.VitriolicSphere, 5),
             Spell("CallLightningStorm", "d5a36a7ee8177be4f848b953d1c53c84", 5),
             Spell("Cleanse", "be2062d6d85f4634ea4f26e9e858c3b8", 5),
             Spell("ConeOfCold", "e7c530f8137630f4d9d7ee1aa7b1edc0", 5),
@@ -111,6 +112,7 @@ namespace wotr_mod.Classes
             Spell("BladeBarrier", "36c8971e91f1745418cc3ffdfac17b74", 6),
             Spell("Blasphemy", "bd10c534a09f44f4ea632c8b8ae97145", 6),
             Spell("BrilliantInspiration", "a5c56f0f699daec44b7aedd8b273b08a", 6),
+            Spell("AbsoluteZero", ModBlueprintIds.Spells.AbsoluteZero, 6),
             Spell("ChainLightning", "645558d63604747428d55f0dd3a4cb58", 6),
             Spell("ColdIceStrike", "5ef85d426783a5347b420546f91a677b", 6),
             Spell("Dictum", "302ab5e241931a94881d323a7844ae8f", 6),
@@ -127,7 +129,9 @@ namespace wotr_mod.Classes
             Spell("SummonMonsterVIIBase", "ab167fd8203c1314bac6568932f1752f", 7),
             Spell("WalkThroughSpace", "368d7cf2fb69d8a46be5a650f5a5a173", 7),
             Spell("CausticEruption", "8c29e953190cc67429dc9c701b16b7c2", 7),
+            Spell("DissolutionWave", ModBlueprintIds.Spells.DissolutionWave, 7),
             Spell("FireStorm", "e3d0dfe1c8527934294f241e0ae96a8d", 7),
+            Spell("GlacialPrison", ModBlueprintIds.Spells.GlacialPrison, 7),
             Spell("JoltingPortent", "0dd638688edf68a4da865752d7b9ee82", 7),
             Spell("PrismaticSpray", "b22fd434bdb60fb4ba1068206402c4cf", 7),
             Spell("Sunbeam", "1fca0ba2fdfe2994a8c8bc1f0f2fc5b1", 7),
@@ -139,6 +143,8 @@ namespace wotr_mod.Classes
             Spell("PolarRay", "17696c144a0194c478cbe402b496cb23", 8),
             Spell("Stormbolts", "7cfbefe0931257344b2cb7ddc4cdff6f", 8),
             Spell("Sunburst", "e96424f70ff884947b06f41a765b7658", 8),
+            Spell("CataclysmicStorm", ModBlueprintIds.Spells.CataclysmicStorm, 8),
+            Spell("CausticOblivion", ModBlueprintIds.Spells.CausticOblivion, 8),
 
             Spell("ClashingRocks", "01300baad090d634cb1a1b2defe068d6", 9),
             Spell("SummonMonsterIXBase", "52b5df2a97df18242aec67610616ded0", 9),
@@ -146,6 +152,8 @@ namespace wotr_mod.Classes
             Spell("IcyPrisonMass", "1852a9393a23d5741b650a1ea7078abc", 9),
             Spell("Implosion", "78abd9a61abf4c80a8a8cf05ff55f033", 9),
             Spell("MeteorSwarm", "5e36df08c71748f7936bce310181fb71", 9),
+            Spell("HeavensWrath", ModBlueprintIds.Spells.HeavensWrath, 9),
+            Spell("VitriolicApocalypse", ModBlueprintIds.Spells.VitriolicApocalypse, 9),
             Spell("WindsOfVengeance", "5d8f1da2fdc0b9242af9f326f9e507be", 9)
         };
 

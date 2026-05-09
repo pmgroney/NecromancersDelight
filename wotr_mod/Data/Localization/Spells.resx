@@ -80,7 +80,7 @@
     <value>Vitriolic Burst</value>
   </data>
   <data name="wotr_mod.spell.vitriolic_blast.description" xml:space="preserve">
-    <value>A vitriolic mass flies to the target point and erupts. The caustic energy deals 1d6 acid damage per caster level, maximum 10d6, to creatures in the area. A successful Reflex save halves the damage.</value>
+    <value>A vitriolic mass flies to the target point and erupts in a 20-foot burst. The caustic energy deals 1d6 acid damage per caster level, maximum 10d6, to creatures in the area. A successful Reflex save halves the damage.</value>
   </data>
 
   <data name="wotr_mod.spell.corrosive_cascade.name" xml:space="preserve">
@@ -102,6 +102,83 @@
   </data>
   <data name="wotr_mod.spell.thunderhead.description" xml:space="preserve">
     <value>You conjure a 20-foot-radius storm cloud that lasts 1 round per caster level. Enemies entering the cloud or beginning a round inside it take 4d6 electricity damage. Each round, lightning arcs from affected enemies to a random nearby enemy for 2d6 electricity damage. Enemies that fail a Fortitude save are dazed and dazzled for 1 round.</value>
+  </data>
+
+  <data name="wotr_mod.spell.fire_storm.name" xml:space="preserve">
+    <value>Fire Storm</value>
+  </data>
+  <data name="wotr_mod.spell.fire_storm.description" xml:space="preserve">
+    <value>Sheets of roaring flame erupt in the target area and persist for 3 rounds. Enemies in the area take 1d8 fire damage per caster level, maximum 20d8. A successful Reflex save halves each instance of damage.</value>
+  </data>
+
+  <data name="wotr_mod.spell.meteor_swarm.name" xml:space="preserve">
+    <value>Meteor Swarm</value>
+  </data>
+  <data name="wotr_mod.spell.meteor_swarm.description" xml:space="preserve">
+    <value>Meteor Swarm causes meteors to rain down in a 45-foot radius. Creatures in the area take 8d12 bludgeoning damage from the meteors and 24d6 fire damage from the explosion. A successful Reflex save halves both damage instances. Spell resistance does not apply.</value>
+  </data>
+
+  <data name="wotr_mod.spell.vitriolic_sphere.name" xml:space="preserve">
+    <value>Vitriolic Sphere</value>
+  </data>
+  <data name="wotr_mod.spell.vitriolic_sphere.description" xml:space="preserve">
+    <value>A volatile sphere of acid erupts in a 30-foot burst up to 90 feet away, dealing 1d8 acid damage per caster level, maximum 15d8. The blast ignores the first 10 points of acid resistance. A successful Reflex save halves the damage. Creatures that fail their save are nauseated by caustic fumes for 1 round.</value>
+  </data>
+
+  <data name="wotr_mod.spell.absolute_zero.name" xml:space="preserve">
+    <value>Absolute Zero</value>
+  </data>
+  <data name="wotr_mod.spell.absolute_zero.description" xml:space="preserve">
+    <value>You unleash an impossible wave of cold in a 30-foot cone, dealing 1d8 cold damage per caster level, maximum 15d8. A successful Fortitude save halves the damage and slows the creature for 3 rounds. A creature that fails the save is petrified in ice for 1 round.</value>
+  </data>
+
+  <data name="wotr_mod.spell.dissolution_wave.name" xml:space="preserve">
+    <value>Dissolution Wave</value>
+  </data>
+  <data name="wotr_mod.spell.dissolution_wave.description" xml:space="preserve">
+    <value>You release a sweeping wave of acid in a 40-foot cone, dealing 1d8 acid damage per caster level, maximum 20d8. A successful Fortitude save halves the damage. A creature that fails the save is corroded, taking a -4 natural armor penalty for 3 rounds.</value>
+  </data>
+
+  <data name="wotr_mod.spell.glacial_prison.name" xml:space="preserve">
+    <value>Glacial Prison</value>
+  </data>
+  <data name="wotr_mod.spell.glacial_prison.description" xml:space="preserve">
+    <value>You freeze the battlefield in a 40-foot radius for 1 round per caster level. Enemies entering the area or beginning their turn within it take 1d8 cold damage per caster level and treat the terrain as difficult terrain. Enemies that fail a Reflex save are entangled in ice; entangled enemies that then fail a Fortitude save are paralyzed in ice.</value>
+  </data>
+
+  <data name="wotr_mod.spell.cataclysmic_storm.name" xml:space="preserve">
+    <value>Cataclysmic Storm</value>
+  </data>
+  <data name="wotr_mod.spell.cataclysmic_storm.description" xml:space="preserve">
+    <value>You call down a massive 40-foot-radius storm for 1 round per caster level. Hostile creatures entering the storm or beginning their turn within it are struck for 1d8 electricity damage per caster level. Creatures that fail a Reflex save are knocked prone.</value>
+  </data>
+
+  <data name="wotr_mod.spell.caustic_oblivion.name" xml:space="preserve">
+    <value>Caustic Oblivion</value>
+  </data>
+  <data name="wotr_mod.spell.caustic_oblivion.description" xml:space="preserve">
+    <value>You fire a long-range ray of annihilating acid with a ranged touch attack. The target takes 20d10 acid damage and continues burning for 8d6 acid damage each round for 3 rounds. A successful Fortitude save halves the initial damage; a failed save blinds the target for 3 rounds. The acid ignores energy immunity.</value>
+  </data>
+
+  <data name="wotr_mod.spell.heavens_wrath.name" xml:space="preserve">
+    <value>Heaven's Wrath</value>
+  </data>
+  <data name="wotr_mod.spell.heavens_wrath.description" xml:space="preserve">
+    <value>You call down repeated colossal lightning strikes in a 40-foot radius for 1 round per caster level. Enemies entering the storm or beginning their turn within it take 1d12 electricity damage per caster level. A creature that fails its Fortitude save is stunned for 1 round, and lightning jumps to nearby enemies for 6d12 electricity damage. Creatures wearing armor take a -4 penalty on the saving throw.</value>
+  </data>
+
+  <data name="wotr_mod.spell.vitriolic_apocalypse.name" xml:space="preserve">
+    <value>Vitriolic Apocalypse</value>
+  </data>
+  <data name="wotr_mod.spell.vitriolic_apocalypse.description" xml:space="preserve">
+    <value>A catastrophic sphere of abyss-tainted acid blossoms outward in a 40-foot-radius spread up to 120 feet away, dissolving matter at the molecular level. Creatures in the area take 1d8 acid damage per caster level plus 1d8 unholy damage per caster level. A successful Reflex save halves the initial damage. Creatures that fail their save suffer Molecular Dissolution for 3 rounds. Spell resistance applies.</value>
+  </data>
+
+  <data name="wotr_mod.buff.molecular_dissolution.name" xml:space="preserve">
+    <value>Molecular Dissolution</value>
+  </data>
+  <data name="wotr_mod.buff.molecular_dissolution.description" xml:space="preserve">
+    <value>The creature takes 8d8 acid damage at the start of each turn, suffers a -6 penalty to AC, and has its movement speed reduced by 50%.</value>
   </data>
 
   <data name="wotr_mod.spell.corpse_explosion.name" xml:space="preserve">

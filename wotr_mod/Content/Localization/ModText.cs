@@ -70,7 +70,7 @@ namespace wotr_mod.Content.Localization
             { LocalizationIds.Mod.BillyStoryTitle, "Ashes Unburied" },
             { LocalizationIds.Mod.BillyStoryDescription, "The undead priest has wandered the depths of the Shield Maze for years, sustaining himself through discipline, prayer, and grim determination. Though death claimed his flesh long ago, his faith in Irori remains unbroken, and he treats his cursed existence as yet another trial to master through patience and self-control. Endless battles against cultists and demons have left him sharp-tongued and eccentric, but not cruel. After so many years surrounded by madness, corruption, and the restless dead, the Commander's party are the first sane souls he has encountered in what feels like a lifetime, and he clings to their company more tightly than he would ever willingly admit." },
             { LocalizationIds.Mod.EvokerName, "Evoker" },
-            { LocalizationIds.Mod.EvokerDescription, "An Evoker is a living conduit of raw, untamed power, channeling destructive arcane forces into devastating spells." },
+            { LocalizationIds.Mod.EvokerDescription, "An Evoker is a living conduit of raw, untamed power, channeling destructive arcane forces into devastating spells. Through spell shaping, an Evoker's Evocation school spells do not harm friendly units." },
             { LocalizationIds.Mod.ShadowbornName, "Shadowborn" },
             { LocalizationIds.Mod.ShadowbornDescription, "A Shadowborn follows a dark reflection of the Evoker's Pyromancer bloodline, replacing the usual bloodline choice with negative-energy powers shaped from living shadow." },
             { LocalizationIds.Mod.DraconicEvokerName, "Draconic Evoker" },

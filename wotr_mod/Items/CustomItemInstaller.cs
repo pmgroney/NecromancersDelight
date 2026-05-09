@@ -24,6 +24,14 @@ namespace wotr_mod.Items
 {
     internal sealed class CustomItemInstaller : IContentModule, IAreaLoadModule
     {
+        private static readonly BlueprintGuid PrologueLabyrinthGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.PrologueLabyrinth);
+        private static readonly string[] ShieldMazeWeaponRackIds =
+        {
+            "71c5f42a-f490-4d9d-a3ff-1cf0702b1caf",
+            "55508648-91b4-47c0-9245-f625cb333473",
+            "bcfce8e8-f634-446f-9a7f-9974d5c51c01"
+        };
+
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -182,25 +190,7 @@ namespace wotr_mod.Items
 
         public void OnAreaLoaded()
         {
-            AddToMapObjectLoot(
-                ItemPlacementDefinition.InMapObjectLoot(
-                    "71c5f42a-f490-4d9d-a3ff-1cf0702b1caf",
-                    "Weapon Rack",
-                    count: 1,
-                    identify: true),
-                _blueprints.Require<BlueprintItem>(
-                    GameBlueprintIds.Items.ColdIronMasterworkRapier,
-                    "Cold-iron masterwork rapier"));
-
-            AddToMapObjectLoot(
-                ItemPlacementDefinition.InMapObjectLoot(
-                    "55508648-91b4-47c0-9245-f625cb333473",
-                    "Weapon Rack",
-                    count: 1,
-                    identify: true),
-                _blueprints.Require<BlueprintItem>(
-                    GameBlueprintIds.Items.MasterworkGreatsword,
-                    "Masterwork greatsword"));
+            AddShieldMazeFixedLoot();
 
             foreach (var definition in CustomItemRegistry.GetAll())
             {
@@ -223,6 +213,91 @@ namespace wotr_mod.Items
                     }
                 }
             }
+        }
+
+        private void AddShieldMazeFixedLoot()
+        {
+            if (!IsShieldMazeLoaded())
+            {
+                return;
+            }
+
+            AddToMapObjectLoot(
+                ItemPlacementDefinition.InMapObjectLoot(
+                    "71c5f42a-f490-4d9d-a3ff-1cf0702b1caf",
+                    "Weapon Rack",
+                    count: 1,
+                    identify: true),
+                _blueprints.Require<BlueprintItem>(
+                    GameBlueprintIds.Items.ColdIronMasterworkRapier,
+                    "Cold-iron masterwork rapier"));
+
+            AddToMapObjectLoot(
+                ItemPlacementDefinition.InMapObjectLoot(
+                    "55508648-91b4-47c0-9245-f625cb333473",
+                    "Weapon Rack",
+                    count: 1,
+                    identify: true),
+                _blueprints.Require<BlueprintItem>(
+                    GameBlueprintIds.Items.MasterworkGreatsword,
+                    "Masterwork greatsword"));
+
+            AddShieldMazeInflictPotionBatches();
+        }
+
+        private void AddShieldMazeInflictPotionBatches()
+        {
+            var lightPotion = _blueprints.Require<BlueprintItem>(
+                GameBlueprintIds.Items.PotionOfInflictLightWounds,
+                "Potion of Inflict Light Wounds");
+            var moderatePotion = _blueprints.Require<BlueprintItem>(
+                GameBlueprintIds.Items.PotionOfInflictModerateWounds,
+                "Potion of Inflict Moderate Wounds");
+
+            var containers = Game.Instance.State.LoadedAreaState.AllEntityData
+                .OfType<MapObjectEntityData>()
+                .Where(mapObject => !string.IsNullOrWhiteSpace(mapObject.UniqueId))
+                .Where(mapObject => !ShieldMazeWeaponRackIds.Contains(mapObject.UniqueId, StringComparer.OrdinalIgnoreCase))
+                .Where(mapObject => mapObject.Parts.Get<InteractionLootPart>() != null)
+                .Take(5)
+                .ToArray();
+
+            if (containers.Length < 5)
+            {
+                _logger.Warning($"Found only {containers.Length} Shield Maze loot containers for Inflict Wounds potions.");
+            }
+
+            for (var i = 0; i < containers.Length; i++)
+            {
+                var targetName = "Shield Maze potion stash " + (i + 1);
+                switch (i)
+                {
+                    case 0:
+                        AddToMapObjectLoot(containers[i], targetName, lightPotion, 4, identify: true);
+                        break;
+                    case 1:
+                        AddToMapObjectLoot(containers[i], targetName, lightPotion, 3, identify: true);
+                        break;
+                    case 2:
+                        AddToMapObjectLoot(containers[i], targetName, lightPotion, 2, identify: true);
+                        AddToMapObjectLoot(containers[i], targetName, moderatePotion, 1, identify: true);
+                        break;
+                    case 3:
+                        AddToMapObjectLoot(containers[i], targetName, moderatePotion, 2, identify: true);
+                        break;
+                    case 4:
+                        AddToMapObjectLoot(containers[i], targetName, lightPotion, 2, identify: true);
+                        AddToMapObjectLoot(containers[i], targetName, moderatePotion, 2, identify: true);
+                        break;
+                }
+            }
+        }
+
+        private static bool IsShieldMazeLoaded()
+        {
+            return Game.HasInstance
+                && Game.Instance.CurrentlyLoadedArea != null
+                && Game.Instance.CurrentlyLoadedArea.AssetGuid == PrologueLabyrinthGuid;
         }
 
         private void AddToChestLoot(ItemPlacementDefinition placement, BlueprintItem item)
@@ -255,6 +330,23 @@ namespace wotr_mod.Items
                 return;
             }
 
+            AddToMapObjectLoot(mapObject, placement.TargetName, item, placement.Count, placement.Identify);
+        }
+
+        private void AddToMapObjectLoot(
+            MapObjectEntityData mapObject,
+            string targetName,
+            BlueprintItem item,
+            int count,
+            bool identify)
+        {
+            var lootPart = mapObject.Parts.Get<InteractionLootPart>();
+            if (lootPart == null)
+            {
+                _logger.Log($"Map object has no InteractionLootPart: {targetName} / {mapObject.UniqueId}");
+                return;
+            }
+
             if (lootPart.Loot == null)
             {
                 lootPart.Loot = new ItemsCollection(mapObject);
@@ -263,24 +355,24 @@ namespace wotr_mod.Items
             var existingItem = lootPart.Loot.Items.FirstOrDefault(existing => existing?.Blueprint?.AssetGuid == item.AssetGuid);
             if (existingItem != null)
             {
-                if (placement.Identify)
+                if (identify)
                 {
                     existingItem.Identify();
                 }
 
-                _logger.Log($"Map object loot already contains {item.name}: {placement.TargetName}.");
+                _logger.Log($"Map object loot already contains {item.name}: {targetName}.");
                 return;
             }
 
-            lootPart.Loot.Add(item, placement.Count, placement.Identify, createdItem =>
+            lootPart.Loot.Add(item, count, identify, createdItem =>
             {
-                if (placement.Identify)
+                if (identify)
                 {
                     createdItem.Identify();
                 }
             });
 
-            _logger.Log($"Added {item.name} to map object loot {placement.TargetName}.");
+            _logger.Log($"Added {item.name} to map object loot {targetName}.");
         }
 
         private void AddToLoadedUnitInventory(ItemPlacementDefinition placement, BlueprintItem item)
