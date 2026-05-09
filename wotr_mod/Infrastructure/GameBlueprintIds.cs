@@ -257,6 +257,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Buffs
         {
+            public const string Blur = "dd3ad347240624d46a11a092b4dd4674";
             public const string BloodlineElementalFireArcanaBuff = "b3e3882ab6829e34983f31e989c00dfc";
             public const string BloodlineElementalAirArcanaBuff = "3f5763ac8b4e080469f9a41adf3a16c3";
             public const string BloodlineElementalEarthArcanaBuff = "3d700f97e681b014e894d9ff9c972a83";

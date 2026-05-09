@@ -5,6 +5,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using UnityModManagerNet;
+using wotr_mod.Classes.Evoker;
 using wotr_mod.Classes.Necromancer;
 using wotr_mod.Content;
 using wotr_mod.Infrastructure;

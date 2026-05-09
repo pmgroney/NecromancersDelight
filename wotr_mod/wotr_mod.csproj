@@ -61,6 +61,10 @@
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
         <Reference Include="UnityEngine.ParticleSystemModule">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
             <Private>False</Private>
@@ -82,11 +86,13 @@
         <Compile Include="Classes\ClassChassisDefinition.cs"/>
         <Compile Include="Classes\ClassComponentInstallers.cs" />
         <Compile Include="Classes\ClassSpellDefinition.cs" />
-        <Compile Include="Classes\EvokerInstaller.Archetypes.cs" />
-        <Compile Include="Classes\EvokerInstaller.cs" />
-        <Compile Include="Classes\EvokerScalingInstaller.cs" />
-        <Compile Include="Classes\LivingDarknessInstaller.cs" />
-        <Compile Include="Classes\EvokerSpellRegistry.cs"/>
+        <Compile Include="Classes\Evoker\EvokerInstaller.Archetypes.cs" />
+        <Compile Include="Classes\Evoker\EvokerInstaller.cs" />
+        <Compile Include="Classes\Evoker\EvokerScalingInstaller.cs" />
+        <Compile Include="Classes\Evoker\LivingDarknessInstaller.cs" />
+        <Compile Include="Classes\Evoker\EvokerSpellRegistry.cs"/>
+        <Compile Include="Classes\Evoker\Archetypes\DraconicEvokerInstaller.cs" />
+        <Compile Include="Classes\Evoker\Archetypes\ShadowbornInstaller.cs" />
         <Compile Include="Classes\IClassContentInstaller.cs" />
         <Compile Include="Classes\Necromancer\NecromancerInstaller.Archetypes.cs" />
         <Compile Include="Classes\Necromancer\NecromancerInstaller.cs" />
@@ -124,6 +130,7 @@
         <Compile Include="Infrastructure\GameBlueprintIds.cs" />
         <Compile Include="Infrastructure\LocalizationIds.cs" />
         <Compile Include="Infrastructure\ModBlueprintIds.cs" />
+        <Compile Include="Infrastructure\NecromancersDelightSettings.cs" />
         <Compile Include="Infrastructure\BlueprintClassRegistration.cs" />
         <Compile Include="Infrastructure\BlueprintCloner.cs" />
         <Compile Include="Infrastructure\BlueprintTool.cs" />
@@ -169,6 +176,8 @@
         <Compile Include="Patches\GravebladeStartingEquipmentPatch.cs" />
         <Compile Include="Patches\StartingEquipmentPatch.cs" />
         <Compile Include="Patches\CustomHeritagePatch.cs" />
+        <Compile Include="Patches\AchievementReenablePatch.cs" />
+        <Compile Include="Patches\CoreDifficultyOverridePatch.cs" />
         <Compile Include="Patches\FetchlingRacePatch.cs" />
         <Compile Include="Patches\CompanionSelectionPatch.cs" />
         <Compile Include="Patches\LeopardTripPatch.cs" />

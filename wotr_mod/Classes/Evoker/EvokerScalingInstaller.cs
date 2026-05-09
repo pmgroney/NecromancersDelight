@@ -7,11 +7,12 @@ using Kingmaker.Enums.Damage;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using UnityEngine;
 using UnityModManagerNet;
+using wotr_mod.Classes;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
 
-namespace wotr_mod.Classes
+namespace wotr_mod.Classes.Evoker
 {
     internal sealed class EvokerScalingInstaller
     {

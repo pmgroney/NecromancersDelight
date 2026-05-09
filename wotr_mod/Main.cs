@@ -6,6 +6,7 @@ using Kingmaker;
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Localization;
+using UnityEngine;
 using UnityModManagerNet;
 using wotr_mod.Infrastructure;
 
@@ -18,6 +19,7 @@ namespace wotr_mod
         private static bool _applied;
 
         internal static string ModPath { get; private set; }
+        internal static NecromancersDelightSettings Settings { get; private set; }
 
         internal static void Log(string message)
         {
@@ -33,6 +35,10 @@ namespace wotr_mod
         {
             _logger = modEntry.Logger;
             ModPath = modEntry.Path;
+            Settings = UnityModManager.ModSettings.Load<NecromancersDelightSettings>(modEntry)
+                ?? new NecromancersDelightSettings();
+            modEntry.OnGUI = OnGUI;
+            modEntry.OnSaveGUI = OnSaveGUI;
             _registry = PatchRegistry.Create(_logger, ModPath);
 
             try
@@ -48,6 +54,21 @@ namespace wotr_mod
             }
 
             return true;
+        }
+
+        private static void OnGUI(UnityModManager.ModEntry modEntry)
+        {
+            Settings.EnableAchievementsWhileModded = GUILayout.Toggle(
+                Settings.EnableAchievementsWhileModded,
+                "Re-enable achievements while modded");
+            Settings.CoreDifficultyOverride = GUILayout.Toggle(
+                Settings.CoreDifficultyOverride,
+                "Core Override");
+        }
+
+        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            Settings.Save(modEntry);
         }
 
         internal static void TryApplyPatch()

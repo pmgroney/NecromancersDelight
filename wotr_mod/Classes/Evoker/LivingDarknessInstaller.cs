@@ -26,11 +26,12 @@ using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using Kingmaker.Utility;
 using UnityModManagerNet;
+using wotr_mod.Classes;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
 
-namespace wotr_mod.Classes
+namespace wotr_mod.Classes.Evoker
 {
     internal sealed class LivingDarknessInstaller
     {
