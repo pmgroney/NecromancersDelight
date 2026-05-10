@@ -75,7 +75,11 @@ The Hosilla placement should use:
 - Act 1 Defender's Heart stage advances when the player selects Billy's Jalmeray-origin dialogue answer, not on area load; the new Jalmeray dialogue and audio keys are implemented.
 - The Jalmeray response uses a dedicated Continue answer to exit cleanly after the quest update.
 - Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Irori Neophyte's Armor pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
-- `BillyPlacementPatch` uses `Game.Instance.AddUnitToPersistentState(BlueprintUnit)` for fresh Shield Maze and Defender's Heart area stand-ins; it must not reuse `Player.AllCharacters`/roster units, and its loaded-area guard must ignore recruited roster Billy so the Defender's Heart stand-in is not blocked.
+- Shield Maze Billy is represented by a fresh pre-recruit runtime stand-in.
+- Defender's Heart uses the recruited roster Billy itself, as local-map party portrait pins require an in-game roster or party unit; a runtime stand-in can appear in-world but will not generate the portrait pin.
+- Billy Defender's Heart placement checks `Player.AllCharacters` as well as active/remote/party collections so roster-only recruitment still satisfies the stand-in placement gate.
+- `Player.AllCharacters` can include runtime Billy stand-ins; treat a Billy unit in that list as recruited roster only when `UnitPartCompanion.State` is `Remote`, `InParty`, `InPartyDetached`, or `ExCompanion`.
+- `AddUnitToPersistentState` stores runtime stand-ins cross-scene, so Shield Maze duplicate prevention must check cross-scene non-roster Billy; Defender's Heart duplicate prevention checks only loaded-area non-roster Billy so stale Shield Maze stand-ins do not block hub placement.
 - After recruitment, Billy's click dialogue uses a hub greeting and hides the recruitment answer; his Defender's Heart placement offset was adjusted off the bed.
 - Billy copies Ciar's companion shell, which has `ClassLevelLimit = 10`; Hilor's respec action only lists units where `CharacterLevel > ClassLevelLimit`, so Billy must override this limit to `1` like early companions or he will be hidden from the respec picker.
 - Billy uses the Priest of Balance archetype, which grants both positive and negative channeling; do not add custom channel feature/ability clones or select the base Channel Energy feature.

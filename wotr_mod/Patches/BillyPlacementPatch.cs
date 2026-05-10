@@ -4,6 +4,7 @@ using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Area;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.UnitLogic.Parts;
 using UnityEngine;
 using UnityModManagerNet;
 using wotr_mod.Infrastructure;
@@ -43,6 +44,7 @@ namespace wotr_mod.Patches
             _blueprints.Require<BlueprintArea>(GameBlueprintIds.Areas.PrologueLabyrinth, "Shield Maze area");
             _blueprints.Require<BlueprintArea>(GameBlueprintIds.Areas.DefendersHeart, "Defender's Heart area");
             _canPlaceBilly = _blueprints.Get<BlueprintUnit>(ModBlueprintIds.Units.UndeadCiarCompanion) != null;
+            _logger.Log($"Billy placement apply: canPlaceBilly={_canPlaceBilly}.");
             if (!_canPlaceBilly)
             {
                 _logger.Warning("Billy companion unit was not available; skipping Billy placement.");
@@ -58,21 +60,45 @@ namespace wotr_mod.Patches
                     return;
                 }
 
-                if (ShouldPlaceBillyInShieldMaze())
+                if (!Game.HasInstance || Game.Instance.CurrentlyLoadedArea == null)
                 {
-                    PlaceBilly(CreateBillyAreaUnit(), GetSpawnPosition(
-                        ShieldMazeSpawnOffsetX,
-                        ShieldMazeSpawnOffsetZ),
-                        ShieldMazeSpawnOrientation);
+                    _logger.Log("Billy placement skipped: game instance or loaded area is unavailable.");
                     return;
                 }
 
-                if (ShouldPlaceBillyInDefendersHeart())
+                var areaGuid = Game.Instance.CurrentlyLoadedArea.AssetGuid;
+                _logger.Log($"Billy placement area loaded: area={areaGuid}.");
+
+                if (ShouldPlaceBillyInShieldMaze(out var shieldMazeReason))
                 {
-                    PlaceBilly(CreateBillyAreaUnit(), GetSpawnPosition(
+                    var position = GetSpawnPosition(
+                        ShieldMazeSpawnOffsetX,
+                        ShieldMazeSpawnOffsetZ);
+                    var billy = CreateBillyAreaUnit();
+                    PlaceBilly(billy, position, ShieldMazeSpawnOrientation);
+                    _logger.Log($"Billy placement spawned Shield Maze stand-in: position={position}, orientation={ShieldMazeSpawnOrientation}, hasView={billy?.View != null}.");
+                    return;
+                }
+
+                if (ShouldPlaceBillyInDefendersHeart(out var defendersHeartReason))
+                {
+                    var position = GetSpawnPosition(
                         DefendersHeartSpawnOffsetX,
-                        DefendersHeartSpawnOffsetZ),
-                        DefendersHeartSpawnOrientation);
+                        DefendersHeartSpawnOffsetZ);
+                    var billy = FindBillyRosterUnit(null);
+                    PlaceBilly(billy, position, DefendersHeartSpawnOrientation);
+                    Game.Instance.Player?.InvalidateCharacterLists();
+                    _logger.Log($"Billy placement positioned Defender's Heart roster Billy: position={position}, orientation={DefendersHeartSpawnOrientation}, hasView={billy?.View != null}, isInGame={billy?.IsInGame == true}.");
+                    return;
+                }
+
+                if (areaGuid == PrologueLabyrinthGuid)
+                {
+                    _logger.Log("Billy placement skipped Shield Maze: " + shieldMazeReason);
+                }
+                else if (areaGuid == DefendersHeartGuid)
+                {
+                    _logger.Log("Billy placement skipped Defender's Heart: " + defendersHeartReason);
                 }
             }
             catch (Exception ex)
@@ -81,34 +107,46 @@ namespace wotr_mod.Patches
             }
         }
 
-        private static bool ShouldPlaceBillyInShieldMaze()
+        private static bool ShouldPlaceBillyInShieldMaze(out string reason)
         {
             if (!Game.HasInstance || Game.Instance.CurrentlyLoadedArea == null)
             {
+                reason = "game instance or loaded area is unavailable.";
                 return false;
             }
 
             if (Game.Instance.CurrentlyLoadedArea.AssetGuid != PrologueLabyrinthGuid)
             {
+                reason = "loaded area is not Shield Maze.";
                 return false;
             }
 
-            return !IsBillyInPlayerRoster() && !IsBillyAreaStandInPresent();
+            var player = Game.Instance.Player;
+            var roster = IsBillyInPlayerRoster();
+            var standIn = IsBillyAreaStandInPresent(includeCrossScene: true);
+            reason = DescribePlacementGate(player, roster, standIn);
+            return !roster && !standIn;
         }
 
-        private static bool ShouldPlaceBillyInDefendersHeart()
+        private static bool ShouldPlaceBillyInDefendersHeart(out string reason)
         {
             if (!Game.HasInstance || Game.Instance.CurrentlyLoadedArea == null)
             {
+                reason = "game instance or loaded area is unavailable.";
                 return false;
             }
 
             if (Game.Instance.CurrentlyLoadedArea.AssetGuid != DefendersHeartGuid)
             {
+                reason = "loaded area is not Defender's Heart.";
                 return false;
             }
 
-            return IsBillyInPlayerRoster() && !IsBillyAreaStandInPresent();
+            var player = Game.Instance.Player;
+            var roster = IsBillyInPlayerRoster();
+            var standIn = IsBillyAreaStandInPresent(includeCrossScene: false);
+            reason = DescribePlacementGate(player, roster, standIn);
+            return roster && !standIn;
         }
 
         private UnitEntityData CreateBillyAreaUnit()
@@ -132,7 +170,12 @@ namespace wotr_mod.Patches
             billy.IsInGame = true;
             if (billy.View == null)
             {
-                billy.CreateView();
+                var view = billy.CreateView();
+                if (view != null)
+                {
+                    view.Blueprint = billy.Blueprint;
+                    billy.AttachToViewOnLoad(view);
+                }
             }
         }
 
@@ -149,21 +192,69 @@ namespace wotr_mod.Patches
                 .Concat(player.RemoteCompanions)
                 .Where(unit => unit != null)
                 .Distinct()
-                .Any(IsBilly);
+                .Any(IsBilly)
+                || player.AllCharacters
+                    .Where(unit => unit != null)
+                    .Distinct()
+                    .Any(unit => IsBilly(unit) && HasRosterCompanionState(unit));
         }
 
-        private static bool IsBillyAreaStandInPresent()
+        private static bool IsBillyAreaStandInPresent(bool includeCrossScene)
         {
             var player = Game.Instance.Player;
             var inLoadedArea = Game.Instance.LoadedAreaState?.AllEntityData
                 .OfType<UnitEntityData>()
                 .Any(unit => IsBilly(unit) && !IsPlayerRosterUnit(player, unit)) == true;
 
-            var inCrossSceneState = Game.Instance.State?.PlayerState?.CrossSceneState?.AllEntityData
+            if (inLoadedArea || !includeCrossScene)
+            {
+                return inLoadedArea;
+            }
+
+            return Game.Instance.State?.PlayerState?.CrossSceneState?.AllEntityData
                 .OfType<UnitEntityData>()
                 .Any(unit => IsBilly(unit) && !IsPlayerRosterUnit(player, unit)) == true;
+        }
 
-            return inLoadedArea || inCrossSceneState;
+        private static string DescribePlacementGate(Player player, bool roster, bool standIn)
+        {
+            return $"roster={roster}, standIn={standIn}, partyAndPetsBilly={CountBilly(player?.PartyAndPets)}, activeBilly={CountBilly(player?.ActiveCompanions)}, remoteBilly={CountBilly(player?.RemoteCompanions)}, allCharactersBilly={CountBilly(player?.AllCharacters)}, loadedAreaBilly={CountLoadedAreaBilly(player, false)}, loadedAreaNonRosterBilly={CountLoadedAreaBilly(player, true)}, crossSceneNonRosterBilly={CountCrossSceneBilly(player, true)}.";
+        }
+
+        private static int CountLoadedAreaBilly(Player player, bool nonRosterOnly)
+        {
+            return Game.Instance.LoadedAreaState?.AllEntityData
+                .OfType<UnitEntityData>()
+                .Count(unit => IsBilly(unit) && (!nonRosterOnly || !IsPlayerRosterUnit(player, unit))) ?? 0;
+        }
+
+        private static int CountBilly(System.Collections.Generic.IEnumerable<UnitEntityData> units)
+        {
+            return units?.Count(IsBilly) ?? 0;
+        }
+
+        private static int CountCrossSceneBilly(Player player, bool nonRosterOnly)
+        {
+            return Game.Instance.State?.PlayerState?.CrossSceneState?.AllEntityData
+                .OfType<UnitEntityData>()
+                .Count(unit => IsBilly(unit) && (!nonRosterOnly || !IsPlayerRosterUnit(player, unit))) ?? 0;
+        }
+
+        private static UnitEntityData FindBillyRosterUnit(UnitEntityData standIn)
+        {
+            var player = Game.Instance.Player;
+            if (player == null)
+            {
+                return null;
+            }
+
+            return player.RemoteCompanions
+                .Concat(player.ActiveCompanions)
+                .Concat(player.PartyAndPets)
+                .Concat(player.AllCharacters)
+                .Where(unit => unit != null && !ReferenceEquals(unit, standIn))
+                .Distinct()
+                .FirstOrDefault(IsBilly);
         }
 
         private static bool IsPlayerRosterUnit(Player player, UnitEntityData unit)
@@ -176,7 +267,16 @@ namespace wotr_mod.Patches
             return player.PartyAndPets.Contains(unit)
                 || player.ActiveCompanions.Contains(unit)
                 || player.RemoteCompanions.Contains(unit)
-                || player.AllCharacters.Contains(unit);
+                || player.AllCharacters.Contains(unit) && HasRosterCompanionState(unit);
+        }
+
+        private static bool HasRosterCompanionState(UnitEntityData unit)
+        {
+            var state = unit?.Get<UnitPartCompanion>()?.State;
+            return state == CompanionState.Remote
+                   || state == CompanionState.InParty
+                   || state == CompanionState.InPartyDetached
+                   || state == CompanionState.ExCompanion;
         }
 
         private static bool IsBilly(UnitEntityData unit)
