@@ -1335,6 +1335,16 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.AbilityDeliverProjectileLength.SetValue(component, length);
         }
 
+        public void ClearAbilityDeliverProjectileMaxProjectiles(AbilityDeliverProjectile component)
+        {
+            if (component == null || BlueprintFields.AbilityDeliverProjectileUseMaxProjectilesCount == null)
+            {
+                return;
+            }
+
+            BlueprintFields.AbilityDeliverProjectileUseMaxProjectilesCount.SetValue(component, false);
+        }
+
         public void SetApplyBuffActionBuff(ContextActionApplyBuff action, BlueprintBuff buff)
         {
             BlueprintFields.ContextActionApplyBuffBuff.SetValue(
@@ -1487,6 +1497,14 @@ namespace wotr_mod.Infrastructure
             if (BlueprintFields.ContextRankConfigMax != null)
             {
                 BlueprintFields.ContextRankConfigMax.SetValue(config, maximum);
+            }
+        }
+
+        public void ClearContextRankMaximum(ContextRankConfig config)
+        {
+            if (BlueprintFields.ContextRankConfigUseMax != null)
+            {
+                BlueprintFields.ContextRankConfigUseMax.SetValue(config, false);
             }
         }
 

@@ -87,6 +87,7 @@
         <Compile Include="Classes\ClassComponentInstallers.cs" />
         <Compile Include="Classes\ClassSpellDefinition.cs" />
         <Compile Include="Classes\Evoker\EvokerInstaller.Archetypes.cs" />
+        <Compile Include="Classes\Evoker\EvokerInstaller.SpellClones.cs" />
         <Compile Include="Classes\Evoker\EvokerInstaller.cs" />
         <Compile Include="Classes\Evoker\EvokerScalingInstaller.cs" />
         <Compile Include="Classes\Evoker\LivingDarknessInstaller.cs" />
@@ -109,6 +110,7 @@
         <Compile Include="Features\DraconicEvokerBreathDamage.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
         <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
+        <Compile Include="Features\EvokerForceSpellConversion.cs" />
         <Compile Include="Features\EvokerSpellShaping.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
@@ -200,6 +202,15 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\dissolution_wave.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\elemental_conversion.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\evocation_unleashed.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\force_arcana.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\glacial_prison.png">

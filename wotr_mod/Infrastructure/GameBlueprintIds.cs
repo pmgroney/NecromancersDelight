@@ -148,10 +148,13 @@ namespace wotr_mod.Infrastructure
         internal static class Features
         {
             public const string ArcaneBloodlineArcana = "e8e4f56618dd8b04490aa6a0b75ac24f";
+            public const string BloodlineArcaneArcaneBondFeature = "1740a701ac0a14c4394a7f76f0b07799";
+            public const string BloodlineArcaneSchoolPowerSelection = "3524a71d57d99bb4b835ad20582cf613";
             public const string ArmorProficiencyHeavy = "1b0f68188dcc435429fb87a022239681";
             public const string ArmorProficiencyLight = "6d3728d4e9c9898458fe5e9532951132";
             public const string ArmorProficiencyMedium = "46f4fb320f35704488ba3d513397789d";
             public const string BloodragerProficiencies = "7aa59f5998e5baf4182cac3ff7998974";
+            public const string DruidNatureBond = "8fd7e35bda894aa9ade8c1d3125bd411";
             public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
             public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
             public const string SpellFocus = "16fa59cc9a72a6043b566b49184f53fe";

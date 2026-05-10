@@ -86,6 +86,9 @@ namespace wotr_mod.Classes.Evoker
             BlueprintSpellbook spellbook,
             BlueprintSpellList spellList)
         {
+            EnsureEvocationUnleashedClassCardFeature(characterClass);
+            EnsureElementalConversionClassCardFeature(characterClass);
+            EnsureEvokerFamiliarClassCardFeature(characterClass);
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
@@ -183,6 +186,112 @@ namespace wotr_mod.Classes.Evoker
             return feature;
         }
 
+        private BlueprintFeature EnsureEvocationUnleashedClassCardFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvocationUnleashedClassCard);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_EvocationUnleashedClassCard",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.EvocationUnleashedClassCard)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.EvocationUnleashedClassCard, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvocationUnleashedName),
+                _localization.Text(LocalizationIds.Mod.EvocationUnleashedDescription));
+            _blueprints.SetUnitFactShortDescription(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvocationUnleashedDescription));
+            var icon = _icons.Load("Icons\\evocation_unleashed.png");
+            if (icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, icon);
+            }
+
+            _blueprints.SetComponents(feature);
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
+        private BlueprintFeature EnsureElementalConversionClassCardFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.ElementalConversionClassCard);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_ElementalConversionClassCard",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.ElementalConversionClassCard)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.ElementalConversionClassCard, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.ElementalConversionName),
+                _localization.Text(LocalizationIds.Mod.ElementalConversionDescription));
+            _blueprints.SetUnitFactShortDescription(
+                feature,
+                _localization.Text(LocalizationIds.Mod.ElementalConversionDescription));
+            var icon = _icons.Load("Icons\\elemental_conversion.png");
+            if (icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, icon);
+            }
+
+            _blueprints.SetComponents(feature);
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
+        private BlueprintFeature EnsureEvokerFamiliarClassCardFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvokerFamiliarClassCard);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(
+                        GameBlueprintIds.Features.DruidNatureBond,
+                        "Druid Nature Bond"),
+                    ModBlueprintIds.Features.EvokerFamiliarClassCard,
+                    "WotrMod_EvokerFamiliarClassCard");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.EvokerFamiliarClassCard, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvokerFamiliarName),
+                _localization.Text(LocalizationIds.Mod.EvokerFamiliarDescription));
+            _blueprints.SetUnitFactShortDescription(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvokerFamiliarDescription));
+            _blueprints.SetComponents(feature);
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
         private void EnsureMartialWeaponProficiencyBlockedForEvoker(BlueprintFeature noMartialWeaponProficiency)
         {
             var martialWeaponProficiency = _blueprints.Require<BlueprintFeature>(
@@ -230,7 +339,7 @@ namespace wotr_mod.Classes.Evoker
             var spellsByLevel = EvokerSpellRegistry.GetAll()
                 .Select(definition =>
                 {
-                    var spell = _blueprints.Require<BlueprintAbility>(definition.SpellGuid, definition.DisplayName);
+                    var spell = EnsureEvokerSpellClone(definition);
                     return new KeyValuePair<BlueprintAbility, int>(spell, definition.SpellLevel);
                 });
 
@@ -261,9 +370,7 @@ namespace wotr_mod.Classes.Evoker
 
             var bloodlines = new[]
             {
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ArcaneBloodline,
-                    ModBlueprintIds.Progressions.EvokerArcaneBloodline, "WotrMod_EvokerBloodline_Arcane",
-                    LocalizationIds.Mod.EvokerArcaneName, LocalizationIds.Mod.EvokerArcaneDescription),
+                EnsureEvokerArcaneBloodline(characterClass),
                 EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalAirBloodline,
                     ModBlueprintIds.Progressions.EvokerAirBloodline, "WotrMod_EvokerBloodline_Air",
                     LocalizationIds.Mod.EvokerAirName, LocalizationIds.Mod.EvokerAirDescription,
@@ -359,6 +466,95 @@ namespace wotr_mod.Classes.Evoker
                 _localization.Text(descriptionKey));
             _blueprints.AddCachedBlueprint(newGuid, clone);
             return clone;
+        }
+
+        private BlueprintProgression EnsureEvokerArcaneBloodline(BlueprintCharacterClass characterClass)
+        {
+            var progression = EnsureEvokerBloodline(
+                GameBlueprintIds.Progressions.ArcaneBloodline,
+                ModBlueprintIds.Progressions.EvokerArcaneBloodline,
+                "WotrMod_EvokerBloodline_Arcane",
+                LocalizationIds.Mod.EvokerArcaneName,
+                LocalizationIds.Mod.EvokerArcaneDescription);
+            var forceArcana = EnsureEvokerForceArcanaFeature(characterClass);
+            ReplaceProgressionFeature(
+                progression,
+                GameBlueprintIds.Features.BloodlineArcaneArcaneBondFeature,
+                forceArcana);
+            RemoveProgressionFeature(
+                progression,
+                GameBlueprintIds.Features.BloodlineArcaneSchoolPowerSelection);
+            return progression;
+        }
+
+        private BlueprintFeature EnsureEvokerForceArcanaFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = EnsureEvokerElementalArcanaFeature(
+                GameBlueprintIds.Features.BloodlineElementalFireArcana,
+                GameBlueprintIds.Abilities.BloodlineElementalFireArcanaAbility,
+                GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
+                ModBlueprintIds.Features.EvokerForceArcana,
+                ModBlueprintIds.Abilities.EvokerForceArcana,
+                ModBlueprintIds.Buffs.EvokerForceArcana,
+                "WotrMod_EvokerForceArcanaFeature",
+                "WotrMod_EvokerForceArcanaAbility",
+                "WotrMod_EvokerForceArcanaBuff",
+                SpellEffectTheme.Arcane);
+
+            ConfigureEvokerForceArcanaDisplay(feature);
+            _blueprints.SetProgressionClasses(feature, characterClass);
+
+            var ability = _blueprints.Require<BlueprintActivatableAbility>(
+                ModBlueprintIds.Abilities.EvokerForceArcana,
+                "Evoker force arcana ability");
+            ConfigureEvokerForceArcanaDisplay(ability);
+
+            var buff = _blueprints.Require<BlueprintBuff>(
+                ModBlueprintIds.Buffs.EvokerForceArcana,
+                "Evoker force arcana buff");
+            ConfigureEvokerForceArcanaBuff(buff);
+
+            return feature;
+        }
+
+        private void ConfigureEvokerForceArcanaBuff(BlueprintBuff buff)
+        {
+            var components = _blueprints
+                .GetComponents<BlueprintComponent>(buff)
+                .Where(component => !(component is ChangeSpellElementalDamage))
+                .ToList();
+            if (!components.OfType<EvokerForceSpellConversion>().Any())
+            {
+                components.Add(new EvokerForceSpellConversion
+                {
+                    name = "$EvokerForceSpellConversion$EvokerForceArcana"
+                });
+            }
+
+            _blueprints.SetComponents(buff, components.ToArray());
+            ReplaceDescriptor(buff, SpellDescriptor.Fire, SpellDescriptor.Force);
+
+            var themeToggle = _blueprints.GetComponents<SpellEffectThemeToggleComponent>(buff).FirstOrDefault();
+            if (themeToggle == null)
+            {
+                themeToggle = new SpellEffectThemeToggleComponent
+                {
+                    name = "$SpellEffectThemeToggleComponent$EvokerForceArcana"
+                };
+                _blueprints.AddComponent(buff, themeToggle);
+            }
+
+            themeToggle.Theme = SpellEffectTheme.Arcane;
+            ConfigureEvokerForceArcanaDisplay(buff);
+        }
+
+        private void ConfigureEvokerForceArcanaDisplay(BlueprintUnitFact fact)
+        {
+            _blueprints.SetUnitFactDisplay(
+                fact,
+                _localization.Text(LocalizationIds.Mod.EvokerForceArcanaName),
+                _localization.Text(LocalizationIds.Mod.EvokerForceArcanaDescription));
+            SetIcon(fact, "Icons\\force_arcana.png");
         }
 
         private BlueprintProgression EnsureEvokerBloodline(

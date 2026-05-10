@@ -95,6 +95,12 @@ namespace wotr_mod.Infrastructure
             public const string ScythePlus1Description = "wotr_mod.item.scythe_plus1.description";
             public const string EvokerName = "wotr_mod.class.evoker.name";
             public const string EvokerDescription = "wotr_mod.class.evoker.description";
+            public const string ElementalConversionName = "wotr_mod.class.evoker.elemental_conversion.name";
+            public const string ElementalConversionDescription = "wotr_mod.class.evoker.elemental_conversion.description";
+            public const string EvocationUnleashedName = "wotr_mod.class.evoker.evocation_unleashed.name";
+            public const string EvocationUnleashedDescription = "wotr_mod.class.evoker.evocation_unleashed.description";
+            public const string EvokerFamiliarName = "wotr_mod.class.evoker.familiar.name";
+            public const string EvokerFamiliarDescription = "wotr_mod.class.evoker.familiar.description";
             public const string ShadowbornName = "wotr_mod.archetype.shadowborn.name";
             public const string ShadowbornDescription = "wotr_mod.archetype.shadowborn.description";
             public const string DraconicEvokerName = "wotr_mod.archetype.draconic_evoker.name";
@@ -161,6 +167,8 @@ namespace wotr_mod.Infrastructure
             public const string EvokerBloodlineDescription = "wotr_mod.evoker_bloodline.description";
             public const string EvokerArcaneName = "wotr_mod.evoker_bloodline.arcane.name";
             public const string EvokerArcaneDescription = "wotr_mod.evoker_bloodline.arcane.description";
+            public const string EvokerForceArcanaName = "wotr_mod.evoker_bloodline.force_arcana.name";
+            public const string EvokerForceArcanaDescription = "wotr_mod.evoker_bloodline.force_arcana.description";
             public const string EvokerAirName = "wotr_mod.evoker_bloodline.air.name";
             public const string EvokerAirDescription = "wotr_mod.evoker_bloodline.air.description";
             public const string EvokerEarthName = "wotr_mod.evoker_bloodline.earth.name";
@@ -196,6 +204,7 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBoneArmorName = "wotr_mod.necromancer.bone_armor.name";
             public const string NecromancerBoneArmorDescription = "wotr_mod.necromancer.bone_armor.description";
             public const string NecromancerMasterOfDeathClassCardDescription = "wotr_mod.necromancer.class_card.master_of_death.description";
+            public const string NecromancerWitheringRayClassCardDescription = "wotr_mod.necromancer.class_card.withering_ray.description";
             public const string NecromancerBoneArmorClassCardDescription = "wotr_mod.necromancer.class_card.bone_armor.description";
             public const string SpellBoneSpikeName = "wotr_mod.spell.bone_spike.name";
             public const string SpellBoneSpikeDescription = "wotr_mod.spell.bone_spike.description";

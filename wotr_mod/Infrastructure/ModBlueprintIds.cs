@@ -222,6 +222,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerAirArcana = "9646b545e05345a1a6e631728acaae4a";
             public const string EvokerEarthArcana = "c6c2ac07fe9941378cba51811b90715d";
             public const string EvokerFireArcana = "e4ceefc1300d4e94a9ee904759396368";
+            public const string EvokerForceArcana = "b477679c5ad445c090c7115fa98d1dc4";
             public const string EvokerWaterArcana = "be13bd160a8a481e8e44b7cac5a2b82c";
             public const string ShadowbornArcana = "5f58f3ee60f44ec0bdc4a85190d11883";
             public const string ShadowbornLivingGhost = "b340122d4aa945b8a7193080f0f06827";
@@ -304,6 +305,9 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower15 = "f6a7b8c9d0e14c93f4a5b6c7d8e9f0a1";
             public const string NecromancerBloodlinePower20 = "07b8c9d0e1f24da405b6c7d8e9f0a1b2";
             public const string DraconicEvokerArcaneArmorProficiency = "492a7ad0f6fd4a9fbed41066230ecd73";
+            public const string ElementalConversionClassCard = "50609ce2a5be4d1eb6b7c613b7ea2426";
+            public const string EvocationUnleashedClassCard = "47078fe0f71e472aac5cfbe7b3b9ffc5";
+            public const string EvokerFamiliarClassCard = "5c2d915355d14ec086d293d5c637fed2";
             public const string EvokerNoMartialWeaponProficiency = "93e1a5d628144d3ab4f81c0e72a97b65";
             public const string EvokerAirArcana = "f5a250ec11b041d89ae9e94fb1d7a18d";
             public const string EvokerAirHellfireRayKnownSpell = "046af9036c0c4a9ab43c2ed3c11e8f55";
@@ -312,6 +316,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerEarthHellfireRayKnownSpell = "6fd33930b06d4995a2370690507b61fc";
             public const string EvokerFireArcana = "74a6035aab8a42bf963cd508f52a136f";
             public const string EvokerFireHellfireRayKnownSpell = "5b0f18110390440487ca602666805971";
+            public const string EvokerForceArcana = "ca19c654656d420aa3c61fcbacfdd77f";
             public const string EvokerWaterArcana = "d46d14b765934f1a93e9aaec4ec74ed7";
             public const string EvokerWaterHellfireRayKnownSpell = "977cdb0fd2434478b94dd4522f2fb07b";
             public const string NecromancerStygianPrecision = "a40b2428f0794b2badf02505fd227882";
@@ -389,6 +394,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerAirArcana = "75e8bf2b8bfe4aab97e7b8174d1de5ba";
             public const string EvokerEarthArcana = "3ed9d661d943463c965bca3f8630c697";
             public const string EvokerFireArcana = "ca95c7b081294b3880e1a4a8c36c6a8c";
+            public const string EvokerForceArcana = "79ced414e73e4119b8f472aa85640a17";
             public const string EvokerWaterArcana = "92efd294eff14c6f9d6ed2be3781e12d";
             public const string ShadowbornArcana = "973702c1b9e74b9e8ddcc3e580e192f9";
             public const string ShadowbornLivingGhost = "23ca9c026754444499d9b30238873d97";

@@ -44,7 +44,13 @@ namespace wotr_mod.Classes
                 presentation: new CharacterClassPresentationDefinition(
                     difficulty: 3,
                     recommendedAttributes: new[] { StatType.Charisma, StatType.Dexterity, StatType.Constitution },
-                    notRecommendedAttributes: new[] { StatType.Strength, StatType.Intelligence }));
+                    notRecommendedAttributes: new[] { StatType.Strength, StatType.Intelligence },
+                    signatureAbilityGuids: new[]
+                    {
+                        ModBlueprintIds.Features.EvocationUnleashedClassCard,
+                        ModBlueprintIds.Features.ElementalConversionClassCard,
+                        ModBlueprintIds.Features.EvokerFamiliarClassCard
+                    }));
         }
 
         private static CharacterClassDefinition CreateNecromancer()
@@ -73,6 +79,7 @@ namespace wotr_mod.Classes
                     signatureAbilityGuids: new[]
                     {
                         ModBlueprintIds.Features.NecromancerBloodlineArcana,
+                        ModBlueprintIds.Features.NecromancerBloodlinePower1,
                         ModBlueprintIds.Features.NecromancerBoneArmor
                     }));
         }

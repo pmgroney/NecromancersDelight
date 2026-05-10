@@ -530,6 +530,9 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.NecromancerBloodlinePower1Name),
                 _localization.Text(LocalizationIds.Mod.NecromancerBloodlinePower1Description));
+            _blueprints.SetUnitFactShortDescription(feature,
+                _localization.Text(LocalizationIds.Mod.NecromancerWitheringRayClassCardDescription));
+            if (ability.Icon != null) _blueprints.SetUnitFactIcon(feature, ability.Icon);
             if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
             return feature;
         }
