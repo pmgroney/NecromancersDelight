@@ -241,6 +241,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Archetypes
         {
+            public const string ArcanistEvoker = "6d1872323ccc45138846a80e9a305963";
             public const string Shadowborn = "a4e91c3f7b2d4e6a9c0f1b8d5e327640";
             public const string DraconicEvoker = "7c9a8cf2f3db467883f704ad969b5866";
             public const string Sepulchrit = "7b9d1e3f5a6c4b08a2d7e9f103c5b864";
@@ -265,7 +266,10 @@ namespace wotr_mod.Infrastructure
 
         internal static class Selections
         {
+            public const string ArcanistEvokerBonusFeat = "e16b024086f74b1a850686557bfcf65b";
+            public const string ArcanistEvokerNewArcana = "6c4d1409f97b4d1ab9050345b48b9107";
             public const string CompanionPet = "13dc7dba1250470ea2f717f2340c6535";
+            public const string EvokerBonusFeat = "751c95f3633c423cbf7ebda1cded8e0c";
             public const string EvokerBloodline = "dc4f77e8d0f3476aad11bda78da721c7";
             public const string DraconicEvokerBloodline = "749216d4dee346aea4268b8799ad7eff";
             public const string FetchlingHeritage = "3f4a5b6c7d8e4901a2b3c4d5e6f70123";
@@ -304,7 +308,12 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower9 = "e5f6a7b8c9d04b82e3f4a5b6c7d8e9f0";
             public const string NecromancerBloodlinePower15 = "f6a7b8c9d0e14c93f4a5b6c7d8e9f0a1";
             public const string NecromancerBloodlinePower20 = "07b8c9d0e1f24da405b6c7d8e9f0a1b2";
+            public const string DraconicEvokerLightArmorProficiency = "a6c31a7b98d3454bb6ac587f14b6e122";
+            public const string DraconicEvokerMediumArmorProficiency = "0f3c8422d1be4f2fa60a0c6861a71a9d";
+            public const string DraconicEvokerHeavyArmorProficiency = "77e78aa4b5924d9cb9221f7d5bdf31d6";
             public const string DraconicEvokerArcaneArmorProficiency = "492a7ad0f6fd4a9fbed41066230ecd73";
+            public const string DraconicEvokerMediumArcaneArmorProficiency = "8a7d3f55ccf34d3c965e4c14731d2b9a";
+            public const string DraconicEvokerHeavyArcaneArmorProficiency = "5c46b6d7e23c4e27a75c9d6f03bc10a4";
             public const string ElementalConversionClassCard = "50609ce2a5be4d1eb6b7c613b7ea2426";
             public const string EvocationUnleashedClassCard = "47078fe0f71e472aac5cfbe7b3b9ffc5";
             public const string EvokerFamiliarClassCard = "5c2d915355d14ec086d293d5c637fed2";
@@ -317,8 +326,10 @@ namespace wotr_mod.Infrastructure
             public const string EvokerFireArcana = "74a6035aab8a42bf963cd508f52a136f";
             public const string EvokerFireHellfireRayKnownSpell = "5b0f18110390440487ca602666805971";
             public const string EvokerForceArcana = "ca19c654656d420aa3c61fcbacfdd77f";
+            public const string ArcanistEvokerNewArcana = "4f26835da74043c398783158a998b01d";
             public const string EvokerWaterArcana = "d46d14b765934f1a93e9aaec4ec74ed7";
             public const string EvokerWaterHellfireRayKnownSpell = "977cdb0fd2434478b94dd4522f2fb07b";
+            public const string EvokerProficiencies = "ed37f20e4c394714bb8a33a256a2820c";
             public const string NecromancerStygianPrecision = "a40b2428f0794b2badf02505fd227882";
             public const string NecromancerReapersJudgement = "d6a00e17db544a0188902e26499a7f6f";
             public const string ShadowbornArcana = "e4ba41b250a94b988444c0b452e88030";

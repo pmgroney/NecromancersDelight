@@ -731,6 +731,25 @@ namespace wotr_mod.Infrastructure
                 BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass));
         }
 
+        public void SetLearnSpellParametrizedSource(
+            BlueprintParametrizedFeature feature,
+            LearnSpellParametrized component,
+            BlueprintCharacterClass characterClass,
+            BlueprintSpellList spellList)
+        {
+            var characterClassReference = characterClass == null
+                ? null
+                : BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass);
+            var spellListReference = spellList == null
+                ? null
+                : BlueprintReferenceBase.CreateTyped<BlueprintSpellListReference>(spellList);
+
+            BlueprintFields.ParametrizedFeatureSpellcasterClass.SetValue(feature, characterClassReference);
+            BlueprintFields.ParametrizedFeatureSpellList.SetValue(feature, spellListReference);
+            BlueprintFields.LearnSpellParametrizedSpellcasterClass.SetValue(component, characterClassReference);
+            BlueprintFields.LearnSpellParametrizedSpellList.SetValue(component, spellListReference);
+        }
+
         public void CopySpellbookProgression(BlueprintSpellbook target, BlueprintSpellbook source)
         {
             BlueprintFields.SpellbookSpellsPerDay.SetValue(target, BlueprintFields.SpellbookSpellsPerDay.GetValue(source));

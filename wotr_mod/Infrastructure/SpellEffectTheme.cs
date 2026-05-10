@@ -8,6 +8,7 @@ namespace wotr_mod.Infrastructure
         Necro,
         Cold,
         Fire,
-        Arcane
+        Arcane,
+        Force
     }
 }

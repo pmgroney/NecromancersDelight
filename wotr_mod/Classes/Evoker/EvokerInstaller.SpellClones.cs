@@ -1,20 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using wotr_mod.Classes;
+using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes.Evoker
 {
     internal sealed partial class EvokerInstaller
     {
         private const string EvokerSpellClonePrefix = "WotrMod_EvokerSpell_";
+        private const string EvokerDamageCapDescriptionNote =
+            "Evoker: when cast from the Evoker spellbook, this spell's damage scaling ignores its normal maximum cap.";
 
         private BlueprintAbility EnsureEvokerSpellClone(ClassSpellDefinition definition)
         {
@@ -33,12 +38,13 @@ namespace wotr_mod.Classes.Evoker
                 _blueprints.AddCachedBlueprint(cloneGuid, clone);
             }
 
-            ConfigureEvokerSpellClone(clone, definition);
+            ConfigureEvokerSpellClone(clone, source, definition);
             return clone;
         }
 
         private void ConfigureEvokerSpellClone(
             BlueprintAbility clone,
+            BlueprintAbility source,
             ClassSpellDefinition definition)
         {
             // Keep Evoker-only spell behavior and description changes isolated to cloned abilities.
@@ -58,6 +64,8 @@ namespace wotr_mod.Classes.Evoker
             {
                 ClearDamageScalingCaps(areaEffect);
             }
+
+            ApplyEvokerDamageCapDescription(clone, source, definition);
         }
 
         private IReadOnlyList<BlueprintAbilityAreaEffect> EnsureEvokerAreaEffectClones(
@@ -131,6 +139,49 @@ namespace wotr_mod.Classes.Evoker
             {
                 _blueprints.ClearAbilityDeliverProjectileMaxProjectiles(delivery);
             }
+        }
+
+        private void ApplyEvokerDamageCapDescription(
+            BlueprintAbility clone,
+            BlueprintAbility source,
+            ClassSpellDefinition definition)
+        {
+            var sourceDescription = RemoveDamageCapText(source.Description ?? string.Empty);
+            var description = string.IsNullOrEmpty(sourceDescription)
+                ? EvokerDamageCapDescriptionNote
+                : sourceDescription + "\n\n" + EvokerDamageCapDescriptionNote;
+            var descriptionKey = "wotr_mod.evoker_spell." + EvokerSpellCloneGuid(definition) + ".description";
+            var name = BlueprintFields.AbilityDisplayName.GetValue(source) as LocalizedString
+                       ?? BlueprintFields.AbilityDisplayName.GetValue(clone) as LocalizedString
+                       ?? new LocalizedString();
+
+            _localization.Put(descriptionKey, description);
+            _blueprints.SetAbilityDisplay(clone, name, _localization.Text(descriptionKey));
+        }
+
+        private static string RemoveDamageCapText(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+            {
+                return description;
+            }
+
+            var text = Regex.Replace(
+                description,
+                @",?\s*to a maximum of [^.;]+(?=[.;])",
+                string.Empty,
+                RegexOptions.IgnoreCase);
+            text = Regex.Replace(
+                text,
+                @",?\s*maximum \d+d\d+",
+                string.Empty,
+                RegexOptions.IgnoreCase);
+            text = Regex.Replace(
+                text,
+                @"per caster level,\s+to ",
+                "per caster level to ",
+                RegexOptions.IgnoreCase);
+            return Regex.Replace(text, @"\s+([.,;])", "$1").Trim();
         }
 
         private bool HasDamageAction(BlueprintAbility ability)

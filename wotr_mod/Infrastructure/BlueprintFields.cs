@@ -225,6 +225,18 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo FeatureSelectionAllFeatures =
             typeof(BlueprintFeatureSelection).GetField("m_AllFeatures", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo ParametrizedFeatureSpellList =
+            typeof(BlueprintParametrizedFeature).GetField("m_SpellList", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ParametrizedFeatureSpellcasterClass =
+            typeof(BlueprintParametrizedFeature).GetField("m_SpellcasterClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LearnSpellParametrizedSpellList =
+            typeof(LearnSpellParametrized).GetField("m_SpellList", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo LearnSpellParametrizedSpellcasterClass =
+            typeof(LearnSpellParametrized).GetField("m_SpellcasterClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo RaceFeatures =
             typeof(BlueprintRace).GetField("m_Features", BindingFlags.Instance | BindingFlags.NonPublic);
 

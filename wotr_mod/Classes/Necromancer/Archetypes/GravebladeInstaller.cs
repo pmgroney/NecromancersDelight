@@ -213,20 +213,34 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
 
             var necro = new NecromancerInstaller(_blueprints, _localization, _logger, _icons);
             var features = necro.GetNecromancerFeatures();
-            var witheringRay        = features[2];
-            var deathsGift          = features[3];
-            var graspOfTheDead      = features[4];
-            var incorporealForm     = features[5];
-            var oneOfUs             = features[6];
-            var boneArmor           = features[7];
-            var boneSpike           = features[8];
-            var corpseExplosion     = features[9];
-            var eldritchHorror      = features[10];
-            var harvestTheFallen    = features[11];
-            var hellOnEarth         = features[12];
-            var necromancerBonusFeat = features[13];
-            var stygianPrecision    = features[14];
-            var reapersJudgement    = features[15];
+            var witheringRay = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower1, "Withering Ray");
+            var deathsGift = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift");
+            var graspOfTheDead = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead");
+            var incorporealForm = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form");
+            var oneOfUs = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us");
+            var boneArmor = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBoneArmor, "Bone Armor");
+            var boneSpike = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike");
+            var corpseExplosion = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion");
+            var eldritchHorror = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror");
+            var harvestTheFallen = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen");
+            var hellOnEarth = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth");
+            var necromancerBonusFeat = NecromancerInstaller.FindNecromancerFeature<BlueprintFeatureSelection>(
+                features, ModBlueprintIds.Selections.NecromancerBonusFeat, "Necromancer Bonus Feat");
+            var stygianPrecision = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision");
+            var reapersJudgement = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerReapersJudgement, "Reaper's Judgement");
 
             _blueprints.SetProgressionUiGroups(
                 progression,
@@ -644,6 +658,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 .ToArray();
             _blueprints.SetFeatureSelectionAllFeatures(selection, choices);
             _blueprints.SetFeatureSelectionFeatures(selection, Array.Empty<BlueprintFeature>());
+            selection.IsClassFeature = true;
+            selection.Ranks = 1;
             return selection;
         }
 

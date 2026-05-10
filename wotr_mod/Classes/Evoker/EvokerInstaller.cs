@@ -40,6 +40,7 @@ namespace wotr_mod.Classes.Evoker
         private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
         private readonly SpellIconLoader _icons;
+        private static readonly int[] EvokerBonusFeatLevels = { 1, 6, 10, 16, 20 };
 
         public EvokerInstaller(
             BlueprintTool blueprints,
@@ -86,9 +87,11 @@ namespace wotr_mod.Classes.Evoker
             BlueprintSpellbook spellbook,
             BlueprintSpellList spellList)
         {
-            EnsureEvocationUnleashedClassCardFeature(characterClass);
+            var evocationUnleashed = EnsureEvocationUnleashedClassCardFeature(characterClass);
             EnsureElementalConversionClassCardFeature(characterClass);
             EnsureEvokerFamiliarClassCardFeature(characterClass);
+            ConfigureEvokerBonusFeatProgression(characterClass);
+            ReplaceSorcererProficiencies(characterClass);
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
@@ -101,8 +104,13 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.AddFeatureToLevel(
                 characterClass.Progression,
                 1,
+                evocationUnleashed);
+            _blueprints.AddFeatureToLevel(
+                characterClass.Progression,
+                1,
                 noMartialWeaponProficiency);
 
+            EnsureEvokerArcaneBloodline(characterClass);
             EnsureShadowbornBloodline(characterClass);
             new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
             _blueprints.SetCharacterClassArchetypes(
@@ -186,6 +194,93 @@ namespace wotr_mod.Classes.Evoker
             return feature;
         }
 
+        private void ConfigureEvokerBonusFeatProgression(BlueprintCharacterClass characterClass)
+        {
+            var evokerBonusFeat = EnsureEvokerBonusFeatSelection(characterClass);
+            if (characterClass?.Progression == null)
+            {
+                return;
+            }
+
+            RemoveProgressionFeature(characterClass.Progression, GameBlueprintIds.Selections.SorcererBonusFeat);
+            RemoveProgressionFeature(characterClass.Progression, GameBlueprintIds.Selections.SorcererFeatSelection);
+            RemoveProgressionFeature(characterClass.Progression, evokerBonusFeat);
+            foreach (var level in EvokerBonusFeatLevels)
+            {
+                AddProgressionFeatureToLevel(characterClass.Progression, level, evokerBonusFeat);
+            }
+
+            _blueprints.AddProgressionUiGroup(characterClass.Progression, evokerBonusFeat);
+        }
+
+        internal BlueprintFeatureSelection EnsureEvokerBonusFeatSelection(BlueprintCharacterClass characterClass)
+        {
+            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.EvokerBonusFeat);
+            if (selection == null)
+            {
+                var source = _blueprints.Require<BlueprintFeatureSelection>(
+                    GameBlueprintIds.Selections.SorcererBonusFeat,
+                    "Sorcerer Bonus Feat");
+                selection = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Selections.EvokerBonusFeat,
+                    "WotrMod_EvokerBonusFeat");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Selections.EvokerBonusFeat, selection);
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                selection,
+                _localization.Text(LocalizationIds.Mod.EvokerBonusFeatName),
+                _localization.Text(LocalizationIds.Mod.EvokerBonusFeatDescription));
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(selection, characterClass);
+            }
+
+            return selection;
+        }
+
+        private void ReplaceSorcererProficiencies(BlueprintCharacterClass characterClass)
+        {
+            var evokerProficiencies = EnsureEvokerProficiencies(characterClass);
+            if (characterClass?.Progression == null)
+            {
+                return;
+            }
+
+            ReplaceProgressionFeature(
+                characterClass.Progression,
+                GameBlueprintIds.Features.SorcererProficiencies,
+                evokerProficiencies);
+        }
+
+        private BlueprintFeature EnsureEvokerProficiencies(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvokerProficiencies);
+            if (feature == null)
+            {
+                var source = _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.SorcererProficiencies,
+                    "Sorcerer Proficiencies");
+                feature = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Features.EvokerProficiencies,
+                    "WotrMod_EvokerProficiencies");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.EvokerProficiencies, feature);
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvokerProficienciesName),
+                _localization.Text(LocalizationIds.Mod.EvokerProficienciesDescription));
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
         private BlueprintFeature EnsureEvocationUnleashedClassCardFeature(BlueprintCharacterClass characterClass)
         {
             var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvocationUnleashedClassCard);
@@ -201,6 +296,9 @@ namespace wotr_mod.Classes.Evoker
 
             feature.IsClassFeature = true;
             feature.Ranks = 1;
+            feature.HideInUI = false;
+            feature.HideInCharacterSheetAndLevelUp = false;
+            feature.HideNotAvailibleInUI = false;
             _blueprints.SetUnitFactDisplay(
                 feature,
                 _localization.Text(LocalizationIds.Mod.EvocationUnleashedName),
@@ -370,7 +468,6 @@ namespace wotr_mod.Classes.Evoker
 
             var bloodlines = new[]
             {
-                EnsureEvokerArcaneBloodline(characterClass),
                 EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalAirBloodline,
                     ModBlueprintIds.Progressions.EvokerAirBloodline, "WotrMod_EvokerBloodline_Air",
                     LocalizationIds.Mod.EvokerAirName, LocalizationIds.Mod.EvokerAirDescription,
@@ -468,7 +565,7 @@ namespace wotr_mod.Classes.Evoker
             return clone;
         }
 
-        private BlueprintProgression EnsureEvokerArcaneBloodline(BlueprintCharacterClass characterClass)
+        internal BlueprintProgression EnsureEvokerArcaneBloodline(BlueprintCharacterClass characterClass)
         {
             var progression = EnsureEvokerBloodline(
                 GameBlueprintIds.Progressions.ArcaneBloodline,
@@ -481,10 +578,97 @@ namespace wotr_mod.Classes.Evoker
                 progression,
                 GameBlueprintIds.Features.BloodlineArcaneArcaneBondFeature,
                 forceArcana);
+            ReplaceProgressionFeature(
+                progression,
+                GameBlueprintIds.Features.BloodlineArcaneNewArcanaSelection,
+                EnsureArcanistNewArcanaSelection(characterClass));
             RemoveProgressionFeature(
                 progression,
                 GameBlueprintIds.Features.BloodlineArcaneSchoolPowerSelection);
+            RemoveProgressionFeature(
+                progression,
+                GameBlueprintIds.Selections.SorcererFeatSelection);
+            MoveProgressionFeatureToLevel(
+                progression,
+                GameBlueprintIds.Features.BloodlineArcaneSpellLevel1,
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineArcaneSpellLevel1),
+                2);
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(progression, characterClass);
+            }
+
             return progression;
+        }
+
+        internal BlueprintFeatureSelection EnsureArcanistNewArcanaSelection(BlueprintCharacterClass characterClass)
+        {
+            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.ArcanistEvokerNewArcana);
+            if (selection == null)
+            {
+                var source = _blueprints.Require<BlueprintFeatureSelection>(
+                    GameBlueprintIds.Features.BloodlineArcaneNewArcanaSelection,
+                    "Arcane bloodline New Arcana selection");
+                selection = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Selections.ArcanistEvokerNewArcana,
+                    "WotrMod_ArcanistEvokerNewArcanaSelection");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Selections.ArcanistEvokerNewArcana, selection);
+            }
+
+            var feature = EnsureArcanistNewArcanaFeature(characterClass);
+            _blueprints.SetUnitFactDisplay(
+                selection,
+                _localization.Text(LocalizationIds.Mod.ArcanistEvokerNewArcanaName),
+                _localization.Text(LocalizationIds.Mod.ArcanistEvokerNewArcanaDescription));
+            _blueprints.SetComponents(selection);
+            _blueprints.SetFeatureSelectionFeatures(selection, new BlueprintFeature[] { feature });
+            _blueprints.SetFeatureSelectionAllFeatures(selection, new BlueprintFeature[] { feature });
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(selection, characterClass);
+            }
+
+            return selection;
+        }
+
+        private BlueprintParametrizedFeature EnsureArcanistNewArcanaFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintParametrizedFeature>(ModBlueprintIds.Features.ArcanistEvokerNewArcana);
+            if (feature == null)
+            {
+                var source = _blueprints.Require<BlueprintParametrizedFeature>(
+                    GameBlueprintIds.Features.BloodlineArcaneNewArcanaFeature,
+                    "Arcane bloodline New Arcana feature");
+                feature = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Features.ArcanistEvokerNewArcana,
+                    "WotrMod_ArcanistEvokerNewArcanaFeature");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.ArcanistEvokerNewArcana, feature);
+            }
+
+            var wizardSpellList = _blueprints.Require<BlueprintSpellList>(
+                GameBlueprintIds.SpellLists.Wizard,
+                "Wizard spell list");
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.ArcanistEvokerNewArcanaName),
+                _localization.Text(LocalizationIds.Mod.ArcanistEvokerNewArcanaDescription));
+            var learnSpell = new LearnSpellParametrized
+            {
+                name = "$LearnSpellParametrized$ArcanistEvokerNewArcana",
+                SpecificSpellLevel = false,
+                SpellLevelPenalty = 0,
+                SpellLevel = 0
+            };
+            _blueprints.SetLearnSpellParametrizedSource(feature, learnSpell, characterClass, wizardSpellList);
+            _blueprints.SetComponents(feature, learnSpell);
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
         }
 
         private BlueprintFeature EnsureEvokerForceArcanaFeature(BlueprintCharacterClass characterClass)
@@ -499,7 +683,7 @@ namespace wotr_mod.Classes.Evoker
                 "WotrMod_EvokerForceArcanaFeature",
                 "WotrMod_EvokerForceArcanaAbility",
                 "WotrMod_EvokerForceArcanaBuff",
-                SpellEffectTheme.Arcane);
+                SpellEffectTheme.Force);
 
             ConfigureEvokerForceArcanaDisplay(feature);
             _blueprints.SetProgressionClasses(feature, characterClass);
@@ -544,7 +728,7 @@ namespace wotr_mod.Classes.Evoker
                 _blueprints.AddComponent(buff, themeToggle);
             }
 
-            themeToggle.Theme = SpellEffectTheme.Arcane;
+            themeToggle.Theme = SpellEffectTheme.Force;
             ConfigureEvokerForceArcanaDisplay(buff);
         }
 
@@ -603,6 +787,7 @@ namespace wotr_mod.Classes.Evoker
                     12);
             }
 
+            RemoveProgressionFeature(progression, GameBlueprintIds.Selections.SorcererFeatSelection);
             MoveProtectionFromEnergyToCommunal(progression, characterClass);
             AddElementalBodySpellUiGroup(progression);
             return progression;
@@ -1278,37 +1463,11 @@ namespace wotr_mod.Classes.Evoker
                 GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
                 shadowHellfireRay,
                 12);
+            RemoveProgressionFeature(bloodline, GameBlueprintIds.Selections.SorcererFeatSelection);
             MoveProtectionFromEnergyToCommunal(bloodline, characterClass);
             SetProgressionClassesForLevelEntryFeatures(bloodline, characterClass);
 
             return bloodline;
-        }
-
-        internal BlueprintFeatureSelection EnsureShadowbornBonusFeatSelection(BlueprintCharacterClass characterClass)
-        {
-            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.ShadowbornBonusFeat);
-            if (selection == null)
-            {
-                var donor = _blueprints.Require<BlueprintFeatureSelection>(
-                    GameBlueprintIds.Selections.SorcererBonusFeat,
-                    "Sorcerer Bonus Feat");
-                selection = _blueprints.CloneBlueprint(
-                    donor,
-                    ModBlueprintIds.Selections.ShadowbornBonusFeat,
-                    "WotrMod_ShadowbornBonusFeatSelection");
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Selections.ShadowbornBonusFeat, selection);
-            }
-
-            _blueprints.SetUnitFactDisplay(
-                selection,
-                _localization.Text(LocalizationIds.Mod.ShadowbornBonusFeatName),
-                _localization.Text(LocalizationIds.Mod.ShadowbornBonusFeatDescription));
-            if (characterClass != null)
-            {
-                _blueprints.SetProgressionClasses(selection, characterClass);
-            }
-
-            return selection;
         }
 
         internal BlueprintFeature EnsureShadowbornLivingGhostFeature(BlueprintCharacterClass characterClass)
@@ -1743,6 +1902,7 @@ namespace wotr_mod.Classes.Evoker
             SpellModifierUtility.SetSchool(spell, SpellSchool.Necromancy, _blueprints);
             SpellModifierUtility.ReplaceDescriptor(spell, SpellDescriptor.Fire, SpellDescriptor.Death, _blueprints);
             PatchFireDamageToNegativeEnergy(spell);
+            ClearDamageScalingCaps(spell);
             ConfigureShadowbornSpellVisuals(spellGuid, spell);
 
             return spell;

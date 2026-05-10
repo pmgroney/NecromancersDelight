@@ -385,7 +385,7 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.ForceRay,
                     "WotrMod_ForceRayProjectile",
-                    SpellEffectTheme.Arcane);
+                    SpellEffectTheme.Force);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.FrostBlast)

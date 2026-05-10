@@ -275,22 +275,46 @@ namespace wotr_mod.Classes.Necromancer
         internal void AddNecromancerFeaturesToProgression(BlueprintProgression progression)
         {
             var features = GetNecromancerFeatures();
-            var necromancerProficiencies = features[0];
-            var masterOfDeath         = features[1];
-            var witheringRay          = features[2];
-            var deathsGift            = features[3];
-            var graspOfTheDead        = features[4];
-            var incorporealForm       = features[5];
-            var oneOfUs               = features[6];
-            var boneArmor             = features[7];
-            var boneSpike             = features[8];
-            var corpseExplosion       = features[9];
-            var eldritchHorror        = features[10];
-            var harvestTheFallen      = features[11];
-            var hellOnEarth           = features[12];
-            var necromancerBonusFeat  = features[13];
-            var stygianPrecision      = features[14];
-            var reapersJudgement      = features[15];
+            var necromancerProficiencies = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerProficiencies, "Necromancer Proficiencies");
+            var masterOfDeath = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death");
+            var witheringRay = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower1, "Withering Ray");
+            var deathsGift = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift");
+            var graspOfTheDead = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead");
+            var incorporealForm = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form");
+            var oneOfUs = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us");
+            var boneArmor = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBoneArmor, "Bone Armor");
+            var boneSpike = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike");
+            var corpseExplosion = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion");
+            var eldritchHorror = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror");
+            var harvestTheFallen = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen");
+            var hellOnEarth = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth");
+            var necromancerBonusFeat = FindNecromancerFeature<BlueprintFeatureSelection>(
+                features, ModBlueprintIds.Selections.NecromancerBonusFeat, "Necromancer Bonus Feat");
+            var stygianPrecision = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision");
+            var reapersJudgement = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerReapersJudgement, "Reaper's Judgement");
+
+            RemoveFeaturesFromProgression(
+                progression,
+                GameBlueprintIds.Features.SorcererProficiencies,
+                GameBlueprintIds.Selections.SorcererBonusFeat,
+                GameBlueprintIds.Selections.SorcererFeatSelection,
+                ModBlueprintIds.Features.NecromancerProficiencies,
+                ModBlueprintIds.Selections.NecromancerBonusFeat);
 
             AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
             AddFeaturesToLevel(progression, 2,  boneSpike);
@@ -320,6 +344,24 @@ namespace wotr_mod.Classes.Necromancer
                 new[] { stygianPrecision, reapersJudgement },
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
+        }
+
+        internal static T FindNecromancerFeature<T>(
+            IEnumerable<BlueprintFeature> features,
+            string guid,
+            string displayName) where T : BlueprintFeature
+        {
+            var targetGuid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(guid));
+            var feature = (features ?? Enumerable.Empty<BlueprintFeature>())
+                .OfType<T>()
+                .FirstOrDefault(candidate => candidate.AssetGuid == targetGuid);
+            if (feature == null)
+            {
+                throw new InvalidOperationException(
+                    $"Necromancer feature set did not contain {displayName} ({guid}).");
+            }
+
+            return feature;
         }
 
         internal BlueprintFeature EnsureStygianPrecisionFeature(BlueprintCharacterClass characterClass)
@@ -416,27 +458,33 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.SetUnitFactDisplay(selection,
                 _localization.Text(LocalizationIds.Mod.NecromancerBonusFeatName),
                 _localization.Text(LocalizationIds.Mod.NecromancerBonusFeatDescription));
+            selection.IsClassFeature = true;
+            selection.Ranks = 1;
             return selection;
         }
 
         private BlueprintFeature EnsureNecromancerProficiencies()
         {
-            var existing = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerProficiencies);
-            if (existing != null) return existing;
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerProficiencies);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SorcererProficiencies, "Sorcerer Proficiencies"),
+                    ModBlueprintIds.Features.NecromancerProficiencies,
+                    "NecromancerProficiencies");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerProficiencies, feature);
+            }
 
-            var clone = _blueprints.CloneBlueprint(
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SorcererProficiencies, "Sorcerer Proficiencies"),
-                ModBlueprintIds.Features.NecromancerProficiencies,
-                "NecromancerProficiencies");
-            _blueprints.SetUnitFactDisplay(clone,
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.NecromancerProficienciesName),
                 _localization.Text(LocalizationIds.Mod.NecromancerProficienciesDescription));
-            var addFacts = _blueprints.EnsureComponent<AddFacts>(clone, () => new AddFacts());
+            var addFacts = _blueprints.EnsureComponent(feature, () => new AddFacts());
             _blueprints.SetAddFacts(addFacts,
                 _blueprints.Require<BlueprintFeature>("e70ecf1ed95ca2f40b754f1adb22bbdd", "Simple Weapon Proficiency"),
                 _blueprints.Require<BlueprintFeature>("96c174b0ebca7b246b82d4bc4aac4574", "Scythe Proficiency"));
-            _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerProficiencies, clone);
-            return clone;
+            return feature;
         }
 
         private BlueprintFeature EnsureNecromancerBloodlineFeature(
@@ -818,6 +866,29 @@ namespace wotr_mod.Classes.Necromancer
                     features.Add(f);
             }
             entry.SetFeatures(features);
+        }
+
+        private static void RemoveFeaturesFromProgression(BlueprintProgression progression, params string[] featureGuids)
+        {
+            if (progression == null || featureGuids == null || featureGuids.Length == 0)
+            {
+                return;
+            }
+
+            var guids = featureGuids
+                .Where(guid => !string.IsNullOrWhiteSpace(guid))
+                .Select(guid => BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(guid)))
+                .ToArray();
+            if (guids.Length == 0)
+            {
+                return;
+            }
+
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(feature => feature == null || !guids.Contains(feature.AssetGuid)));
+            }
         }
     }
 }

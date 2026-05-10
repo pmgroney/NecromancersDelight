@@ -60,10 +60,14 @@ namespace wotr_mod.Classes.Evoker
             var feature3 = EnsureLivingDarknessFeature(3, characterClass, resource);
             var feature4 = EnsureLivingDarknessFeature(4, characterClass, resource);
 
-            ReplaceProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel4, feature1);
-            ReplaceProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel5, feature2);
-            ReplaceProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel6, feature3);
-            ReplaceProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel7, feature4);
+            RemoveProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel4);
+            RemoveProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel5);
+            RemoveProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel6);
+            RemoveProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel7);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature1, 7);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature2, 10);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature3, 13);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature4, 16);
             _blueprints.AddProgressionUiGroup(shadowbornBloodline, feature1, feature2, feature3, feature4);
             if (characterClass?.Progression != null)
             {
@@ -542,17 +546,74 @@ namespace wotr_mod.Classes.Evoker
             }
         }
 
-        private static void ReplaceProgressionFeature(
+        private static void RemoveProgressionFeature(
             BlueprintProgression progression,
-            string oldFeatureGuid,
-            BlueprintFeatureBase newFeature)
+            string featureGuid)
         {
-            var oldGuid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(oldFeatureGuid));
+            var guid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(featureGuid));
             foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
             {
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Select(feature => feature != null && feature.AssetGuid == oldGuid ? newFeature : feature));
+                    .Where(feature => feature == null || feature.AssetGuid != guid));
             }
+        }
+
+        private static void MoveProgressionFeatureToLevel(
+            BlueprintProgression progression,
+            BlueprintFeatureBase feature,
+            int level)
+        {
+            if (feature == null)
+            {
+                return;
+            }
+
+            RemoveProgressionFeature(progression, feature);
+            var entries = (progression.LevelEntries ?? Array.Empty<LevelEntry>()).ToList();
+            AddFeatureToLevel(entries, level, feature);
+            progression.LevelEntries = entries
+                .Where(entry => (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>()).Any())
+                .OrderBy(entry => entry.Level)
+                .ToArray();
+        }
+
+        private static void RemoveProgressionFeature(
+            BlueprintProgression progression,
+            BlueprintFeatureBase feature)
+        {
+            var guid = feature.AssetGuid;
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(existing => existing == null || existing.AssetGuid != guid));
+            }
+        }
+
+        private static void AddFeatureToLevel(
+            ICollection<LevelEntry> entries,
+            int level,
+            BlueprintFeatureBase feature)
+        {
+            var entry = entries.FirstOrDefault(levelEntry => levelEntry.Level == level);
+            if (entry == null)
+            {
+                entries.Add(CreateLevelEntry(level, feature));
+                return;
+            }
+
+            var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>()).ToList();
+            if (features.All(existing => existing == null || existing.AssetGuid != feature.AssetGuid))
+            {
+                features.Add(feature);
+                entry.SetFeatures(features);
+            }
+        }
+
+        private static LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)
+        {
+            var entry = new LevelEntry { Level = level };
+            entry.SetFeatures(features);
+            return entry;
         }
 
         private static string TierFeatureGuid(int tier)

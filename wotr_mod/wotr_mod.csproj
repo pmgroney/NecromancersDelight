@@ -92,6 +92,7 @@
         <Compile Include="Classes\Evoker\EvokerScalingInstaller.cs" />
         <Compile Include="Classes\Evoker\LivingDarknessInstaller.cs" />
         <Compile Include="Classes\Evoker\EvokerSpellRegistry.cs"/>
+        <Compile Include="Classes\Evoker\Archetypes\ArcanistEvokerInstaller.cs" />
         <Compile Include="Classes\Evoker\Archetypes\DraconicEvokerInstaller.cs" />
         <Compile Include="Classes\Evoker\Archetypes\ShadowbornInstaller.cs" />
         <Compile Include="Classes\IClassContentInstaller.cs" />

@@ -15,6 +15,7 @@ namespace wotr_mod.Classes.Evoker
         {
             return new[]
             {
+                new ArcanistEvokerInstaller(_blueprints, _localization, this).Ensure(characterClass),
                 new ShadowbornInstaller(_blueprints, _localization, this).Ensure(characterClass),
                 new DraconicEvokerInstaller(_blueprints, _localization, _logger, this).Ensure(characterClass)
             };

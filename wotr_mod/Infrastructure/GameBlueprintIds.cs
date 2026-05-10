@@ -149,15 +149,25 @@ namespace wotr_mod.Infrastructure
         {
             public const string ArcaneBloodlineArcana = "e8e4f56618dd8b04490aa6a0b75ac24f";
             public const string BloodlineArcaneArcaneBondFeature = "1740a701ac0a14c4394a7f76f0b07799";
+            public const string BloodlineArcaneNewArcanaFeature = "4a2e8388c2f0dd3478811d9c947bebfb";
+            public const string BloodlineArcaneNewArcanaSelection = "20a2435574bdd7f4e947f405df2b25ce";
             public const string BloodlineArcaneSchoolPowerSelection = "3524a71d57d99bb4b835ad20582cf613";
+            public const string BloodlineArcaneSpellLevel1 = "1af03b45f73153540ad4a08a646d4789";
             public const string ArmorProficiencyHeavy = "1b0f68188dcc435429fb87a022239681";
             public const string ArmorProficiencyLight = "6d3728d4e9c9898458fe5e9532951132";
             public const string ArmorProficiencyMedium = "46f4fb320f35704488ba3d513397789d";
             public const string BloodragerProficiencies = "7aa59f5998e5baf4182cac3ff7998974";
+            public const string CombatCasting = "06964d468fde1dc4aa71a92ea04d930d";
             public const string DruidNatureBond = "8fd7e35bda894aa9ade8c1d3125bd411";
+            public const string GreaterSpellFocus = "5b04b45b228461c43bad768eb0f7c7bf";
+            public const string ImprovedInitiative = "797f25d709f559546b29e7bcb181cc74";
+            public const string IronWill = "175d1577bb6c9a04baf88eec99c66334";
             public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
             public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
+            public const string ReachSpell = "46fad72f54a33dc4692d3b62eca7bb78";
+            public const string SkillFocusKnowledgeArcana = "cad1b9175e8c0e64583432a22134d33c";
             public const string SpellFocus = "16fa59cc9a72a6043b566b49184f53fe";
+            public const string SpellPenetration = "ee7dc126939e4d9438357fbd5980d459";
             public const string DeathDomainProgressionSecondary = "023794a8386506c49aad142846700594";
             public const string FighterArmorMastery = "ae177f17cfb45264291d4d7c2cb64671";
             public const string FighterArmorTraining = "3c380607706f209499d951b29d3c44f3";

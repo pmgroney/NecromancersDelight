@@ -8,13 +8,13 @@ using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes.Evoker.Archetypes
 {
-    internal sealed class ShadowbornInstaller
+    internal sealed class ArcanistEvokerInstaller
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
         private readonly EvokerInstaller _evoker;
 
-        public ShadowbornInstaller(
+        public ArcanistEvokerInstaller(
             BlueprintTool blueprints,
             LocalizationTool localization,
             EvokerInstaller evoker)
@@ -26,60 +26,44 @@ namespace wotr_mod.Classes.Evoker.Archetypes
 
         public BlueprintArchetype Ensure(BlueprintCharacterClass characterClass)
         {
-            var archetype = _blueprints.Get<BlueprintArchetype>(ModBlueprintIds.Archetypes.Shadowborn);
+            var archetype = _blueprints.Get<BlueprintArchetype>(ModBlueprintIds.Archetypes.ArcanistEvoker);
             if (archetype == null)
             {
                 archetype = new BlueprintArchetype
                 {
-                    name = "WotrMod_EvokerShadowbornArchetype",
-                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Archetypes.Shadowborn)
+                    name = "WotrMod_ArcanistEvokerArchetype",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Archetypes.ArcanistEvoker)
                 };
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Archetypes.Shadowborn, archetype);
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Archetypes.ArcanistEvoker, archetype);
             }
 
             var evokerBloodlineSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 ModBlueprintIds.Selections.EvokerBloodline,
                 "Evoker bloodline selection");
-            var shadowbornBloodline = _evoker.EnsureShadowbornBloodline(characterClass);
-            var shadowbornLivingGhost = _evoker.EnsureShadowbornLivingGhostFeature(characterClass);
+            var arcaneBloodline = _evoker.EnsureEvokerArcaneBloodline(characterClass);
+            var arcanistNewArcana = _evoker.EnsureArcanistNewArcanaSelection(characterClass);
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
                 archetype,
-                _localization.Text(LocalizationIds.Mod.ShadowbornName),
-                _localization.Text(LocalizationIds.Mod.ShadowbornDescription));
+                _localization.Text(LocalizationIds.Mod.ArcanistEvokerName),
+                _localization.Text(LocalizationIds.Mod.ArcanistEvokerDescription));
             _blueprints.SetArchetypeParentClass(archetype, characterClass);
             _blueprints.SetArchetypeReplaceSpellbook(archetype, null);
             _blueprints.SetArchetypeFeatureChanges(
                 archetype,
-                CreateFeatureEntries(
-                    shadowbornBloodline,
-                    shadowbornLivingGhost),
+                CreateFeatureEntries(arcaneBloodline, arcanistNewArcana),
                 CreateRemoveFeatureEntries(evokerBloodlineSelection));
-            if (characterClass.Progression != null)
-            {
-                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornLivingGhost);
-            }
-
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
         }
 
-        private static LevelEntry[] CreateRemoveFeatureEntries(
-            BlueprintFeatureBase evokerBloodlineSelection)
-        {
-            return new[]
-            {
-                CreateLevelEntry(1, evokerBloodlineSelection)
-            };
-        }
-
         private static LevelEntry[] CreateFeatureEntries(
-            BlueprintProgression shadowbornBloodline,
-            BlueprintFeature shadowbornLivingGhost)
+            BlueprintProgression arcaneBloodline,
+            BlueprintFeatureSelection arcanistNewArcana)
         {
-            var entries = (shadowbornBloodline.LevelEntries ?? Array.Empty<LevelEntry>())
+            var entries = (arcaneBloodline.LevelEntries ?? Array.Empty<LevelEntry>())
                 .Select(entry =>
                 {
                     var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
@@ -90,10 +74,19 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 .Where(entry => entry != null)
                 .ToList();
 
-            AddFeatureToLevel(entries, 20, shadowbornLivingGhost);
+            AddFeatureToLevel(entries, 4, arcanistNewArcana);
             return entries
                 .OrderBy(entry => entry.Level)
                 .ToArray();
+        }
+
+        private static LevelEntry[] CreateRemoveFeatureEntries(
+            BlueprintFeatureBase evokerBloodlineSelection)
+        {
+            return new[]
+            {
+                CreateLevelEntry(1, evokerBloodlineSelection)
+            };
         }
 
         private static void AddFeatureToLevel(

@@ -17,7 +17,8 @@ namespace wotr_mod.Classes.Evoker
 {
     internal sealed class EvokerScalingInstaller
     {
-        private static readonly int[] ScalingLevels = { 1, 5, 9, 13, 17 };
+        private static readonly int[] ElementScalingLevels = { 1, 5, 9, 13, 17 };
+        private static readonly int[] ArcaneScalingLevels = { 1, 4, 8, 12, 16, 20 };
 
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
@@ -126,7 +127,7 @@ namespace wotr_mod.Classes.Evoker
                 conversionBuffGuid,
                 additionalAbilityGuids,
                 characterClass);
-            AddScalingFeature(progression, feature, characterClass, bindProgressionToClass);
+            AddScalingFeature(progression, feature, ElementScalingLevels, characterClass, bindProgressionToClass);
         }
 
         private void ApplyElement(
@@ -175,7 +176,7 @@ namespace wotr_mod.Classes.Evoker
                 descriptionKey,
                 iconPath,
                 characterClass);
-            AddScalingFeature(progression, feature, characterClass);
+            AddScalingFeature(progression, feature, ArcaneScalingLevels, characterClass);
         }
 
         private BlueprintFeature EnsureElementFeature(
@@ -189,7 +190,14 @@ namespace wotr_mod.Classes.Evoker
             string[] additionalAbilityGuids,
             BlueprintCharacterClass characterClass)
         {
-            var feature = EnsureScalingFeature(featureGuid, internalName, nameKey, descriptionKey, iconPath, characterClass);
+            var feature = EnsureScalingFeature(
+                featureGuid,
+                internalName,
+                nameKey,
+                descriptionKey,
+                iconPath,
+                ElementScalingLevels.Length,
+                characterClass);
             var conversionBuff = string.IsNullOrWhiteSpace(conversionBuffGuid)
                 ? null
                 : _blueprints.Get<BlueprintBuff>(conversionBuffGuid);
@@ -219,7 +227,14 @@ namespace wotr_mod.Classes.Evoker
             string iconPath,
             BlueprintCharacterClass characterClass)
         {
-            var feature = EnsureScalingFeature(featureGuid, internalName, nameKey, descriptionKey, iconPath, characterClass);
+            var feature = EnsureScalingFeature(
+                featureGuid,
+                internalName,
+                nameKey,
+                descriptionKey,
+                iconPath,
+                ArcaneScalingLevels.Length,
+                characterClass);
             _blueprints.SetComponents(
                 feature,
                 new EvokerArcaneDcScaling
@@ -236,6 +251,7 @@ namespace wotr_mod.Classes.Evoker
             string nameKey,
             string descriptionKey,
             string iconPath,
+            int ranks,
             BlueprintCharacterClass characterClass)
         {
             var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
@@ -250,7 +266,7 @@ namespace wotr_mod.Classes.Evoker
             }
 
             feature.IsClassFeature = true;
-            feature.Ranks = ScalingLevels.Length;
+            feature.Ranks = ranks;
             feature.HideInUI = false;
             feature.HideInCharacterSheetAndLevelUp = false;
             feature.HideNotAvailibleInUI = false;
@@ -281,10 +297,12 @@ namespace wotr_mod.Classes.Evoker
         private void AddScalingFeature(
             BlueprintProgression progression,
             BlueprintFeatureBase feature,
+            IEnumerable<int> levels,
             BlueprintCharacterClass characterClass,
             bool bindProgressionToClass = true)
         {
-            foreach (var level in ScalingLevels)
+            RemoveFeatureFromProgression(progression, feature);
+            foreach (var level in levels)
             {
                 AddFeatureToLevel(progression, level, feature);
             }
@@ -293,6 +311,28 @@ namespace wotr_mod.Classes.Evoker
             {
                 _blueprints.SetProgressionClasses(progression, characterClass);
             }
+        }
+
+        private static void RemoveFeatureFromProgression(
+            BlueprintProgression progression,
+            BlueprintFeatureBase feature)
+        {
+            if (progression?.LevelEntries == null || feature == null)
+            {
+                return;
+            }
+
+            var guid = feature.AssetGuid;
+            foreach (var entry in progression.LevelEntries)
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(existing => existing == null || existing.AssetGuid != guid));
+            }
+
+            progression.LevelEntries = progression.LevelEntries
+                .Where(entry => (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>()).Any())
+                .OrderBy(entry => entry.Level)
+                .ToArray();
         }
 
         private static void AddFeatureToLevel(

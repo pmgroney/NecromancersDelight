@@ -45,17 +45,56 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             var evokerBloodlineSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 ModBlueprintIds.Selections.EvokerBloodline,
                 "Evoker bloodline selection");
+            var evokerBonusFeat = _evoker.EnsureEvokerBonusFeatSelection(characterClass);
             var draconicBloodlineSelection = _evoker.EnsureDraconicEvokerBloodlineSelection(characterClass);
+            var sorcererFeatSelection = _blueprints.Require<BlueprintFeatureSelection>(
+                GameBlueprintIds.Selections.SorcererFeatSelection,
+                "Sorcerer feat selection");
             var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
                 GameBlueprintIds.StatProgressions.BaseAttackBonusMedium,
                 "Draconic Evoker base attack bonus progression");
             var weaponFocusClaw = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.WeaponFocusClaw,
                 "Weapon Focus (Claw)");
-            var lightArmorProficiency = _blueprints.Require<BlueprintFeature>(
+            var lightArmorProficiency = EnsureArmorProficiency(
                 GameBlueprintIds.Features.ArmorProficiencyLight,
-                "Light Armor Proficiency");
-            var arcaneArmorProficiency = EnsureArcaneArmorProficiency(characterClass);
+                ModBlueprintIds.Features.DraconicEvokerLightArmorProficiency,
+                "WotrMod_DraconicEvokerLightArmorProficiency",
+                LocalizationIds.Mod.DraconicEvokerLightArmorProficiencyName,
+                LocalizationIds.Mod.DraconicEvokerLightArmorProficiencyDescription,
+                characterClass);
+            var mediumArmorProficiency = EnsureArmorProficiency(
+                GameBlueprintIds.Features.ArmorProficiencyMedium,
+                ModBlueprintIds.Features.DraconicEvokerMediumArmorProficiency,
+                "WotrMod_DraconicEvokerMediumArmorProficiency",
+                LocalizationIds.Mod.DraconicEvokerMediumArmorProficiencyName,
+                LocalizationIds.Mod.DraconicEvokerMediumArmorProficiencyDescription,
+                characterClass);
+            var heavyArmorProficiency = EnsureArmorProficiency(
+                GameBlueprintIds.Features.ArmorProficiencyHeavy,
+                ModBlueprintIds.Features.DraconicEvokerHeavyArmorProficiency,
+                "WotrMod_DraconicEvokerHeavyArmorProficiency",
+                LocalizationIds.Mod.DraconicEvokerHeavyArmorProficiencyName,
+                LocalizationIds.Mod.DraconicEvokerHeavyArmorProficiencyDescription,
+                characterClass);
+            var lightArcaneArmorProficiency = EnsureArcaneArmorProficiency(
+                ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency,
+                "WotrMod_DraconicEvokerLightArcaneArmorProficiency",
+                "$ArcaneArmorProficiency$DraconicEvokerLightArmor",
+                ArmorProficiencyGroup.Light,
+                characterClass);
+            var mediumArcaneArmorProficiency = EnsureArcaneArmorProficiency(
+                ModBlueprintIds.Features.DraconicEvokerMediumArcaneArmorProficiency,
+                "WotrMod_DraconicEvokerMediumArcaneArmorProficiency",
+                "$ArcaneArmorProficiency$DraconicEvokerMediumArmor",
+                ArmorProficiencyGroup.Medium,
+                characterClass);
+            var heavyArcaneArmorProficiency = EnsureArcaneArmorProficiency(
+                ModBlueprintIds.Features.DraconicEvokerHeavyArcaneArmorProficiency,
+                "WotrMod_DraconicEvokerHeavyArcaneArmorProficiency",
+                "$ArcaneArmorProficiency$DraconicEvokerHeavyArmor",
+                ArmorProficiencyGroup.Heavy,
+                characterClass);
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
@@ -73,32 +112,86 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                         draconicBloodlineSelection,
                         weaponFocusClaw,
                         lightArmorProficiency,
-                        arcaneArmorProficiency)
+                        lightArcaneArmorProficiency),
+                    CreateLevelEntry(
+                        4,
+                        mediumArmorProficiency,
+                        mediumArcaneArmorProficiency),
+                    CreateLevelEntry(7, sorcererFeatSelection),
+                    CreateLevelEntry(
+                        9,
+                        heavyArmorProficiency,
+                        heavyArcaneArmorProficiency),
+                    CreateLevelEntry(13, sorcererFeatSelection),
+                    CreateLevelEntry(19, sorcererFeatSelection)
                 },
-                new[] { CreateLevelEntry(1, evokerBloodlineSelection) });
+                new[]
+                {
+                    CreateLevelEntry(1, evokerBloodlineSelection, evokerBonusFeat),
+                    CreateLevelEntry(6, evokerBonusFeat),
+                    CreateLevelEntry(10, evokerBonusFeat),
+                    CreateLevelEntry(16, evokerBonusFeat),
+                    CreateLevelEntry(20, evokerBonusFeat)
+                });
             _blueprints.SetArchetypeBaseAttackBonus(archetype, baseAttackBonus);
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
         }
 
-        private BlueprintFeature EnsureArcaneArmorProficiency(BlueprintCharacterClass characterClass)
+        private BlueprintFeature EnsureArmorProficiency(
+            string sourceGuid,
+            string featureGuid,
+            string internalName,
+            string displayNameKey,
+            string descriptionKey,
+            BlueprintCharacterClass characterClass)
         {
-            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency);
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                var source = _blueprints.Require<BlueprintFeature>(sourceGuid, internalName + " donor");
+                feature = _blueprints.CloneBlueprint(source, featureGuid, internalName);
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(displayNameKey),
+                _localization.Text(descriptionKey));
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
+        private BlueprintFeature EnsureArcaneArmorProficiency(
+            string featureGuid,
+            string internalName,
+            string componentName,
+            ArmorProficiencyGroup armorGroup,
+            BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
             if (feature == null)
             {
                 feature = new BlueprintFeature
                 {
-                    name = "WotrMod_DraconicEvokerArcaneArmorProficiency",
-                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency),
+                    name = internalName,
+                    AssetGuid = BlueprintGuid.Parse(featureGuid),
                     IsClassFeature = true,
                     Ranks = 1,
                     HideInUI = true,
                     HideInCharacterSheetAndLevelUp = true
                 };
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency, feature);
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
             }
 
+            feature.name = internalName;
             feature.IsClassFeature = true;
             feature.Ranks = 1;
             feature.HideInUI = true;
@@ -121,10 +214,10 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             }
 
             var clonedComponent = _blueprints.CloneComponent(sourceComponent);
-            clonedComponent.name = "$ArcaneArmorProficiency$DraconicEvokerLightArmor";
+            clonedComponent.name = componentName;
             if (clonedComponent is ArcaneArmorProficiency armorProficiency)
             {
-                armorProficiency.Armor = new[] { ArmorProficiencyGroup.Light };
+                armorProficiency.Armor = new[] { armorGroup };
             }
 
             _blueprints.SetComponents(feature, clonedComponent);
