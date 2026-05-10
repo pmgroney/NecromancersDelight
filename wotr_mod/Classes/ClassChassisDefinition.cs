@@ -5,7 +5,7 @@ namespace wotr_mod.Classes
 {
     internal sealed class ClassChassisDefinition
     {
-        public ClassChassisDefinition(DiceType? hitDie = null, string baseAttackBonusGuid = null)
+        public ClassChassisDefinition(DiceType? hitDie = null, string baseAttackBonusGuid = null, int? skillPoints = null)
         {
             if (!string.IsNullOrWhiteSpace(baseAttackBonusGuid))
             {
@@ -14,9 +14,11 @@ namespace wotr_mod.Classes
 
             HitDie = hitDie;
             BaseAttackBonusGuid = baseAttackBonusGuid;
+            SkillPoints = skillPoints;
         }
 
         public DiceType? HitDie { get; }
         public string BaseAttackBonusGuid { get; }
+        public int? SkillPoints { get; }
     }
 }

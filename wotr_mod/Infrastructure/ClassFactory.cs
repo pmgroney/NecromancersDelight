@@ -72,6 +72,11 @@ namespace wotr_mod.Classes
                 _blueprints.SetCharacterClassHitDie(characterClass, definition.Chassis.HitDie.Value);
             }
 
+            if (definition.Chassis.SkillPoints.HasValue)
+            {
+                _blueprints.SetCharacterClassSkillPoints(characterClass, definition.Chassis.SkillPoints.Value);
+            }
+
             if (!string.IsNullOrEmpty(definition.Chassis.BaseAttackBonusGuid))
             {
                 var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(

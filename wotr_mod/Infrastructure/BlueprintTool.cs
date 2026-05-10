@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
@@ -478,6 +479,11 @@ namespace wotr_mod.Infrastructure
         public void SetCharacterClassHitDie(BlueprintCharacterClass characterClass, Kingmaker.RuleSystem.DiceType hitDie)
         {
             BlueprintFields.CharacterClassHitDie.SetValue(characterClass, hitDie);
+        }
+
+        public void SetCharacterClassSkillPoints(BlueprintCharacterClass characterClass, int skillPoints)
+        {
+            characterClass.SkillPoints = skillPoints;
         }
 
         public void SetCharacterClassBaseAttackBonus(BlueprintCharacterClass characterClass, BlueprintStatProgression progression)
@@ -1016,6 +1022,13 @@ namespace wotr_mod.Infrastructure
                 .Select(BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>)
                 .ToArray();
             BlueprintFields.AddFactsFacts.SetValue(component, references);
+        }
+
+        public void SetPrerequisiteNoFeatureFeature(PrerequisiteNoFeature component, BlueprintFeature feature)
+        {
+            BlueprintFields.PrerequisiteNoFeatureFeature.SetValue(
+                component,
+                BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(feature));
         }
 
         public void SetAddStartingEquipment(

@@ -7,6 +7,7 @@ using System.Text;
 using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
@@ -88,10 +89,16 @@ namespace wotr_mod.Classes.Evoker
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
             _blueprints.SetCharacterClassArchetypes(characterClass);
+            var noMartialWeaponProficiency = EnsureNoMartialWeaponProficiencyFeature(characterClass);
+            EnsureMartialWeaponProficiencyBlockedForEvoker(noMartialWeaponProficiency);
             _blueprints.AddFeatureToLevel(
                 characterClass.Progression,
                 1,
                 EnsureSpellShapingFeature(characterClass));
+            _blueprints.AddFeatureToLevel(
+                characterClass.Progression,
+                1,
+                noMartialWeaponProficiency);
 
             EnsureShadowbornBloodline(characterClass);
             new EvokerScalingInstaller(_blueprints, _localization, _logger, _icons).Install(characterClass);
@@ -130,6 +137,72 @@ namespace wotr_mod.Classes.Evoker
                     Classes = new[] { characterClass }
                 });
             return feature;
+        }
+
+        private BlueprintFeature EnsureNoMartialWeaponProficiencyFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvokerNoMartialWeaponProficiency);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_EvokerNoMartialWeaponProficiency",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.EvokerNoMartialWeaponProficiency),
+                    IsClassFeature = true,
+                    Ranks = 1,
+                    HideInUI = true,
+                    HideInCharacterSheetAndLevelUp = true
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.EvokerNoMartialWeaponProficiency, feature);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            feature.HideInUI = true;
+            feature.HideInCharacterSheetAndLevelUp = true;
+            feature.ReapplyOnLevelUp = true;
+            _blueprints.SetProgressionClasses(feature, characterClass);
+
+            var martialWeaponProficiency = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.MartialWeaponProficiency,
+                "Martial Weapon Proficiency");
+            var bloodragerProficiencies = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.BloodragerProficiencies,
+                "Bloodrager Proficiencies");
+            var removeMartialWeapons = new RemoveFeatureOnApply
+            {
+                name = "$RemoveFeatureOnApply$EvokerMartialWeapons"
+            };
+            var removeBloodragerProficiencies = new RemoveFeatureOnApply
+            {
+                name = "$RemoveFeatureOnApply$EvokerBloodragerProficiencies"
+            };
+            _blueprints.SetRemoveFeatureOnApplyFeature(removeMartialWeapons, martialWeaponProficiency);
+            _blueprints.SetRemoveFeatureOnApplyFeature(removeBloodragerProficiencies, bloodragerProficiencies);
+            _blueprints.SetComponents(feature, removeMartialWeapons, removeBloodragerProficiencies);
+            return feature;
+        }
+
+        private void EnsureMartialWeaponProficiencyBlockedForEvoker(BlueprintFeature noMartialWeaponProficiency)
+        {
+            var martialWeaponProficiency = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.MartialWeaponProficiency,
+                "Martial Weapon Proficiency");
+            var componentName = "$PrerequisiteNoFeature$EvokerNoMartialWeaponProficiency";
+            if (_blueprints.GetComponents<BlueprintComponent>(martialWeaponProficiency)
+                .Any(component => component?.name == componentName))
+            {
+                return;
+            }
+
+            var prerequisite = new PrerequisiteNoFeature
+            {
+                name = componentName,
+                Group = Prerequisite.GroupType.All,
+                HideInUI = true
+            };
+            _blueprints.SetPrerequisiteNoFeatureFeature(prerequisite, noMartialWeaponProficiency);
+            _blueprints.AddComponent(martialWeaponProficiency, prerequisite);
         }
 
         private void EnsureEvocationSpellFocusRecommendation(BlueprintCharacterClass characterClass)

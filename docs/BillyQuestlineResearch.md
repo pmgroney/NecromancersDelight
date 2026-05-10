@@ -77,6 +77,7 @@ The Hosilla placement should use:
 - Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Archer's Tunic pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
 - `BillyPlacementPatch` uses `Game.Instance.AddUnitToPersistentState(BlueprintUnit)` for fresh Shield Maze and Defender's Heart area stand-ins; it must not reuse `Player.AllCharacters`/roster units, and its loaded-area guard must ignore recruited roster Billy so the Defender's Heart stand-in is not blocked.
 - After recruitment, Billy's click dialogue uses a hub greeting and hides the recruitment answer; his Defender's Heart placement offset was adjusted off the bed.
+- Billy copies Ciar's companion shell, which has `ClassLevelLimit = 10`; Hilor's respec action only lists units where `CharacterLevel > ClassLevelLimit`, so Billy must override this limit to `1` like early companions or he will be hidden from the respec picker.
 - Act 1 Stage 2 adds `Scorched Pilgrimage Record`, cloned from `ZachariusNecromancy` with donor callbacks/components cleared so it behaves as a plain readable note.
 - The record is added to static loot `SpecialThieflingStash` in Kenabres Burning / Market Square, avoiding runtime map-object reseeding.
 - When the record enters party inventory through loot, `BillyQuestStarter` completes the Jalmeray lead objective, starts `Trace the second transfer`, and opens the matching Billy dialogue; area-load/backfill checks may advance objectives but must not auto-open dialogue.

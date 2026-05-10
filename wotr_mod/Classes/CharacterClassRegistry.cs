@@ -38,7 +38,8 @@ namespace wotr_mod.Classes
                 StatType.Charisma,
                 useEvokerBloodlines: true,
                 chassis: new ClassChassisDefinition(
-                    DiceType.D8),
+                    DiceType.D8,
+                    skillPoints: 2),
                 removeSorcererBloodline: true,
                 presentation: new CharacterClassPresentationDefinition(
                     difficulty: 3,
@@ -63,7 +64,8 @@ namespace wotr_mod.Classes
                 useNecromancerBloodline: true,
                 chassis: new ClassChassisDefinition(
                     DiceType.D8,
-                    GameBlueprintIds.StatProgressions.BaseAttackBonusMedium),
+                    GameBlueprintIds.StatProgressions.BaseAttackBonusMedium,
+                    skillPoints: 2),
                 presentation: new CharacterClassPresentationDefinition(
                     difficulty: 4,
                     recommendedAttributes: new[] { StatType.Charisma, StatType.Dexterity, StatType.Constitution },

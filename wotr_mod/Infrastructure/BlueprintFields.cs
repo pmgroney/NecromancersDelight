@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
@@ -235,6 +236,9 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo AddFactsFacts =
             typeof(AddFacts).GetField("m_Facts", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo PrerequisiteNoFeatureFeature =
+            typeof(PrerequisiteNoFeature).GetField("m_Feature", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AddStartingEquipmentBasicItems =
             typeof(AddStartingEquipment).GetField("m_BasicItems", BindingFlags.Instance | BindingFlags.NonPublic);

@@ -1176,6 +1176,7 @@ namespace wotr_mod.Content
             }
 
             _blueprints.SetComponents(target, components);
+            ConfigureBillyRespecLevelLimit(target);
 
             CopyField(target, companionSource, "m_Faction");
             CopyField(target, companionSource, "m_Brain");
@@ -1185,6 +1186,21 @@ namespace wotr_mod.Content
             target.Alignment = companionSource.Alignment;
             target.IsCheater = companionSource.IsCheater;
             target.IsFake = companionSource.IsFake;
+        }
+
+        private void ConfigureBillyRespecLevelLimit(BlueprintUnit unit)
+        {
+            var classLevelLimit = unit.ComponentsArray.OfType<ClassLevelLimit>().FirstOrDefault();
+            if (classLevelLimit == null)
+            {
+                classLevelLimit = new ClassLevelLimit
+                {
+                    name = "$ClassLevelLimit$Billy"
+                };
+                _blueprints.AddComponent(unit, classLevelLimit);
+            }
+
+            classLevelLimit.LevelLimit = 1;
         }
 
         private void ConfigureBillyUnit(BlueprintUnit unit)

@@ -5,6 +5,7 @@ using Kingmaker.Enums.Damage;
 using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 
 namespace wotr_mod.Features
@@ -19,24 +20,34 @@ namespace wotr_mod.Features
         public DamageEnergyType EnergyType;
         public bool CountAnyEnergyDamageWhileConversionBuffActive;
         public BlueprintBuff ConversionBuff;
+        public BlueprintAbility[] AdditionalAbilities;
 
         public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
             var context = evt.Reason.Context;
-            if (context?.SourceAbility == null || !context.SourceAbility.IsSpell)
+            var sourceAbility = context?.SourceAbility;
+            if (sourceAbility == null)
             {
                 return;
             }
 
-            if (context.SourceAbility.School != SpellSchool.Evocation)
+            if (!IsAdditionalAbility(sourceAbility))
             {
-                return;
-            }
+                if (!sourceAbility.IsSpell)
+                {
+                    return;
+                }
 
-            var spellbook = context.SourceAbilityContext?.Ability?.Spellbook;
-            if (spellbook == null || !IsClassSpellbook(spellbook))
-            {
-                return;
+                if (sourceAbility.School != SpellSchool.Evocation)
+                {
+                    return;
+                }
+
+                var spellbook = context.SourceAbilityContext?.Ability?.Spellbook;
+                if (spellbook == null || !IsClassSpellbook(spellbook))
+                {
+                    return;
+                }
             }
 
             var rank = Fact?.GetRank() ?? 0;
@@ -84,6 +95,19 @@ namespace wotr_mod.Features
             return CountAnyEnergyDamageWhileConversionBuffActive &&
                    ConversionBuff != null &&
                    Owner.HasFact(ConversionBuff);
+        }
+
+        private bool IsAdditionalAbility(BlueprintAbility ability)
+        {
+            foreach (var additionalAbility in AdditionalAbilities ?? new BlueprintAbility[0])
+            {
+                if (additionalAbility != null && additionalAbility.AssetGuid == ability.AssetGuid)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private Spellbook GetClassSpellbook(Spellbook spellbook)

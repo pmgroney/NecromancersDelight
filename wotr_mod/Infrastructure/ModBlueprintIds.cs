@@ -307,6 +307,7 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower15 = "f6a7b8c9d0e14c93f4a5b6c7d8e9f0a1";
             public const string NecromancerBloodlinePower20 = "07b8c9d0e1f24da405b6c7d8e9f0a1b2";
             public const string DraconicEvokerArcaneArmorProficiency = "492a7ad0f6fd4a9fbed41066230ecd73";
+            public const string EvokerNoMartialWeaponProficiency = "93e1a5d628144d3ab4f81c0e72a97b65";
             public const string EvokerAirArcana = "f5a250ec11b041d89ae9e94fb1d7a18d";
             public const string EvokerAirHellfireRayKnownSpell = "046af9036c0c4a9ab43c2ed3c11e8f55";
             public const string EvokerProtectionFromEnergyCommunalKnownSpell = "2c6e9a4b8d5f4e70a1b3c5d7e9f10246";

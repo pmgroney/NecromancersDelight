@@ -4,6 +4,7 @@ using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Enums.Damage;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using UnityEngine;
 using UnityModManagerNet;
@@ -90,6 +91,7 @@ namespace wotr_mod.Classes.Evoker
                 "Icons\\umbral_potency.png",
                 DamageEnergyType.NegativeEnergy,
                 conversionBuffGuid: ModBlueprintIds.Buffs.ShadowbornArcana,
+                additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.ShadowbornUmbralRay },
                 characterClass: characterClass,
                 bindProgressionToClass: false);
         }
@@ -103,6 +105,7 @@ namespace wotr_mod.Classes.Evoker
             string iconPath,
             DamageEnergyType energyType,
             string conversionBuffGuid,
+            string[] additionalAbilityGuids,
             BlueprintCharacterClass characterClass,
             bool bindProgressionToClass = true)
         {
@@ -121,6 +124,7 @@ namespace wotr_mod.Classes.Evoker
                 iconPath,
                 energyType,
                 conversionBuffGuid,
+                additionalAbilityGuids,
                 characterClass);
             AddScalingFeature(progression, feature, characterClass, bindProgressionToClass);
         }
@@ -144,7 +148,8 @@ namespace wotr_mod.Classes.Evoker
                 iconPath,
                 energyType,
                 conversionBuffGuid: null,
-                characterClass);
+                additionalAbilityGuids: null,
+                characterClass: characterClass);
         }
 
         private void ApplyArcane(
@@ -181,12 +186,17 @@ namespace wotr_mod.Classes.Evoker
             string iconPath,
             DamageEnergyType energyType,
             string conversionBuffGuid,
+            string[] additionalAbilityGuids,
             BlueprintCharacterClass characterClass)
         {
             var feature = EnsureScalingFeature(featureGuid, internalName, nameKey, descriptionKey, iconPath, characterClass);
             var conversionBuff = string.IsNullOrWhiteSpace(conversionBuffGuid)
                 ? null
                 : _blueprints.Get<BlueprintBuff>(conversionBuffGuid);
+            var additionalAbilities = (additionalAbilityGuids ?? Array.Empty<string>())
+                .Select(guid => _blueprints.Get<BlueprintAbility>(guid))
+                .Where(ability => ability != null)
+                .ToArray();
             _blueprints.SetComponents(
                 feature,
                 new EvokerElementalPerDieBonusDamage
@@ -195,7 +205,8 @@ namespace wotr_mod.Classes.Evoker
                     Classes = new[] { characterClass },
                     EnergyType = energyType,
                     CountAnyEnergyDamageWhileConversionBuffActive = conversionBuff != null,
-                    ConversionBuff = conversionBuff
+                    ConversionBuff = conversionBuff,
+                    AdditionalAbilities = additionalAbilities
                 });
             return feature;
         }
