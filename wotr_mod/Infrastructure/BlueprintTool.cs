@@ -8,10 +8,12 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.Buffs;
+using Kingmaker.Designers.Mechanics.EquipmentEnchants;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.EntitySystem.Stats;
@@ -372,6 +374,33 @@ namespace wotr_mod.Infrastructure
                 enchantments
                     .Concat(new[] { BlueprintReferenceBase.CreateTyped<BlueprintWeaponEnchantmentReference>(enchantment) })
                     .ToArray());
+        }
+
+        public void SetArmorEnchantments(BlueprintItemArmor armor, params BlueprintArmorEnchantment[] enchantments)
+        {
+            if (armor == null || BlueprintFields.ItemArmorEnchantments == null)
+            {
+                return;
+            }
+
+            var references = (enchantments ?? Array.Empty<BlueprintArmorEnchantment>())
+                .Where(enchantment => enchantment != null)
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintEquipmentEnchantmentReference>)
+                .ToArray();
+
+            BlueprintFields.ItemArmorEnchantments.SetValue(armor, references);
+        }
+
+        public void SetAddUnitFeatureEquipmentFeature(AddUnitFeatureEquipment component, BlueprintFeature feature)
+        {
+            if (component == null || BlueprintFields.AddUnitFeatureEquipmentFeature == null)
+            {
+                return;
+            }
+
+            BlueprintFields.AddUnitFeatureEquipmentFeature.SetValue(
+                component,
+                feature == null ? null : BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(feature));
         }
 
         public void SetUnitFactIcon(BlueprintUnitFact fact, Sprite icon)

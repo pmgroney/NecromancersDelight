@@ -111,6 +111,10 @@ The manifest should use stable localization keys or logical cue names, not raw E
 - Full dialogue VO may require more work than barks because the currently cloned `BlueprintCue` shape does not expose an obvious voice field.
 - Do not tie audio to mutable English line text.
 
+## Troubleshooting
+
+- If dialogue localization triggers an event such as `Play_CMP_Billy_Dialog_Greeting` but Wwise logs `Event ID not found`, verify that the deployed mod bank is the freshly generated bank. On 2026-05-09, the stale deployed bank was 1.79 MB and lacked dialogue events; the generated 2.72 MB bank and `SoundbanksInfo.xml` contained them.
+
 ## Recommended Implementation Order
 
 1. Prototype one normal Billy unit bark with a non-empty `AkEvent` and Billy sound bank.

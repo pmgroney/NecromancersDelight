@@ -83,7 +83,7 @@ namespace wotr_mod.Spells.Modifiers
                 {
                     name = "$ThunderheadArcAction$ThunderheadRound",
                     RadiusFeet = 20,
-                    DiceCount = 2
+                    DiceCount = 1
                 }
             });
 
@@ -262,7 +262,7 @@ namespace wotr_mod.Spells.Modifiers
     public sealed class ThunderheadArcAction : ContextAction
     {
         public int RadiusFeet = 20;
-        public int DiceCount = 2;
+        public int DiceCount = 1;
 
         public override string GetCaption()
         {

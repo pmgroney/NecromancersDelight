@@ -15,12 +15,14 @@ namespace wotr_mod.Infrastructure
 
         internal static class Items
         {
+            public const string ArchersTunic = "8e5de80b19d140e3b884fe3105dbc0a2";
             public const string NeophytesLongbowOfDiscipline = "067f5d63c7ec42f08207b6c5189e1715";
             public const string ScythePlus1 = "ff9cbddecbd54932a73734f47d5c99cf";
         }
 
         internal static class Enchantments
         {
+            public const string ArchersTunic = "98802d04c1764e66b1616ccd492dec9a";
             public const string NeophytesLongbowOfDisciplineForceDamage = "52524073c51a4ec8bd5109751c85056a";
         }
 
@@ -63,6 +65,16 @@ namespace wotr_mod.Infrastructure
             public const string Billy = "cc0956a1823e43a1ac0fe2ee1a1ec985";
         }
 
+        internal static class Quests
+        {
+            public const string BillyCondition = "d4a68f7592ff4dc0b4503e86881b0dd0";
+        }
+
+        internal static class QuestObjectives
+        {
+            public const string BillyConditionInvestigate = "44b9939d80e945eb9a2debe04adcb36b";
+        }
+
         internal static class UnitAsks
         {
             public const string BillyBarks = "06404cabe50b4de5b3aaea72bb259cdd";
@@ -71,6 +83,7 @@ namespace wotr_mod.Infrastructure
         internal static class Flags
         {
             public const string BillyBowQuestStarted = "e1f39ce3152c439080ac6f2565e1f861";
+            public const string ShieldMazeRuntimeLootSeeded = "231ad8e13d8b400a98da928503969098";
         }
 
         internal static class Progressions
@@ -250,6 +263,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string ArchersTunicBowTraining = "ebac5091069e4fccb9824008a8304fb2";
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
             public const string LivingDarknessFeature1 = "a1b2c3d4e5f648901a2b3c4d5e6f0001";
             public const string LivingDarknessFeature2 = "a1b2c3d4e5f648901a2b3c4d5e6f0002";

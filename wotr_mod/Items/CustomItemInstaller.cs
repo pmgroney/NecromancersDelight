@@ -2,18 +2,23 @@ using System;
 using System.Linq;
 using Kingmaker;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Loot;
+using Kingmaker.Designers.Mechanics.EquipmentEnchants;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Enums;
 using Kingmaker.Items;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
+using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using Kingmaker.View.MapObjects;
 using UnityModManagerNet;
@@ -55,6 +60,7 @@ namespace wotr_mod.Items
         public void Install()
         {
             EnsureSupportBlueprints();
+            EnsureShieldMazeRuntimeLootSeededFlag();
 
             foreach (var definition in CustomItemRegistry.GetAll())
             {
@@ -92,6 +98,12 @@ namespace wotr_mod.Items
                 }
             }
 
+            if (item is BlueprintItemArmor armor
+                && string.Equals(definition.ItemGuid, ModBlueprintIds.Items.ArchersTunic, StringComparison.OrdinalIgnoreCase))
+            {
+                ConfigureArchersTunicItem(armor);
+            }
+
             if (existing == null)
             {
                 _blueprints.AddCachedBlueprint(definition.ItemGuid, item);
@@ -102,7 +114,107 @@ namespace wotr_mod.Items
 
         private void EnsureSupportBlueprints()
         {
+            EnsureArchersTunicBowTrainingFeature();
+            EnsureArchersTunicEnchantment();
             EnsureNeophytesLongbowOfDisciplineEnchantment();
+        }
+
+        private void EnsureArchersTunicBowTrainingFeature()
+        {
+            var existing = _blueprints.Get<BlueprintFeature>(
+                ModBlueprintIds.Features.ArchersTunicBowTraining);
+            var feature = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.RobeOfConsciousnessFeature,
+                    "Robe of Consciousness donor feature"),
+                ModBlueprintIds.Features.ArchersTunicBowTraining,
+                "WotrMod_ArchersTunic_BowTraining");
+
+            ConfigureArchersTunicBowTrainingFeature(feature);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Features.ArchersTunicBowTraining,
+                    feature);
+            }
+        }
+
+        private void EnsureArchersTunicEnchantment()
+        {
+            var existing = _blueprints.Get<BlueprintArmorEnchantment>(
+                ModBlueprintIds.Enchantments.ArchersTunic);
+            var enchantment = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintArmorEnchantment>(
+                    GameBlueprintIds.Enchantments.RobeOfConsciousnessEnchantment,
+                    "Robe of Consciousness donor enchantment"),
+                ModBlueprintIds.Enchantments.ArchersTunic,
+                "WotrMod_ArchersTunic_Enchantment");
+
+            ConfigureArchersTunicEnchantment(enchantment);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Enchantments.ArchersTunic,
+                    enchantment);
+            }
+        }
+
+        private void ConfigureArchersTunicItem(BlueprintItemArmor armor)
+        {
+            var enchantment = _blueprints.Require<BlueprintArmorEnchantment>(
+                ModBlueprintIds.Enchantments.ArchersTunic,
+                "Archer's Tunic enchantment");
+
+            _blueprints.SetComponents(armor);
+            _blueprints.SetArmorEnchantments(armor, enchantment);
+        }
+
+        private void ConfigureArchersTunicEnchantment(BlueprintArmorEnchantment enchantment)
+        {
+            var feature = _blueprints.Require<BlueprintFeature>(
+                ModBlueprintIds.Features.ArchersTunicBowTraining,
+                "Archer's Tunic bow training feature");
+            var addFeature = new AddUnitFeatureEquipment
+            {
+                name = "$AddUnitFeatureEquipment$WotrMod_ArchersTunic_Bows"
+            };
+            _blueprints.SetAddUnitFeatureEquipmentFeature(addFeature, feature);
+
+            _blueprints.SetComponents(
+                enchantment,
+                new AddStatBonusEquipment
+                {
+                    name = "$AddStatBonusEquipment$WotrMod_ArchersTunic_AC",
+                    Descriptor = ModifierDescriptor.Armor,
+                    Stat = StatType.AC,
+                    Value = 2
+                },
+                addFeature);
+        }
+
+        private void ConfigureArchersTunicBowTrainingFeature(BlueprintFeature feature)
+        {
+            _blueprints.SetComponents(
+                feature,
+                new WeaponGroupAttackBonus
+                {
+                    name = "$WeaponGroupAttackBonus$WotrMod_ArchersTunic_Bows",
+                    WeaponGroup = WeaponFighterGroup.Bows,
+                    AttackBonus = 1,
+                    Descriptor = ModifierDescriptor.None,
+                    multiplyByContext = false,
+                    contextMultiplier = new ContextValue()
+                },
+                new WeaponGroupDamageBonus
+                {
+                    name = "$WeaponGroupDamageBonus$WotrMod_ArchersTunic_Bows",
+                    WeaponGroup = WeaponFighterGroup.Bows,
+                    DamageBonus = 1,
+                    Descriptor = ModifierDescriptor.None,
+                    AdditionalValue = new ContextValue()
+                });
         }
 
         private void EnsureNeophytesLongbowOfDisciplineEnchantment()
@@ -167,6 +279,23 @@ namespace wotr_mod.Items
             return enchantment;
         }
 
+        private BlueprintUnlockableFlag EnsureShieldMazeRuntimeLootSeededFlag()
+        {
+            var flag = _blueprints.Get<BlueprintUnlockableFlag>(ModBlueprintIds.Flags.ShieldMazeRuntimeLootSeeded);
+            if (flag != null)
+            {
+                return flag;
+            }
+
+            flag = new BlueprintUnlockableFlag
+            {
+                name = "WotrMod_ShieldMazeRuntimeLootSeeded",
+                AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Flags.ShieldMazeRuntimeLootSeeded)
+            };
+            _blueprints.AddCachedBlueprint(ModBlueprintIds.Flags.ShieldMazeRuntimeLootSeeded, flag);
+            return flag;
+        }
+
         private void ApplyPlacements(CustomItemDefinition definition, BlueprintItem item)
         {
             foreach (var placement in definition.Placements)
@@ -190,7 +319,23 @@ namespace wotr_mod.Items
 
         public void OnAreaLoaded()
         {
-            AddShieldMazeFixedLoot();
+            var isShieldMazeLoaded = IsShieldMazeLoaded();
+            var shieldMazeRuntimeLootSeeded = isShieldMazeLoaded && IsShieldMazeRuntimeLootSeeded();
+            var shieldMazeRuntimeLootTargetsReady = isShieldMazeLoaded && AreShieldMazeRuntimeLootTargetsReady();
+            var shouldSeedShieldMazeRuntimeLoot = isShieldMazeLoaded
+                                                  && !shieldMazeRuntimeLootSeeded
+                                                  && shieldMazeRuntimeLootTargetsReady;
+            if (shouldSeedShieldMazeRuntimeLoot)
+            {
+                AddShieldMazeFixedLoot();
+            }
+            else if (isShieldMazeLoaded)
+            {
+                _logger.Log(
+                    shieldMazeRuntimeLootSeeded
+                        ? "Skipped Shield Maze runtime loot seeding: already seeded in this playthrough."
+                        : "Skipped Shield Maze runtime loot seeding: loot targets are not ready yet.");
+            }
 
             foreach (var definition in CustomItemRegistry.GetAll())
             {
@@ -208,10 +353,21 @@ namespace wotr_mod.Items
                             AddToLoadedUnitInventory(placement, item);
                             break;
                         case ItemPlacementKind.MapObjectLoot:
+                            if (IsShieldMazeRuntimeLootPlacement(placement)
+                                && !shouldSeedShieldMazeRuntimeLoot)
+                            {
+                                break;
+                            }
+
                             AddToMapObjectLoot(placement, item);
                             break;
                     }
                 }
+            }
+
+            if (shouldSeedShieldMazeRuntimeLoot)
+            {
+                MarkShieldMazeRuntimeLootSeeded();
             }
         }
 
@@ -298,6 +454,51 @@ namespace wotr_mod.Items
             return Game.HasInstance
                 && Game.Instance.CurrentlyLoadedArea != null
                 && Game.Instance.CurrentlyLoadedArea.AssetGuid == PrologueLabyrinthGuid;
+        }
+
+        private static bool AreShieldMazeRuntimeLootTargetsReady()
+        {
+            var mapObjects = Game.Instance?.State?.LoadedAreaState?.AllEntityData
+                ?.OfType<MapObjectEntityData>();
+            if (mapObjects == null)
+            {
+                return false;
+            }
+
+            var loadedIds = mapObjects
+                .Where(mapObject => !string.IsNullOrWhiteSpace(mapObject.UniqueId))
+                .Select(mapObject => mapObject.UniqueId)
+                .ToArray();
+            return ShieldMazeWeaponRackIds.All(requiredId =>
+                loadedIds.Contains(requiredId, StringComparer.OrdinalIgnoreCase));
+        }
+
+        private static bool IsShieldMazeRuntimeLootPlacement(ItemPlacementDefinition placement)
+        {
+            return placement.Kind == ItemPlacementKind.MapObjectLoot
+                && ShieldMazeWeaponRackIds.Contains(placement.TargetGuid, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private bool IsShieldMazeRuntimeLootSeeded()
+        {
+            var flag = EnsureShieldMazeRuntimeLootSeededFlag();
+            return Game.Instance?.Player?.UnlockableFlags?.IsUnlocked(flag) == true;
+        }
+
+        private void MarkShieldMazeRuntimeLootSeeded()
+        {
+            var player = Game.Instance?.Player;
+            if (player == null)
+            {
+                return;
+            }
+
+            var flag = EnsureShieldMazeRuntimeLootSeededFlag();
+            if (!player.UnlockableFlags.IsUnlocked(flag))
+            {
+                player.UnlockableFlags.Unlock(flag);
+                _logger.Log("Marked Shield Maze runtime loot as seeded.");
+            }
         }
 
         private void AddToChestLoot(ItemPlacementDefinition placement, BlueprintItem item)

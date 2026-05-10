@@ -192,7 +192,7 @@ namespace wotr_mod.Spells
                     area,
                     context,
                     Kingmaker.UnitLogic.Mechanics.Components.ContextRankProgression.DelayedStartPlusDivStep,
-                    7,
+                    5,
                     2));
         }
 

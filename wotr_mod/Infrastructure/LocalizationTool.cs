@@ -16,6 +16,16 @@ namespace wotr_mod.Infrastructure
             LocalizationManager.CurrentPack.PutString(key, value);
         }
 
+        public void PutSoundEvent(string key, string akEvent)
+        {
+            if (LocalizationManager.SoundPack == null)
+            {
+                return;
+            }
+
+            LocalizationManager.SoundPack.PutString(key, akEvent);
+        }
+
         public LocalizedString Text(string key)
         {
             return new LocalizedString { Key = key };

@@ -6,9 +6,11 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.Buffs;
+using Kingmaker.Designers.Mechanics.EquipmentEnchants;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -66,6 +68,9 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo ItemWeaponEnchantments =
             typeof(BlueprintItemWeapon).GetField("m_Enchantments", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo ItemArmorEnchantments =
+            typeof(BlueprintItemArmor).GetField("m_Enchantments", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AbilityDisplayName = UnitFactDisplayName;
 
@@ -236,6 +241,9 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo AddStartingEquipmentRestrictedByClass =
             typeof(AddStartingEquipment).GetField("m_RestrictedByClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddUnitFeatureEquipmentFeature =
+            typeof(AddUnitFeatureEquipment).GetField("m_Feature", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo LootEntryItem =
             typeof(LootEntry).GetField("m_Item", BindingFlags.Instance | BindingFlags.NonPublic);

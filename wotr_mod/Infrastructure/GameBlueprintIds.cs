@@ -98,7 +98,7 @@ namespace wotr_mod.Infrastructure
             public const string AcidicSpray = "c543eef6d725b184ea8669dd09b3894c";
             public const string AuraOfGreaterCourage = "acb787cf9f76e924a9a93bbd011af040";
             public const string BurningHands = "4783c3709a74a794dbe7c8e7e0b1b038";
-            public const string CureLightWounds = "47808d23c67033d4bbab86a1070fd62f";
+            public const string CureLightWounds = "5590652e1c2225c4ca30c4a699ab3649";
             public const string Entangle = "0fd00984a2c0e0a429cf1a911b4ec5ca";
             public const string FalseLife = "7a5b5bf845779a941a67251539545762";
             public const string Fireball = "2d81362af43aeac4387a3d4fced489c3";
@@ -166,6 +166,8 @@ namespace wotr_mod.Infrastructure
             public const string PointBlankShot = "0da0c194d6e1d43419eb8d990b28e0ab";
             public const string PreciseShot = "8f3d1e6b4be006f4d896081f2f889665";
             public const string RedDragonBloodlineArcana = "a8baee8eb681d53438cc17bd1d125890";
+            public const string RobeOfConsciousnessFeature = "1bf46667d31201848b77a95212827274";
+            public const string SimpleWeaponProficiency = "e70ecf1ed95ca2f40b754f1adb22bbdd";
             public const string WeaponFocusClaw = "153937f44fcd42a429a286a10babd82d";
             public const string ShortbowProficiency = "e8096942d950c8843857c2545f8dc18f";
             public const string UndeadType = "734a29b693e9ec346ba2951b27987e33";
@@ -221,6 +223,7 @@ namespace wotr_mod.Infrastructure
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
             public const string PotionOfInflictLightWounds = "115c4dcc899ce9747a6e97335955092a";
             public const string PotionOfInflictModerateWounds = "a9991bfea27096f46bb7b4ccf0fb7eb7";
+            public const string RobeOfConsciousness = "7ef04f0d8467e454b9b9dbb7c15ce408";
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
         }
 
@@ -232,9 +235,9 @@ namespace wotr_mod.Infrastructure
         internal static class Enchantments
         {
             public const string LongswordOfRightEnchantment = "59c2b96ee4525144e9ba7b8063ae20bb";
+            public const string RobeOfConsciousnessEnchantment = "dce5be8495d271349b8ca796d4fd8996";
         }
-   
-        
+
         internal static class Abilities
         {
             public const string BloodlineElementalFireArcanaAbility = "924dfcd481c0be54c959c2846b3fb7da";

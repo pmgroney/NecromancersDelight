@@ -55,6 +55,12 @@ The Hosilla placement should use:
 - Area gate: Prologue Labyrinth `944a6947fe8ffa8458c278aa1c0c4226`
 - Unit target: Hosilla `64dcc27d70edc1148b31257fcc2241ce`
 
+## Current Implementation
+
+- `BillyQuestStarter` creates a runtime `BlueprintQuest` in `CompanionQuests` and a single investigation `BlueprintQuestObjective`.
+- The bow trigger (`HandleItemsAdded` / `OnAreaLoaded`) starts the objective through `Player.QuestBook.GiveObjective` when the bow is in party inventory and Billy is available.
+- The `BillyBowQuestStarted` unlockable flag still prevents the starter dialogue from repeating; if the flag is already set, the objective-start safety still runs for older saves.
+
 ## Lich Branch Strategy
 
 - For dialog-only branch visibility, WotR already uses `MythicRequirement = PlayerIsLich`.

@@ -170,15 +170,59 @@ namespace wotr_mod.Content
             "Irori probably did not intend this lesson."
         };
 
+        private static readonly string[] BillyCheckFailLines =
+        {
+            "Missed. Disgusting.",
+            "Adjustment required.",
+            "That could have gone better."
+        };
+
+        private static readonly string[] BillyStealthLines =
+        {
+            "Careful. I don't creak, but I still sneak.",
+            "Quiet. Let them embarrass themselves first."
+        };
+
         private static readonly Dictionary<string, string> BillyBarkLocalizationKeys = BuildBillyBarkLocalizationKeys();
+        private static readonly Dictionary<string, string> BillyBarkAkEvents = BuildBillyBarkAkEvents();
 
         public void RegisterLocalization()
         {
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyGreeting,              "Play_CMP_Billy_Dialog_Greeting");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyJoinCue,               "Play_CMP_Billy_Dialog_JoinCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyWhatAreYouCue,         "Play_CMP_Billy_Dialog_WhatAreYouCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyWhyHereCue,            "Play_CMP_Billy_Dialog_WhyHereCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyDangerousCue,          "Play_CMP_Billy_Dialog_DangerousCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyPlanCue,               "Play_CMP_Billy_Dialog_PlanCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestStartCue,      "Play_CMP_Billy_Dialog_BowQuestStartCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestTempleCue,     "Play_CMP_Billy_Dialog_BowQuestTempleCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestHosillaCue,    "Play_CMP_Billy_Dialog_BowQuestHosillaCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestDisciplineCue, "Play_CMP_Billy_Dialog_BowQuestDisciplineCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestEndCue,        "Play_CMP_Billy_Dialog_BowQuestEndCue");
         }
 
         public void Install()
         {
+            LoadBillyVoiceBank();
             EnsureUndeadCiarCompanion();
+        }
+
+        private void LoadBillyVoiceBank()
+        {
+            try
+            {
+                var audioPath = Path.Combine(_modPath, "Audio");
+                AkSoundEngine.AddBasePath(audioPath);
+                var result = AkSoundEngine.LoadBank("CMP_Billy_GVR_ENG", out _);
+                if (result == AKRESULT.AK_Success || result == AKRESULT.AK_BankAlreadyLoaded)
+                    Main.Log($"Billy voice bank loaded ({result}).");
+                else
+                    Main.Warning($"Billy voice bank load returned {result} — audio will be silent.");
+            }
+            catch (Exception ex)
+            {
+                Main.Warning($"Billy voice bank load failed: {ex.Message}");
+            }
         }
 
         private BlueprintUnit EnsureUndeadCiarCompanion()
@@ -887,6 +931,9 @@ namespace wotr_mod.Content
             var undeadType = _blueprints.Require<BlueprintUnitFact>(
                 GameBlueprintIds.Features.UndeadType,
                 "Undead Type");
+            var channelNegative = _blueprints.Require<BlueprintUnitFact>(
+                GameBlueprintIds.Features.ChannelNegative,
+                "Channel Negative Energy");
             var featureList = EnsureBillyFeatureList();
             var positiveEnergyImmunity = EnsureBillyPositiveEnergyImmunity();
             var scalingClass = _blueprints.Require<BlueprintCharacterClass>(
@@ -908,6 +955,7 @@ namespace wotr_mod.Content
                 unit,
                 featureList,
                 undeadType,
+                channelNegative,
                 longbowProficiency,
                 shortbowProficiency,
                 positiveEnergyImmunity,
@@ -1087,7 +1135,7 @@ namespace wotr_mod.Content
             var component = new UnitAsksComponent
             {
                 name = "$UnitBarksComponent$Billy",
-                SoundBanks = Array.Empty<string>(),
+                SoundBanks = new[] { "CMP_Billy_GVR_ENG" },
                 PreviewSound = string.Empty
             };
 
@@ -1103,23 +1151,28 @@ namespace wotr_mod.Content
             component.Selected = CreateBark(
                 component,
                 BillyIdleBanterLines.Concat(BillyPartyBanterLines).Concat(BillyIroriFlavorLines),
-                cooldown: 30f,
-                chance: 0.25f);
+                cooldown: 0f,
+                chance: 1.0f,
+                audioOnly: true);
             component.RefuseEquip = CreateBark(component, BillyPartyBanterLines, cooldown: 0f, interruptOthers: true);
             component.RefuseCast = CreateBark(component, BillyBuffingLines, cooldown: 0f, interruptOthers: true);
             component.CheckSuccess = CreateBark(component, BillyOnHitLines, cooldown: 0f);
-            component.CheckFail = CreateBark(component, new[] { "Missed. Disgusting.", "Adjustment required.", "That could have gone better." }, cooldown: 0f);
+            component.CheckFail = CreateBark(component, BillyCheckFailLines, cooldown: 0f);
             component.RefuseUnequip = CreateEmptyBark(component);
             component.Discovery = CreateBark(component, BillyMovementLines.Concat(BillyIroriFlavorLines), cooldown: 0f);
-            component.Stealth = CreateBark(
-                component,
-                new[] { "Careful. I don't creak, but I still sneak.", "Quiet. Let them embarrass themselves first." },
-                cooldown: 0f);
+            component.Stealth = CreateBark(component, BillyStealthLines, cooldown: 0f);
             component.StormRain = CreateEmptyBark(component);
             component.StormSnow = CreateEmptyBark(component);
             component.AnimationBarks = Array.Empty<UnitAsksComponent.AnimationBark>();
 
             _blueprints.SetComponents(barks, component);
+
+            // Diagnostic: confirm AkEvent strings are assigned
+            var aggroEntry = component.Aggro?.Entries?.FirstOrDefault();
+            Main.Log($"Billy bark diagnostic — Aggro[0].AkEvent='{aggroEntry?.AkEvent ?? "<null>"}'");
+            var painEntry = component.Pain?.Entries?.FirstOrDefault();
+            Main.Log($"Billy bark diagnostic — Pain[0].AkEvent='{painEntry?.AkEvent ?? "<null>"}'");
+
             return barks;
         }
 
@@ -1138,19 +1191,39 @@ namespace wotr_mod.Content
             bool interruptOthers = false,
             float delayMin = 0f,
             float delayMax = 0f,
-            float chance = 1f)
+            float chance = 1f,
+            bool showOnScreen = true,
+            bool audioOnly = false)
         {
             return new UnitAsksComponent.Bark
             {
-                Entries = lines.Select(CreateBarkEntry).ToArray(),
+                Entries = lines.Select(audioOnly
+                    ? (Func<string, UnitAsksComponent.BarkEntry>)CreateAudioOnlyBarkEntry
+                    : CreateBarkEntry).ToArray(),
                 Cooldown = cooldown,
                 InterruptOthers = interruptOthers,
                 DelayMin = delayMin,
                 DelayMax = delayMax,
                 Chance = chance,
-                ShowOnScreen = true,
+                ShowOnScreen = showOnScreen,
                 Owner = owner
             };
+        }
+
+        private UnitAsksComponent.BarkEntry CreateAudioOnlyBarkEntry(string line)
+        {
+            var entry = new UnitAsksComponent.BarkEntry
+            {
+                Text = null,
+                AkEvent = BillyBarkAkEvents.TryGetValue(line, out var akEvent) ? akEvent : string.Empty,
+                RandomWeight = 1f,
+                ExcludeTime = 2
+            };
+            SetField(entry, "m_RequiredFlags", Array.Empty<BlueprintUnlockableFlagReference>());
+            SetField(entry, "m_ExcludedFlags", Array.Empty<BlueprintUnlockableFlagReference>());
+            SetField(entry, "m_RequiredEtudes", Array.Empty<BlueprintEtudeReference>());
+            SetField(entry, "m_ExcludedEtudes", Array.Empty<BlueprintEtudeReference>());
+            return entry;
         }
 
         private static UnitAsksComponent.Bark CreateEmptyBark(UnitAsksComponent owner)
@@ -1197,7 +1270,7 @@ namespace wotr_mod.Content
             var entry = new UnitAsksComponent.BarkEntry
             {
                 Text = CreateSharedString(_localization.Text(BillyBarkLocalizationKeys[line])),
-                AkEvent = string.Empty,
+                AkEvent = BillyBarkAkEvents.TryGetValue(line, out var akEvent) ? akEvent : string.Empty,
                 RandomWeight = 1f,
                 ExcludeTime = 2
             };
@@ -1241,7 +1314,46 @@ namespace wotr_mod.Content
                 .Concat(BillyLowHealthLines)
                 .Concat(BillyBuffingLines)
                 .Concat(BillyPartyBanterLines)
-                .Concat(BillyIroriFlavorLines);
+                .Concat(BillyIroriFlavorLines)
+                .Concat(BillyCheckFailLines);
+        }
+
+        private static Dictionary<string, string> BuildBillyBarkAkEvents()
+        {
+            var events = new Dictionary<string, string>();
+
+            // Per-line events — each line maps to Play_CMP_Billy_{Category}_{Index:D2}
+            // First-wins for lines shared across categories
+            AddLineEvents(events, BillyIdleBanterLines,   "Play_CMP_Billy_IdleBanter");
+            AddLineEvents(events, BillyMovementLines,     "Play_CMP_Billy_Movement");
+            AddLineEvents(events, BillyCombatStartLines,  "Play_CMP_Billy_CombatStart");
+            AddLineEvents(events, BillyRangedAttackLines, "Play_CMP_Billy_RangedAttack");
+            AddLineEvents(events, BillyOnHitLines,        "Play_CMP_Billy_OnHit");
+            AddLineEvents(events, BillyOnKillLines,       "Play_CMP_Billy_OnKill");
+            AddLineEvents(events, BillyTakingDamageLines, "Play_CMP_Billy_TakingDamage");
+            AddLineEvents(events, BillyLowHealthLines,    "Play_CMP_Billy_LowHealth");
+            AddLineEvents(events, BillyBuffingLines,      "Play_CMP_Billy_Buffing");
+            AddLineEvents(events, BillyPartyBanterLines,  "Play_CMP_Billy_PartyBanter");
+            AddLineEvents(events, BillyIroriFlavorLines,  "Play_CMP_Billy_IroriFlavor");
+
+            // Inline slot groups have dedicated recordings — override any prior assignment
+            SetLineEvents(events, BillyCheckFailLines, "Play_CMP_Billy_CheckFail");
+            SetLineEvents(events, BillyStealthLines,   "Play_CMP_Billy_Stealth");
+
+            return events;
+        }
+
+        private static void AddLineEvents(Dictionary<string, string> dict, string[] lines, string prefix)
+        {
+            for (var i = 0; i < lines.Length; i++)
+                if (!dict.ContainsKey(lines[i]))
+                    dict[lines[i]] = $"{prefix}_{i:D2}";
+        }
+
+        private static void SetLineEvents(Dictionary<string, string> dict, string[] lines, string prefix)
+        {
+            for (var i = 0; i < lines.Length; i++)
+                dict[lines[i]] = $"{prefix}_{i:D2}";
         }
 
         private BlueprintFeature EnsureBillyPositiveEnergyImmunity()
@@ -1385,13 +1497,9 @@ namespace wotr_mod.Content
                     "Irori"),
                 CreateSelectionEntry(
                     GameBlueprintIds.Selections.ChannelEnergy,
-                    new[]
-                    {
-                        GameBlueprintIds.Features.ChannelPositive,
-                        GameBlueprintIds.Features.ChannelNegative
-                    },
+                    GameBlueprintIds.Features.ChannelPositive,
                     "Channel Energy selection",
-                    "Channel Positive and Negative Energy"),
+                    "Channel Positive Energy"),
                 CreateSelectionEntry(
                     GameBlueprintIds.Selections.Domain,
                     GameBlueprintIds.Features.HealingDomainProgression,

@@ -64,10 +64,17 @@ namespace wotr_mod.Infrastructure
             public const string BillyWayOfTheBowDescription = "wotr_mod.companion.billy.feature.way_of_the_bow.description";
             public const string BillyStoryTitle = "wotr_mod.companion.billy.story.title";
             public const string BillyStoryDescription = "wotr_mod.companion.billy.story.description";
+            public const string BillyConditionQuestTitle = "wotr_mod.companion.billy.quest.condition.title";
+            public const string BillyConditionQuestDescription = "wotr_mod.companion.billy.quest.condition.description";
+            public const string BillyConditionQuestCompletion = "wotr_mod.companion.billy.quest.condition.completion";
+            public const string BillyConditionInvestigateTitle = "wotr_mod.companion.billy.quest.condition.investigate.title";
+            public const string BillyConditionInvestigateDescription = "wotr_mod.companion.billy.quest.condition.investigate.description";
             public const string CompanionPetName = "wotr_mod.feature.companion_pet.name";
             public const string CompanionPetDescription = "wotr_mod.feature.companion_pet.description";
             public const string NeophytesLongbowOfDisciplineName = "wotr_mod.item.neophytes_longbow_of_discipline.name";
             public const string NeophytesLongbowOfDisciplineDescription = "wotr_mod.item.neophytes_longbow_of_discipline.description";
+            public const string ArchersTunicName = "wotr_mod.item.archers_tunic.name";
+            public const string ArchersTunicDescription = "wotr_mod.item.archers_tunic.description";
             public const string ScythePlus1Name = "wotr_mod.item.scythe_plus1.name";
             public const string ScythePlus1Description = "wotr_mod.item.scythe_plus1.description";
             public const string EvokerName = "wotr_mod.class.evoker.name";
