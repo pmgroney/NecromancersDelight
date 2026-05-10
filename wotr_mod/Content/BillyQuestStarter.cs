@@ -183,14 +183,14 @@ namespace wotr_mod.Content
                 {
                     TryStartBillyQuestDialog(
                         ModBlueprintIds.Dialogs.BillyAct1TunicDialog,
-                        "Billy Act 1 Archer's Tunic dialog");
+                        "Billy Act 1 Irori Neophyte's Armor dialog");
                 }
 
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.Warning($"Billy Act 1 Archer's Tunic trigger failed: {ex}");
+                _logger.Warning($"Billy Act 1 Irori Neophyte's Armor trigger failed: {ex}");
                 return false;
             }
         }

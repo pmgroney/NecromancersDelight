@@ -210,8 +210,6 @@ namespace wotr_mod.Infrastructure
 
         internal static class Abilities
         {
-            public const string BillyChannelNegativeEnergy = "12a4a4cbe0524bff9c2e3f7f2a9f6d01";
-            public const string BillyChannelNegativeHeal = "a9c74b89fd814c05a3bc9812e9c5a4d2";
             public const string WitheringRay = "e5a4af76f4c54a50af1b4b83fc2404e3";
             public const string LivingDarkness1 = "a1b2c3d4e5f648901a2b3c4d5e6f0011";
             public const string LivingDarkness2 = "a1b2c3d4e5f648901a2b3c4d5e6f0012";
@@ -281,7 +279,6 @@ namespace wotr_mod.Infrastructure
         {
             public const string ArchersTunicBowTraining = "ebac5091069e4fccb9824008a8304fb2";
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
-            public const string BillyChannelNegative = "75b1f9cc4e2c4e2f9f5ef3d1d9128b21";
             public const string LivingDarknessFeature1 = "a1b2c3d4e5f648901a2b3c4d5e6f0001";
             public const string LivingDarknessFeature2 = "a1b2c3d4e5f648901a2b3c4d5e6f0002";
             public const string LivingDarknessFeature3 = "a1b2c3d4e5f648901a2b3c4d5e6f0003";

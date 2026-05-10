@@ -74,15 +74,16 @@ The Hosilla placement should use:
 - The `BillyBowQuestStarted` unlockable flag still prevents the starter dialogue from repeating; if the flag is already set, the objective-start safety still runs for older saves.
 - Act 1 Defender's Heart stage advances when the player selects Billy's Jalmeray-origin dialogue answer, not on area load; the new Jalmeray dialogue and audio keys are implemented.
 - The Jalmeray response uses a dedicated Continue answer to exit cleanly after the quest update.
-- Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Archer's Tunic pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
+- Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Irori Neophyte's Armor pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
 - `BillyPlacementPatch` uses `Game.Instance.AddUnitToPersistentState(BlueprintUnit)` for fresh Shield Maze and Defender's Heart area stand-ins; it must not reuse `Player.AllCharacters`/roster units, and its loaded-area guard must ignore recruited roster Billy so the Defender's Heart stand-in is not blocked.
 - After recruitment, Billy's click dialogue uses a hub greeting and hides the recruitment answer; his Defender's Heart placement offset was adjusted off the bed.
 - Billy copies Ciar's companion shell, which has `ClassLevelLimit = 10`; Hilor's respec action only lists units where `CharacterLevel > ClassLevelLimit`, so Billy must override this limit to `1` like early companions or he will be hidden from the respec picker.
+- Billy uses the Priest of Balance archetype, which grants both positive and negative channeling; do not add custom channel feature/ability clones or select the base Channel Energy feature.
 - Act 1 Stage 2 adds `Scorched Pilgrimage Record`, cloned from `ZachariusNecromancy` with donor callbacks/components cleared so it behaves as a plain readable note.
 - The record is added to static loot `SpecialThieflingStash` in Kenabres Burning / Market Square, avoiding runtime map-object reseeding.
 - When the record enters party inventory through loot, `BillyQuestStarter` completes the Jalmeray lead objective, starts `Trace the second transfer`, and opens the matching Billy dialogue; area-load/backfill checks may advance objectives but must not auto-open dialogue.
-- Act 1 reward stage places Archer's Tunic in CultistsLair static loot `Luxery_caseket` as the cult cache reward.
-- Picking up or equipping Archer's Tunic through loot completes `Trace the second transfer`, starts `Wait for another lead`, and opens the matching Billy dialogue; future Billy quest item pickups should follow this immediate-dialogue pattern.
+- Act 1 reward stage places Irori Neophyte's Armor, a +1 breastplate with the retained bow attack/damage bonus, in CultistsLair static loot `Luxery_caseket` as the cult cache reward.
+- Picking up or equipping Irori Neophyte's Armor through loot completes `Trace the second transfer`, starts `Wait for another lead`, and opens the matching Billy dialogue; future Billy quest item pickups should follow this immediate-dialogue pattern.
 - Billy's Condition uses `m_LastChapter = 5`, leaving the unresolved mystery open for later acts.
 
 ## Act 1 Narrative Plan: The Last Shot Before Silence
@@ -92,7 +93,7 @@ The Hosilla placement should use:
 - The Act 1 phase should reveal clues, not solve the full mystery of how Billy became undead in a labyrinth on the other side of the continent.
 - Early Act 1 trigger: a refugee, crusader scholar, or Iroran traveler recognizes one of Billy's training phrases, such as "three breaths, one shot," as a Jalmeray-area monastic archery drill.
 - Investigation clue: a Kenabres lead shows Billy's traveling group vanished before reaching official crusader channels. The record should imply capture or transfer below the city, not ordinary battlefield death.
-- Reward stage: a cult cache contains the Archer's Tunic as confiscated property or experimental material. The cache should include a partial note implying Billy was intentionally preserved or tested to see whether discipline, memory, and obedience survived undeath.
+- Reward stage: a cult cache contains Irori Neophyte's Armor as confiscated property or experimental material. The cache should include a partial note implying Billy was intentionally preserved or tested to see whether discipline, memory, and obedience survived undeath.
 - Act 1 ending beat: Billy recovers part of himself and gains proof that someone brought him to Kenabres and kept notes, but the responsible party and full method remain unknown.
 
 ## Voice And Text Follow-Up

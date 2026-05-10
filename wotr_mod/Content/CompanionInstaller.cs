@@ -28,8 +28,6 @@ using Kingmaker.ResourceLinks;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
-using Kingmaker.UnitLogic.Mechanics;
-using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityEngine;
 using Kingmaker.Visual.Sound;
 using wotr_mod.Features;
@@ -1228,11 +1226,10 @@ namespace wotr_mod.Content
                 GameBlueprintIds.Classes.Cleric,
                 "Cleric class");
             var scalingArchetype = _blueprints.Require<BlueprintArchetype>(
-                GameBlueprintIds.Archetypes.Ecclesitheurge,
-                "Ecclesitheurge archetype");
+                GameBlueprintIds.Archetypes.PriestOfBalance,
+                "Priest of Balance archetype");
             var monkAcBonus = EnsureBillyMonkAcBonus(scalingClass, scalingArchetype);
             var wayOfTheBow = EnsureBillyWayOfTheBow(scalingClass);
-            var channelNegative = EnsureBillyChannelNegative(scalingClass);
             var visualSource = _blueprints.Require<BlueprintUnit>(
                 GameBlueprintIds.Units.MythicLichSkeletonArcher,
                 "Mythic lich skeleton archer unit");
@@ -1244,7 +1241,6 @@ namespace wotr_mod.Content
                 unit,
                 featureList,
                 undeadType,
-                channelNegative,
                 longbowProficiency,
                 shortbowProficiency,
                 positiveEnergyImmunity,
@@ -1303,62 +1299,6 @@ namespace wotr_mod.Content
                 _localization.Text(LocalizationIds.Mod.BillyWayOfTheBowDescription));
             ConfigureAddFeatureOnClassLevel(feature, scalingClass);
             return feature;
-        }
-
-        private BlueprintFeature EnsureBillyChannelNegative(BlueprintCharacterClass scalingClass)
-        {
-            var channelNegativeEnergy = EnsureBillyChannelAbility(
-                GameBlueprintIds.Abilities.ChannelNegativeEnergy,
-                ModBlueprintIds.Abilities.BillyChannelNegativeEnergy,
-                "WotrMod_BillyChannelNegativeEnergy",
-                "Channel Negative Energy",
-                scalingClass);
-            var channelNegativeHeal = EnsureBillyChannelAbility(
-                GameBlueprintIds.Abilities.ChannelNegativeHeal,
-                ModBlueprintIds.Abilities.BillyChannelNegativeHeal,
-                "WotrMod_BillyChannelNegativeHeal",
-                "Channel Negative Heal",
-                scalingClass);
-            var channelFact = _blueprints.Require<BlueprintUnitFact>(
-                GameBlueprintIds.Features.ChannelEnergyFact,
-                "Channel Energy resource fact");
-            var spontaneousInflict = _blueprints.Require<BlueprintUnitFact>(
-                GameBlueprintIds.Features.ClericSpontaneousInflict,
-                "Cleric spontaneous inflict");
-            var feature = GetOrClone<BlueprintFeature>(
-                GameBlueprintIds.Features.ChannelNegative,
-                ModBlueprintIds.Features.BillyChannelNegative,
-                "WotrMod_BillyChannelNegative",
-                "Channel Negative Energy");
-
-            SetAddFacts(feature, channelFact, channelNegativeEnergy, channelNegativeHeal, spontaneousInflict);
-            return feature;
-        }
-
-        private BlueprintAbility EnsureBillyChannelAbility(
-            string sourceGuid,
-            string cloneGuid,
-            string cloneName,
-            string sourceName,
-            BlueprintCharacterClass scalingClass)
-        {
-            var ability = GetOrClone<BlueprintAbility>(sourceGuid, cloneGuid, cloneName, sourceName);
-            foreach (var rank in ability.ComponentsArray?.OfType<ContextRankConfig>() ?? Enumerable.Empty<ContextRankConfig>())
-            {
-                if (GetFieldValue<AbilityRankType>(rank, "m_Type") != AbilityRankType.Default)
-                {
-                    continue;
-                }
-
-                _blueprints.ConfigureContextRankConfig(
-                    rank,
-                    AbilityRankType.Default,
-                    ContextRankBaseValueType.ClassLevel,
-                    ContextRankProgression.OnePlusDiv2,
-                    characterClass: scalingClass);
-            }
-
-            return ability;
         }
 
         private static void ConfigureContextRankClass(
@@ -1791,9 +1731,9 @@ namespace wotr_mod.Content
         private void ConfigureBillyClassLevels(AddClassLevels addClassLevels)
         {
             var cleric = _blueprints.Require<BlueprintCharacterClass>(GameBlueprintIds.Classes.Cleric, "Cleric class");
-            var ecclesitheurge = _blueprints.Require<BlueprintArchetype>(
-                GameBlueprintIds.Archetypes.Ecclesitheurge,
-                "Ecclesitheurge archetype");
+            var priestOfBalance = _blueprints.Require<BlueprintArchetype>(
+                GameBlueprintIds.Archetypes.PriestOfBalance,
+                "Priest of Balance archetype");
 
             SetField(
                 addClassLevels,
@@ -1804,7 +1744,7 @@ namespace wotr_mod.Content
                 "m_Archetypes",
                 new[]
                 {
-                    BlueprintReferenceBase.CreateTyped<BlueprintArchetypeReference>(ecclesitheurge)
+                    BlueprintReferenceBase.CreateTyped<BlueprintArchetypeReference>(priestOfBalance)
                 });
             addClassLevels.Levels = 1;
             addClassLevels.RaceStat = StatType.Wisdom;
@@ -1840,11 +1780,6 @@ namespace wotr_mod.Content
                     GameBlueprintIds.Features.Irori,
                     "Deity selection",
                     "Irori"),
-                CreateSelectionEntry(
-                    GameBlueprintIds.Selections.ChannelEnergy,
-                    GameBlueprintIds.Features.ChannelPositive,
-                    "Channel Energy selection",
-                    "Channel Positive Energy"),
                 CreateSelectionEntry(
                     GameBlueprintIds.Selections.Domain,
                     GameBlueprintIds.Features.HealingDomainProgression,
@@ -2030,12 +1965,6 @@ namespace wotr_mod.Content
         {
             var field = FindField(target.GetType(), fieldName);
             field?.SetValue(target, value);
-        }
-
-        private static TValue GetFieldValue<TValue>(object target, string fieldName)
-        {
-            var field = FindField(target.GetType(), fieldName);
-            return field == null ? default(TValue) : (TValue)field.GetValue(target);
         }
 
         private static void CopyField(object target, object source, string fieldName)

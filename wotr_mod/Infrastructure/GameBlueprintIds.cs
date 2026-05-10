@@ -123,7 +123,6 @@ namespace wotr_mod.Infrastructure
         internal static class Selections
         {
             public const string BasicFeat = "247a4068296e8be42890143f451b4b45";
-            public const string ChannelEnergy = "d332c1748445e8f4f9e92763123e31bd";
             public const string Deity = "59e7a76987fe3b547b9cce045f4db3e4";
             public const string DhampirHeritage = "1246f548304a7654c97d8f2e9488e25f";
             public const string Domain = "48525e5da45c9c243a343fc6545dbdb9";
@@ -142,6 +141,7 @@ namespace wotr_mod.Infrastructure
         internal static class Archetypes
         {
             public const string Ecclesitheurge = "472af8cb3de628f4a805dc4a038971bc";
+            public const string PriestOfBalance = "a4560e3fb5d247d68fb1a2738fcc0855";
             public const string Elementalist = "c4a866cef5134632a8a3ef5696f45a5b";
         }
 
@@ -152,13 +152,9 @@ namespace wotr_mod.Infrastructure
             public const string ArmorProficiencyLight = "6d3728d4e9c9898458fe5e9532951132";
             public const string ArmorProficiencyMedium = "46f4fb320f35704488ba3d513397789d";
             public const string BloodragerProficiencies = "7aa59f5998e5baf4182cac3ff7998974";
-            public const string ChannelEnergyFact = "93f062bc0bf70e84ebae436e325e30e8";
             public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
             public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
             public const string SpellFocus = "16fa59cc9a72a6043b566b49184f53fe";
-            public const string ChannelNegative = "3adb2c906e031ee41a01bfc1d5fb7eea";
-            public const string ChannelPositive = "a79013ff4bcd4864cb669622a29ddafb";
-            public const string ClericSpontaneousInflict = "5ba6b9cc18acafd45b6293d1e03221ac";
             public const string DeathDomainProgressionSecondary = "023794a8386506c49aad142846700594";
             public const string FighterArmorMastery = "ae177f17cfb45264291d4d7c2cb64671";
             public const string FighterArmorTraining = "3c380607706f209499d951b29d3c44f3";
@@ -224,6 +220,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string ZachariusNecromancy = "de12840a4662481f937ff9542a6beb6b";
             public const string ColdIronMasterworkRapier = "47ee06073c429ad46916bf75e7455a5e";
+            public const string BreastplatePlus1 = "5041415db3e6c394a8b2173c39fd4ec4";
             public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
             public const string CompositeLongbowPlus1 = "2753a0159681be94da3a5eeabc8c8d1a";
             public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
@@ -232,7 +229,6 @@ namespace wotr_mod.Infrastructure
             public const string PotionOfCureLightWounds = "d52566ae8cbe8dc4dae977ef51c27d91";
             public const string PotionOfInflictLightWounds = "115c4dcc899ce9747a6e97335955092a";
             public const string PotionOfInflictModerateWounds = "a9991bfea27096f46bb7b4ccf0fb7eb7";
-            public const string RobeOfConsciousness = "7ef04f0d8467e454b9b9dbb7c15ce408";
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
         }
 
@@ -243,6 +239,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Enchantments
         {
+            public const string ArmorEnhancementBonus1 = "a9ea95c5e02f9b7468447bc1010fe152";
             public const string LongswordOfRightEnchantment = "59c2b96ee4525144e9ba7b8063ae20bb";
             public const string RobeOfConsciousnessEnchantment = "dce5be8495d271349b8ca796d4fd8996";
         }
@@ -253,8 +250,6 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalAirArcanaAbility = "5f6315dfeb74a564f96f460d72f7206c";
             public const string BloodlineElementalEarthArcanaAbility = "94ce51ed666fc8d42830aa9fe48897f9";
             public const string BloodlineElementalWaterArcanaAbility = "dd484f0706325de40aee5dba15fbce45";
-            public const string ChannelNegativeEnergy = "89df18039ef22174b81052e2e419c728";
-            public const string ChannelNegativeHeal = "9be3aa47a13d5654cbcb8dbd40c325f2";
             public const string BloodlineElementalEarthElementalRayAbility = "8c2a0033a591b9247b45af575f12af77";
             public const string BloodlineElementalFireElementalRayAbility = "1b4989258e5964149a909e47c72b7f67";
             public const string BloodlineElementalFireElementalBlastAbility = "b2d1d39cd406e0f4185c52fecc73c3b5";

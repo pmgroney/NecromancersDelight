@@ -12,7 +12,6 @@ using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.EquipmentEnchants;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
-using Kingmaker.EntitySystem.Stats;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Enums;
 using Kingmaker.Items;
@@ -173,19 +172,22 @@ namespace wotr_mod.Items
 
         private void ConfigureArchersTunicItem(BlueprintItemArmor armor)
         {
+            var enhancement = _blueprints.Require<BlueprintArmorEnchantment>(
+                GameBlueprintIds.Enchantments.ArmorEnhancementBonus1,
+                "+1 armor enhancement");
             var enchantment = _blueprints.Require<BlueprintArmorEnchantment>(
                 ModBlueprintIds.Enchantments.ArchersTunic,
-                "Archer's Tunic enchantment");
+                "Irori Neophyte's Armor enchantment");
 
             _blueprints.SetComponents(armor);
-            _blueprints.SetArmorEnchantments(armor, enchantment);
+            _blueprints.SetArmorEnchantments(armor, enhancement, enchantment);
         }
 
         private void ConfigureArchersTunicEnchantment(BlueprintArmorEnchantment enchantment)
         {
             var feature = _blueprints.Require<BlueprintFeature>(
                 ModBlueprintIds.Features.ArchersTunicBowTraining,
-                "Archer's Tunic bow training feature");
+                "Irori Neophyte's Armor bow training feature");
             var addFeature = new AddUnitFeatureEquipment
             {
                 name = "$AddUnitFeatureEquipment$WotrMod_ArchersTunic_Bows"
@@ -194,13 +196,6 @@ namespace wotr_mod.Items
 
             _blueprints.SetComponents(
                 enchantment,
-                new AddStatBonusEquipment
-                {
-                    name = "$AddStatBonusEquipment$WotrMod_ArchersTunic_AC",
-                    Descriptor = ModifierDescriptor.Armor,
-                    Stat = StatType.AC,
-                    Value = 2
-                },
                 addFeature);
         }
 

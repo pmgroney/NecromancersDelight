@@ -31,7 +31,7 @@ namespace wotr_mod.Items
                 new CustomItemDefinition(
                     "WotrMod_ArchersTunic",
                     ModBlueprintIds.Items.ArchersTunic,
-                    GameBlueprintIds.Items.RobeOfConsciousness,
+                    GameBlueprintIds.Items.BreastplatePlus1,
                     LocalizationIds.Mod.ArchersTunicName,
                     LocalizationIds.Mod.ArchersTunicDescription,
                     enchantmentGuids: new[]
