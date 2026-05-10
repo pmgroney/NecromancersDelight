@@ -185,35 +185,35 @@
     <value>Hellfire Ray - Acid</value>
   </data>
   <data name="wotr_mod.spell.acid_hellfire_ray.description" xml:space="preserve">
-    <value>This spell functions like hellfire ray, except each ray deals acid damage instead of fire damage while retaining its unholy power.</value>
+    <value>You fire a ray of hellfire that requires a ranged touch attack to hit. Each ray deals 1d6 damage per caster level, to a maximum of 15d6; half of the damage is acid and half is unholy. You gain one additional ray for every four caster levels beyond 11th, to a maximum of three rays at caster level 19. The rays can be aimed at the same or different targets, but all targets must be within 30 feet of each other.</value>
   </data>
 
   <data name="wotr_mod.spell.cold_hellfire_ray.name" xml:space="preserve">
     <value>Hellfire Ray - Cold</value>
   </data>
   <data name="wotr_mod.spell.cold_hellfire_ray.description" xml:space="preserve">
-    <value>This spell functions like hellfire ray, except each ray deals cold damage instead of fire damage while retaining its unholy power.</value>
+    <value>You fire a ray of hellfire that requires a ranged touch attack to hit. Each ray deals 1d6 damage per caster level, to a maximum of 15d6; half of the damage is cold and half is unholy. You gain one additional ray for every four caster levels beyond 11th, to a maximum of three rays at caster level 19. The rays can be aimed at the same or different targets, but all targets must be within 30 feet of each other.</value>
   </data>
 
   <data name="wotr_mod.spell.electric_hellfire_ray.name" xml:space="preserve">
     <value>Hellfire Ray - Electric</value>
   </data>
   <data name="wotr_mod.spell.electric_hellfire_ray.description" xml:space="preserve">
-    <value>This spell functions like hellfire ray, except each ray deals electricity damage instead of fire damage while retaining its unholy power.</value>
+    <value>You fire a ray of hellfire that requires a ranged touch attack to hit. Each ray deals 1d6 damage per caster level, to a maximum of 15d6; half of the damage is electricity and half is unholy. You gain one additional ray for every four caster levels beyond 11th, to a maximum of three rays at caster level 19. The rays can be aimed at the same or different targets, but all targets must be within 30 feet of each other.</value>
   </data>
 
   <data name="wotr_mod.spell.fire_hellfire_ray.name" xml:space="preserve">
     <value>Hellfire Ray</value>
   </data>
   <data name="wotr_mod.spell.fire_hellfire_ray.description" xml:space="preserve">
-    <value>This spell functions like hellfire ray.</value>
+    <value>You fire a ray of hellfire that requires a ranged touch attack to hit. Each ray deals 1d6 damage per caster level, to a maximum of 15d6; half of the damage is fire and half is unholy. You gain one additional ray for every four caster levels beyond 11th, to a maximum of three rays at caster level 19. The rays can be aimed at the same or different targets, but all targets must be within 30 feet of each other.</value>
   </data>
 
   <data name="wotr_mod.spell.shadow_hellfire_ray.name" xml:space="preserve">
-    <value>Hellfire Ray - Shadow</value>
+    <value>Shadowblight Stream</value>
   </data>
   <data name="wotr_mod.spell.shadow_hellfire_ray.description" xml:space="preserve">
-    <value>This spell functions like hellfire ray, except each ray deals negative energy damage instead of fire damage while retaining its unholy power.</value>
+    <value>You unleash a stream of shadowblight that requires a ranged touch attack to hit. Each stream deals 1d6 damage per caster level, to a maximum of 15d6; half of the damage is negative energy and half is unholy. You gain one additional stream for every four caster levels beyond 11th, to a maximum of three streams at caster level 19. The streams can be aimed at the same or different targets, but all targets must be within 30 feet of each other.</value>
   </data>
 
   <data name="wotr_mod.spell.corpse_explosion.name" xml:space="preserve">
