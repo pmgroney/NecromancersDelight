@@ -1937,7 +1937,7 @@ namespace wotr_mod.Classes.Evoker
             int level,
             BlueprintFeatureBase feature)
         {
-            var entries = (progression.LevelEntries ?? Array.Empty<LevelEntry>()).ToList();
+            var entries = (progression.LevelEntries).ToList();
             AddFeatureToLevel(entries, level, feature);
             progression.LevelEntries = entries.OrderBy(entry => entry.Level).ToArray();
         }

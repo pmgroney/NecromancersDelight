@@ -3,6 +3,12 @@
 ## Verified IDs
 
 - Prologue Labyrinth / Shield Maze area: `944a6947fe8ffa8458c278aa1c0c4226`
+- Defender's Heart area: `089e897983fef564d9e15b46ff679d7e`
+- Kenabres Burning / Market Square area: `92180b58582ec5f43a756071cd339f52`
+- Market Square SpecialThieflingStash loot: `4b7d47f312f186646a05beff7f501c3b`
+- CultistsLair area: `a3bfeef875b14484e9c32335b3d53f2c`
+- CultistsLair Luxery_caseket static loot: `de82c5ff1d3879e468c02fc86709be5d`
+- ZachariusNecromancy note item donor: `de12840a4662481f937ff9542a6beb6b`
 - Hosilla unit: `64dcc27d70edc1148b31257fcc2241ce`
 - From the Deep quest: `59ca88537b2839545aa5eba63e05fc79`
 - Slay Hosilla objective: `1992ddc7d1b615748a0652a964846d4c`
@@ -13,6 +19,12 @@
 
 Sources inspected:
 - `WOTR_Blueprints\Units\NPC\Unique\Act_0_Prologue\Prologue_Labyrinth\Hosilla.jbp`
+- `WOTR_Blueprints\World\Areas\Act_1_WorldwoundIncursion\DefendersHeart\DefendersHeart.jbp`
+- `WOTR_Blueprints\World\Areas\Act_1_WorldwoundIncursion\KenabresBurning\KenabresBurning.jbp`
+- `WOTR_Blueprints\Loot\Quest\KenabresBurning\SpecialThieflingStash.jbp`
+- `WOTR_Blueprints\World\Areas\Act_1_WorldwoundIncursion\CultistsLair\CultistsLair.jbp`
+- `WOTR_Blueprints\Loot\Cooking\CultistsLair\Luxery_caseket.jbp`
+- `WOTR_Blueprints\Items\Books\UniqueBooks\ZachariusNecromancy.jbp`
 - `WOTR_Blueprints\World\Quests\c0\FromTheDeep\Obj4_SlayHosilla.jbp`
 - `WOTR_Blueprints\World\Etudes\Common\WrathOfTheRighteous\MythicLich\PlayerIsLich.jbp`
 - `WOTR_Blueprints\Root\Dialog\MythicInfo\PlayerIsLich.jbp`
@@ -57,9 +69,37 @@ The Hosilla placement should use:
 
 ## Current Implementation
 
-- `BillyQuestStarter` creates a runtime `BlueprintQuest` in `CompanionQuests` and a single investigation `BlueprintQuestObjective`.
+- `BillyQuestStarter` creates a runtime `BlueprintQuest` in `CompanionQuests` with an initial investigation objective and an Act 1 Jalmeray lead objective.
 - The bow trigger (`HandleItemsAdded` / `OnAreaLoaded`) starts the objective through `Player.QuestBook.GiveObjective` when the bow is in party inventory and Billy is available.
 - The `BillyBowQuestStarted` unlockable flag still prevents the starter dialogue from repeating; if the flag is already set, the objective-start safety still runs for older saves.
+- Act 1 Defender's Heart stage advances when the player selects Billy's Jalmeray-origin dialogue answer, not on area load; the new Jalmeray dialogue and audio keys are implemented.
+- The Jalmeray response uses a dedicated Continue answer to exit cleanly after the quest update.
+- Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Archer's Tunic pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
+- `BillyPlacementPatch` uses `Game.Instance.AddUnitToPersistentState(BlueprintUnit)` for fresh Shield Maze and Defender's Heart area stand-ins; it must not reuse `Player.AllCharacters`/roster units, and its loaded-area guard must ignore recruited roster Billy so the Defender's Heart stand-in is not blocked.
+- After recruitment, Billy's click dialogue uses a hub greeting and hides the recruitment answer; his Defender's Heart placement offset was adjusted off the bed.
+- Act 1 Stage 2 adds `Scorched Pilgrimage Record`, cloned from `ZachariusNecromancy` with donor callbacks/components cleared so it behaves as a plain readable note.
+- The record is added to static loot `SpecialThieflingStash` in Kenabres Burning / Market Square, avoiding runtime map-object reseeding.
+- When the record enters party inventory through loot, `BillyQuestStarter` completes the Jalmeray lead objective, starts `Trace the second transfer`, and opens the matching Billy dialogue; area-load/backfill checks may advance objectives but must not auto-open dialogue.
+- Act 1 reward stage places Archer's Tunic in CultistsLair static loot `Luxery_caseket` as the cult cache reward.
+- Picking up or equipping Archer's Tunic through loot completes `Trace the second transfer`, starts `Wait for another lead`, and opens the matching Billy dialogue; future Billy quest item pickups should follow this immediate-dialogue pattern.
+- Billy's Condition uses `m_LastChapter = 5`, leaving the unresolved mystery open for later acts.
+
+## Act 1 Narrative Plan: The Last Shot Before Silence
+
+- Billy is from a temple in the Jalmeray area, far from Kenabres and the Shield Maze.
+- The bow looted from Hosilla is the prologue starter. Billy recognizes it as his, but its presence under Kenabres should not be possible from what he remembers.
+- The Act 1 phase should reveal clues, not solve the full mystery of how Billy became undead in a labyrinth on the other side of the continent.
+- Early Act 1 trigger: a refugee, crusader scholar, or Iroran traveler recognizes one of Billy's training phrases, such as "three breaths, one shot," as a Jalmeray-area monastic archery drill.
+- Investigation clue: a Kenabres lead shows Billy's traveling group vanished before reaching official crusader channels. The record should imply capture or transfer below the city, not ordinary battlefield death.
+- Reward stage: a cult cache contains the Archer's Tunic as confiscated property or experimental material. The cache should include a partial note implying Billy was intentionally preserved or tested to see whether discipline, memory, and obedience survived undeath.
+- Act 1 ending beat: Billy recovers part of himself and gains proof that someone brought him to Kenabres and kept notes, but the responsible party and full method remain unknown.
+
+## Voice And Text Follow-Up
+
+- New Act 1 quest lines will need generated voice before release.
+- Existing Billy starter lines may need continuity edits to support the Jalmeray origin and wider undead-origin mystery.
+- Any edited existing lines will need regenerated voice to match the revised text.
+- First implementation pass should stub the Act 1 information flow; after that, run a separate text and voice audit before generating new audio.
 
 ## Lich Branch Strategy
 

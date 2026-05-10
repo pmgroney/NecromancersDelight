@@ -37,6 +37,29 @@ namespace wotr_mod.Items
                     enchantmentGuids: new[]
                     {
                         ModBlueprintIds.Enchantments.ArchersTunic
+                    },
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.CultistsLairLuxeryCasket,
+                            "Cultists' Lair luxury casket",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
+                    "WotrMod_BillyPilgrimageRecord",
+                    ModBlueprintIds.Items.BillyPilgrimageRecord,
+                    GameBlueprintIds.Items.ZachariusNecromancy,
+                    LocalizationIds.Mod.BillyPilgrimageRecordName,
+                    LocalizationIds.Mod.BillyPilgrimageRecordDescription,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.KenabresBurningSpecialThieflingStash,
+                            "Market Square thiefling stash",
+                            count: 1,
+                            identify: true)
                     }),
 
                 new CustomItemDefinition(

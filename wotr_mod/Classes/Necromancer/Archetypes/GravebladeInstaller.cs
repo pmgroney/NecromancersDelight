@@ -118,11 +118,21 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 CreateLevelEntry(19, armorMastery, weaponMastery)
             };
 
+            var masterworkScythe = _blueprints.Require<BlueprintItem>(
+                GameBlueprintIds.Items.MasterworkScythe,
+                "Masterwork scythe");
+            var cureLightWoundsPotion = _blueprints.Require<BlueprintItem>(
+                GameBlueprintIds.Items.PotionOfCureLightWounds,
+                "Potion of Cure Light Wounds");
+
             _blueprints.SetArchetypeReplaceSpellbook(archetype, gravebladeSpellbook);
-            _blueprints.SetArchetypeStartingEquipmentFromClass(
+            _blueprints.SetArchetypeStartingEquipment(
                 archetype,
-                characterClass,
-                _blueprints.Require<BlueprintItem>(GameBlueprintIds.Items.MasterworkScythe, "Masterwork scythe"));
+                true,
+                _blueprints.GetCharacterClassStartingGold(characterClass),
+                masterworkScythe,
+                cureLightWoundsPotion,
+                cureLightWoundsPotion);
             _blueprints.SetArchetypeFeatureChanges(
                 archetype,
                 gravebladeLevelEntries,

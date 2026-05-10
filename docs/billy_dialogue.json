@@ -15,14 +15,22 @@
     "BillyPlanCue": "Keep moving. Keep improving. Keep putting arrows into things that deserve it. And maybe, eventually, figure out whether this is something to fix or something to master."
   },
   "bowQuestDialogue": {
-    "BillyBowQuestStartCue": "That's my bow! How did this crazy bitch get it? I left it at the temple of Irori... no. I was holding it. Polished stone, incense, the training hall bell, then nothing until I woke up in a crypt with dirt in my mouth and prayer beads in my ribs.",
-    "BillyBowQuestTempleAnswer": "Slow down. What is the last thing you remember from the temple?",
-    "BillyBowQuestTempleCue": "Evening practice. Draw, hold, release. Again. Again. My fingers were split raw, and I was proud of it. Master Kalas said discipline is what remains when terror arrives. Then cold candle-smoke, a hand on my shoulder, and my bow hitting the floor. Or maybe that was me.",
-    "BillyBowQuestHosillaAnswer": "Hosilla having it means someone carried it from the temple to the Shield Maze.",
-    "BillyBowQuestHosillaCue": "That's the cheerful arithmetic, yes. A cultist chief didn't find temple property in a barrel of discount blasphemy. Someone took this from me, or from my body, and I very much want to know which version is worse.",
+    "BillyBowQuestStartCue": "That's my bow! How did this crazy bitch get it? I left it at the temple near Jalmeray... no. I was holding it. Sun-warmed stone, salt incense, the training hall bell, then nothing until I woke up in a crypt with dirt in my mouth and prayer beads in my ribs.",
+    "BillyBowQuestTempleAnswer": "Slow down. What is the last thing you remember from Jalmeray?",
+    "BillyBowQuestTempleCue": "Evening practice. Three breaths, one shot. Draw, hold, release. Again. Again. My fingers were split raw, and I was proud of it. Master Kalas said discipline is what remains when terror arrives. Then cold candle-smoke, a hand on my shoulder, and my bow hitting the floor. Or maybe that was me.",
+    "BillyBowQuestHosillaAnswer": "Hosilla having it means someone carried it across half the Inner Sea to Kenabres.",
+    "BillyBowQuestHosillaCue": "That's the cheerful arithmetic, yes. A cultist chief didn't find Jalmeray temple property in a barrel of discount blasphemy. Someone took this from me, or from my body, and brought it under Kenabres. I very much want to know which version is worse.",
     "BillyBowQuestDisciplineAnswer": "The bow still punishes chaotic foes. Irori's discipline survived with you.",
     "BillyBowQuestDisciplineCue": "Comforting in the most upsetting possible way. If the bow remembers my vows better than I remember my death, maybe it can point us backward. Not literally, I assume. Though if it starts humming, everyone stay calm.",
     "BillyBowQuestEndAnswer": "We'll find out what happened to you.",
-    "BillyBowQuestEndCue": "Good. Because if my last living day ended at the temple, then my first undead step in that crypt was not an accident. And if someone did this to me, I intend to discuss personal growth with them at arrowpoint."
+    "BillyBowQuestEndCue": "Good. Because if my last living day ended near Jalmeray, then my first undead step under Kenabres was not an accident. And if someone dragged me across the continent to become this, I intend to discuss personal growth with them at arrowpoint."
+  },
+  "act1QuestDialogue": {
+    "BillyAct1JalmerayAnswer": "Someone at Defender's Heart recognized one of your training phrases.",
+    "BillyAct1JalmerayCue": "Three breaths, one shot? That's not a Kenabres drill. That's from the Jalmeray temples, or close enough that my bones remember the rhythm. If someone here knows it, then my path to this city left tracks. Good. Tracks can be followed.",
+    "BillyAct1RecordAnswer": "We found a scorched record about a Jalmeray archer.",
+    "BillyAct1RecordCue": "That is me, unless Kenabres imported a second dead Iroran with excellent posture and terrible luck. \"Body absent from second count\" is a tidy way to say someone misplaced my corpse on purpose. Hosilla had my bow, but this says she was only one hand on the rope.",
+    "BillyAct1TunicAnswer": "This tunic was hidden in the cult cache.",
+    "BillyAct1TunicCue": "Temple stitching, but altered. See the shoulder? Reinforced for a bow arm. See the side seams? Cut so a stiff corpse would not tear them when it moved. Practical, monstrous, and annoyingly competent. Keep it. If someone made a uniform for what they expected me to become, I would rather see it used against them."
   }
 }

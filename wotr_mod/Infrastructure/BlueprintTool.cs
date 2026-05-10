@@ -622,6 +622,13 @@ namespace wotr_mod.Infrastructure
                     .ToArray());
         }
 
+        public int GetCharacterClassStartingGold(BlueprintCharacterClass characterClass)
+        {
+            return BlueprintFields.CharacterClassStartingGold?.GetValue(characterClass) is int gold
+                ? gold
+                : 0;
+        }
+
         public void SetArchetypeStartingEquipmentFromClass(
             BlueprintArchetype archetype,
             BlueprintCharacterClass characterClass,

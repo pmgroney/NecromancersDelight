@@ -16,6 +16,7 @@ namespace wotr_mod.Infrastructure
         internal static class Items
         {
             public const string ArchersTunic = "8e5de80b19d140e3b884fe3105dbc0a2";
+            public const string BillyPilgrimageRecord = "c87a5a91737e4e149073650f543b45df";
             public const string NeophytesLongbowOfDiscipline = "067f5d63c7ec42f08207b6c5189e1715";
             public const string ScythePlus1 = "ff9cbddecbd54932a73734f47d5c99cf";
         }
@@ -40,7 +41,17 @@ namespace wotr_mod.Infrastructure
             public const string BillyBowQuestDisciplineCue = "94a99cc68792436e8636261fb5b6ac31";
             public const string BillyBowQuestEndAnswer = "dfac0584903a4e5c8a2702d30699630e";
             public const string BillyBowQuestEndCue = "ba2afe2b5e7c4e158d4dd1389c4b256c";
+            public const string BillyAct1RecordDialog = "b62e6d07b18e43358a49f00a67d31965";
+            public const string BillyAct1RecordAnswer = "0004ed8e0fc24f43bd0bd7663ae64b4b";
+            public const string BillyAct1RecordCue = "df2d5b11d79f4629a1c83fd7c38ef1b5";
+            public const string BillyAct1JalmerayAnswer = "e14b0158027b44fbad5a4fc46be2be4c";
+            public const string BillyAct1JalmerayCue = "2023ee454bf34c78b17c10a73e8b39aa";
+            public const string BillyAct1JalmerayContinueAnswer = "6531988f101e4f36850d70a26488db05";
+            public const string BillyAct1TunicDialog = "0c88bb2f1677434e9a38d4865a40d55d";
+            public const string BillyAct1TunicAnswer = "9e14048012d54fcca36676a8f6457151";
+            public const string BillyAct1TunicCue = "3ac1b8c17ce449c187a59dcfb5fbd7a0";
             public const string BillyGreetingCue = "8f6a33462ad8422a8884a767110fc6a3";
+            public const string BillyHubGreetingCue = "ac20f8085d0a4d16966e631a61eba537";
             public const string BillyJoinCue = "4e1ad2f0b8c44f9aa5a66c3d7f8210b9";
             public const string BillyAnswers = "1327a2fbb2b84f0694fe6e9212f77b8c";
             public const string BillyJoinAnswer = "88ed37575b8b4f1390ad389668ba5089";
@@ -72,7 +83,10 @@ namespace wotr_mod.Infrastructure
 
         internal static class QuestObjectives
         {
+            public const string BillyConditionAct1JalmerayLead = "7a91dd7b26c44df4a43a466e0cdd4a6a";
+            public const string BillyConditionAct1TrailCold = "77a4ac30f20b4280ba1351af50d4a9fa";
             public const string BillyConditionInvestigate = "44b9939d80e945eb9a2debe04adcb36b";
+            public const string BillyConditionTransferRecord = "8dcce13eacba4e13ac76b47ab0768930";
         }
 
         internal static class UnitAsks
@@ -196,6 +210,8 @@ namespace wotr_mod.Infrastructure
 
         internal static class Abilities
         {
+            public const string BillyChannelNegativeEnergy = "12a4a4cbe0524bff9c2e3f7f2a9f6d01";
+            public const string BillyChannelNegativeHeal = "a9c74b89fd814c05a3bc9812e9c5a4d2";
             public const string WitheringRay = "e5a4af76f4c54a50af1b4b83fc2404e3";
             public const string LivingDarkness1 = "a1b2c3d4e5f648901a2b3c4d5e6f0011";
             public const string LivingDarkness2 = "a1b2c3d4e5f648901a2b3c4d5e6f0012";
@@ -265,6 +281,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string ArchersTunicBowTraining = "ebac5091069e4fccb9824008a8304fb2";
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
+            public const string BillyChannelNegative = "75b1f9cc4e2c4e2f9f5ef3d1d9128b21";
             public const string LivingDarknessFeature1 = "a1b2c3d4e5f648901a2b3c4d5e6f0001";
             public const string LivingDarknessFeature2 = "a1b2c3d4e5f648901a2b3c4d5e6f0002";
             public const string LivingDarknessFeature3 = "a1b2c3d4e5f648901a2b3c4d5e6f0003";

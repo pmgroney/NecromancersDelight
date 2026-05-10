@@ -4,13 +4,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Kingmaker.AreaLogic.QuestSystem;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Area;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.Designers.EventConditionActionSystem.Evaluators;
 using Kingmaker.DialogSystem;
 using Kingmaker.DialogSystem.Blueprints;
@@ -24,6 +28,8 @@ using Kingmaker.ResourceLinks;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics;
+using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityEngine;
 using Kingmaker.Visual.Sound;
 using wotr_mod.Features;
@@ -199,6 +205,9 @@ namespace wotr_mod.Content
             _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestHosillaCue,    "Play_CMP_Billy_Dialog_BowQuestHosillaCue");
             _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestDisciplineCue, "Play_CMP_Billy_Dialog_BowQuestDisciplineCue");
             _localization.PutSoundEvent(LocalizationIds.Mod.BillyBowQuestEndCue,        "Play_CMP_Billy_Dialog_BowQuestEndCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct1JalmerayCue,       "Play_CMP_Billy_Dialog_Act1JalmerayCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct1RecordCue,         "Play_CMP_Billy_Dialog_Act1RecordCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct1TunicCue,          "Play_CMP_Billy_Dialog_Act1TunicCue");
         }
 
         public void Install()
@@ -267,6 +276,11 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Dialogs.BillyGreetingCue,
                 "WotrMod_BillyGreetingCue",
                 "Ciar zombie greeting cue");
+            var hubGreeting = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyHubGreetingCue,
+                "WotrMod_BillyHubGreetingCue",
+                "Ciar zombie greeting cue");
             var joinCue = GetOrClone<BlueprintCue>(
                 GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
                 ModBlueprintIds.Dialogs.BillyJoinCue,
@@ -277,6 +291,16 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Dialogs.BillyAnswers,
                 "WotrMod_BillyAnswers",
                 "Ciar zombie answers");
+            var act1RecordDialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyAct1RecordDialog,
+                "WotrMod_BillyAct1RecordDialog",
+                "Ciar zombie dialog");
+            var act1TunicDialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyAct1TunicDialog,
+                "WotrMod_BillyAct1TunicDialog",
+                "Ciar zombie dialog");
             var leaveAnswer = GetOrClone<BlueprintAnswer>(
                 GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
                 ModBlueprintIds.Dialogs.BillyLeaveAnswer,
@@ -327,14 +351,50 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Dialogs.BillyPlanAnswer,
                 "WotrMod_BillyPlanAnswer",
                 "Ciar zombie leave answer");
+            var act1RecordCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct1RecordCue,
+                "WotrMod_BillyAct1RecordCue",
+                "Ciar zombie greeting cue");
+            var act1JalmerayCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct1JalmerayCue,
+                "WotrMod_BillyAct1JalmerayCue",
+                "Ciar zombie greeting cue");
+            var act1TunicCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct1TunicCue,
+                "WotrMod_BillyAct1TunicCue",
+                "Ciar zombie greeting cue");
+            var act1JalmerayAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct1JalmerayAnswer,
+                "WotrMod_BillyAct1JalmerayAnswer",
+                "Ciar zombie leave answer");
+            var act1JalmerayContinueAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct1JalmerayContinueAnswer,
+                "WotrMod_BillyAct1JalmerayContinueAnswer",
+                "Ciar zombie leave answer");
+            var act1RecordAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct1RecordAnswer,
+                "WotrMod_BillyAct1RecordAnswer",
+                "Ciar zombie leave answer");
+            var act1TunicAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct1TunicAnswer,
+                "WotrMod_BillyAct1TunicAnswer",
+                "Ciar zombie leave answer");
 
-            dialog.FirstCue = CreateCueSelection(greeting);
+            dialog.FirstCue = CreateCueSelection(greeting, hubGreeting);
             dialog.Conditions = new ConditionsChecker();
             dialog.StartActions = new ActionList();
             dialog.FinishActions = new ActionList();
             dialog.ReplaceActions = new ActionList();
 
             greeting.Text = _localization.Text(LocalizationIds.Mod.BillyGreeting);
+            greeting.Conditions = CreateBillyRecruitedConditions(speaker, not: true);
             greeting.Speaker = new DialogSpeaker();
             SetSpeakerBlueprint(greeting.Speaker, speaker);
             greeting.OnShow = new ActionList();
@@ -344,6 +404,20 @@ namespace wotr_mod.Content
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(answers)
             };
             greeting.Continue = CreateEmptyCueSelection();
+
+            hubGreeting.Text = _localization.Text(LocalizationIds.Mod.BillyHubGreeting);
+            hubGreeting.Conditions = CreateBillyRecruitedConditions(speaker, not: false);
+            hubGreeting.Speaker = new DialogSpeaker();
+            SetSpeakerBlueprint(hubGreeting.Speaker, speaker);
+            hubGreeting.OnShow = new ActionList();
+            hubGreeting.OnStop = new ActionList();
+            hubGreeting.Answers = new List<BlueprintAnswerBaseReference>
+            {
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(answers)
+            };
+            hubGreeting.Continue = CreateEmptyCueSelection();
+            hubGreeting.ShowOnce = false;
+            hubGreeting.ShowOnceCurrentDialog = false;
 
             joinCue.Text = _localization.Text(LocalizationIds.Mod.BillyJoinCue);
             joinCue.Speaker = new DialogSpeaker();
@@ -362,6 +436,9 @@ namespace wotr_mod.Content
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(whyHereAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(dangerousAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(planAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act1JalmerayAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act1RecordAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act1TunicAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(joinAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(leaveAnswer)
             };
@@ -370,6 +447,9 @@ namespace wotr_mod.Content
             ConfigureBillyInfoCue(whyHereCue, LocalizationIds.Mod.BillyWhyHereCue, speaker, answers);
             ConfigureBillyInfoCue(dangerousCue, LocalizationIds.Mod.BillyDangerousCue, speaker, answers);
             ConfigureBillyInfoCue(planCue, LocalizationIds.Mod.BillyPlanCue, speaker, answers);
+            ConfigureBillyInfoCue(act1JalmerayCue, LocalizationIds.Mod.BillyAct1JalmerayCue, speaker, answers);
+            ConfigureBillyInfoCue(act1RecordCue, LocalizationIds.Mod.BillyAct1RecordCue, speaker, answers);
+            ConfigureBillyInfoCue(act1TunicCue, LocalizationIds.Mod.BillyAct1TunicCue, speaker, answers);
             ConfigureBillyQuestionAnswer(
                 whatAreYouAnswer,
                 LocalizationIds.Mod.BillyWhatAreYouAnswer,
@@ -377,9 +457,26 @@ namespace wotr_mod.Content
             ConfigureBillyQuestionAnswer(whyHereAnswer, LocalizationIds.Mod.BillyWhyHereAnswer, whyHereCue);
             ConfigureBillyQuestionAnswer(dangerousAnswer, LocalizationIds.Mod.BillyDangerousAnswer, dangerousCue);
             ConfigureBillyQuestionAnswer(planAnswer, LocalizationIds.Mod.BillyPlanAnswer, planCue);
+            ConfigureBillyAct1JalmerayAnswer(act1JalmerayAnswer, act1JalmerayCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestStatusAnswer(
+                act1RecordAnswer,
+                LocalizationIds.Mod.BillyAct1RecordAnswer,
+                act1RecordCue,
+                ModBlueprintIds.QuestObjectives.BillyConditionTransferRecord,
+                QuestObjectiveState.Started);
+            ConfigureBillyQuestCueExit(act1RecordCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestStatusAnswer(
+                act1TunicAnswer,
+                LocalizationIds.Mod.BillyAct1TunicAnswer,
+                act1TunicCue,
+                ModBlueprintIds.QuestObjectives.BillyConditionAct1TrailCold,
+                QuestObjectiveState.Started);
+            ConfigureBillyQuestCueExit(act1TunicCue, act1JalmerayContinueAnswer);
+            ConfigureBillySingleCueDialog(act1RecordDialog, act1RecordCue);
+            ConfigureBillySingleCueDialog(act1TunicDialog, act1TunicCue);
 
             joinAnswer.Text = _localization.Text(LocalizationIds.Mod.BillyJoinAnswer);
-            joinAnswer.ShowConditions = new ConditionsChecker();
+            joinAnswer.ShowConditions = CreateBillyRecruitedConditions(speaker, not: true);
             joinAnswer.SelectConditions = new ConditionsChecker();
             joinAnswer.OnSelect = new ActionList();
             joinAnswer.NextCue = CreateCueSelection(joinCue);
@@ -575,6 +672,184 @@ namespace wotr_mod.Content
             answer.ShowOnceCurrentDialog = false;
             answer.RequireValidCue = false;
             answer.AddToHistory = true;
+        }
+
+        private void ConfigureBillyAct1JalmerayAnswer(
+            BlueprintAnswer answer,
+            BlueprintCue cue,
+            BlueprintAnswer continueAnswer)
+        {
+            ConfigureBillyQuestionAnswer(answer, LocalizationIds.Mod.BillyAct1JalmerayAnswer, cue);
+            answer.ShowConditions = new ConditionsChecker
+            {
+                Operation = Operation.And,
+                Conditions = new Condition[]
+                {
+                    CreateObjectiveStatusCondition(
+                        ModBlueprintIds.QuestObjectives.BillyConditionInvestigate,
+                        "WotrMod_BillyAct1JalmerayInvestigateStarted",
+                        QuestObjectiveState.Started),
+                    CreateCurrentAreaCondition(
+                        GameBlueprintIds.Areas.DefendersHeart,
+                        "WotrMod_BillyAct1JalmerayInDefendersHeart")
+                }
+            };
+            cue.OnStop = CreateAct1JalmerayAdvanceActions();
+            ConfigureBillyExitAnswer(continueAnswer, LocalizationIds.Mod.BillyAct1JalmerayContinueAnswer);
+            ConfigureBillyQuestCueExit(cue, continueAnswer);
+        }
+
+        private void ConfigureBillyExitAnswer(BlueprintAnswer answer, string localizationKey)
+        {
+            answer.Text = _localization.Text(localizationKey);
+            answer.ShowConditions = new ConditionsChecker();
+            answer.SelectConditions = new ConditionsChecker();
+            answer.OnSelect = new ActionList();
+            answer.NextCue = CreateEmptyCueSelection();
+            answer.ShowOnce = false;
+            answer.ShowOnceCurrentDialog = false;
+            answer.RequireValidCue = false;
+            answer.AddToHistory = true;
+        }
+
+        private void ConfigureBillyQuestStatusAnswer(
+            BlueprintAnswer answer,
+            string localizationKey,
+            BlueprintCue cue,
+            string objectiveGuid,
+            QuestObjectiveState state)
+        {
+            ConfigureBillyQuestionAnswer(answer, localizationKey, cue);
+            answer.ShowConditions = new ConditionsChecker
+            {
+                Operation = Operation.And,
+                Conditions = new Condition[]
+                {
+                    CreateObjectiveStatusCondition(
+                        objectiveGuid,
+                        "WotrMod_BillyQuestDialogue_" + cue.name,
+                        state)
+                }
+            };
+        }
+
+        private static void ConfigureBillyQuestCueExit(BlueprintCue cue, BlueprintAnswer continueAnswer)
+        {
+            cue.Answers = new List<BlueprintAnswerBaseReference>
+            {
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(continueAnswer)
+            };
+            cue.Continue = CreateEmptyCueSelection();
+        }
+
+        private static void ConfigureBillySingleCueDialog(BlueprintDialog dialog, BlueprintCue cue)
+        {
+            dialog.FirstCue = CreateCueSelection(cue);
+            dialog.Conditions = new ConditionsChecker();
+            dialog.StartActions = new ActionList();
+            dialog.FinishActions = new ActionList();
+            dialog.ReplaceActions = new ActionList();
+        }
+
+        private Condition CreateObjectiveStatusCondition(
+            string objectiveGuid,
+            string conditionName,
+            QuestObjectiveState state)
+        {
+            var objectiveStatus = new ObjectiveStatus
+            {
+                name = "$ObjectiveStatus$" + conditionName,
+                Not = false,
+                State = state
+            };
+            SetField(
+                objectiveStatus,
+                "m_QuestObjective",
+                BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(
+                    _blueprints.Require<BlueprintQuestObjective>(objectiveGuid, conditionName + " objective")));
+
+            return objectiveStatus;
+        }
+
+        private Condition CreateCurrentAreaCondition(string areaGuid, string conditionName)
+        {
+            var areaCondition = new CurrentAreaIs
+            {
+                name = "$CurrentAreaIs$" + conditionName,
+                Not = false
+            };
+            SetField(
+                areaCondition,
+                "m_Area",
+                BlueprintReferenceBase.CreateTyped<BlueprintAreaReference>(
+                    _blueprints.Require<BlueprintArea>(areaGuid, conditionName + " area")));
+
+            return areaCondition;
+        }
+
+        private ActionList CreateAct1JalmerayAdvanceActions()
+        {
+            var investigateObjective = _blueprints.Require<BlueprintQuestObjective>(
+                ModBlueprintIds.QuestObjectives.BillyConditionInvestigate,
+                "Billy investigate objective");
+            var jalmerayObjective = _blueprints.Require<BlueprintQuestObjective>(
+                ModBlueprintIds.QuestObjectives.BillyConditionAct1JalmerayLead,
+                "Billy Act 1 Jalmeray objective");
+            var completeInvestigate = new SetObjectiveStatus
+            {
+                name = "$SetObjectiveStatus$WotrMod_BillyAct1CompleteInvestigate",
+                Status = Kingmaker.Designers.Quests.Common.SummonPoolCountTrigger.ObjectiveStatus.Complete,
+                StartObjectiveIfNone = false
+            };
+            SetField(
+                completeInvestigate,
+                "m_Objective",
+                BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(investigateObjective));
+
+            var giveJalmerayObjective = new GiveObjective
+            {
+                name = "$GiveObjective$WotrMod_BillyAct1JalmerayLead"
+            };
+            SetField(
+                giveJalmerayObjective,
+                "m_Objective",
+                BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(jalmerayObjective));
+
+            return new ActionList
+            {
+                Actions = new GameAction[]
+                {
+                    completeInvestigate,
+                    giveJalmerayObjective
+                }
+            };
+        }
+
+        private ConditionsChecker CreateBillyRecruitedConditions(BlueprintUnit companion, bool not)
+        {
+            var condition = new Kingmaker.Designers.EventConditionActionSystem.Conditions.CompanionInParty
+            {
+                name = "$CompanionInParty$WotrMod_BillyRecruited",
+                Not = not,
+                MatchWhenActive = true,
+                MatchWhenDetached = true,
+                MatchWhenRemote = true,
+                MatchWhenDead = true,
+                MatchWhenEx = false
+            };
+            SetField(
+                condition,
+                "m_companion",
+                BlueprintReferenceBase.CreateTyped<BlueprintUnitReference>(companion));
+
+            return new ConditionsChecker
+            {
+                Operation = Operation.And,
+                Conditions = new Condition[]
+                {
+                    condition
+                }
+            };
         }
 
         private BlueprintCompanionStory EnsureBillyStory(BlueprintUnit companion)
@@ -931,9 +1206,6 @@ namespace wotr_mod.Content
             var undeadType = _blueprints.Require<BlueprintUnitFact>(
                 GameBlueprintIds.Features.UndeadType,
                 "Undead Type");
-            var channelNegative = _blueprints.Require<BlueprintUnitFact>(
-                GameBlueprintIds.Features.ChannelNegative,
-                "Channel Negative Energy");
             var featureList = EnsureBillyFeatureList();
             var positiveEnergyImmunity = EnsureBillyPositiveEnergyImmunity();
             var scalingClass = _blueprints.Require<BlueprintCharacterClass>(
@@ -944,6 +1216,7 @@ namespace wotr_mod.Content
                 "Ecclesitheurge archetype");
             var monkAcBonus = EnsureBillyMonkAcBonus(scalingClass, scalingArchetype);
             var wayOfTheBow = EnsureBillyWayOfTheBow(scalingClass);
+            var channelNegative = EnsureBillyChannelNegative(scalingClass);
             var visualSource = _blueprints.Require<BlueprintUnit>(
                 GameBlueprintIds.Units.MythicLichSkeletonArcher,
                 "Mythic lich skeleton archer unit");
@@ -1014,6 +1287,62 @@ namespace wotr_mod.Content
                 _localization.Text(LocalizationIds.Mod.BillyWayOfTheBowDescription));
             ConfigureAddFeatureOnClassLevel(feature, scalingClass);
             return feature;
+        }
+
+        private BlueprintFeature EnsureBillyChannelNegative(BlueprintCharacterClass scalingClass)
+        {
+            var channelNegativeEnergy = EnsureBillyChannelAbility(
+                GameBlueprintIds.Abilities.ChannelNegativeEnergy,
+                ModBlueprintIds.Abilities.BillyChannelNegativeEnergy,
+                "WotrMod_BillyChannelNegativeEnergy",
+                "Channel Negative Energy",
+                scalingClass);
+            var channelNegativeHeal = EnsureBillyChannelAbility(
+                GameBlueprintIds.Abilities.ChannelNegativeHeal,
+                ModBlueprintIds.Abilities.BillyChannelNegativeHeal,
+                "WotrMod_BillyChannelNegativeHeal",
+                "Channel Negative Heal",
+                scalingClass);
+            var channelFact = _blueprints.Require<BlueprintUnitFact>(
+                GameBlueprintIds.Features.ChannelEnergyFact,
+                "Channel Energy resource fact");
+            var spontaneousInflict = _blueprints.Require<BlueprintUnitFact>(
+                GameBlueprintIds.Features.ClericSpontaneousInflict,
+                "Cleric spontaneous inflict");
+            var feature = GetOrClone<BlueprintFeature>(
+                GameBlueprintIds.Features.ChannelNegative,
+                ModBlueprintIds.Features.BillyChannelNegative,
+                "WotrMod_BillyChannelNegative",
+                "Channel Negative Energy");
+
+            SetAddFacts(feature, channelFact, channelNegativeEnergy, channelNegativeHeal, spontaneousInflict);
+            return feature;
+        }
+
+        private BlueprintAbility EnsureBillyChannelAbility(
+            string sourceGuid,
+            string cloneGuid,
+            string cloneName,
+            string sourceName,
+            BlueprintCharacterClass scalingClass)
+        {
+            var ability = GetOrClone<BlueprintAbility>(sourceGuid, cloneGuid, cloneName, sourceName);
+            foreach (var rank in ability.ComponentsArray?.OfType<ContextRankConfig>() ?? Enumerable.Empty<ContextRankConfig>())
+            {
+                if (GetFieldValue<AbilityRankType>(rank, "m_Type") != AbilityRankType.Default)
+                {
+                    continue;
+                }
+
+                _blueprints.ConfigureContextRankConfig(
+                    rank,
+                    AbilityRankType.Default,
+                    ContextRankBaseValueType.ClassLevel,
+                    ContextRankProgression.OnePlusDiv2,
+                    characterClass: scalingClass);
+            }
+
+            return ability;
         }
 
         private static void ConfigureContextRankClass(
@@ -1609,14 +1938,14 @@ namespace wotr_mod.Content
             unit.LocalizedName = sharedName;
         }
 
-        private static CueSelection CreateCueSelection(BlueprintCueBase cue)
+        private static CueSelection CreateCueSelection(params BlueprintCueBase[] cues)
         {
             return new CueSelection
             {
-                Cues = new List<BlueprintCueBaseReference>
-                {
-                    BlueprintReferenceBase.CreateTyped<BlueprintCueBaseReference>(cue)
-                },
+                Cues = cues
+                    .Where(cue => cue != null)
+                    .Select(cue => BlueprintReferenceBase.CreateTyped<BlueprintCueBaseReference>(cue))
+                    .ToList(),
                 Strategy = Strategy.First
             };
         }
@@ -1685,6 +2014,12 @@ namespace wotr_mod.Content
         {
             var field = FindField(target.GetType(), fieldName);
             field?.SetValue(target, value);
+        }
+
+        private static TValue GetFieldValue<TValue>(object target, string fieldName)
+        {
+            var field = FindField(target.GetType(), fieldName);
+            return field == null ? default(TValue) : (TValue)field.GetValue(target);
         }
 
         private static void CopyField(object target, object source, string fieldName)

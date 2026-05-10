@@ -104,12 +104,22 @@ namespace wotr_mod.Items
                 ConfigureArchersTunicItem(armor);
             }
 
+            if (string.Equals(definition.ItemGuid, ModBlueprintIds.Items.BillyPilgrimageRecord, StringComparison.OrdinalIgnoreCase))
+            {
+                ConfigureBillyPilgrimageRecord(item);
+            }
+
             if (existing == null)
             {
                 _blueprints.AddCachedBlueprint(definition.ItemGuid, item);
             }
 
             return item;
+        }
+
+        private void ConfigureBillyPilgrimageRecord(BlueprintItem item)
+        {
+            _blueprints.SetComponents(item);
         }
 
         private void EnsureSupportBlueprints()

@@ -17,7 +17,12 @@ namespace wotr_mod.Patches
                         new StartingEquipmentItem(
                             GameBlueprintIds.Items.MasterworkScythe,
                             "Masterwork scythe",
-                            equip: true)
+                            equip: true),
+                        new StartingEquipmentItem(
+                            GameBlueprintIds.Items.PotionOfCureLightWounds,
+                            "Potion of Cure Light Wounds",
+                            equip: false,
+                            quantity: 2)
                     },
                     new[]
                     {

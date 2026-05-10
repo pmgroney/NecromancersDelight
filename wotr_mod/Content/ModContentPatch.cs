@@ -28,8 +28,8 @@ namespace wotr_mod.Content
                 new SpellInstaller(blueprints, localization, logger, modPath),
                 new CustomItemInstaller(blueprints, localization, logger),
                 new CharacterClassInstaller(blueprints, localization, logger, modPath),
-                new CompanionInstaller(blueprints, localization, modPath),
-                new BillyQuestStarter(blueprints, logger)
+                new BillyQuestStarter(blueprints, logger),
+                new CompanionInstaller(blueprints, localization, modPath)
             };
         }
 
