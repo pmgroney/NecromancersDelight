@@ -106,6 +106,7 @@ namespace wotr_mod.Infrastructure
             public const string CureLightWounds = "5590652e1c2225c4ca30c4a699ab3649";
             public const string Entangle = "0fd00984a2c0e0a429cf1a911b4ec5ca";
             public const string FalseLife = "7a5b5bf845779a941a67251539545762";
+            public const string FingerOfDeath = "6f1dcf6cfa92d1948a740195707c0dbe";
             public const string Fireball = "2d81362af43aeac4387a3d4fced489c3";
             public const string FireStorm = "e3d0dfe1c8527934294f241e0ae96a8d";
             public const string HellfireRay = "700cfcbd0cb2975419bcab7dbb8c6210";
@@ -187,6 +188,7 @@ namespace wotr_mod.Infrastructure
             public const string WeaponFocusClaw = "153937f44fcd42a429a286a10babd82d";
             public const string ShortbowProficiency = "e8096942d950c8843857c2545f8dc18f";
             public const string UndeadType = "734a29b693e9ec346ba2951b27987e33";
+            public const string BloodlineElementalAirElementalRayFeature = "acf668c24dfbcdd499276eaf1881486e";
             public const string BloodlineElementalEarthElementalRayFeature = "cb15c04cf43b93a4589077078b4188eb";
             public const string BloodlineUndeadSpellLevel1 = "3e4080a48cbd3154aac907befca64801";
             public const string BloodlineUndeadSpellLevel2 = "2444632e058986248b9f9e2d57a9dfee";
@@ -203,6 +205,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalEarthArcana = "5282afee8f3dfda49a34e36c3cee9d2c";
             public const string BloodlineElementalWaterArcana = "68d7772fa2f03e247ad1676ddd5eb4e2";
             public const string BloodlineElementalFireElementalRayFeature = "ce0889b5c1b392e48baf1e004d1efd67";
+            public const string BloodlineElementalWaterElementalRayFeature = "f6a811bf5650ac04ea2c21f4df390455";
             public const string BloodlineElementalFireElementalBlastFeature = "3022a5066a5604a498dd289b37dfd8aa";
             public const string BloodlineElementalFireElementalBodyFeature = "5d974328297021a479b4e3a1de749126";
             public const string BloodlineElementalFireResistanceFeature = "24980315c1bdcc4478ebb717e9b81961";
@@ -263,8 +266,10 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalAirArcanaAbility = "5f6315dfeb74a564f96f460d72f7206c";
             public const string BloodlineElementalEarthArcanaAbility = "94ce51ed666fc8d42830aa9fe48897f9";
             public const string BloodlineElementalWaterArcanaAbility = "dd484f0706325de40aee5dba15fbce45";
+            public const string BloodlineElementalAirElementalRayAbility = "4729c2ac98d02004fb440d17f7786e28";
             public const string BloodlineElementalEarthElementalRayAbility = "8c2a0033a591b9247b45af575f12af77";
             public const string BloodlineElementalFireElementalRayAbility = "1b4989258e5964149a909e47c72b7f67";
+            public const string BloodlineElementalWaterElementalRayAbility = "9d5cb7c1b77455b4d84169ce081934c6";
             public const string BloodlineElementalFireElementalBlastAbility = "b2d1d39cd406e0f4185c52fecc73c3b5";
             public const string BloodlineUndeadGraspOfTheDeadAbility = "a5c9f06155d772849be82e8965837813";
             public const string BloodlineUndeadIncorporealFormAbility = "853b5266404060f4f8afd9cf7859ef1f";

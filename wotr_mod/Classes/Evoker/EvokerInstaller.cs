@@ -2297,7 +2297,8 @@ namespace wotr_mod.Classes.Evoker
                 FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel4),
                 FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel5),
                 FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel6),
-                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel7));
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel7),
+                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel9));
         }
 
         private static BlueprintFeatureBase FindProgressionFeature(

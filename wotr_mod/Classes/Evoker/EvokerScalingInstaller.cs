@@ -55,7 +55,9 @@ namespace wotr_mod.Classes.Evoker
                 LocalizationIds.Mod.EvokerScalingAirDescription,
                 "Icons\\tempest_surge.png",
                 DamageEnergyType.Electricity,
-                characterClass);
+                conversionBuffGuid: null,
+                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalAirElementalRayAbility },
+                characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerEarthBloodline,
                 ModBlueprintIds.Features.EvokerScalingEarth,
@@ -64,7 +66,9 @@ namespace wotr_mod.Classes.Evoker
                 LocalizationIds.Mod.EvokerScalingEarthDescription,
                 "Icons\\corrosive_mastery.png",
                 DamageEnergyType.Acid,
-                characterClass);
+                conversionBuffGuid: null,
+                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalEarthElementalRayAbility },
+                characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerFireBloodline,
                 ModBlueprintIds.Features.EvokerScalingFire,
@@ -73,7 +77,9 @@ namespace wotr_mod.Classes.Evoker
                 LocalizationIds.Mod.EvokerScalingFireDescription,
                 "Icons\\infernal_potency.png",
                 DamageEnergyType.Fire,
-                characterClass);
+                conversionBuffGuid: null,
+                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalFireElementalRayAbility },
+                characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerWaterBloodline,
                 ModBlueprintIds.Features.EvokerScalingWater,
@@ -82,7 +88,9 @@ namespace wotr_mod.Classes.Evoker
                 LocalizationIds.Mod.EvokerScalingWaterDescription,
                 "Icons\\glacial_dominion.png",
                 DamageEnergyType.Cold,
-                characterClass);
+                conversionBuffGuid: null,
+                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalWaterElementalRayAbility },
+                characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.ShadowbornBloodline,
                 ModBlueprintIds.Features.ShadowbornScaling,
@@ -207,10 +215,12 @@ namespace wotr_mod.Classes.Evoker
                 .ToArray();
             _blueprints.SetComponents(
                 feature,
-                new EvokerElementalPerDieBonusDamage
+                new PerDieBonusDamage
                 {
-                    name = "$EvokerElementalPerDieBonusDamage$" + internalName,
+                    name = "$PerDieBonusDamage$" + internalName,
                     Classes = new[] { characterClass },
+                    IncludeClassSpellbookSpells = true,
+                    MatchEnergyDamage = true,
                     EnergyType = energyType,
                     CountAnyEnergyDamageWhileConversionBuffActive = conversionBuff != null,
                     ConversionBuff = conversionBuff,
@@ -241,6 +251,16 @@ namespace wotr_mod.Classes.Evoker
                 {
                     name = "$EvokerArcaneDcScaling$" + internalName,
                     Classes = new[] { characterClass }
+                },
+                new PerDieBonusDamage
+                {
+                    name = "$PerDieBonusDamage$" + internalName,
+                    Classes = new[] { characterClass },
+                    MatchForceDamage = true,
+                    AdditionalAbilities = new[]
+                    {
+                        _blueprints.Get<BlueprintAbility>(ModBlueprintIds.Spells.ForceRay)
+                    }
                 });
             return feature;
         }

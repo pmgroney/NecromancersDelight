@@ -324,6 +324,9 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo AbilityDeliverProjectileUseMaxProjectilesCount =
             typeof(AbilityDeliverProjectile).GetField("UseMaxProjectilesCount", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo AbilityVariantsVariants =
+            typeof(AbilityVariants).GetField("m_Variants", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo ContextActionApplyBuffBuff =
             typeof(ContextActionApplyBuff).GetField("m_Buff", BindingFlags.Instance | BindingFlags.NonPublic);
 

@@ -10,14 +10,17 @@ using Kingmaker.UnitLogic.Buffs.Blueprints;
 
 namespace wotr_mod.Features
 {
-    public sealed class EvokerElementalPerDieBonusDamage :
+    public sealed class PerDieBonusDamage :
         UnitFactComponentDelegate,
         IInitiatorRulebookHandler<RuleCalculateDamage>,
         IRulebookHandler<RuleCalculateDamage>,
         IInitiatorRulebookSubscriber
     {
         public BlueprintCharacterClass[] Classes;
+        public bool IncludeClassSpellbookSpells;
+        public bool MatchEnergyDamage;
         public DamageEnergyType EnergyType;
+        public bool MatchForceDamage;
         public bool CountAnyEnergyDamageWhileConversionBuffActive;
         public BlueprintBuff ConversionBuff;
         public BlueprintAbility[] AdditionalAbilities;
@@ -26,28 +29,9 @@ namespace wotr_mod.Features
         {
             var context = evt.Reason.Context;
             var sourceAbility = context?.SourceAbility;
-            if (sourceAbility == null)
+            if (sourceAbility == null || !IsEligibleSource(sourceAbility, context.SourceAbilityContext?.Ability?.Spellbook))
             {
                 return;
-            }
-
-            if (!IsAdditionalAbility(sourceAbility))
-            {
-                if (!sourceAbility.IsSpell)
-                {
-                    return;
-                }
-
-                if (sourceAbility.School != SpellSchool.Evocation)
-                {
-                    return;
-                }
-
-                var spellbook = context.SourceAbilityContext?.Ability?.Spellbook;
-                if (spellbook == null || !IsClassSpellbook(spellbook))
-                {
-                    return;
-                }
             }
 
             var rank = Fact?.GetRank() ?? 0;
@@ -58,8 +42,7 @@ namespace wotr_mod.Features
 
             foreach (var baseDamage in evt.DamageBundle)
             {
-                var energy = baseDamage as EnergyDamage;
-                if (energy == null || !MatchesDamage(energy))
+                if (!MatchesDamage(baseDamage))
                 {
                     continue;
                 }
@@ -70,6 +53,24 @@ namespace wotr_mod.Features
 
         public void OnEventDidTrigger(RuleCalculateDamage evt)
         {
+        }
+
+        private bool IsEligibleSource(BlueprintAbility sourceAbility, Spellbook spellbook)
+        {
+            if (IsAdditionalAbility(sourceAbility))
+            {
+                return true;
+            }
+
+            if (!IncludeClassSpellbookSpells ||
+                !sourceAbility.IsSpell ||
+                sourceAbility.School != SpellSchool.Evocation ||
+                spellbook == null)
+            {
+                return false;
+            }
+
+            return IsClassSpellbook(spellbook);
         }
 
         private bool IsClassSpellbook(Spellbook spellbook)
@@ -85,9 +86,20 @@ namespace wotr_mod.Features
             return false;
         }
 
-        private bool MatchesDamage(EnergyDamage damage)
+        private bool MatchesDamage(BaseDamage damage)
         {
-            if (damage.EnergyType == EnergyType)
+            var energy = damage as EnergyDamage;
+            if (energy != null)
+            {
+                return MatchesEnergyDamage(energy);
+            }
+
+            return MatchForceDamage && damage is ForceDamage;
+        }
+
+        private bool MatchesEnergyDamage(EnergyDamage damage)
+        {
+            if (MatchEnergyDamage && damage.EnergyType == EnergyType)
             {
                 return true;
             }

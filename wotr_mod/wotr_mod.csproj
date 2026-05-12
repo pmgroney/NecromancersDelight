@@ -53,6 +53,10 @@
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Owlcat.Runtime.Core.dll</HintPath>
             <Private>False</Private>
         </Reference>
+        <Reference Include="Owlcat.Runtime.UI">
+            <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\Owlcat.Runtime.UI.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
         <Reference Include="UnityEngine">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Pathfinder Second Adventure\Wrath_Data\Managed\UnityEngine.dll</HintPath>
             <Private>False</Private>
@@ -103,6 +107,7 @@
         <Compile Include="Classes\Necromancer\Archetypes\SepulchritInstaller.cs" />
         <Compile Include="Content\ModContentPatch.cs"/>
         <Compile Include="Content\BillyQuestStarter.cs" />
+        <Compile Include="Content\QuestExperienceReward.cs" />
         <Compile Include="Content\BillyReactivityLines.cs" />
         <Compile Include="Content\CompanionInstaller.cs" />
         <Compile Include="Content\IContentModule.cs"/>
@@ -110,7 +115,7 @@
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
         <Compile Include="Features\DraconicEvokerBreathDamage.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
-        <Compile Include="Features\EvokerElementalPerDieBonusDamage.cs" />
+        <Compile Include="Features\PerDieBonusDamage.cs" />
         <Compile Include="Features\EvokerForceSpellConversion.cs" />
         <Compile Include="Features\EvokerSpellShaping.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
@@ -161,6 +166,8 @@
         <Compile Include="Spells\Modifiers\DissolutionWaveModifier.cs" />
         <Compile Include="Spells\Modifiers\FrozenLanceModifier.cs" />
         <Compile Include="Spells\Modifiers\GlacialPrisonModifier.cs" />
+        <Compile Include="Spells\Modifiers\GraveboltCascadeModifier.cs" />
+        <Compile Include="Spells\Modifiers\HarvestSoulModifier.cs" />
         <Compile Include="Spells\Modifiers\HarvestTheFallenModifier.cs" />
         <Compile Include="Spells\Modifiers\HeavensWrathModifier.cs" />
         <Compile Include="Spells\Modifiers\ISpellModifier.cs" />
@@ -186,6 +193,7 @@
         <Compile Include="Patches\LeopardTripPatch.cs" />
         <Compile Include="Patches\ReapingEdgeProgressionFramePatch.cs" />
         <Compile Include="Patches\SpellEffectTintPatch.cs" />
+        <Compile Include="Patches\TooltipIconMagnificationPatch.cs" />
         <Compile Include="Patches\VelociraptorGrowthPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
@@ -202,6 +210,9 @@
         <Content Include="Icons\caustic_oblivion.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="Icons\deaths_gift.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
         <Content Include="Icons\dissolution_wave.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -215,6 +226,12 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\glacial_prison.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\gravebolt_cascade.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\harvest_soul.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\heavens_wrath.png">
@@ -306,6 +323,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\necromancer.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\one_of_us.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\reapers_judgement.png">

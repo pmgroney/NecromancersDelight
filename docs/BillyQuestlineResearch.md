@@ -77,10 +77,13 @@ The Hosilla placement should use:
 - Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Irori Neophyte's Armor pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
 - Shield Maze Billy is represented by a fresh pre-recruit runtime stand-in.
 - Defender's Heart uses the recruited roster Billy itself, as local-map party portrait pins require an in-game roster or party unit; a runtime stand-in can appear in-world but will not generate the portrait pin.
+- Defender's Heart Billy placement uses fixed hub coordinates instead of party-relative placement, ensuring a stable room and map position across all entry points.
+- Final static coordinate for Billy in the Defender's Heart center room is `(-82, 40, -7)` with orientation `0`.
+- Prior coordinates `(-84, 40, 4)` and `(-101, 40, -11)` were rejected for placing the map pin too far south near/below the center-room lower edge and inside the top-right bedroom, respectively; `Y=40` remained valid throughout.
 - Billy Defender's Heart placement checks `Player.AllCharacters` as well as active/remote/party collections so roster-only recruitment still satisfies the stand-in placement gate.
 - `Player.AllCharacters` can include runtime Billy stand-ins; treat a Billy unit in that list as recruited roster only when `UnitPartCompanion.State` is `Remote`, `InParty`, `InPartyDetached`, or `ExCompanion`.
 - `AddUnitToPersistentState` stores runtime stand-ins cross-scene, so Shield Maze duplicate prevention must check cross-scene non-roster Billy; Defender's Heart duplicate prevention checks only loaded-area non-roster Billy so stale Shield Maze stand-ins do not block hub placement.
-- After recruitment, Billy's click dialogue uses a hub greeting and hides the recruitment answer; his Defender's Heart placement offset was adjusted off the bed.
+- After recruitment, Billy's click dialogue uses a hub greeting and hides the recruitment answer; his Defender's Heart hub placement is static rather than party-relative.
 - Billy copies Ciar's companion shell, which has `ClassLevelLimit = 10`; Hilor's respec action only lists units where `CharacterLevel > ClassLevelLimit`, so Billy must override this limit to `1` like early companions or he will be hidden from the respec picker.
 - Billy uses the Priest of Balance archetype, which grants both positive and negative channeling; do not add custom channel feature/ability clones or select the base Channel Energy feature.
 - Act 1 Stage 2 adds `Scorched Pilgrimage Record`, cloned from `ZachariusNecromancy` with donor callbacks/components cleared so it behaves as a plain readable note.
@@ -88,6 +91,8 @@ The Hosilla placement should use:
 - When the record enters party inventory through loot, `BillyQuestStarter` completes the Jalmeray lead objective, starts `Trace the second transfer`, and opens the matching Billy dialogue; area-load/backfill checks may advance objectives but must not auto-open dialogue.
 - Act 1 reward stage places Irori Neophyte's Armor, a +1 breastplate with the retained bow attack/damage bonus, in CultistsLair static loot `Luxery_caseket` as the cult cache reward.
 - Picking up or equipping Irori Neophyte's Armor through loot completes `Trace the second transfer`, starts `Wait for another lead`, and opens the matching Billy dialogue; future Billy quest item pickups should follow this immediate-dialogue pattern.
+- Billy Act 1 quest rewards use `QuestRewardInstaller` / `QuestExperienceReward`, attaching `Experience` components by stable reward ID so repeated runtime blueprint setup does not stack duplicate rewards.
+- Assigned Billy Act 1 rewards: Investigate completion grants `ChallengeMinor` CR 3, Jalmeray lead completion grants `ChallengeMinor` CR 4, and Transfer Record completion grants `QuestNormal` CR 4; Trail Cold remains unrewarded because it stays open.
 - Billy's Condition uses `m_LastChapter = 5`, leaving the unresolved mystery open for later acts.
 
 ## Act 1 Narrative Plan: The Last Shot Before Silence

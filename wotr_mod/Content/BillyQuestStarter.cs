@@ -5,6 +5,7 @@ using System.Reflection;
 using Kingmaker;
 using Kingmaker.AreaLogic.QuestSystem;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.EntitySystem.Entities;
@@ -24,6 +25,12 @@ namespace wotr_mod.Content
         private static readonly BlueprintGuid BowGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.NeophytesLongbowOfDiscipline);
         private static readonly BlueprintGuid PilgrimageRecordGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.BillyPilgrimageRecord);
         private static readonly BlueprintGuid ArchersTunicGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.ArchersTunic);
+        private static readonly QuestExperienceReward Act1JalmerayLeadReward =
+            new QuestExperienceReward(EncounterType.ChallengeMinor, 3);
+        private static readonly QuestExperienceReward Act1TransferRecordReward =
+            new QuestExperienceReward(EncounterType.ChallengeMinor, 4);
+        private static readonly QuestExperienceReward Act1TrailColdReward =
+            new QuestExperienceReward(EncounterType.QuestNormal, 4);
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
 
@@ -330,6 +337,11 @@ namespace wotr_mod.Content
                 "m_Quest",
                 quest == null ? null : BlueprintReferenceBase.CreateTyped<BlueprintQuestReference>(quest));
             SetField(objective, "m_Type", BlueprintQuestObjective.Type.Objective);
+            QuestRewardInstaller.SetExperienceReward(
+                _blueprints,
+                objective,
+                "WotrMod_BillyConditionInvestigateReward",
+                Act1JalmerayLeadReward);
 
             return objective;
         }
@@ -372,6 +384,11 @@ namespace wotr_mod.Content
                 "m_Quest",
                 quest == null ? null : BlueprintReferenceBase.CreateTyped<BlueprintQuestReference>(quest));
             SetField(objective, "m_Type", BlueprintQuestObjective.Type.Objective);
+            QuestRewardInstaller.SetExperienceReward(
+                _blueprints,
+                objective,
+                "WotrMod_BillyConditionAct1JalmerayLeadReward",
+                Act1TransferRecordReward);
 
             return objective;
         }
@@ -414,6 +431,11 @@ namespace wotr_mod.Content
                 "m_Quest",
                 quest == null ? null : BlueprintReferenceBase.CreateTyped<BlueprintQuestReference>(quest));
             SetField(objective, "m_Type", BlueprintQuestObjective.Type.Objective);
+            QuestRewardInstaller.SetExperienceReward(
+                _blueprints,
+                objective,
+                "WotrMod_BillyConditionTransferRecordReward",
+                Act1TrailColdReward);
 
             return objective;
         }
@@ -449,6 +471,11 @@ namespace wotr_mod.Content
                 "m_Quest",
                 quest == null ? null : BlueprintReferenceBase.CreateTyped<BlueprintQuestReference>(quest));
             SetField(objective, "m_Type", BlueprintQuestObjective.Type.Objective);
+            QuestRewardInstaller.SetExperienceReward(
+                _blueprints,
+                objective,
+                "WotrMod_BillyConditionAct1TrailColdReward",
+                null);
 
             return objective;
         }

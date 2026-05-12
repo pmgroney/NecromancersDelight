@@ -171,6 +171,8 @@ namespace wotr_mod.Classes.Necromancer
                 LocalizationIds.Mod.NecromancerBloodlinePower20Name,
                 LocalizationIds.Mod.NecromancerBloodlinePower20Description,
                 necromancerClass);
+            var oneOfUsIcon = _icons.Load("Icons\\one_of_us.png");
+            if (oneOfUsIcon != null) _blueprints.SetUnitFactIcon(power20, oneOfUsIcon);
             var boneArmor = EnsureBoneArmorFeature(necromancerClass);
             var boneSpike = EnsureKnownSpellFeature(
                 GameBlueprintIds.Features.BloodlineUndeadSpellLevel1,
@@ -515,6 +517,8 @@ namespace wotr_mod.Classes.Necromancer
                 LocalizationIds.Mod.NecromancerBloodlinePower3Description, characterClass);
             feature.Ranks = 3;
             feature.ReapplyOnLevelUp = true;
+            var icon = _icons.Load("Icons\\deaths_gift.png");
+            if (icon != null) _blueprints.SetUnitFactIcon(feature, icon);
             foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(feature))
                 _blueprints.ConfigureFeatureRankCustomProgression(rank, feature, 5, 10, 20);
             foreach (var resistance in _blueprints.GetComponents<AddDamageResistanceEnergy>(feature))

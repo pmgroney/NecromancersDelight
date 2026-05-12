@@ -230,6 +230,13 @@
     <value>A terrifying force from beyond creeps from the ground to ensnare and harm your enemies. Creatures that fail their saving throw are entangled and take unholy damage that increases with caster level.</value>
   </data>
 
+  <data name="wotr_mod.spell.gravebolt_cascade.name" xml:space="preserve">
+    <value>Gravebolt Cascade</value>
+  </data>
+  <data name="wotr_mod.spell.gravebolt_cascade.description" xml:space="preserve">
+    <value>You fire three bolts of negative energy that can strike one or more enemy targets. Each bolt deals 1d8 points of negative energy damage + 1 point per caster level. Undead targets are healed by this amount instead. A creature struck by a bolt must succeed at a Fortitude save or become sickened for 1 round.</value>
+  </data>
+
   <data name="wotr_mod.spell.hell_on_earth.name" xml:space="preserve">
     <value>Hell On Earth</value>
   </data>
@@ -242,6 +249,34 @@
   </data>
   <data name="wotr_mod.spell.death_ray.description" xml:space="preserve">
     <value>You fire a ray of deathly energy. You may fire one ray, plus one additional ray for every four caster levels beyond 3rd, to a maximum of three rays at 11th level. Each ray requires a ranged touch attack and deals 4d6 negative energy damage.</value>
+  </data>
+
+  <data name="wotr_mod.spell.harvest_soul.name" xml:space="preserve">
+    <value>Harvest Soul</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.description" xml:space="preserve">
+    <value>You tear at a single enemy's soul, dealing 1d6 negative energy damage per caster level, to a maximum of 25d6. A successful Fortitude save halves the damage. If this damage kills the target, you restore one expended spell slot of the selected level.</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_1.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 1 Slot</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_2.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 2 Slot</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_3.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 3 Slot</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_4.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 4 Slot</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_5.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 5 Slot</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_6.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 6 Slot</value>
+  </data>
+  <data name="wotr_mod.spell.harvest_soul.restore_level_7.name" xml:space="preserve">
+    <value>Harvest Soul - Restore Level 7 Slot</value>
   </data>
 
   <data name="wotr_mod.spell.despair_of_sepulchre.name" xml:space="preserve">

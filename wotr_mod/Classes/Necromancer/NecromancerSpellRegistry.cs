@@ -52,6 +52,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("ExplosionOfRot", "98544596a01d4f7bbf7cc3ff98a1fb69", 4),
             Spell("FalseLifeGreater", "dc6af3b4fd149f841912d8a3ce0983de", 4),
             Spell("InflictCriticalWoundsCast", "651110ed4f117a948b41c05c5c7624c0", 4),
+            Spell("GraveboltCascade", ModBlueprintIds.Spells.GraveboltCascade, 4),
             Spell("Poison", "d797007a142a6c0409a74b064065a15e", 4),
 
             Spell("InflictLightWoundsMass", "9da37873d79ef0a468f969e4e5116ad2", 5),
@@ -78,6 +79,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("Destruction", "3b646e1db3403b940bf620e01d2ce0c7", 7),
             Spell("FingerOfDeath", "6f1dcf6cfa92d1948a740195707c0dbe", 7),
             Spell("FingerOfDeathSithhud", "e03024c8a03f454db5b78660f524757d", 7),
+            Spell("HarvestSoul", ModBlueprintIds.Spells.HarvestSoul, 7),
             Spell("Harm", "137af566f68fd9b428e2e12da43c1482", 7),
             Spell("InflictSeriousWoundsMass", "820170444d4d2a14abc480fcbdb49535", 7),
             Spell("SymbolOfWeakness", "8b02310b46e54de1ae9ba7161831938d", 7),

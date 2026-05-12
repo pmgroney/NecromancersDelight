@@ -165,6 +165,15 @@ namespace wotr_mod.Infrastructure
             public const string FrostBlast = "47fceb9475c443c497a9f44376aaab11";
             public const string FrozenLance = "5f62173dd23841a9ae92737878ecf6b5";
             public const string GlacialPrison = "858f3b914639433693f19528d1aa6a81";
+            public const string GraveboltCascade = "fb7b3648d0c84389b237da934ed9a7a5";
+            public const string HarvestSoul = "f7ca1580506e4e18a6fdd26c5fa0335c";
+            public const string HarvestSoulRestoreLevel1 = "363648941e5f4f7587f79f5a676df8d1";
+            public const string HarvestSoulRestoreLevel2 = "0d6058150e6e4043a0cbcd82a1a999d1";
+            public const string HarvestSoulRestoreLevel3 = "21b7a0c4298446cfbda467f734340830";
+            public const string HarvestSoulRestoreLevel4 = "cb22985967544e148f4cd6d9d1d9e629";
+            public const string HarvestSoulRestoreLevel5 = "dfeb5bf112b347c9bb324320588405a2";
+            public const string HarvestSoulRestoreLevel6 = "1391cb1118c44d8f92ebb8222aab7af9";
+            public const string HarvestSoulRestoreLevel7 = "d2cdd8c6c5d94756a9f85a952b3fe085";
             public const string HarvestTheFallen = "e8eaaaf029bb46408a183b700b81bc4e";
             public const string HeavensWrath = "26a010fbab814d35accc45456b987845";
             public const string HellOnEarth = "462cb107e84141afa6ac45aeebdbf1bf";
@@ -197,6 +206,7 @@ namespace wotr_mod.Infrastructure
             public const string ForceRay = "9f2875b1a83c4e4e8b47eab294999f31";
             public const string FrostBlast = "839b2f16d37a46ba975555305c48f517";
             public const string FrozenLance = "b08d17aa58a74b798853e6175ff14140";
+            public const string GraveboltCascade = "10e04f857ff94ce7ae354dfde85c2168";
             public const string IceMissile = "0ef61bb5e46f4b27a249fe631c272ee8";
             public const string ShadowbornScorchingRay = "4d54317c3e0c47f5a619de136939af6d";
             public const string ShadowHellfireRay = "451e4d759b694bd5892c62f9e545a837";
@@ -388,6 +398,7 @@ namespace wotr_mod.Infrastructure
             public const string GlacialPrisonDifficultTerrain = "690a5a2ac0af4d25991f02d85631b976";
             public const string GlacialPrisonEntangled = "8773d1e1c24b4f75abc64b9fcfe0515a";
             public const string GlacialPrisonParalyzed = "ad600a7cafe6409981800dd0b23c3c08";
+            public const string GraveboltCascadeSickened = "7af2f18a4cbf4dd2a133516a46d1f684";
             public const string HeavensWrathMetalArmorPenalty = "a2d905e656fb45b890e5d476b4b65b80";
             public const string HeavensWrathStunned = "ffa4307815694343a2a00064b7376176";
             public const string MolecularDissolution = "4ad8d50eb53147d2a843e9e0cd87dfc4";

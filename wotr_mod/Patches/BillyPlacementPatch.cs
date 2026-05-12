@@ -16,9 +16,10 @@ namespace wotr_mod.Patches
         private const float ShieldMazeSpawnOffsetX = 64f;
         private const float ShieldMazeSpawnOffsetZ = -40f;
         private const float ShieldMazeSpawnOrientation = 5f;
-        private const float DefendersHeartSpawnOffsetX = 2f;
-        private const float DefendersHeartSpawnOffsetZ = -1.5f;
-        private const float DefendersHeartSpawnOrientation = 180f;
+        private const float DefendersHeartSpawnX = -82f;
+        private const float DefendersHeartSpawnY = 40f;
+        private const float DefendersHeartSpawnZ = -7f;
+        private const float DefendersHeartSpawnOrientation = 0f;
         private static readonly BlueprintGuid BillyGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.UndeadCiarCompanion);
         private static readonly BlueprintGuid PrologueLabyrinthGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.PrologueLabyrinth);
         private static readonly BlueprintGuid DefendersHeartGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.DefendersHeart);
@@ -82,9 +83,7 @@ namespace wotr_mod.Patches
 
                 if (ShouldPlaceBillyInDefendersHeart(out var defendersHeartReason))
                 {
-                    var position = GetSpawnPosition(
-                        DefendersHeartSpawnOffsetX,
-                        DefendersHeartSpawnOffsetZ);
+                    var position = GetDefendersHeartSpawnPosition();
                     var billy = FindBillyRosterUnit(null);
                     PlaceBilly(billy, position, DefendersHeartSpawnOrientation);
                     Game.Instance.Player?.InvalidateCharacterLists();
@@ -294,6 +293,14 @@ namespace wotr_mod.Patches
 
             var center = player.GetPartyCenter();
             return new Vector3(center.x + offsetX, center.y, center.z + offsetZ);
+        }
+
+        private static Vector3 GetDefendersHeartSpawnPosition()
+        {
+            return new Vector3(
+                DefendersHeartSpawnX,
+                DefendersHeartSpawnY,
+                DefendersHeartSpawnZ);
         }
     }
 }

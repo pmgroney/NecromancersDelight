@@ -204,7 +204,8 @@ namespace wotr_mod.Infrastructure
 
         public T[] GetComponents<T>(BlueprintScriptableObject blueprint) where T : BlueprintComponent
         {
-            var components = (BlueprintComponent[])BlueprintFields.BlueprintComponents.GetValue(blueprint);
+            var components = (BlueprintComponent[])BlueprintFields.BlueprintComponents.GetValue(blueprint) ??
+                             Array.Empty<BlueprintComponent>();
             return components.OfType<T>().ToArray();
         }
 
@@ -1362,6 +1363,16 @@ namespace wotr_mod.Infrastructure
             }
 
             BlueprintFields.AbilityDeliverProjectileUseMaxProjectilesCount.SetValue(component, false);
+        }
+
+        public void SetAbilityVariants(AbilityVariants component, params BlueprintAbility[] variants)
+        {
+            var references = (variants ?? Array.Empty<BlueprintAbility>())
+                .Where(variant => variant != null)
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintAbilityReference>)
+                .ToArray();
+
+            BlueprintFields.AbilityVariantsVariants.SetValue(component, references);
         }
 
         public void SetApplyBuffActionBuff(ContextActionApplyBuff action, BlueprintBuff buff)

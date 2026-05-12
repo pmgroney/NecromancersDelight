@@ -462,6 +462,14 @@ namespace wotr_mod.Spells
                     SpellEffectTheme.Necro);
             }
 
+            if (spellGuid == ModBlueprintIds.Spells.GraveboltCascade)
+            {
+                return new ProjectileVisuals(
+                    ModBlueprintIds.Projectiles.GraveboltCascade,
+                    "WotrMod_GraveboltCascadeProjectile",
+                    SpellEffectTheme.Necro);
+            }
+
             return null;
         }
 

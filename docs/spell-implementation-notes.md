@@ -23,6 +23,7 @@ Use the existing spell pipeline unless a specific mechanic forces a different pa
    - Evoker availability requires an entry in `wotr_mod/Classes/Evoker/EvokerSpellRegistry.cs`.
    - Evoker spell-list entries resolve through Evoker-owned ability clones with deterministic GUIDs; update the clone path for Evoker-specific behavior or description changes rather than altering global source spell blueprints.
    - Evoker-owned spell clones, including Evoker-cloned spawned area effects, clear `ContextRankConfig` maximums and projectile max-count caps for damaging Evocation spells; keep this rule isolated to the Evoker spell list.
+   - Reusable `PerDieBonusDamage` covers Evoker class-spellbook evocation per-die bonuses, explicit ability allowlists for granted rays, and force-damage matching for Arcwright Force Ray.
    - Necromancer availability requires an entry in `wotr_mod/Classes/Necromancer/NecromancerSpellRegistry.cs`.
 5. Add new modifier files to `wotr_mod/wotr_mod.csproj`.
 6. Add icon content to the project only if the icon is new. Existing icons may already be included.
