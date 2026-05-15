@@ -51,6 +51,14 @@ namespace wotr_mod.Infrastructure
             public const string ZombieCiarBarks = "cb71c3e13d52b8843b2906109d08f788";
         }
 
+        internal static class EquipmentEntities
+        {
+            public const string GhoulBody = "20c260c4b2764593a15f4ccb41ca24ef";
+            public const string MythicLichBody = "34ba64048f794e5eb8032ffd6891052c";
+            public const string MythicLichHead = "b5273bd344a04d58a9baf53f22640e5d";
+            public const string ZombieBody = "483b8681dac347389d3a80d9f1137425";
+        }
+
         internal static class Races
         {
             public const string Fetchling = "e29497e082014f35b0ef32e1560f1e8b";
@@ -300,6 +308,7 @@ namespace wotr_mod.Infrastructure
             public const string CiarUndead = "1f341d3068d6b7a429134125f7141e18";
             public const string CiarCompanion = "7ece3afabe2b6f343b17d1eaa409d273";
             public const string CiarFeatureList = "ec014b7a7a6cd814090c1cd6c7a599d8";
+            public const string Dlc5StartPregenFighter = "8cc548325b5b48f588aeb0cbedf3f619";
             public const string Hosilla = "64dcc27d70edc1148b31257fcc2241ce";
             public const string MythicLichSkeletonArcher = "2b0c36c34172ac440a8e6d373094c3bd";
             public const string LeopardCompanion = "54cf380dee486ff42b803174d1b9da1b";

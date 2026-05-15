@@ -1255,8 +1255,11 @@ namespace wotr_mod.Content
             var monkAcBonus = EnsureBillyMonkAcBonus(scalingClass, scalingArchetype);
             var wayOfTheBow = EnsureBillyWayOfTheBow(scalingClass);
             var visualSource = _blueprints.Require<BlueprintUnit>(
-                GameBlueprintIds.Units.MythicLichSkeletonArcher,
-                "Mythic lich skeleton archer unit");
+                GameBlueprintIds.Units.Dlc5StartPregenFighter,
+                "DLC5 start pregen fighter visual unit");
+            var visualRace = _blueprints.Require<BlueprintRace>(
+                GameBlueprintIds.Races.Human,
+                "Human race");
             var startingBow = _blueprints.Require<BlueprintItemWeapon>(
                 GameBlueprintIds.Items.CompositeLongbow,
                 "Composite Longbow");
@@ -1273,6 +1276,8 @@ namespace wotr_mod.Content
 
             SetUnitPortrait(unit, EnsureBillyPortrait());
             CopyVisualModel(unit, visualSource);
+            SetField(unit, "m_Race", BlueprintReferenceBase.CreateTyped<BlueprintRaceReference>(visualRace));
+            SetField(unit, "m_CustomizationPreset", null);
             SetStartingEquipment(unit, startingBow);
             SetUnitBarks(unit, EnsureBillyBarks());
         }
