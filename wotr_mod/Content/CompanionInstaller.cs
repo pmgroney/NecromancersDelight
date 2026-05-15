@@ -264,6 +264,7 @@ namespace wotr_mod.Content
         private BlueprintDialog EnsureBillyDialog(BlueprintUnit speaker)
         {
             var story = EnsureBillyStory(speaker);
+            var recruitedFlag = EnsureBillyRecruitedFlag();
             var dialog = GetOrClone<BlueprintDialog>(
                 GameBlueprintIds.Dialogs.CiarZombieDialog,
                 ModBlueprintIds.Dialogs.BillyDialog,
@@ -421,7 +422,7 @@ namespace wotr_mod.Content
             joinCue.Speaker = new DialogSpeaker();
             SetSpeakerBlueprint(joinCue.Speaker, speaker);
             joinCue.OnShow = new ActionList();
-            joinCue.OnStop = CreateRecruitActions(speaker, story);
+            joinCue.OnStop = CreateRecruitActions(speaker, story, recruitedFlag);
             joinCue.Answers = new List<BlueprintAnswerBaseReference>();
             joinCue.Continue = CreateEmptyCueSelection();
             joinCue.ShowOnce = false;
@@ -494,6 +495,23 @@ namespace wotr_mod.Content
             leaveAnswer.AddToHistory = true;
 
             return dialog;
+        }
+
+        private BlueprintUnlockableFlag EnsureBillyRecruitedFlag()
+        {
+            var flag = _blueprints.Get<BlueprintUnlockableFlag>(ModBlueprintIds.Flags.BillyRecruited);
+            if (flag != null)
+            {
+                return flag;
+            }
+
+            flag = new BlueprintUnlockableFlag
+            {
+                name = "WotrMod_BillyRecruited",
+                AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Flags.BillyRecruited)
+            };
+            _blueprints.AddCachedBlueprint(ModBlueprintIds.Flags.BillyRecruited, flag);
+            return flag;
         }
 
         private BlueprintDialog EnsureBillyBowQuestDialog(BlueprintUnit speaker)
@@ -823,22 +841,13 @@ namespace wotr_mod.Content
             };
         }
 
-        private ConditionsChecker CreateBillyRecruitedConditions(BlueprintUnit companion, bool not)
+        private static ConditionsChecker CreateBillyRecruitedConditions(BlueprintUnit companion, bool not)
         {
-            var condition = new Kingmaker.Designers.EventConditionActionSystem.Conditions.CompanionInParty
+            var condition = new BillyRecruitedCondition
             {
-                name = "$CompanionInParty$WotrMod_BillyRecruited",
-                Not = not,
-                MatchWhenActive = true,
-                MatchWhenDetached = true,
-                MatchWhenRemote = true,
-                MatchWhenDead = true,
-                MatchWhenEx = false
+                name = "$BillyRecruitedCondition$WotrMod_Billy",
+                Not = not
             };
-            SetField(
-                condition,
-                "m_companion",
-                BlueprintReferenceBase.CreateTyped<BlueprintUnitReference>(companion));
 
             return new ConditionsChecker
             {
@@ -1094,7 +1103,10 @@ namespace wotr_mod.Content
             }
         }
 
-        private static ActionList CreateRecruitActions(BlueprintUnit companion, BlueprintCompanionStory story)
+        private static ActionList CreateRecruitActions(
+            BlueprintUnit companion,
+            BlueprintCompanionStory story,
+            BlueprintUnlockableFlag recruitedFlag)
         {
             var recruitData = new Recruit.RecruitData
             {
@@ -1126,6 +1138,7 @@ namespace wotr_mod.Content
                     {
                         name = "WotrMod_BillyRecruitFallback"
                     },
+                    CreateUnlockFlagAction(recruitedFlag),
                     new UnlockCompanionStory
                     {
                         name = "WotrMod_UnlockBillyStory",
@@ -1133,6 +1146,17 @@ namespace wotr_mod.Content
                     }
                 }
             };
+        }
+
+        private static UnlockFlag CreateUnlockFlagAction(BlueprintUnlockableFlag flag)
+        {
+            var action = new UnlockFlag
+            {
+                name = "WotrMod_UnlockBillyRecruitedFlag",
+                flagValue = 1,
+                flag = flag
+            };
+            return action;
         }
 
         private TBlueprint GetOrClone<TBlueprint>(

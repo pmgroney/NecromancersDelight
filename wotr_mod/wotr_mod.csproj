@@ -181,6 +181,7 @@
         <Compile Include="Spells\SpellRegistry.cs" />
         <Compile Include="Spells\SpellSchoolFilter.cs" />
         <Compile Include="Patches\BillyReactivityBarkAction.cs" />
+        <Compile Include="Patches\BillyRecruitedCondition.cs" />
         <Compile Include="Patches\BillyRecruitmentFallbackAction.cs" />
         <Compile Include="Patches\BillyPlacementPatch.cs" />
         <Compile Include="Patches\GravebladeStartingEquipmentPatch.cs" />

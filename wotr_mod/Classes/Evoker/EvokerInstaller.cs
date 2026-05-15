@@ -91,6 +91,7 @@ namespace wotr_mod.Classes.Evoker
             EnsureElementalConversionClassCardFeature(characterClass);
             EnsureEvokerFamiliarClassCardFeature(characterClass);
             ConfigureEvokerBonusFeatProgression(characterClass);
+            EnsureShadowbornBonusFeatCompatibilityStub(characterClass);
             ReplaceSorcererProficiencies(characterClass);
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
@@ -232,6 +233,40 @@ namespace wotr_mod.Classes.Evoker
                 selection,
                 _localization.Text(LocalizationIds.Mod.EvokerBonusFeatName),
                 _localization.Text(LocalizationIds.Mod.EvokerBonusFeatDescription));
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(selection, characterClass);
+            }
+
+            return selection;
+        }
+
+        private BlueprintFeatureSelection EnsureShadowbornBonusFeatCompatibilityStub(BlueprintCharacterClass characterClass)
+        {
+            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.ShadowbornBonusFeat);
+            if (selection == null)
+            {
+                var source = _blueprints.Require<BlueprintFeatureSelection>(
+                    GameBlueprintIds.Selections.SorcererBonusFeat,
+                    "Sorcerer Bonus Feat");
+                selection = _blueprints.CloneBlueprint(
+                    source,
+                    ModBlueprintIds.Selections.ShadowbornBonusFeat,
+                    "WotrMod_ShadowbornBonusFeatCompatibilityStub");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Selections.ShadowbornBonusFeat, selection);
+            }
+
+            _blueprints.SetUnitFactDisplay(
+                selection,
+                _localization.Text(LocalizationIds.Mod.ShadowbornBonusFeatName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornBonusFeatDescription));
+            _blueprints.SetComponents(selection);
+            _blueprints.SetFeatureSelectionFeatures(selection, Array.Empty<BlueprintFeature>());
+            _blueprints.SetFeatureSelectionAllFeatures(selection, Array.Empty<BlueprintFeature>());
+            selection.IsClassFeature = false;
+            selection.HideInUI = true;
+            selection.HideInCharacterSheetAndLevelUp = true;
+            selection.HideNotAvailibleInUI = true;
             if (characterClass != null)
             {
                 _blueprints.SetProgressionClasses(selection, characterClass);

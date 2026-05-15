@@ -96,6 +96,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Flags
         {
+            public const string BillyRecruited = "da03f5bd8a9e44b89a5a7df675cb95df";
             public const string BillyBowQuestStarted = "e1f39ce3152c439080ac6f2565e1f861";
             public const string ShieldMazeRuntimeLootSeeded = "231ad8e13d8b400a98da928503969098";
         }
