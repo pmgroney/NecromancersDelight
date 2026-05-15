@@ -10,7 +10,7 @@ namespace wotr_mod.Patches
 {
     internal static class TooltipIconMagnificationPatch
     {
-        private const float IconScale = 1.5f;
+        private const float DefaultIconScale = 1.5f;
         private const float FallbackIconSize = 64f;
         private const float HeaderPadding = 16f;
         private const float FramePadding = 6f;
@@ -42,6 +42,11 @@ namespace wotr_mod.Patches
             [HarmonyPostfix]
             private static void Postfix(TooltipBrickEntityHeaderView __instance)
             {
+                if (!IsEnabled())
+                {
+                    return;
+                }
+
                 var container = EntityImageContainerField?.GetValue(__instance) as GameObject;
                 var image = EntityImageField?.GetValue(__instance) as Component;
 
@@ -61,6 +66,11 @@ namespace wotr_mod.Patches
             [HarmonyPostfix]
             private static void Postfix(TooltipBrickFeatureHeaderView __instance)
             {
+                if (!IsEnabled())
+                {
+                    return;
+                }
+
                 var icon = FeatureIconField?.GetValue(__instance) as Component;
                 var label = FeatureLabelField?.GetValue(__instance) as Component;
                 var frame = FeatureFrameIconField?.GetValue(__instance) as Component;
@@ -109,7 +119,7 @@ namespace wotr_mod.Patches
             }
 
             var originalSize = GetOriginalSize(rect, maxOriginalDimension);
-            var targetSize = originalSize * IconScale;
+            var targetSize = originalSize * CurrentIconScale();
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetSize.x);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetSize.y);
 
@@ -126,6 +136,24 @@ namespace wotr_mod.Patches
             }
 
             return targetSize;
+        }
+
+        private static bool IsEnabled()
+        {
+            return CurrentIconScale() > 1f;
+        }
+
+        private static float CurrentIconScale()
+        {
+            switch (Main.Settings?.TooltipIconMagnificationMode ?? 1)
+            {
+                case 0:
+                    return 0f;
+                case 2:
+                    return 2f;
+                default:
+                    return DefaultIconScale;
+            }
         }
 
         private static void SizeFrame(GameObject target, Vector2 size, string label)

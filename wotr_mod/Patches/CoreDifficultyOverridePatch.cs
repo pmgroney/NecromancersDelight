@@ -22,7 +22,7 @@ namespace wotr_mod.Patches
 
         internal static void Apply(MinDifficultyController controller)
         {
-            if (controller == null || Main.Settings == null || !Main.Settings.CoreDifficultyOverride)
+            if (controller == null || Main.Settings == null || !Main.Settings.EnableAchievementsWhileModded)
             {
                 return;
             }

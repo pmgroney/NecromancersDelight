@@ -61,9 +61,35 @@ namespace wotr_mod
             Settings.EnableAchievementsWhileModded = GUILayout.Toggle(
                 Settings.EnableAchievementsWhileModded,
                 "Re-enable achievements while modded");
-            Settings.CoreDifficultyOverride = GUILayout.Toggle(
-                Settings.CoreDifficultyOverride,
-                "Core Override");
+
+            GUILayout.Space(8f);
+            GUILayout.Label("Mouseover tooltip icon size");
+            Settings.TooltipIconMagnificationMode = Mathf.RoundToInt(
+                GUILayout.HorizontalSlider(
+                    Settings.TooltipIconMagnificationMode,
+                    0,
+                    2,
+                    GUILayout.Width(96f)));
+            Settings.TooltipIconMagnificationMode = Mathf.Clamp(Settings.TooltipIconMagnificationMode, 0, 2);
+            GUILayout.BeginHorizontal(GUILayout.Width(96f));
+            GUILayout.Label("1", GUILayout.Width(32f));
+            GUILayout.Label("1.5", GUILayout.Width(40f));
+            GUILayout.Label("2", GUILayout.Width(24f));
+            GUILayout.EndHorizontal();
+            GUILayout.Label(TooltipIconMagnificationLabel(Settings.TooltipIconMagnificationMode));
+        }
+
+        private static string TooltipIconMagnificationLabel(int mode)
+        {
+            switch (mode)
+            {
+                case 0:
+                    return "Disabled";
+                case 2:
+                    return "2x";
+                default:
+                    return "1.5x";
+            }
         }
 
         private static void OnSaveGUI(UnityModManager.ModEntry modEntry)

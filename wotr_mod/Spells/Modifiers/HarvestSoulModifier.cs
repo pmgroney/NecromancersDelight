@@ -259,8 +259,7 @@ namespace wotr_mod.Spells.Modifiers
         {
             return unit == null ||
                    unit.State.IsDead ||
-                   unit.State.IsFinallyDead ||
-                   unit.HPLeft <= 0;
+                   unit.State.IsFinallyDead;
         }
     }
 }

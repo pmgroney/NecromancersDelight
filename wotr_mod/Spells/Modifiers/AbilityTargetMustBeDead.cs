@@ -10,7 +10,8 @@ namespace wotr_mod.Spells.Modifiers
         public bool IsTargetRestrictionPassed(UnitEntityData caster, TargetWrapper target)
         {
             var unit = target.Unit;
-            return unit?.Descriptor?.State != null && unit.Descriptor.State.IsDead;
+            var state = unit?.Descriptor?.State;
+            return state != null && state.IsDead && !state.IsFinallyDead;
         }
 
         public string GetAbilityTargetRestrictionUIText(UnitEntityData caster, TargetWrapper target)
