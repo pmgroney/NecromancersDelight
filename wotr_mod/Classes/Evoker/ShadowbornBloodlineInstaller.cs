@@ -126,7 +126,7 @@ namespace wotr_mod.Classes.Evoker
             bloodline.HideInCharacterSheetAndLevelUp = true;
             bloodline.HideNotAvailibleInUI = true;
             _evoker.SetIcon(bloodline, "Icons\\shadowborn_bloodline.png");
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireArcana,
                 arcana);
@@ -136,7 +136,7 @@ namespace wotr_mod.Classes.Evoker
                     GameBlueprintIds.Features.BloodlineElementalFireArcana,
                     "Fire bloodline arcana"),
                 arcana);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 ModBlueprintIds.Features.EvokerFireArcana,
                 arcana);
@@ -144,51 +144,93 @@ namespace wotr_mod.Classes.Evoker
                 bloodline,
                 _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.EvokerFireArcana),
                 arcana);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireElementalRayFeature,
                 umbralRay);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireElementalBlastFeature,
                 umbralBlast);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalSpellLevel9,
                 elementalBody);
-            _blueprints.RemoveFeatureFromProgression(
+            RemoveFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature);
             _blueprints.RemoveFeatureFromProgressionExceptLevel(
                 bloodline,
                 elementalBody,
                 19);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireResistanceFeature,
                 resistance);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireSpellLevel1,
                 shadowHands);
-            EvokerInstaller.ReplaceProgressionFeature(
+            ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireSpellLevel2,
                 shadowRay);
             new LivingDarknessInstaller(_blueprints, _localization, _logger, _icons).Install(bloodline, characterClass);
-            _blueprints.MoveFeatureToLevel(
+            MoveFireProgressionFeatureToLevel(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalSpellLevel6,
                 shadowHellfireRay,
                 12);
             _blueprints.RemoveFeatureFromProgression(bloodline, GameBlueprintIds.Selections.SorcererFeatSelection);
             _evoker.MoveProtectionFromEnergyToCommunal(bloodline, characterClass);
+            EvokerInstaller.RemoveProgressionFeature(
+                bloodline,
+                EvokerFireOwnedFeatureGuid(GameBlueprintIds.Features.BloodlineElementalSpellLevel3));
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(
                 bloodline,
                 "WotrMod_ShadowbornBloodline",
                 characterClass);
 
             return bloodline;
+        }
+
+        private static void ReplaceFireProgressionFeature(
+            BlueprintProgression bloodline,
+            string sourceFeatureGuid,
+            BlueprintFeatureBase replacement)
+        {
+            EvokerInstaller.ReplaceProgressionFeature(bloodline, sourceFeatureGuid, replacement);
+            EvokerInstaller.ReplaceProgressionFeature(bloodline, EvokerFireOwnedFeatureGuid(sourceFeatureGuid), replacement);
+        }
+
+        private void RemoveFireProgressionFeature(
+            BlueprintProgression bloodline,
+            string sourceFeatureGuid)
+        {
+            EvokerInstaller.RemoveProgressionFeature(bloodline, sourceFeatureGuid);
+            EvokerInstaller.RemoveProgressionFeature(bloodline, EvokerFireOwnedFeatureGuid(sourceFeatureGuid));
+        }
+
+        private void MoveFireProgressionFeatureToLevel(
+            BlueprintProgression bloodline,
+            string sourceFeatureGuid,
+            BlueprintFeatureBase replacement,
+            int level)
+        {
+            if (replacement == null)
+            {
+                return;
+            }
+
+            RemoveFireProgressionFeature(bloodline, sourceFeatureGuid);
+            EvokerInstaller.RemoveProgressionFeature(bloodline, replacement);
+            _blueprints.AddFeatureToLevel(bloodline, level, replacement);
+        }
+
+        internal static string EvokerFireOwnedFeatureGuid(string sourceFeatureGuid)
+        {
+            return EvokerInstaller.DeterministicGuid(
+                "WotrMod_EvokerBloodline_Fire.OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
         }
 
         internal BlueprintFeature EnsureLivingGhostFeature(BlueprintCharacterClass characterClass)

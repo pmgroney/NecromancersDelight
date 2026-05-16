@@ -548,12 +548,10 @@ namespace wotr_mod.Classes.Evoker
             BlueprintProgression progression,
             string featureGuid)
         {
-            var guid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(featureGuid));
-            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
-            {
-                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Where(feature => feature == null || feature.AssetGuid != guid));
-            }
+            EvokerInstaller.RemoveProgressionFeature(progression, featureGuid);
+            EvokerInstaller.RemoveProgressionFeature(
+                progression,
+                ShadowbornBloodlineInstaller.EvokerFireOwnedFeatureGuid(featureGuid));
         }
 
         private static void MoveProgressionFeatureToLevel(
@@ -579,12 +577,7 @@ namespace wotr_mod.Classes.Evoker
             BlueprintProgression progression,
             BlueprintFeatureBase feature)
         {
-            var guid = feature.AssetGuid;
-            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
-            {
-                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Where(existing => existing == null || existing.AssetGuid != guid));
-            }
+            EvokerInstaller.RemoveProgressionFeature(progression, feature);
         }
 
         private static void AddFeatureToLevel(

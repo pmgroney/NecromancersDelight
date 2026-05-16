@@ -674,12 +674,50 @@ namespace wotr_mod.Classes.Evoker
             string oldFeatureGuid,
             BlueprintFeatureBase newFeature)
         {
+            if (progression == null || string.IsNullOrWhiteSpace(oldFeatureGuid) || newFeature == null)
+            {
+                return;
+            }
+
             var oldGuid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(oldFeatureGuid));
             foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
             {
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
                     .Select(feature => feature != null && feature.AssetGuid == oldGuid ? newFeature : feature));
             }
+
+            ReplaceProgressionUiFeature(progression, oldGuid, newFeature);
+        }
+
+        internal static void RemoveProgressionFeature(
+            BlueprintProgression progression,
+            string featureGuid)
+        {
+            if (progression == null || string.IsNullOrWhiteSpace(featureGuid))
+            {
+                return;
+            }
+
+            var guid = BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(featureGuid));
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(feature => feature == null || feature.AssetGuid != guid));
+            }
+
+            RemoveProgressionUiFeature(progression, guid);
+        }
+
+        internal static void RemoveProgressionFeature(
+            BlueprintProgression progression,
+            BlueprintFeatureBase feature)
+        {
+            if (feature == null)
+            {
+                return;
+            }
+
+            RemoveProgressionFeature(progression, feature.AssetGuid.ToString());
         }
 
         internal static void ReplaceProgressionFeature(
@@ -698,6 +736,8 @@ namespace wotr_mod.Classes.Evoker
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
                     .Select(feature => feature != null && feature.AssetGuid == oldGuid ? newFeature : feature));
             }
+
+            ReplaceProgressionUiFeature(progression, oldGuid, newFeature);
         }
 
         internal static void ReplaceProgressionUiFeature(
@@ -710,13 +750,25 @@ namespace wotr_mod.Classes.Evoker
                 return;
             }
 
+            ReplaceProgressionUiFeature(progression, oldFeature.AssetGuid, newFeature);
+        }
+
+        private static void ReplaceProgressionUiFeature(
+            BlueprintProgression progression,
+            BlueprintGuid oldGuid,
+            BlueprintFeatureBase newFeature)
+        {
+            if (progression == null || newFeature == null)
+            {
+                return;
+            }
+
             var field = FindField(typeof(UIGroup), "m_Features");
             if (field == null)
             {
                 return;
             }
 
-            var oldGuid = oldFeature.AssetGuid;
             foreach (var group in progression.UIGroups ?? Array.Empty<UIGroup>())
             {
                 var references = field.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
@@ -731,6 +783,37 @@ namespace wotr_mod.Classes.Evoker
                         .Select(reference => reference?.Get()?.AssetGuid == oldGuid
                             ? BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(newFeature)
                             : reference)
+                        .ToList());
+            }
+        }
+
+        private static void RemoveProgressionUiFeature(
+            BlueprintProgression progression,
+            BlueprintGuid oldGuid)
+        {
+            if (progression == null)
+            {
+                return;
+            }
+
+            var field = FindField(typeof(UIGroup), "m_Features");
+            if (field == null)
+            {
+                return;
+            }
+
+            foreach (var group in progression.UIGroups ?? Array.Empty<UIGroup>())
+            {
+                var references = field.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
+                if (references == null || !references.Any(reference => reference?.Get()?.AssetGuid == oldGuid))
+                {
+                    continue;
+                }
+
+                field.SetValue(
+                    group,
+                    references
+                        .Where(reference => reference?.Get()?.AssetGuid != oldGuid)
                         .ToList());
             }
         }
