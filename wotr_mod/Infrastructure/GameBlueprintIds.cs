@@ -143,6 +143,9 @@ namespace wotr_mod.Infrastructure
             public const string SorcererBloodline = "24bef8d1bee12274686f6da6ccbc8914";
             public const string SorcererBonusFeat = "d6dd06f454b34014ab0903cb1ed2ade3";
             public const string SorcererFeatSelection = "3a60f0c0442acfb419b0c03b584e1394";
+            public const string BloodlineArcaneFeatSelection = "ff4fd877b4c801342ab8e880b734a6b9";
+            public const string BloodlineDraconicFeatSelection = "f4b011d090e8ae543b1441bd594c7bf7";
+            public const string BloodlineElementalFeatSelection = "d2a4b74ee7e43a648b51d0f36db2aa34";
             public const string SylvanAnimalCompanion = "a540d7dfe1e2a174a94198aba037274c";
             public const string SylvanCompanion = "bdeb45c295e93644c9fed3b3b431aa2d";
         }

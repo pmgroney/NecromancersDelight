@@ -5,11 +5,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.Mechanics.Facts;
-using Kingmaker.Enums;
-using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
-using Kingmaker.UnitLogic.FactLogic;
-using Kingmaker.UnitLogic.Mechanics.Components;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes
@@ -176,39 +172,6 @@ namespace wotr_mod.Classes
             return spellbook;
         }
 
-        public BlueprintArchetype EnsureArchetype(string archetypeGuid, string internalName)
-        {
-            var archetype = _blueprints.Get<BlueprintArchetype>(archetypeGuid);
-            if (archetype != null)
-            {
-                return archetype;
-            }
-
-            archetype = new BlueprintArchetype
-            {
-                name = internalName,
-                AssetGuid = BlueprintGuid.Parse(archetypeGuid)
-            };
-            _blueprints.AddCachedBlueprint(archetypeGuid, archetype);
-            return archetype;
-        }
-
-        public void ConfigureArchetypeIdentity(
-            BlueprintArchetype archetype,
-            BlueprintCharacterClass characterClass,
-            string displayNameKey,
-            string descriptionKey,
-            BlueprintSpellbook replacementSpellbook)
-        {
-            _blueprints.SetComponents(archetype);
-            _blueprints.SetArchetypeDisplay(
-                archetype,
-                _localization.Text(displayNameKey),
-                _localization.Text(descriptionKey));
-            _blueprints.SetArchetypeParentClass(archetype, characterClass);
-            _blueprints.SetArchetypeReplaceSpellbook(archetype, replacementSpellbook);
-        }
-
         public void ConfigureSpellList(BlueprintSpellList spellList, IEnumerable<ClassSpellDefinition> spellDefinitions)
         {
             var spellsByLevel = spellDefinitions
@@ -222,95 +185,6 @@ namespace wotr_mod.Classes
             _blueprints.SetSpellListSpells(
                 spellList,
                 spellsByLevel.OrderBy(pair => pair.Value).ThenBy(pair => pair.Key.name));
-        }
-
-        public BlueprintAbilityResource EnsureAbilityResource(
-            string donorGuid,
-            string resourceGuid,
-            string internalName)
-        {
-            var resource = _blueprints.Get<BlueprintAbilityResource>(resourceGuid);
-            if (resource != null)
-            {
-                return resource;
-            }
-
-            resource = _blueprints.CloneBlueprint(
-                _blueprints.Require<BlueprintAbilityResource>(donorGuid, internalName + " donor"),
-                resourceGuid,
-                internalName);
-            _blueprints.AddCachedBlueprint(resourceGuid, resource);
-            return resource;
-        }
-
-        public void BindFeatureAbilityAndResource(
-            BlueprintFeature feature,
-            BlueprintAbility ability,
-            BlueprintAbilityResource resource,
-            BlueprintCharacterClass characterClass)
-        {
-            foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
-            {
-                _blueprints.SetAddFacts(addFacts, ability);
-            }
-
-            if (!_blueprints.GetComponents<AddFacts>(feature).Any())
-            {
-                var addFacts = new AddFacts { name = "$AddFacts$" + feature.name };
-                _blueprints.AddComponent(feature, addFacts);
-                _blueprints.SetAddFacts(addFacts, ability);
-            }
-
-            BindFeatureResource(feature, resource);
-            _blueprints.BindAbilityComponentsToClass(feature, characterClass);
-        }
-
-        public void BindFeatureResource(BlueprintFeature feature, BlueprintAbilityResource resource)
-        {
-            foreach (var addResources in _blueprints.GetComponents<AddAbilityResources>(feature))
-            {
-                _blueprints.SetAddAbilityResourcesResource(addResources, resource);
-            }
-
-            if (!_blueprints.GetComponents<AddAbilityResources>(feature).Any())
-            {
-                var addResources = new AddAbilityResources
-                {
-                    name = "$AddAbilityResources$" + feature.name,
-                    RestoreAmount = true
-                };
-                _blueprints.AddComponent(feature, addResources);
-                _blueprints.SetAddAbilityResourcesResource(addResources, resource);
-            }
-        }
-
-        public void BindAbilityResource(BlueprintAbility ability, BlueprintAbilityResource resource)
-        {
-            foreach (var resourceLogic in _blueprints.GetComponents<AbilityResourceLogic>(ability))
-            {
-                _blueprints.SetAbilityResourceLogicResource(resourceLogic, resource);
-            }
-        }
-
-        public void BindAbilityRanksToClass(BlueprintAbility ability, BlueprintCharacterClass characterClass)
-        {
-            foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(ability))
-            {
-                _blueprints.ConfigureContextRankConfig(
-                    rank,
-                    AbilityRankType.Default,
-                    ContextRankBaseValueType.ClassLevel,
-                    ContextRankProgression.AsIs,
-                    characterClass: characterClass);
-                _blueprints.SetContextRankMinimum(rank, 1);
-            }
-        }
-
-        public static LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)
-        {
-            var entry = new LevelEntry { Level = level };
-            entry.SetFeatures(features);
-            return entry;
         }
 
         private void ApplySelectionRecommendation(BlueprintScriptableObject blueprint, ClassSpellDefinition definition)

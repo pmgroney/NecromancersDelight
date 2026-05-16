@@ -210,8 +210,13 @@ namespace wotr_mod.Classes.Evoker
                 return;
             }
 
-            _blueprints.RemoveFeatureFromProgression(characterClass.Progression, GameBlueprintIds.Selections.SorcererBonusFeat);
-            _blueprints.RemoveFeatureFromProgression(characterClass.Progression, GameBlueprintIds.Selections.SorcererFeatSelection);
+            _blueprints.RemoveFeaturesFromProgression(
+                characterClass.Progression,
+                GameBlueprintIds.Selections.SorcererBonusFeat,
+                GameBlueprintIds.Selections.SorcererFeatSelection,
+                GameBlueprintIds.Selections.BloodlineArcaneFeatSelection,
+                GameBlueprintIds.Selections.BloodlineDraconicFeatSelection,
+                GameBlueprintIds.Selections.BloodlineElementalFeatSelection);
             _blueprints.RemoveFeatureFromProgression(characterClass.Progression, evokerBonusFeat);
             foreach (var level in EvokerBonusFeatLevels)
             {

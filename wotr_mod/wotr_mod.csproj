@@ -144,6 +144,8 @@
         <Compile Include="Infrastructure\ModBlueprintIds.cs" />
         <Compile Include="Infrastructure\NecromancersDelightSettings.cs" />
         <Compile Include="Infrastructure\BlueprintReferencePatcher.cs" />
+        <Compile Include="Infrastructure\BlueprintCharacterClassConfigurator.cs" />
+        <Compile Include="Infrastructure\BlueprintProgressionOwnershipService.cs" />
         <Compile Include="Infrastructure\BlueprintClassRegistration.cs" />
         <Compile Include="Infrastructure\BlueprintCloner.cs" />
         <Compile Include="Infrastructure\BlueprintTool.cs" />
@@ -184,7 +186,6 @@
         <Compile Include="Spells\SpellIconLoader.cs" />
         <Compile Include="Spells\SpellInstaller.cs" />
         <Compile Include="Spells\SpellRegistry.cs" />
-        <Compile Include="Spells\SpellSchoolFilter.cs" />
         <Compile Include="Patches\BillyReactivityBarkAction.cs" />
         <Compile Include="Patches\BillyRecruitedCondition.cs" />
         <Compile Include="Patches\BillyRecruitmentFallbackAction.cs" />

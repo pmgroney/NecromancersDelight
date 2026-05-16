@@ -77,6 +77,7 @@ namespace wotr_mod.Classes
                 })
                 .ToArray();
             clone.UIGroups = Array.Empty<UIGroup>();
+            _blueprints.SetProgressionUiDeterminators(clone, Array.Empty<BlueprintFeatureBase>());
 
             if (existing == null)
             {
@@ -111,6 +112,11 @@ namespace wotr_mod.Classes
                     continue;
                 }
 
+                if (ShouldSkipEvokerSorcererFeature(definition, feature))
+                {
+                    continue;
+                }
+
                 result.Add(feature);
             }
 
@@ -129,6 +135,20 @@ namespace wotr_mod.Classes
             var guid = feature.AssetGuid;
             return guid == BlueprintGuid.Parse(GameBlueprintIds.Features.SorcererProficiencies) ||
                    guid == BlueprintGuid.Parse(GameBlueprintIds.Selections.SorcererBonusFeat) ||
+                   guid == BlueprintGuid.Parse(GameBlueprintIds.Selections.SorcererFeatSelection);
+        }
+
+        private static bool ShouldSkipEvokerSorcererFeature(
+            CharacterClassDefinition definition,
+            BlueprintFeatureBase feature)
+        {
+            if (feature == null || !definition.UseEvokerBloodlines)
+            {
+                return false;
+            }
+
+            var guid = feature.AssetGuid;
+            return guid == BlueprintGuid.Parse(GameBlueprintIds.Selections.SorcererBonusFeat) ||
                    guid == BlueprintGuid.Parse(GameBlueprintIds.Selections.SorcererFeatSelection);
         }
     }

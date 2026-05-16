@@ -44,7 +44,6 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             var evokerBloodlineSelection = _blueprints.Require<BlueprintFeatureSelection>(
                 ModBlueprintIds.Selections.EvokerBloodline,
                 "Evoker bloodline selection");
-            var evokerBonusFeat = _evoker.EnsureEvokerBonusFeatSelection(characterClass);
             var draconicBloodlineSelection = _evoker.EnsureDraconicEvokerBloodlineSelection(characterClass);
             var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
                 GameBlueprintIds.StatProgressions.BaseAttackBonusMedium,
@@ -113,21 +112,14 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                         4,
                         mediumArmorProficiency,
                         mediumArcaneArmorProficiency),
-                    CreateLevelEntry(7, evokerBonusFeat),
                     CreateLevelEntry(
                         9,
                         heavyArmorProficiency,
-                        heavyArcaneArmorProficiency),
-                    CreateLevelEntry(13, evokerBonusFeat),
-                    CreateLevelEntry(19, evokerBonusFeat)
+                        heavyArcaneArmorProficiency)
                 },
                 new[]
                 {
-                    CreateLevelEntry(1, evokerBloodlineSelection, evokerBonusFeat),
-                    CreateLevelEntry(6, evokerBonusFeat),
-                    CreateLevelEntry(10, evokerBonusFeat),
-                    CreateLevelEntry(16, evokerBonusFeat),
-                    CreateLevelEntry(20, evokerBonusFeat)
+                    CreateLevelEntry(1, evokerBloodlineSelection)
                 });
             _blueprints.SetArchetypeBaseAttackBonus(archetype, baseAttackBonus);
             _blueprints.SetArchetypeBuildChanging(archetype, true);

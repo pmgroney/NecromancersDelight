@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Prerequisites;
@@ -43,6 +41,8 @@ namespace wotr_mod.Infrastructure
         private readonly string _fallbackLogPath;
         private readonly BlueprintCloner _cloner;
         private readonly BlueprintClassRegistration _classRegistration;
+        private readonly BlueprintCharacterClassConfigurator _characterClasses;
+        private readonly BlueprintProgressionOwnershipService _progressionOwnership;
 
         public BlueprintTool(UnityModManager.ModEntry.ModLogger logger)
         {
@@ -50,6 +50,8 @@ namespace wotr_mod.Infrastructure
             _logger = logger;
             _cloner = new BlueprintCloner(Log, Error);
             _classRegistration = new BlueprintClassRegistration(this);
+            _characterClasses = new BlueprintCharacterClassConfigurator(this);
+            _progressionOwnership = new BlueprintProgressionOwnershipService(this);
             try
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -157,7 +159,7 @@ namespace wotr_mod.Infrastructure
             }
 
             RemoveFeatureFromProgression(progression, oldFeatureGuid);
-            RemoveFeatureFromProgression(progression, newFeature);
+            RemoveFeatureEntriesFromProgression(progression, new[] { newFeature.AssetGuid });
             AddFeatureToLevel(progression, level, newFeature);
         }
 
@@ -177,11 +179,7 @@ namespace wotr_mod.Infrastructure
                 return;
             }
 
-            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
-            {
-                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Where(existing => existing == null || !guids.Contains(existing.AssetGuid)));
-            }
+            RemoveFeatureReferencesFromProgression(progression, guids);
         }
 
         public void RemoveFeatureFromProgression(BlueprintProgression progression, string featureGuid)
@@ -201,10 +199,35 @@ namespace wotr_mod.Infrastructure
                 return;
             }
 
-            foreach (var entry in progression?.LevelEntries ?? Array.Empty<LevelEntry>())
+            RemoveFeatureReferencesFromProgression(progression, new[] { feature.AssetGuid });
+        }
+
+        private void RemoveFeatureReferencesFromProgression(
+            BlueprintProgression progression,
+            IReadOnlyCollection<BlueprintGuid> featureGuids)
+        {
+            if (progression == null || featureGuids == null || featureGuids.Count == 0)
+            {
+                return;
+            }
+
+            RemoveFeatureEntriesFromProgression(progression, featureGuids);
+            RemoveProgressionUiReferences(progression, featureGuids);
+        }
+
+        private static void RemoveFeatureEntriesFromProgression(
+            BlueprintProgression progression,
+            IReadOnlyCollection<BlueprintGuid> featureGuids)
+        {
+            if (progression == null || featureGuids == null || featureGuids.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
             {
                 entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Where(existing => existing == null || existing.AssetGuid != feature.AssetGuid));
+                    .Where(existing => existing == null || !featureGuids.Contains(existing.AssetGuid)));
             }
         }
 
@@ -422,6 +445,89 @@ namespace wotr_mod.Infrastructure
             }
         }
 
+        private static void RemoveProgressionUiReferences(
+            BlueprintProgression progression,
+            IReadOnlyCollection<BlueprintGuid> featureGuids)
+        {
+            if (progression == null || featureGuids == null || featureGuids.Count == 0)
+            {
+                return;
+            }
+
+            RemoveProgressionUiDeterminators(progression, featureGuids);
+
+            if (BlueprintFields.ProgressionUIGroups == null || BlueprintFields.UIGroupFeatures == null)
+            {
+                return;
+            }
+
+            var groups = (progression.UIGroups ?? Array.Empty<UIGroup>())
+                .Select(group => RemoveUiGroupReferences(group, featureGuids))
+                .Where(group => group != null)
+                .ToArray();
+            BlueprintFields.ProgressionUIGroups.SetValue(progression, groups);
+        }
+
+        private static void RemoveProgressionUiDeterminators(
+            BlueprintProgression progression,
+            IReadOnlyCollection<BlueprintGuid> featureGuids)
+        {
+            if (BlueprintFields.ProgressionUIDeterminatorsGroup == null)
+            {
+                return;
+            }
+
+            var references = BlueprintFields.ProgressionUIDeterminatorsGroup.GetValue(progression)
+                as IEnumerable<BlueprintFeatureBaseReference>;
+            if (references == null)
+            {
+                return;
+            }
+
+            BlueprintFields.ProgressionUIDeterminatorsGroup.SetValue(
+                progression,
+                references
+                    .Where(reference => !ReferenceMatches(reference, featureGuids))
+                    .ToArray());
+        }
+
+        private static UIGroup RemoveUiGroupReferences(
+            UIGroup group,
+            IReadOnlyCollection<BlueprintGuid> featureGuids)
+        {
+            if (group == null)
+            {
+                return null;
+            }
+
+            var references = BlueprintFields.UIGroupFeatures.GetValue(group)
+                as IEnumerable<BlueprintFeatureBaseReference>;
+            if (references == null)
+            {
+                return group;
+            }
+
+            var filtered = references
+                .Where(reference => !ReferenceMatches(reference, featureGuids))
+                .Where(reference => reference != null)
+                .ToList();
+            if (filtered.Count == 0)
+            {
+                return null;
+            }
+
+            BlueprintFields.UIGroupFeatures.SetValue(group, filtered);
+            return group;
+        }
+
+        private static bool ReferenceMatches(
+            BlueprintFeatureBaseReference reference,
+            IReadOnlyCollection<BlueprintGuid> featureGuids)
+        {
+            var feature = reference?.Get();
+            return feature != null && featureGuids.Contains(feature.AssetGuid);
+        }
+
         public void SetUnitFactDisplay(BlueprintUnitFact fact, LocalizedString name, LocalizedString description)
         {
             BlueprintFields.UnitFactDisplayName.SetValue(fact, name);
@@ -452,11 +558,6 @@ namespace wotr_mod.Infrastructure
             {
                 BlueprintFields.UnitFactDescriptionShort.SetValue(fact, description);
             }
-        }
-
-        public void ClearUnitFactDisplay(BlueprintUnitFact fact)
-        {
-            SetUnitFactDisplay(fact, new LocalizedString(), new LocalizedString());
         }
 
         public void SetAbilityDisplay(BlueprintAbility ability, LocalizedString name, LocalizedString description)
@@ -572,159 +673,72 @@ namespace wotr_mod.Infrastructure
 
         public void SetCharacterClassDisplay(BlueprintCharacterClass characterClass, LocalizedString name, LocalizedString description)
         {
-            BlueprintFields.CharacterClassLocalizedName.SetValue(characterClass, name);
-            BlueprintFields.CharacterClassLocalizedDescription.SetValue(characterClass, description);
-            BlueprintFields.CharacterClassLocalizedDescriptionShort.SetValue(characterClass, description);
+            _characterClasses.SetCharacterClassDisplay(characterClass, name, description);
         }
 
         public void SetCharacterClassProgression(BlueprintCharacterClass characterClass, BlueprintProgression progression)
         {
-            BlueprintFields.CharacterClassProgression.SetValue(
-                characterClass,
-                BlueprintReferenceBase.CreateTyped<BlueprintProgressionReference>(progression));
+            _characterClasses.SetCharacterClassProgression(characterClass, progression);
         }
 
         public void SetCharacterClassSpellbook(BlueprintCharacterClass characterClass, BlueprintSpellbook spellbook)
         {
-            BlueprintFields.CharacterClassSpellbook.SetValue(
-                characterClass,
-                BlueprintReferenceBase.CreateTyped<BlueprintSpellbookReference>(spellbook));
+            _characterClasses.SetCharacterClassSpellbook(characterClass, spellbook);
         }
 
         public void SetCharacterClassHitDie(BlueprintCharacterClass characterClass, Kingmaker.RuleSystem.DiceType hitDie)
         {
-            BlueprintFields.CharacterClassHitDie.SetValue(characterClass, hitDie);
+            _characterClasses.SetCharacterClassHitDie(characterClass, hitDie);
         }
 
         public void SetCharacterClassSkillPoints(BlueprintCharacterClass characterClass, int skillPoints)
         {
-            characterClass.SkillPoints = skillPoints;
+            _characterClasses.SetCharacterClassSkillPoints(characterClass, skillPoints);
         }
 
         public void SetCharacterClassBaseAttackBonus(BlueprintCharacterClass characterClass, BlueprintStatProgression progression)
         {
-            BlueprintFields.CharacterClassBaseAttackBonus.SetValue(
-                characterClass,
-                progression == null
-                    ? null
-                    : BlueprintReferenceBase.CreateTyped<BlueprintStatProgressionReference>(progression));
+            _characterClasses.SetCharacterClassBaseAttackBonus(characterClass, progression);
         }
 
         public void SetCharacterClassArchetypes(BlueprintCharacterClass characterClass, params BlueprintArchetype[] archetypes)
         {
-            foreach (var archetype in (archetypes ?? Array.Empty<BlueprintArchetype>()).Where(archetype => archetype != null))
-            {
-                SetArchetypeParentClass(archetype, characterClass);
-            }
-
-            var references = (archetypes ?? Enumerable.Empty<BlueprintArchetype>())
-                .Select(BlueprintReferenceBase.CreateTyped<BlueprintArchetypeReference>)
-                .ToArray();
-            BlueprintFields.CharacterClassArchetypes.SetValue(characterClass, references);
-
-            if (string.Equals(characterClass?.AssetGuid.ToString(), ModBlueprintIds.Classes.Necromancer, StringComparison.OrdinalIgnoreCase))
-            {
-                Log("Necromancer archetypes assigned: " + DescribeArchetypes(archetypes));
-            }
+            _characterClasses.SetCharacterClassArchetypes(characterClass, archetypes);
         }
 
         public void SetCharacterClassAppearanceFromClass(BlueprintCharacterClass target, BlueprintCharacterClass source)
         {
-            CopyClassAppearanceField(BlueprintFields.CharacterClassPrimaryColor, target, source);
-            CopyClassAppearanceField(BlueprintFields.CharacterClassSecondaryColor, target, source);
-            CopyClassAppearanceField(BlueprintFields.CharacterClassEquipmentEntities, target, source);
-            CopyClassAppearanceField(BlueprintFields.CharacterClassMaleEquipmentEntities, target, source);
-            CopyClassAppearanceField(BlueprintFields.CharacterClassFemaleEquipmentEntities, target, source);
-        }
-
-        private static void CopyClassAppearanceField(FieldInfo field, BlueprintCharacterClass target, BlueprintCharacterClass source)
-        {
-            var value = field?.GetValue(source);
-            if (value is Array array)
-            {
-                value = array.Clone();
-            }
-
-            field?.SetValue(target, value);
-        }
-
-        private static string DescribeArchetypes(IEnumerable<BlueprintArchetype> archetypes)
-        {
-            var values = (archetypes ?? Enumerable.Empty<BlueprintArchetype>())
-                .Select(archetype => archetype == null
-                    ? "<null>"
-                    : $"{archetype.name}({archetype.AssetGuid})")
-                .ToArray();
-            return values.Length == 0 ? "<none>" : string.Join(", ", values);
-        }
-
-        private static string DescribeLevelEntries(IEnumerable<LevelEntry> entries)
-        {
-            var values = (entries ?? Enumerable.Empty<LevelEntry>())
-                .Select(entry => entry == null
-                    ? "<null>"
-                    : $"L{entry.Level}=[{DescribeFeatures(entry.Features)}]")
-                .ToArray();
-            return values.Length == 0 ? "<none>" : string.Join("; ", values);
-        }
-
-        private static string DescribeFeatures(IEnumerable<BlueprintFeatureBase> features)
-        {
-            var values = (features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                .Select(feature => feature == null
-                    ? "<null>"
-                    : $"{feature.name}({feature.AssetGuid})")
-                .ToArray();
-            return values.Length == 0 ? "<none>" : string.Join(", ", values);
+            _characterClasses.SetCharacterClassAppearanceFromClass(target, source);
         }
 
         public void SetArchetypeDisplay(BlueprintArchetype archetype, LocalizedString name, LocalizedString description)
         {
-            BlueprintFields.ArchetypeLocalizedName.SetValue(archetype, name);
-            BlueprintFields.ArchetypeLocalizedDescription.SetValue(archetype, description);
-            BlueprintFields.ArchetypeLocalizedDescriptionShort.SetValue(archetype, description);
+            _characterClasses.SetArchetypeDisplay(archetype, name, description);
         }
 
         public void SetArchetypeReplaceSpellbook(BlueprintArchetype archetype, BlueprintSpellbook spellbook)
         {
-            BlueprintFields.ArchetypeReplaceSpellbook.SetValue(
-                archetype,
-                spellbook == null
-                    ? null
-                    : BlueprintReferenceBase.CreateTyped<BlueprintSpellbookReference>(spellbook));
+            _characterClasses.SetArchetypeReplaceSpellbook(archetype, spellbook);
         }
 
         public void SetArchetypeFeatureChanges(BlueprintArchetype archetype, IEnumerable<LevelEntry> addFeatures, IEnumerable<LevelEntry> removeFeatures)
         {
-            var addEntries = (addFeatures ?? Enumerable.Empty<LevelEntry>()).ToArray();
-            var removeEntries = (removeFeatures ?? Enumerable.Empty<LevelEntry>()).ToArray();
-            BlueprintFields.ArchetypeAddFeatures.SetValue(archetype, addEntries);
-            BlueprintFields.ArchetypeRemoveFeatures.SetValue(archetype, removeEntries);
-
-            if (string.Equals(archetype?.AssetGuid.ToString(), ModBlueprintIds.Archetypes.Graveblade, StringComparison.OrdinalIgnoreCase))
-            {
-                Log("Graveblade AddFeatures: " + DescribeLevelEntries(addEntries));
-                Log("Graveblade RemoveFeatures: " + DescribeLevelEntries(removeEntries));
-            }
+            _characterClasses.SetArchetypeFeatureChanges(archetype, addFeatures, removeFeatures);
         }
 
         public void SetArchetypeBuildChanging(BlueprintArchetype archetype, bool buildChanging)
         {
-            BlueprintFields.ArchetypeBuildChanging?.SetValue(archetype, buildChanging);
+            _characterClasses.SetArchetypeBuildChanging(archetype, buildChanging);
         }
 
         public void SetArchetypeParentClass(BlueprintArchetype archetype, BlueprintCharacterClass characterClass)
         {
-            BlueprintFields.ArchetypeParentClass?.SetValue(archetype, characterClass);
+            _characterClasses.SetArchetypeParentClass(archetype, characterClass);
         }
 
         public void SetArchetypeBaseAttackBonus(BlueprintArchetype archetype, BlueprintStatProgression progression)
         {
-            BlueprintFields.ArchetypeBaseAttackBonus.SetValue(
-                archetype,
-                progression == null
-                    ? null
-                    : BlueprintReferenceBase.CreateTyped<BlueprintStatProgressionReference>(progression));
+            _characterClasses.SetArchetypeBaseAttackBonus(archetype, progression);
         }
 
         public void SetArchetypeStartingEquipment(
@@ -733,46 +747,16 @@ namespace wotr_mod.Infrastructure
             int startingGold,
             params BlueprintItem[] items)
         {
-            BlueprintFields.ArchetypeReplaceStartingEquipment?.SetValue(archetype, replaceStartingEquipment);
-            BlueprintFields.ArchetypeStartingGold?.SetValue(archetype, startingGold);
-            BlueprintFields.ArchetypeStartingItems?.SetValue(
+            _characterClasses.SetArchetypeStartingEquipment(
                 archetype,
-                (items ?? Array.Empty<BlueprintItem>())
-                    .Where(item => item != null)
-                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintItemReference>)
-                    .ToArray());
+                replaceStartingEquipment,
+                startingGold,
+                items);
         }
 
         public int GetCharacterClassStartingGold(BlueprintCharacterClass characterClass)
         {
-            return BlueprintFields.CharacterClassStartingGold?.GetValue(characterClass) is int gold
-                ? gold
-                : 0;
-        }
-
-        public void SetArchetypeStartingEquipmentFromClass(
-            BlueprintArchetype archetype,
-            BlueprintCharacterClass characterClass,
-            params BlueprintItem[] additionalItems)
-        {
-            var startingGold = BlueprintFields.CharacterClassStartingGold?.GetValue(characterClass) is int gold
-                ? gold
-                : 0;
-            var classItems =
-                (BlueprintItemReference[])BlueprintFields.CharacterClassStartingItems?.GetValue(characterClass) ??
-                Array.Empty<BlueprintItemReference>();
-            var addedItems = (additionalItems ?? Array.Empty<BlueprintItem>())
-                .Where(item => item != null)
-                .Select(BlueprintReferenceBase.CreateTyped<BlueprintItemReference>);
-
-            var startingItems = classItems
-                .Concat(addedItems)
-                .Where(reference => reference != null)
-                .ToArray();
-
-            BlueprintFields.ArchetypeReplaceStartingEquipment?.SetValue(archetype, true);
-            BlueprintFields.ArchetypeStartingGold?.SetValue(archetype, startingGold);
-            BlueprintFields.ArchetypeStartingItems?.SetValue(archetype, startingItems);
+            return _characterClasses.GetCharacterClassStartingGold(characterClass);
         }
 
         public void SetArchetypeAttributeRecommendations(
@@ -780,34 +764,25 @@ namespace wotr_mod.Infrastructure
             IEnumerable<StatType> recommendedAttributes,
             IEnumerable<StatType> notRecommendedAttributes)
         {
-            BlueprintFields.ArchetypeOverrideAttributeRecommendations?.SetValue(archetype, true);
-            BlueprintFields.ArchetypeRecommendedAttributes?.SetValue(
+            _characterClasses.SetArchetypeAttributeRecommendations(
                 archetype,
-                (recommendedAttributes ?? Enumerable.Empty<StatType>()).ToArray());
-            BlueprintFields.ArchetypeNotRecommendedAttributes?.SetValue(
-                archetype,
-                (notRecommendedAttributes ?? Enumerable.Empty<StatType>()).ToArray());
+                recommendedAttributes,
+                notRecommendedAttributes);
         }
 
         public void SetCharacterClassSignatureAbilities(BlueprintCharacterClass characterClass, params BlueprintFeature[] features)
         {
-            var references = (features ?? Enumerable.Empty<BlueprintFeature>())
-                .Select(BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>)
-                .ToArray();
-            BlueprintFields.CharacterClassSignatureAbilities.SetValue(characterClass, references);
+            _characterClasses.SetCharacterClassSignatureAbilities(characterClass, features);
         }
 
         public void SetArchetypeSignatureAbilities(BlueprintArchetype archetype, params BlueprintFeature[] features)
         {
-            var references = (features ?? Enumerable.Empty<BlueprintFeature>())
-                .Select(BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>)
-                .ToArray();
-            BlueprintFields.ArchetypeSignatureAbilities.SetValue(archetype, references);
+            _characterClasses.SetArchetypeSignatureAbilities(archetype, features);
         }
 
         public void SetCharacterClassDifficulty(BlueprintCharacterClass characterClass, int difficulty)
         {
-            BlueprintFields.CharacterClassDifficulty?.SetValue(characterClass, difficulty);
+            _characterClasses.SetCharacterClassDifficulty(characterClass, difficulty);
         }
 
         public void SetCharacterClassAttributeRecommendations(
@@ -815,21 +790,15 @@ namespace wotr_mod.Infrastructure
             IEnumerable<StatType> recommendedAttributes,
             IEnumerable<StatType> notRecommendedAttributes)
         {
-            BlueprintFields.CharacterClassRecommendedAttributes?.SetValue(
+            _characterClasses.SetCharacterClassAttributeRecommendations(
                 characterClass,
-                (recommendedAttributes ?? Enumerable.Empty<StatType>()).ToArray());
-            BlueprintFields.CharacterClassNotRecommendedAttributes?.SetValue(
-                characterClass,
-                (notRecommendedAttributes ?? Enumerable.Empty<StatType>()).ToArray());
+                recommendedAttributes,
+                notRecommendedAttributes);
         }
 
         public void SetCharacterClassDefaultBuild(BlueprintCharacterClass characterClass, BlueprintFeature defaultBuild)
         {
-            BlueprintFields.CharacterClassDefaultBuild?.SetValue(
-                characterClass,
-                defaultBuild == null
-                    ? null
-                    : BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(defaultBuild));
+            _characterClasses.SetCharacterClassDefaultBuild(characterClass, defaultBuild);
         }
 
         public void SetSpellbookSpellList(BlueprintSpellbook spellbook, BlueprintSpellList spellList)
@@ -898,7 +867,7 @@ namespace wotr_mod.Infrastructure
 
         public void SetProgressionClasses(BlueprintFeatureBase feature, params BlueprintCharacterClass[] classes)
         {
-            SetProgressionClassesInternal(feature, classes, new HashSet<BlueprintGuid>());
+            _progressionOwnership.SetProgressionClasses(feature, classes);
         }
 
         public void EnsureCustomClassOwnsProgressionFeatures(
@@ -906,419 +875,17 @@ namespace wotr_mod.Infrastructure
             string ownershipSeed,
             BlueprintCharacterClass characterClass)
         {
-            if (progression == null || characterClass == null)
-            {
-                return;
-            }
-
-            var visiting = new HashSet<BlueprintGuid>();
-            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
-            {
-                var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Select(feature =>
-                    {
-                        var owned = EnsureCustomClassOwnedFeature(feature, ownershipSeed, characterClass, visiting);
-                        if (owned != feature)
-                        {
-                            ReplaceProgressionUiFeature(progression, feature, owned);
-                        }
-
-                        return owned;
-                    })
-                    .Where(feature => feature != null)
-                    .ToArray();
-                entry.SetFeatures(features);
-            }
-
-            SetProgressionClassesShallow(progression, characterClass);
+            _progressionOwnership.EnsureCustomClassOwnsProgressionFeatures(
+                progression,
+                ownershipSeed,
+                characterClass);
         }
 
         public void SetProgressionClassesShallow(
             BlueprintFeatureBase feature,
             params BlueprintCharacterClass[] classes)
         {
-            if (feature == null)
-            {
-                return;
-            }
-
-            if (feature is BlueprintProgression progression)
-            {
-                var levelEntries = progression.LevelEntries;
-                try
-                {
-                    progression.LevelEntries = Array.Empty<LevelEntry>();
-                    SetProgressionClasses(progression, classes);
-                }
-                finally
-                {
-                    progression.LevelEntries = levelEntries;
-                }
-
-                return;
-            }
-
-            if (feature is BlueprintFeatureSelection selection)
-            {
-                var features = BlueprintFields.FeatureSelectionFeatures?.GetValue(selection);
-                var allFeatures = BlueprintFields.FeatureSelectionAllFeatures?.GetValue(selection);
-                try
-                {
-                    SetFeatureSelectionFeatures(selection, Array.Empty<BlueprintFeature>());
-                    SetFeatureSelectionAllFeatures(selection, Array.Empty<BlueprintFeature>());
-                    SetProgressionClasses(selection, classes);
-                }
-                finally
-                {
-                    BlueprintFields.FeatureSelectionFeatures?.SetValue(selection, features);
-                    BlueprintFields.FeatureSelectionAllFeatures?.SetValue(selection, allFeatures);
-                }
-
-                return;
-            }
-
-            SetProgressionClasses(feature, classes);
-        }
-
-        private BlueprintFeatureBase EnsureCustomClassOwnedFeature(
-            BlueprintFeatureBase source,
-            string ownershipSeed,
-            BlueprintCharacterClass characterClass,
-            HashSet<BlueprintGuid> visiting)
-        {
-            if (source == null || IsModOwned(source))
-            {
-                return source;
-            }
-
-            var featureGuid = DeterministicGuid(ownershipSeed + ".OwnedFeature." + source.AssetGuid);
-            var feature = Get<BlueprintFeatureBase>(featureGuid);
-            if (feature == null)
-            {
-                feature = CloneFeatureBase(source, featureGuid, ownershipSeed + "_" + source.name);
-                AddCachedBlueprint(featureGuid, feature);
-            }
-
-            if (!visiting.Add(source.AssetGuid))
-            {
-                return feature;
-            }
-
-            try
-            {
-                ConfigureCustomClassOwnedFeature(feature, ownershipSeed, characterClass, visiting);
-            }
-            finally
-            {
-                visiting.Remove(source.AssetGuid);
-            }
-
-            SetProgressionClassesShallow(feature, characterClass);
-            return feature;
-        }
-
-        private BlueprintFeatureBase CloneFeatureBase(
-            BlueprintFeatureBase source,
-            string featureGuid,
-            string internalName)
-        {
-            if (source is BlueprintFeatureSelection selection)
-            {
-                return CloneBlueprint(selection, featureGuid, internalName);
-            }
-
-            if (source is BlueprintProgression progression)
-            {
-                return CloneBlueprint(progression, featureGuid, internalName);
-            }
-
-            if (source is BlueprintFeature feature)
-            {
-                return CloneBlueprint(feature, featureGuid, internalName);
-            }
-
-            throw new InvalidOperationException(source.name + " is not a cloneable custom class donor feature.");
-        }
-
-        private void ConfigureCustomClassOwnedFeature(
-            BlueprintFeatureBase feature,
-            string ownershipSeed,
-            BlueprintCharacterClass characterClass,
-            HashSet<BlueprintGuid> visiting)
-        {
-            if (feature is BlueprintFeatureSelection selection)
-            {
-                SetProgressionClassesShallow(selection, characterClass);
-                return;
-            }
-
-            var components = GetComponents<BlueprintComponent>(feature).ToList();
-            var knownSpell = components.OfType<AddKnownSpell>().FirstOrDefault();
-            if (knownSpell != null)
-            {
-                var spell = GetKnownSpell(knownSpell);
-                var addKnownSpell = new AddKnownSpell { name = "$AddKnownSpell$" + feature.name };
-                SetAddKnownSpell(addKnownSpell, characterClass, spell, knownSpell.SpellLevel);
-                SetComponents(feature, addKnownSpell);
-                return;
-            }
-
-            var filtered = components
-                .Where(component => component.GetType().Name != "PrerequisiteNoArchetype")
-                .ToArray();
-            foreach (var component in filtered)
-            {
-                BindComponentToCustomClass(component, ownershipSeed, characterClass, visiting);
-            }
-
-            SetComponents(feature, filtered);
-        }
-
-        private void BindComponentToCustomClass(
-            BlueprintComponent component,
-            string ownershipSeed,
-            BlueprintCharacterClass characterClass,
-            HashSet<BlueprintGuid> visiting)
-        {
-            var classReference = BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass);
-            SetReferenceField(component, "m_Class", classReference);
-            SetReferenceField(component, "m_CharacterClass", classReference);
-            SetField(component, "m_AdditionalClasses", Array.Empty<BlueprintCharacterClassReference>());
-            SetField(component, "m_Classes", Array.Empty<BlueprintCharacterClassReference>());
-            SetField(component, "m_Archetypes", Array.Empty<BlueprintArchetypeReference>());
-            SetField(component, "m_AdditionalArchetypes", Array.Empty<BlueprintArchetypeReference>());
-            SetField(component, "m_Archetype", null);
-            SetField(component, "m_ExcludeArchetype", null);
-            RetargetFeatureReferenceFields(component, ownershipSeed, characterClass, visiting);
-        }
-
-        private void RetargetFeatureReferenceFields(
-            BlueprintComponent component,
-            string ownershipSeed,
-            BlueprintCharacterClass characterClass,
-            HashSet<BlueprintGuid> visiting)
-        {
-            foreach (var field in GetInstanceFields(component.GetType()))
-            {
-                if (field.FieldType == typeof(BlueprintFeatureReference))
-                {
-                    var reference = field.GetValue(component) as BlueprintFeatureReference;
-                    var owned = EnsureCustomClassOwnedFeature(reference?.Get(), ownershipSeed, characterClass, visiting)
-                        as BlueprintFeature;
-                    if (owned != null && owned.AssetGuid != reference?.Get()?.AssetGuid)
-                    {
-                        field.SetValue(component, BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(owned));
-                    }
-                }
-                else if (field.FieldType == typeof(BlueprintUnitFactReference))
-                {
-                    var reference = field.GetValue(component) as BlueprintUnitFactReference;
-                    var owned = EnsureCustomClassOwnedFeature(reference?.Get() as BlueprintFeatureBase, ownershipSeed, characterClass, visiting)
-                        as BlueprintUnitFact;
-                    if (owned != null && owned.AssetGuid != reference?.Get()?.AssetGuid)
-                    {
-                        field.SetValue(component, BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(owned));
-                    }
-                }
-                else if (field.FieldType == typeof(BlueprintFeatureBaseReference))
-                {
-                    var reference = field.GetValue(component) as BlueprintFeatureBaseReference;
-                    var owned = EnsureCustomClassOwnedFeature(reference?.Get(), ownershipSeed, characterClass, visiting);
-                    if (owned != null && owned.AssetGuid != reference?.Get()?.AssetGuid)
-                    {
-                        field.SetValue(component, BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(owned));
-                    }
-                }
-            }
-        }
-
-        private static BlueprintAbility GetKnownSpell(AddKnownSpell component)
-        {
-            var reference = BlueprintFields.AddKnownSpellSpell?.GetValue(component) as BlueprintAbilityReference;
-            return reference?.Get();
-        }
-
-        private static bool IsModOwned(BlueprintFeatureBase feature)
-        {
-            return feature?.name != null && feature.name.StartsWith("WotrMod_", StringComparison.Ordinal);
-        }
-
-        private static void SetReferenceField<TReference>(
-            object instance,
-            string fieldName,
-            TReference reference)
-            where TReference : BlueprintReferenceBase
-        {
-            var field = FindField(instance.GetType(), fieldName);
-            if (field == null || field.FieldType != typeof(TReference))
-            {
-                return;
-            }
-
-            field.SetValue(instance, reference);
-        }
-
-        private static void SetField(object instance, string fieldName, object value)
-        {
-            var field = FindField(instance.GetType(), fieldName);
-            if (field == null)
-            {
-                return;
-            }
-
-            if (value != null && !field.FieldType.IsInstanceOfType(value))
-            {
-                return;
-            }
-
-            field.SetValue(instance, value);
-        }
-
-        private static void ReplaceProgressionUiFeature(
-            BlueprintProgression progression,
-            BlueprintFeatureBase source,
-            BlueprintFeatureBase replacement)
-        {
-            if (progression == null || source == null || replacement == null)
-            {
-                return;
-            }
-
-            var uiGroups = (progression.UIGroups ?? Array.Empty<UIGroup>()).ToList();
-            for (var i = 0; i < uiGroups.Count; i++)
-            {
-                var group = uiGroups[i];
-                var references = BlueprintFields.UIGroupFeatures?.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
-                if (references == null || references.All(reference => reference?.Get()?.AssetGuid != source.AssetGuid))
-                {
-                    continue;
-                }
-
-                BlueprintFields.UIGroupFeatures.SetValue(
-                    group,
-                    references
-                        .Select(reference => reference?.Get()?.AssetGuid == source.AssetGuid
-                            ? BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(replacement)
-                            : reference)
-                        .Where(reference => reference != null)
-                        .ToList());
-            }
-        }
-
-        private void SetProgressionClassesInternal(BlueprintFeatureBase feature, BlueprintCharacterClass[] classes, HashSet<BlueprintGuid> visited)
-        {
-            if (feature == null || visited.Contains(feature.AssetGuid)) return;
-            visited.Add(feature.AssetGuid);
-            
-            Log($"Setting progression classes for {feature.name} ({feature.AssetGuid})");
-            
-            FieldInfo field = null;
-            for (var type = feature.GetType(); type != null; type = type.BaseType)
-            {
-                field = type.GetField("m_Classes", BindingFlags.Instance | BindingFlags.NonPublic);
-                if (field != null) break;
-            }
-
-            if (field != null && !(feature is BlueprintProgression))
-            {
-                var references = classes
-                    .Where(c => c != null)
-                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>)
-                    .ToArray();
-                field.SetValue(feature, references);
-            }
-            else if (field == null)
-            {
-                // WotR sometimes uses m_CharacterClass (singular) for some features
-                for (var type = feature.GetType(); type != null; type = type.BaseType)
-                {
-                    field = type.GetField("m_CharacterClass", BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (field != null) break;
-                }
-
-                if (field != null)
-                {
-                    var reference = BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(classes.FirstOrDefault());
-                    field.SetValue(feature, reference);
-                }
-            }
-
-            if (feature is BlueprintProgression progression)
-            {
-                var classWithLevelType = typeof(BlueprintProgression).GetNestedType("ClassWithLevel", BindingFlags.Public | BindingFlags.NonPublic);
-                if (classWithLevelType != null)
-                {
-                    var mClassField = classWithLevelType.GetField("m_Class", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    var additionalLevelField = classWithLevelType.GetField("AdditionalLevel", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-                    if (mClassField != null)
-                    {
-                        var values = Array.CreateInstance(classWithLevelType, classes.Length);
-                        for (int i = 0; i < classes.Length; i++)
-                        {
-                            var characterClass = classes[i];
-                            if (characterClass == null) continue;
-
-                            var classWithLevel = Activator.CreateInstance(classWithLevelType);
-                            mClassField.SetValue(classWithLevel, BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass));
-                            additionalLevelField?.SetValue(classWithLevel, 0);
-                            values.SetValue(classWithLevel, i);
-                        }
-
-                        var progClassesField = BlueprintFields.ProgressionClasses ?? typeof(BlueprintProgression).GetField("m_Classes", BindingFlags.Instance | BindingFlags.NonPublic);
-                        if (progClassesField != null)
-                        {
-                            progClassesField.SetValue(progression, values);
-                        }
-                    }
-                }
-                
-                // Deep register for progression features
-                if (progression.LevelEntries != null)
-                {
-                    foreach (var entry in progression.LevelEntries)
-                    {
-                        if (entry?.Features == null) continue;
-                        foreach (var f in entry.Features)
-                        {
-                            if (f != null)
-                            {
-                                SetProgressionClassesInternal(f, classes, visited);
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (feature is BlueprintFeatureSelection selection)
-            {
-                // Deep register for selection features
-                var features = (BlueprintFeatureReference[])BlueprintFields.FeatureSelectionFeatures?.GetValue(selection);
-                if (features != null)
-                {
-                    foreach (var fRef in features)
-                    {
-                        var f = fRef?.Get();
-                        if (f != null)
-                        {
-                            SetProgressionClassesInternal(f, classes, visited);
-                        }
-                    }
-                }
-
-                var allFeatures = (BlueprintFeatureReference[])BlueprintFields.FeatureSelectionAllFeatures?.GetValue(selection);
-                if (allFeatures != null)
-                {
-                    foreach (var fRef in allFeatures)
-                    {
-                        var f = fRef?.Get();
-                        if (f != null)
-                        {
-                            SetProgressionClassesInternal(f, classes, visited);
-                        }
-                    }
-                }
-            }
+            _progressionOwnership.SetProgressionClassesShallow(feature, classes);
         }
 
         public T CloneBlueprint<T>(T source, string guid, string name) where T : BlueprintScriptableObject
@@ -1399,31 +966,6 @@ namespace wotr_mod.Infrastructure
             spellList.SpellsByLevel = levels;
         }
 
-        public void CopySpellList(
-            BlueprintSpellList source,
-            BlueprintSpellList target,
-            Func<BlueprintAbility, bool> include)
-        {
-            if (source?.SpellsByLevel == null || target == null)
-            {
-                return;
-            }
-
-            target.SpellsByLevel = source.SpellsByLevel
-                .Select(level =>
-                {
-                    var copy = new SpellLevelList(level.SpellLevel);
-                    var spells = level.Spells
-                        .Where(spell => spell != null && (include == null || include(spell)))
-                        .Select(BlueprintReferenceBase.CreateTyped<BlueprintAbilityReference>)
-                        .ToList();
-
-                    BlueprintFields.SpellLevelListSpells.SetValue(copy, spells);
-                    return copy;
-                })
-                .ToArray();
-        }
-
         public IEnumerable<T> GetLoadedBlueprints<T>() where T : SimpleBlueprint
         {
             var result = new List<T>();
@@ -1469,27 +1011,6 @@ namespace wotr_mod.Infrastructure
                 BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(feature));
         }
 
-        public void SetAddStartingEquipment(
-            AddStartingEquipment component,
-            IEnumerable<BlueprintItem> basicItems,
-            params BlueprintCharacterClass[] restrictedByClass)
-        {
-            BlueprintFields.AddStartingEquipmentBasicItems?.SetValue(
-                component,
-                (basicItems ?? Enumerable.Empty<BlueprintItem>())
-                    .Where(item => item != null)
-                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintItemReference>)
-                    .ToArray());
-            BlueprintFields.AddStartingEquipmentRestrictedByClass?.SetValue(
-                component,
-                (restrictedByClass ?? Array.Empty<BlueprintCharacterClass>())
-                    .Where(characterClass => characterClass != null)
-                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>)
-                    .ToArray());
-            component.CategoryItems = Array.Empty<WeaponCategory>();
-            component.ParametrizedCategory = false;
-        }
-
         public bool AddItemToLoot(BlueprintLoot loot, BlueprintItem item, int count, bool identify)
         {
             if (loot == null || item == null)
@@ -1516,60 +1037,10 @@ namespace wotr_mod.Infrastructure
             return true;
         }
 
-        public LootItemsPackFixed CreateFixedLootItem(
-            BlueprintItem item,
-            int count,
-            bool identify,
-            string nameSuffix)
-        {
-            var lootItem = new LootItem();
-            BlueprintFields.LootItemType.SetValue(lootItem, LootItemType.Item);
-            BlueprintFields.LootItemItem.SetValue(
-                lootItem,
-                item == null
-                    ? null
-                    : BlueprintReferenceBase.CreateTyped<BlueprintItemReference>(item));
-            BlueprintFields.LootItemLoot.SetValue(lootItem, null);
-
-            var pack = new LootItemsPackFixed
-            {
-                name = "$LootItemsPackFixed$" + nameSuffix
-            };
-            BlueprintFields.LootItemsPackFixedItem.SetValue(pack, lootItem);
-            BlueprintFields.LootItemsPackFixedCount.SetValue(pack, count);
-            return pack;
-        }
-
-        public bool AddLootToUnit(BlueprintUnit unit, BlueprintUnitLoot loot, string componentName)
-        {
-            if (unit == null || loot == null)
-            {
-                return false;
-            }
-
-            if (GetComponents<AddLoot>(unit).Any(component => AddLootMatches(component, loot)))
-            {
-                return false;
-            }
-
-            var newComponent = new AddLoot { name = componentName };
-            BlueprintFields.AddLootLoot.SetValue(
-                newComponent,
-                BlueprintReferenceBase.CreateTyped<BlueprintUnitLootReference>(loot));
-            AddComponent(unit, newComponent);
-            return true;
-        }
-
         private static bool LootEntryMatches(LootEntry entry, BlueprintItem item)
         {
             var reference = BlueprintFields.LootEntryItem.GetValue(entry) as BlueprintItemReference;
             return reference?.Get()?.AssetGuid == item.AssetGuid;
-        }
-
-        private static bool AddLootMatches(AddLoot component, BlueprintUnitLoot loot)
-        {
-            var reference = BlueprintFields.AddLootLoot.GetValue(component) as BlueprintUnitLootReference;
-            return reference?.Get()?.AssetGuid == loot.AssetGuid;
         }
 
         public void AddCheckedFact(AddStatBonusIfHasFact component, BlueprintUnitFact fact)
@@ -1649,47 +1120,6 @@ namespace wotr_mod.Infrastructure
                     name = componentName,
                     Priority = priority
                 });
-        }
-
-        public void AddSelectionRecommendationIfMissingFeature(
-            BlueprintScriptableObject blueprint,
-            BlueprintUnitFact feature,
-            SelectionRecommendation recommendationWhenMissingFeature,
-            string componentName)
-        {
-            if (blueprint == null || feature == null)
-            {
-                return;
-            }
-
-            var goodIfNoFeature = recommendationWhenMissingFeature == SelectionRecommendation.Recommended;
-            if (GetComponents<RecommendationNoFeatFromGroup>(blueprint).Any(component =>
-                component.GoodIfNoFeature == goodIfNoFeature &&
-                GetRecommendationFeatures(component).Any(reference => reference?.Get()?.AssetGuid == feature.AssetGuid)))
-            {
-                return;
-            }
-
-            var recommendation = new RecommendationNoFeatFromGroup
-            {
-                name = componentName,
-                GoodIfNoFeature = goodIfNoFeature
-            };
-
-            BlueprintFields.RecommendationNoFeatFromGroupFeatures.SetValue(
-                recommendation,
-                new[] { BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(feature) });
-            BlueprintFields.RecommendationNoFeatFromGroupExcludedFeatures.SetValue(
-                recommendation,
-                Array.Empty<BlueprintUnitFactReference>());
-
-            AddComponent(blueprint, recommendation);
-        }
-
-        private static BlueprintUnitFactReference[] GetRecommendationFeatures(RecommendationNoFeatFromGroup component)
-        {
-            return (BlueprintUnitFactReference[])BlueprintFields.RecommendationNoFeatFromGroupFeatures.GetValue(component) ??
-                   Array.Empty<BlueprintUnitFactReference>();
         }
 
         private static RecommendationPriority ToRecommendationPriority(SelectionRecommendation recommendation)
@@ -1986,18 +1416,6 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.ContextRankConfigCustomProgression.SetValue(config, items);
         }
 
-        public void ConfigureFeatureRankAsIs(ContextRankConfig config, BlueprintFeature feature)
-        {
-            BlueprintFields.ContextRankConfigType.SetValue(config, AbilityRankType.Default);
-            BlueprintFields.ContextRankConfigBaseValueType.SetValue(config, ContextRankBaseValueType.FeatureRank);
-            BlueprintFields.ContextRankConfigProgression.SetValue(config, ContextRankProgression.AsIs);
-            BlueprintFields.ContextRankConfigFeature.SetValue(
-                config,
-                feature == null
-                    ? null
-                    : BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(feature));
-        }
-
         public void SetCharacterClassHidden(BlueprintCharacterClass characterClass, bool hidden)
         {
             if (characterClass == null) return;
@@ -2107,42 +1525,6 @@ namespace wotr_mod.Infrastructure
         {
             var references = BlueprintFields.UIGroupFeatures?.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
             return references != null && references.Any(reference => reference?.Get() == feature);
-        }
-
-        private static IEnumerable<FieldInfo> GetInstanceFields(Type type)
-        {
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            for (var current = type; current != null; current = current.BaseType)
-            {
-                foreach (var field in current.GetFields(flags))
-                {
-                    yield return field;
-                }
-            }
-        }
-
-        private static FieldInfo FindField(Type type, string fieldName)
-        {
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            for (var current = type; current != null; current = current.BaseType)
-            {
-                var field = current.GetField(fieldName, flags);
-                if (field != null)
-                {
-                    return field;
-                }
-            }
-
-            return null;
-        }
-
-        private static string DeterministicGuid(string seed)
-        {
-            using (var md5 = MD5.Create())
-            {
-                var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes("wotr_mod:" + seed));
-                return new Guid(bytes).ToString("N");
-            }
         }
 
         private static void CopySpellbookField(BlueprintSpellbook target, BlueprintSpellbook source, string fieldName)
