@@ -90,11 +90,15 @@
         <Compile Include="Classes\ClassChassisDefinition.cs"/>
         <Compile Include="Classes\ClassComponentInstallers.cs" />
         <Compile Include="Classes\ClassSpellDefinition.cs" />
+        <Compile Include="Classes\GrantedSpellFeatureFactory.cs" />
+        <Compile Include="Classes\Evoker\DraconicBloodlineInstaller.cs" />
+        <Compile Include="Classes\Evoker\ElementalBloodlineInstaller.cs" />
         <Compile Include="Classes\Evoker\EvokerInstaller.Archetypes.cs" />
         <Compile Include="Classes\Evoker\EvokerInstaller.SpellClones.cs" />
         <Compile Include="Classes\Evoker\EvokerInstaller.cs" />
         <Compile Include="Classes\Evoker\EvokerScalingInstaller.cs" />
         <Compile Include="Classes\Evoker\LivingDarknessInstaller.cs" />
+        <Compile Include="Classes\Evoker\ShadowbornBloodlineInstaller.cs" />
         <Compile Include="Classes\Evoker\EvokerSpellRegistry.cs"/>
         <Compile Include="Classes\Evoker\Archetypes\ArcanistEvokerInstaller.cs" />
         <Compile Include="Classes\Evoker\Archetypes\DraconicEvokerInstaller.cs" />
@@ -139,6 +143,7 @@
         <Compile Include="Infrastructure\LocalizationIds.cs" />
         <Compile Include="Infrastructure\ModBlueprintIds.cs" />
         <Compile Include="Infrastructure\NecromancersDelightSettings.cs" />
+        <Compile Include="Infrastructure\BlueprintReferencePatcher.cs" />
         <Compile Include="Infrastructure\BlueprintClassRegistration.cs" />
         <Compile Include="Infrastructure\BlueprintCloner.cs" />
         <Compile Include="Infrastructure\BlueprintTool.cs" />

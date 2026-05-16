@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using UnityModManagerNet;
@@ -87,14 +86,6 @@ namespace wotr_mod.Classes
 
                     _blueprints.SetCharacterClassHidden(characterClass, false);
                     _blueprints.SetSpellbookCharacterClass(spellbook, characterClass);
-                    try
-                    {
-                        _blueprints.SetProgressionClasses(characterClass.Progression, characterClass);
-                    }
-                    catch (Exception ex)
-                    {
-                        _blueprints.ReportError($"ERROR during deep-registration of {definition.InternalName}: {ex}");
-                    }
 
                     foreach (var installer in _contentInstallers)
                     {
@@ -110,6 +101,18 @@ namespace wotr_mod.Classes
                                     $"ERROR installing class content for {definition.InternalName}: {ex}");
                             }
                         }
+                    }
+
+                    try
+                    {
+                        _blueprints.EnsureCustomClassOwnsProgressionFeatures(
+                            characterClass.Progression,
+                            definition.InternalName,
+                            characterClass);
+                    }
+                    catch (Exception ex)
+                    {
+                        _blueprints.ReportError($"ERROR claiming progression ownership for {definition.InternalName}: {ex}");
                     }
 
                     _classFactory.ConfigureClassPresentation(

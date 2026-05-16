@@ -1,25 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
-using Kingmaker.Blueprints.Items;
-using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
-using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.RuleSystem;
-using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
-using Kingmaker.UnitLogic.Abilities.Components.CasterCheckers;
-using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.UnitLogic.Commands.Base;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -38,6 +30,7 @@ namespace wotr_mod.Classes.Necromancer
         private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
         private readonly SpellIconLoader _icons;
+        private readonly GrantedSpellFeatureFactory _grantedSpellFeatures;
 
         public NecromancerInstaller(
             BlueprintTool blueprints,
@@ -49,6 +42,7 @@ namespace wotr_mod.Classes.Necromancer
             _localization = localization;
             _logger = logger;
             _icons = icons;
+            _grantedSpellFeatures = new GrantedSpellFeatureFactory(blueprints, localization, icons);
         }
 
         public bool CanInstall(CharacterClassDefinition definition) => definition.UseNecromancerBloodline;
@@ -219,25 +213,29 @@ namespace wotr_mod.Classes.Necromancer
             };
             clone.LevelEntries = new[]
             {
-                CreateLevelEntry(1, arcana, power1, boneArmor),
-                CreateLevelEntry(2, boneSpike),
-                CreateLevelEntry(3, power3),
-                CreateLevelEntry(4, corpseExplosion, stygianPrecision),
-                CreateLevelEntry(5, boneArmor),
-                CreateLevelEntry(7, eldritchHorror),
-                CreateLevelEntry(8, stygianPrecision),
-                CreateLevelEntry(9, power3, power9, boneArmor),
-                CreateLevelEntry(11, harvestTheFallen),
-                CreateLevelEntry(12, stygianPrecision),
-                CreateLevelEntry(13, boneArmor),
-                CreateLevelEntry(15, power3, power15),
-                CreateLevelEntry(16, stygianPrecision),
-                CreateLevelEntry(17, boneArmor),
-                CreateLevelEntry(19, hellOnEarth),
-                CreateLevelEntry(20, power20, reapersJudgement)
+                _blueprints.CreateLevelEntry(1, arcana, power1, boneArmor),
+                _blueprints.CreateLevelEntry(2, boneSpike),
+                _blueprints.CreateLevelEntry(3, power3),
+                _blueprints.CreateLevelEntry(4, corpseExplosion, stygianPrecision),
+                _blueprints.CreateLevelEntry(5, boneArmor),
+                _blueprints.CreateLevelEntry(7, eldritchHorror),
+                _blueprints.CreateLevelEntry(8, stygianPrecision),
+                _blueprints.CreateLevelEntry(9, power3, power9, boneArmor),
+                _blueprints.CreateLevelEntry(11, harvestTheFallen),
+                _blueprints.CreateLevelEntry(12, stygianPrecision),
+                _blueprints.CreateLevelEntry(13, boneArmor),
+                _blueprints.CreateLevelEntry(15, power3, power15),
+                _blueprints.CreateLevelEntry(16, stygianPrecision),
+                _blueprints.CreateLevelEntry(17, boneArmor),
+                _blueprints.CreateLevelEntry(19, hellOnEarth),
+                _blueprints.CreateLevelEntry(20, power20, reapersJudgement)
             };
             _blueprints.SetProgressionUiDeterminators(clone, visibleFeatures);
             _blueprints.SetProgressionUiGroups(clone, new[] { visibleFeatures });
+            _blueprints.EnsureCustomClassOwnsProgressionFeatures(
+                clone,
+                "WotrMod_NecromancerBloodline",
+                necromancerClass);
 
             if (existing == null)
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Progressions.NecromancerBloodline, clone);
@@ -271,7 +269,15 @@ namespace wotr_mod.Classes.Necromancer
         internal void RegisterNecromancerFeatures(BlueprintCharacterClass characterClass)
         {
             foreach (var feature in GetNecromancerFeatures())
+            {
+                if (feature is BlueprintFeatureSelection selection)
+                {
+                    _blueprints.SetProgressionClassesShallow(selection, characterClass);
+                    continue;
+                }
+
                 _blueprints.SetProgressionClasses(feature, characterClass);
+            }
         }
 
         internal void AddNecromancerFeaturesToProgression(BlueprintProgression progression)
@@ -310,7 +316,7 @@ namespace wotr_mod.Classes.Necromancer
             var reapersJudgement = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerReapersJudgement, "Reaper's Judgement");
 
-            RemoveFeaturesFromProgression(
+            _blueprints.RemoveFeaturesFromProgression(
                 progression,
                 GameBlueprintIds.Features.SorcererProficiencies,
                 GameBlueprintIds.Selections.SorcererBonusFeat,
@@ -318,24 +324,24 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Features.NecromancerProficiencies,
                 ModBlueprintIds.Selections.NecromancerBonusFeat);
 
-            AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
-            AddFeaturesToLevel(progression, 2,  boneSpike);
-            AddFeaturesToLevel(progression, 3,  deathsGift);
-            AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision);
-            AddFeaturesToLevel(progression, 5,  boneArmor);
-            AddFeaturesToLevel(progression, 6,  necromancerBonusFeat);
-            AddFeaturesToLevel(progression, 7,  eldritchHorror);
-            AddFeaturesToLevel(progression, 8,  stygianPrecision);
-            AddFeaturesToLevel(progression, 9,  deathsGift, graspOfTheDead, boneArmor);
-            AddFeaturesToLevel(progression, 10, necromancerBonusFeat);
-            AddFeaturesToLevel(progression, 11, harvestTheFallen);
-            AddFeaturesToLevel(progression, 12, stygianPrecision);
-            AddFeaturesToLevel(progression, 13, boneArmor);
-            AddFeaturesToLevel(progression, 15, deathsGift, incorporealForm);
-            AddFeaturesToLevel(progression, 16, necromancerBonusFeat, stygianPrecision);
-            AddFeaturesToLevel(progression, 17, boneArmor);
-            AddFeaturesToLevel(progression, 19, hellOnEarth);
-            AddFeaturesToLevel(progression, 20, oneOfUs, reapersJudgement);
+            _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
+            _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike);
+            _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift);
+            _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 6,  necromancerBonusFeat);
+            _blueprints.AddFeaturesToLevel(progression, 7,  eldritchHorror);
+            _blueprints.AddFeaturesToLevel(progression, 8,  stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 9,  deathsGift, graspOfTheDead, boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 10, necromancerBonusFeat);
+            _blueprints.AddFeaturesToLevel(progression, 11, harvestTheFallen);
+            _blueprints.AddFeaturesToLevel(progression, 12, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 13, boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 15, deathsGift, incorporealForm);
+            _blueprints.AddFeaturesToLevel(progression, 16, necromancerBonusFeat, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 17, boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 19, hellOnEarth);
+            _blueprints.AddFeaturesToLevel(progression, 20, oneOfUs, reapersJudgement);
 
             _blueprints.SetProgressionUiDeterminators(progression, new List<BlueprintFeatureBase> { masterOfDeath });
             _blueprints.SetProgressionUiGroups(
@@ -734,23 +740,19 @@ namespace wotr_mod.Classes.Necromancer
             string spellGuid, string spellName, string displayNameKey, string descriptionKey,
             int spellLevel, BlueprintCharacterClass characterClass)
         {
-            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
-            if (feature == null)
-            {
-                feature = _blueprints.CloneBlueprint(
-                    _blueprints.Require<BlueprintFeature>(donorGuid, donorName), featureGuid, internalName);
-                _blueprints.AddCachedBlueprint(featureGuid, feature);
-            }
-            var spell = _blueprints.Require<BlueprintAbility>(spellGuid, spellName);
-            var addKnownSpell = new AddKnownSpell { name = $"$AddKnownSpell${internalName}" };
-            _blueprints.SetAddKnownSpell(addKnownSpell, characterClass, spell, spellLevel);
-            _blueprints.SetComponents(feature, addKnownSpell);
-            _blueprints.SetUnitFactDisplay(feature, _localization.Text(displayNameKey), _localization.Text(descriptionKey));
-            if (spell.Icon != null) _blueprints.SetUnitFactIcon(feature, spell.Icon);
-            feature.IsClassFeature = true;
-            feature.Ranks = 1;
-            if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
-            return feature;
+            return _grantedSpellFeatures.Ensure(
+                donorGuid,
+                featureGuid,
+                internalName,
+                donorName,
+                spellGuid,
+                spellName,
+                displayNameKey,
+                descriptionKey,
+                spellLevel,
+                characterClass,
+                configureAsClassFeature: true,
+                componentName: "$AddKnownSpell" + internalName);
         }
 
         private BlueprintAbilityResource EnsureAbilityResource(string donorGuid, string resourceGuid, string internalName)
@@ -845,54 +847,5 @@ namespace wotr_mod.Classes.Necromancer
             });
         }
 
-        internal static LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)
-        {
-            var entry = new LevelEntry { Level = level };
-            entry.SetFeatures(features);
-            return entry;
-        }
-
-        internal static void AddFeaturesToLevel(BlueprintProgression progression, int level, params BlueprintFeatureBase[] featuresToAdd)
-        {
-            progression.LevelEntries = progression.LevelEntries ?? Array.Empty<LevelEntry>();
-            var entry = progression.LevelEntries.FirstOrDefault(e => e.Level == level);
-            if (entry == null)
-            {
-                entry = new LevelEntry { Level = level };
-                entry.SetFeatures(featuresToAdd);
-                progression.LevelEntries = progression.LevelEntries.Concat(new[] { entry }).OrderBy(e => e.Level).ToArray();
-                return;
-            }
-            var features = entry.Features.ToList();
-            foreach (var f in featuresToAdd.Where(f => f != null))
-            {
-                if (!features.Any(ex => ex != null && ex.AssetGuid == f.AssetGuid))
-                    features.Add(f);
-            }
-            entry.SetFeatures(features);
-        }
-
-        private static void RemoveFeaturesFromProgression(BlueprintProgression progression, params string[] featureGuids)
-        {
-            if (progression == null || featureGuids == null || featureGuids.Length == 0)
-            {
-                return;
-            }
-
-            var guids = featureGuids
-                .Where(guid => !string.IsNullOrWhiteSpace(guid))
-                .Select(guid => BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(guid)))
-                .ToArray();
-            if (guids.Length == 0)
-            {
-                return;
-            }
-
-            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
-            {
-                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
-                    .Where(feature => feature == null || !guids.Contains(feature.AssetGuid)));
-            }
-        }
     }
 }

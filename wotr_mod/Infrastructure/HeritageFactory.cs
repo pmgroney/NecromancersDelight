@@ -5,7 +5,6 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.UnitLogic.FactLogic;
 using wotr_mod.Features;
-using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Infrastructure
 {

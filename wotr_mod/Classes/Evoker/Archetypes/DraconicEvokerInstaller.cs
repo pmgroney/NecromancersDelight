@@ -2,7 +2,6 @@ using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
-using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Designers.Mechanics.Facts;
 using UnityModManagerNet;
@@ -47,9 +46,6 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 "Evoker bloodline selection");
             var evokerBonusFeat = _evoker.EnsureEvokerBonusFeatSelection(characterClass);
             var draconicBloodlineSelection = _evoker.EnsureDraconicEvokerBloodlineSelection(characterClass);
-            var sorcererFeatSelection = _blueprints.Require<BlueprintFeatureSelection>(
-                GameBlueprintIds.Selections.SorcererFeatSelection,
-                "Sorcerer feat selection");
             var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
                 GameBlueprintIds.StatProgressions.BaseAttackBonusMedium,
                 "Draconic Evoker base attack bonus progression");
@@ -117,13 +113,13 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                         4,
                         mediumArmorProficiency,
                         mediumArcaneArmorProficiency),
-                    CreateLevelEntry(7, sorcererFeatSelection),
+                    CreateLevelEntry(7, evokerBonusFeat),
                     CreateLevelEntry(
                         9,
                         heavyArmorProficiency,
                         heavyArcaneArmorProficiency),
-                    CreateLevelEntry(13, sorcererFeatSelection),
-                    CreateLevelEntry(19, sorcererFeatSelection)
+                    CreateLevelEntry(13, evokerBonusFeat),
+                    CreateLevelEntry(19, evokerBonusFeat)
                 },
                 new[]
                 {

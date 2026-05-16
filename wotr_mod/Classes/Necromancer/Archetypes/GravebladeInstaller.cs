@@ -22,9 +22,7 @@ using Kingmaker.UnitLogic.Commands.Base;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
-using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
-using wotr_mod.Classes.Necromancer;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
@@ -89,12 +87,11 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var piledriver = _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterPiledriver, "Two-Handed Fighter Piledriver");
             var greaterPowerAttack = _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterGreaterPowerAttack, "Two-Handed Fighter Greater Power Attack");
             var weaponMastery = _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterDevastatingBlow, "Two-Handed Fighter weapon mastery feature");
-            var firstLevelFighterBonusFeat = _blueprints.Require<BlueprintFeatureSelection>(GameBlueprintIds.Selections.FighterFeat, "Fighter Bonus Feat");
             var necromancerBonusFeat = new NecromancerInstaller(_blueprints, _localization, _logger, _icons).EnsureNecromancerBonusFeatSelection();
 
             _blueprints.SetProgressionClasses(proficiencies, characterClass);
             _blueprints.SetProgressionClasses(reapingEdge, characterClass);
-            _blueprints.SetProgressionClasses(bonusFeat, characterClass);
+            _blueprints.SetProgressionClassesShallow(bonusFeat, characterClass);
             _blueprints.SetProgressionClasses(fighterTraining, characterClass);
             _blueprints.SetProgressionClasses(armorTraining, characterClass);
             _blueprints.SetProgressionClasses(armorMastery, characterClass);
@@ -102,7 +99,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
 
             var gravebladeLevelEntries = new[]
             {
-                CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, firstLevelFighterBonusFeat),
+                CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, bonusFeat),
                 CreateLevelEntry(2,  bonusFeat),
                 CreateLevelEntry(3,  armorTraining, overhandChop),
                 CreateLevelEntry(5,  twoHandedWeaponTraining),

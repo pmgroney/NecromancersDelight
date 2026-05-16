@@ -6,9 +6,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Enums.Damage;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
-using UnityEngine;
 using UnityModManagerNet;
-using wotr_mod.Classes;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
@@ -329,7 +327,7 @@ namespace wotr_mod.Classes.Evoker
 
             if (characterClass != null && bindProgressionToClass)
             {
-                _blueprints.SetProgressionClasses(progression, characterClass);
+                _blueprints.SetProgressionClassesShallow(progression, characterClass);
             }
         }
 

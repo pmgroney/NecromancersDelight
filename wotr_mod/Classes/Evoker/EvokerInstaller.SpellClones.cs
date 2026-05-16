@@ -10,7 +10,6 @@ using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
-using wotr_mod.Classes;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes.Evoker
@@ -128,7 +127,7 @@ namespace wotr_mod.Classes.Evoker
                        StringComparison.Ordinal);
         }
 
-        private void ClearDamageScalingCaps(BlueprintScriptableObject blueprint)
+        internal void ClearDamageScalingCaps(BlueprintScriptableObject blueprint)
         {
             foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(blueprint))
             {
@@ -219,7 +218,7 @@ namespace wotr_mod.Classes.Evoker
                 return true;
             }
 
-            foreach (var field in GetInstanceFields(action.GetType()))
+            foreach (var field in BlueprintReferencePatcher.GetInstanceFields(action.GetType()))
             {
                 var value = field.GetValue(action);
                 var actionList = value as ActionList;
@@ -264,7 +263,7 @@ namespace wotr_mod.Classes.Evoker
                 yield return spawn;
             }
 
-            foreach (var field in GetInstanceFields(action.GetType()))
+            foreach (var field in BlueprintReferencePatcher.GetInstanceFields(action.GetType()))
             {
                 var value = field.GetValue(action);
                 var actionList = value as ActionList;
@@ -298,7 +297,7 @@ namespace wotr_mod.Classes.Evoker
 
         private static IEnumerable<ActionList> FindActionLists(BlueprintComponent component)
         {
-            foreach (var field in GetInstanceFields(component.GetType()))
+            foreach (var field in BlueprintReferencePatcher.GetInstanceFields(component.GetType()))
             {
                 var actionList = field.GetValue(component) as ActionList;
                 if (actionList != null)
@@ -310,7 +309,7 @@ namespace wotr_mod.Classes.Evoker
 
         private static string EvokerSpellCloneGuid(ClassSpellDefinition definition)
         {
-            return DeterministicGuid(
+            return BlueprintReferencePatcher.DeterministicGuid(
                 "Evoker.SpellClone." +
                 definition.SpellGuid + "." +
                 definition.SpellLevel + "." +
@@ -321,7 +320,7 @@ namespace wotr_mod.Classes.Evoker
             ClassSpellDefinition definition,
             BlueprintAbilityAreaEffect sourceArea)
         {
-            return DeterministicGuid(
+            return BlueprintReferencePatcher.DeterministicGuid(
                 "Evoker.SpellClone.AreaEffect." +
                 definition.SpellGuid + "." +
                 definition.SpellLevel + "." +

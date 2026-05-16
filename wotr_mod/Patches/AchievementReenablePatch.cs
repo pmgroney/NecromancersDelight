@@ -3,9 +3,7 @@ using HarmonyLib;
 using Kingmaker;
 using Kingmaker.Achievements;
 using Kingmaker.Achievements.Blueprints;
-using Kingmaker.Blueprints.Root;
 using Kingmaker.Settings;
-using Kingmaker.Settings.Difficulty;
 
 namespace wotr_mod.Patches
 {

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using Kingmaker;
 using Kingmaker.Blueprints;
@@ -13,8 +14,9 @@ namespace wotr_mod.Patches
 {
     internal sealed class BillyPlacementPatch : IGamePatch, IAreaLoadHandler
     {
-        private const float ShieldMazeSpawnOffsetX = 64f;
-        private const float ShieldMazeSpawnOffsetZ = -40f;
+        private const float ShieldMazeSpawnX = 133.47f;
+        private const float ShieldMazeSpawnY = 40f;
+        private const float ShieldMazeSpawnZ = 133.75f;
         private const float ShieldMazeSpawnOrientation = 5f;
         private const float DefendersHeartSpawnX = -82f;
         private const float DefendersHeartSpawnY = 40f;
@@ -70,14 +72,8 @@ namespace wotr_mod.Patches
                 var areaGuid = Game.Instance.CurrentlyLoadedArea.AssetGuid;
                 _logger.Log($"Billy placement area loaded: area={areaGuid}.");
 
-                if (ShouldPlaceBillyInShieldMaze(out var shieldMazeReason))
+                if (TryPlaceBillyInShieldMaze(out var shieldMazeReason))
                 {
-                    var position = GetSpawnPosition(
-                        ShieldMazeSpawnOffsetX,
-                        ShieldMazeSpawnOffsetZ);
-                    var billy = CreateBillyAreaUnit();
-                    PlaceBilly(billy, position, ShieldMazeSpawnOrientation);
-                    _logger.Log($"Billy placement spawned Shield Maze stand-in: position={position}, orientation={ShieldMazeSpawnOrientation}, hasView={billy?.View != null}.");
                     return;
                 }
 
@@ -106,7 +102,7 @@ namespace wotr_mod.Patches
             }
         }
 
-        private static bool ShouldPlaceBillyInShieldMaze(out string reason)
+        private bool TryPlaceBillyInShieldMaze(out string reason)
         {
             if (!Game.HasInstance || Game.Instance.CurrentlyLoadedArea == null)
             {
@@ -122,9 +118,29 @@ namespace wotr_mod.Patches
 
             var player = Game.Instance.Player;
             var roster = IsBillyInPlayerRoster();
-            var standIn = IsBillyAreaStandInPresent(includeCrossScene: true);
-            reason = DescribePlacementGate(player, roster, standIn);
-            return !roster && !standIn;
+            if (roster)
+            {
+                reason = DescribePlacementGate(player, roster, IsBillyAreaStandInPresent(includeCrossScene: true));
+                return false;
+            }
+
+            var existingStandIn = FindBillyAreaStandIn(includeCrossScene: true);
+            var position = GetShieldMazeSpawnPosition();
+            if (existingStandIn != null)
+            {
+                PlaceBilly(existingStandIn, position, ShieldMazeSpawnOrientation);
+                reason = DescribePlacementGate(player, false, true);
+                _logger.Log(
+                    $"Billy placement positioned existing Shield Maze stand-in: position={FormatVector3(position)}, orientation={ShieldMazeSpawnOrientation}, hasView={existingStandIn.View != null}, isInGame={existingStandIn.IsInGame}.");
+                return true;
+            }
+
+            var billy = CreateBillyAreaUnit();
+            PlaceBilly(billy, position, ShieldMazeSpawnOrientation);
+            reason = DescribePlacementGate(player, false, true);
+            _logger.Log(
+                $"Billy placement spawned Shield Maze stand-in: position={FormatVector3(position)}, orientation={ShieldMazeSpawnOrientation}, hasView={billy?.View != null}, isInGame={billy?.IsInGame == true}.");
+            return true;
         }
 
         private static bool ShouldPlaceBillyInDefendersHeart(out string reason)
@@ -200,19 +216,24 @@ namespace wotr_mod.Patches
 
         private static bool IsBillyAreaStandInPresent(bool includeCrossScene)
         {
+            return FindBillyAreaStandIn(includeCrossScene) != null;
+        }
+
+        private static UnitEntityData FindBillyAreaStandIn(bool includeCrossScene)
+        {
             var player = Game.Instance.Player;
             var inLoadedArea = Game.Instance.LoadedAreaState?.AllEntityData
                 .OfType<UnitEntityData>()
-                .Any(unit => IsBilly(unit) && !IsPlayerRosterUnit(player, unit)) == true;
+                .FirstOrDefault(unit => IsBilly(unit) && !IsPlayerRosterUnit(player, unit));
 
-            if (inLoadedArea || !includeCrossScene)
+            if (inLoadedArea != null || !includeCrossScene)
             {
                 return inLoadedArea;
             }
 
             return Game.Instance.State?.PlayerState?.CrossSceneState?.AllEntityData
                 .OfType<UnitEntityData>()
-                .Any(unit => IsBilly(unit) && !IsPlayerRosterUnit(player, unit)) == true;
+                .FirstOrDefault(unit => IsBilly(unit) && !IsPlayerRosterUnit(player, unit));
         }
 
         private static string DescribePlacementGate(Player player, bool roster, bool standIn)
@@ -283,16 +304,12 @@ namespace wotr_mod.Patches
             return unit?.Descriptor?.Blueprint != null && unit.Descriptor.Blueprint.AssetGuid == BillyGuid;
         }
 
-        private static Vector3 GetSpawnPosition(float offsetX, float offsetZ)
+        private static Vector3 GetShieldMazeSpawnPosition()
         {
-            var player = Game.Instance.Player;
-            if (player == null)
-            {
-                return Vector3.zero;
-            }
-
-            var center = player.GetPartyCenter();
-            return new Vector3(center.x + offsetX, center.y, center.z + offsetZ);
+            return new Vector3(
+                ShieldMazeSpawnX,
+                ShieldMazeSpawnY,
+                ShieldMazeSpawnZ);
         }
 
         private static Vector3 GetDefendersHeartSpawnPosition()
@@ -302,5 +319,16 @@ namespace wotr_mod.Patches
                 DefendersHeartSpawnY,
                 DefendersHeartSpawnZ);
         }
+
+        private static string FormatVector3(Vector3 value)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                "({0:0.###}, {1:0.###}, {2:0.###})",
+                value.x,
+                value.y,
+                value.z);
+        }
+
     }
 }

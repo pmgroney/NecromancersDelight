@@ -1,6 +1,5 @@
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
-using wotr_mod.Classes;
 using wotr_mod.Classes.Evoker.Archetypes;
 
 namespace wotr_mod.Classes.Evoker

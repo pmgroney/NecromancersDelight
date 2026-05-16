@@ -1,13 +1,10 @@
 using System.Linq;
-using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
-using Kingmaker.UnitLogic.FactLogic;
-using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Patches

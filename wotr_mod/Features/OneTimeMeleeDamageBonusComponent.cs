@@ -1,8 +1,5 @@
-﻿using System;
-using Kingmaker.Blueprints.Classes;
-using Kingmaker.EntitySystem.Entities;
+﻿using Kingmaker.Blueprints.Classes;
 using Kingmaker.Items;
-using Kingmaker.RuleSystem.Rules;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs;

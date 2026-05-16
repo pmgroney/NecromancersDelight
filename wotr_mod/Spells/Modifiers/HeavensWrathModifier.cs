@@ -25,7 +25,6 @@ using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using Kingmaker.Utility;
-using UnityEngine;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Spells.Modifiers

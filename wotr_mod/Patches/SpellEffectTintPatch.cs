@@ -5,7 +5,6 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic.Abilities;
 using Kingmaker.UnitLogic.Abilities.Components.Base;
 using Kingmaker.UnitLogic.Mechanics;
-using Kingmaker.Utility;
 using Kingmaker.View.MapObjects;
 using Kingmaker.Visual.HitSystem;
 using Kingmaker.Visual.Particles;

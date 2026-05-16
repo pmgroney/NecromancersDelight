@@ -76,6 +76,8 @@ The Hosilla placement should use:
 - The Jalmeray response uses a dedicated Continue answer to exit cleanly after the quest update.
 - Billy quest-stage dialogue cues, including Jalmeray, Scorched Pilgrimage Record, and Irori Neophyte's Armor pickup/dialogue phases, exit through the reusable Continue answer rather than returning to normal hub options.
 - Shield Maze Billy is represented by a fresh pre-recruit runtime stand-in.
+- Final static Shield Maze Billy placement is `(133.47, 40, 133.75)` with orientation `5`; existing non-roster stand-ins are repositioned there on area load.
+- Party-relative route fallback for Shield Maze placement is removed.
 - Defender's Heart uses the recruited roster Billy itself, as local-map party portrait pins require an in-game roster or party unit; a runtime stand-in can appear in-world but will not generate the portrait pin.
 - Defender's Heart Billy placement uses fixed hub coordinates instead of party-relative placement, ensuring a stable room and map position across all entry points.
 - Final static coordinate for Billy in the Defender's Heart center room is `(-82, 40, -7)` with orientation `0`.

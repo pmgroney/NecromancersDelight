@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;

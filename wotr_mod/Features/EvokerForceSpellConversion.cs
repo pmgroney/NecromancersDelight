@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem.Rules.Damage;

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Prerequisites;
@@ -109,18 +111,130 @@ namespace wotr_mod.Infrastructure
 
         public void AddFeatureToLevel(BlueprintProgression progression, int level, BlueprintFeatureBase feature)
         {
-            var entry = progression.LevelEntries.FirstOrDefault(e => e.Level == level);
-            if (entry == null)
-            {
-                throw new InvalidOperationException($"{progression.name} has no level {level} entry.");
-            }
-
-            if (entry.Features.Any(f => f == feature))
+            if (progression == null || feature == null)
             {
                 return;
             }
 
-            entry.SetFeatures(entry.Features.Concat(new[] { feature }));
+            progression.LevelEntries = progression.LevelEntries ?? Array.Empty<LevelEntry>();
+            var entry = progression.LevelEntries.FirstOrDefault(e => e.Level == level);
+            if (entry == null)
+            {
+                progression.LevelEntries = progression.LevelEntries
+                    .Concat(new[] { CreateLevelEntry(level, feature) })
+                    .OrderBy(e => e.Level)
+                    .ToArray();
+                return;
+            }
+
+            var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>()).ToList();
+            if (features.Any(f => f != null && f.AssetGuid == feature.AssetGuid))
+            {
+                return;
+            }
+
+            features.Add(feature);
+            entry.SetFeatures(features);
+        }
+
+        public void AddFeaturesToLevel(BlueprintProgression progression, int level, params BlueprintFeatureBase[] features)
+        {
+            foreach (var feature in features ?? Array.Empty<BlueprintFeatureBase>())
+            {
+                AddFeatureToLevel(progression, level, feature);
+            }
+        }
+
+        public void MoveFeatureToLevel(
+            BlueprintProgression progression,
+            string oldFeatureGuid,
+            BlueprintFeatureBase newFeature,
+            int level)
+        {
+            if (newFeature == null)
+            {
+                return;
+            }
+
+            RemoveFeatureFromProgression(progression, oldFeatureGuid);
+            RemoveFeatureFromProgression(progression, newFeature);
+            AddFeatureToLevel(progression, level, newFeature);
+        }
+
+        public void RemoveFeaturesFromProgression(BlueprintProgression progression, params string[] featureGuids)
+        {
+            if (progression == null || featureGuids == null || featureGuids.Length == 0)
+            {
+                return;
+            }
+
+            var guids = featureGuids
+                .Where(guid => !string.IsNullOrWhiteSpace(guid))
+                .Select(guid => BlueprintGuid.Parse(NormalizeGuid(guid)))
+                .ToArray();
+            if (guids.Length == 0)
+            {
+                return;
+            }
+
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(existing => existing == null || !guids.Contains(existing.AssetGuid)));
+            }
+        }
+
+        public void RemoveFeatureFromProgression(BlueprintProgression progression, string featureGuid)
+        {
+            if (string.IsNullOrWhiteSpace(featureGuid))
+            {
+                return;
+            }
+
+            RemoveFeaturesFromProgression(progression, featureGuid);
+        }
+
+        public void RemoveFeatureFromProgression(BlueprintProgression progression, BlueprintFeatureBase feature)
+        {
+            if (feature == null)
+            {
+                return;
+            }
+
+            foreach (var entry in progression?.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(existing => existing == null || existing.AssetGuid != feature.AssetGuid));
+            }
+        }
+
+        public void RemoveFeatureFromProgressionExceptLevel(
+            BlueprintProgression progression,
+            BlueprintFeatureBase feature,
+            int levelToKeep)
+        {
+            if (feature == null)
+            {
+                return;
+            }
+
+            foreach (var entry in progression?.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                if (entry.Level == levelToKeep)
+                {
+                    continue;
+                }
+
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(existing => existing == null || existing.AssetGuid != feature.AssetGuid));
+            }
+        }
+
+        public LevelEntry CreateLevelEntry(int level, params BlueprintFeatureBase[] features)
+        {
+            var entry = new LevelEntry { Level = level };
+            entry.SetFeatures((features ?? Array.Empty<BlueprintFeatureBase>()).Where(feature => feature != null));
+            return entry;
         }
 
         public void AddScalingClass(BlueprintProgression progression, BlueprintCharacterClass characterClass)
@@ -785,6 +899,310 @@ namespace wotr_mod.Infrastructure
         public void SetProgressionClasses(BlueprintFeatureBase feature, params BlueprintCharacterClass[] classes)
         {
             SetProgressionClassesInternal(feature, classes, new HashSet<BlueprintGuid>());
+        }
+
+        public void EnsureCustomClassOwnsProgressionFeatures(
+            BlueprintProgression progression,
+            string ownershipSeed,
+            BlueprintCharacterClass characterClass)
+        {
+            if (progression == null || characterClass == null)
+            {
+                return;
+            }
+
+            var visiting = new HashSet<BlueprintGuid>();
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                var features = (entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Select(feature =>
+                    {
+                        var owned = EnsureCustomClassOwnedFeature(feature, ownershipSeed, characterClass, visiting);
+                        if (owned != feature)
+                        {
+                            ReplaceProgressionUiFeature(progression, feature, owned);
+                        }
+
+                        return owned;
+                    })
+                    .Where(feature => feature != null)
+                    .ToArray();
+                entry.SetFeatures(features);
+            }
+
+            SetProgressionClassesShallow(progression, characterClass);
+        }
+
+        public void SetProgressionClassesShallow(
+            BlueprintFeatureBase feature,
+            params BlueprintCharacterClass[] classes)
+        {
+            if (feature == null)
+            {
+                return;
+            }
+
+            if (feature is BlueprintProgression progression)
+            {
+                var levelEntries = progression.LevelEntries;
+                try
+                {
+                    progression.LevelEntries = Array.Empty<LevelEntry>();
+                    SetProgressionClasses(progression, classes);
+                }
+                finally
+                {
+                    progression.LevelEntries = levelEntries;
+                }
+
+                return;
+            }
+
+            if (feature is BlueprintFeatureSelection selection)
+            {
+                var features = BlueprintFields.FeatureSelectionFeatures?.GetValue(selection);
+                var allFeatures = BlueprintFields.FeatureSelectionAllFeatures?.GetValue(selection);
+                try
+                {
+                    SetFeatureSelectionFeatures(selection, Array.Empty<BlueprintFeature>());
+                    SetFeatureSelectionAllFeatures(selection, Array.Empty<BlueprintFeature>());
+                    SetProgressionClasses(selection, classes);
+                }
+                finally
+                {
+                    BlueprintFields.FeatureSelectionFeatures?.SetValue(selection, features);
+                    BlueprintFields.FeatureSelectionAllFeatures?.SetValue(selection, allFeatures);
+                }
+
+                return;
+            }
+
+            SetProgressionClasses(feature, classes);
+        }
+
+        private BlueprintFeatureBase EnsureCustomClassOwnedFeature(
+            BlueprintFeatureBase source,
+            string ownershipSeed,
+            BlueprintCharacterClass characterClass,
+            HashSet<BlueprintGuid> visiting)
+        {
+            if (source == null || IsModOwned(source))
+            {
+                return source;
+            }
+
+            var featureGuid = DeterministicGuid(ownershipSeed + ".OwnedFeature." + source.AssetGuid);
+            var feature = Get<BlueprintFeatureBase>(featureGuid);
+            if (feature == null)
+            {
+                feature = CloneFeatureBase(source, featureGuid, ownershipSeed + "_" + source.name);
+                AddCachedBlueprint(featureGuid, feature);
+            }
+
+            if (!visiting.Add(source.AssetGuid))
+            {
+                return feature;
+            }
+
+            try
+            {
+                ConfigureCustomClassOwnedFeature(feature, ownershipSeed, characterClass, visiting);
+            }
+            finally
+            {
+                visiting.Remove(source.AssetGuid);
+            }
+
+            SetProgressionClassesShallow(feature, characterClass);
+            return feature;
+        }
+
+        private BlueprintFeatureBase CloneFeatureBase(
+            BlueprintFeatureBase source,
+            string featureGuid,
+            string internalName)
+        {
+            if (source is BlueprintFeatureSelection selection)
+            {
+                return CloneBlueprint(selection, featureGuid, internalName);
+            }
+
+            if (source is BlueprintProgression progression)
+            {
+                return CloneBlueprint(progression, featureGuid, internalName);
+            }
+
+            if (source is BlueprintFeature feature)
+            {
+                return CloneBlueprint(feature, featureGuid, internalName);
+            }
+
+            throw new InvalidOperationException(source.name + " is not a cloneable custom class donor feature.");
+        }
+
+        private void ConfigureCustomClassOwnedFeature(
+            BlueprintFeatureBase feature,
+            string ownershipSeed,
+            BlueprintCharacterClass characterClass,
+            HashSet<BlueprintGuid> visiting)
+        {
+            if (feature is BlueprintFeatureSelection selection)
+            {
+                SetProgressionClassesShallow(selection, characterClass);
+                return;
+            }
+
+            var components = GetComponents<BlueprintComponent>(feature).ToList();
+            var knownSpell = components.OfType<AddKnownSpell>().FirstOrDefault();
+            if (knownSpell != null)
+            {
+                var spell = GetKnownSpell(knownSpell);
+                var addKnownSpell = new AddKnownSpell { name = "$AddKnownSpell$" + feature.name };
+                SetAddKnownSpell(addKnownSpell, characterClass, spell, knownSpell.SpellLevel);
+                SetComponents(feature, addKnownSpell);
+                return;
+            }
+
+            var filtered = components
+                .Where(component => component.GetType().Name != "PrerequisiteNoArchetype")
+                .ToArray();
+            foreach (var component in filtered)
+            {
+                BindComponentToCustomClass(component, ownershipSeed, characterClass, visiting);
+            }
+
+            SetComponents(feature, filtered);
+        }
+
+        private void BindComponentToCustomClass(
+            BlueprintComponent component,
+            string ownershipSeed,
+            BlueprintCharacterClass characterClass,
+            HashSet<BlueprintGuid> visiting)
+        {
+            var classReference = BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass);
+            SetReferenceField(component, "m_Class", classReference);
+            SetReferenceField(component, "m_CharacterClass", classReference);
+            SetField(component, "m_AdditionalClasses", Array.Empty<BlueprintCharacterClassReference>());
+            SetField(component, "m_Classes", Array.Empty<BlueprintCharacterClassReference>());
+            SetField(component, "m_Archetypes", Array.Empty<BlueprintArchetypeReference>());
+            SetField(component, "m_AdditionalArchetypes", Array.Empty<BlueprintArchetypeReference>());
+            SetField(component, "m_Archetype", null);
+            SetField(component, "m_ExcludeArchetype", null);
+            RetargetFeatureReferenceFields(component, ownershipSeed, characterClass, visiting);
+        }
+
+        private void RetargetFeatureReferenceFields(
+            BlueprintComponent component,
+            string ownershipSeed,
+            BlueprintCharacterClass characterClass,
+            HashSet<BlueprintGuid> visiting)
+        {
+            foreach (var field in GetInstanceFields(component.GetType()))
+            {
+                if (field.FieldType == typeof(BlueprintFeatureReference))
+                {
+                    var reference = field.GetValue(component) as BlueprintFeatureReference;
+                    var owned = EnsureCustomClassOwnedFeature(reference?.Get(), ownershipSeed, characterClass, visiting)
+                        as BlueprintFeature;
+                    if (owned != null && owned.AssetGuid != reference?.Get()?.AssetGuid)
+                    {
+                        field.SetValue(component, BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(owned));
+                    }
+                }
+                else if (field.FieldType == typeof(BlueprintUnitFactReference))
+                {
+                    var reference = field.GetValue(component) as BlueprintUnitFactReference;
+                    var owned = EnsureCustomClassOwnedFeature(reference?.Get() as BlueprintFeatureBase, ownershipSeed, characterClass, visiting)
+                        as BlueprintUnitFact;
+                    if (owned != null && owned.AssetGuid != reference?.Get()?.AssetGuid)
+                    {
+                        field.SetValue(component, BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(owned));
+                    }
+                }
+                else if (field.FieldType == typeof(BlueprintFeatureBaseReference))
+                {
+                    var reference = field.GetValue(component) as BlueprintFeatureBaseReference;
+                    var owned = EnsureCustomClassOwnedFeature(reference?.Get(), ownershipSeed, characterClass, visiting);
+                    if (owned != null && owned.AssetGuid != reference?.Get()?.AssetGuid)
+                    {
+                        field.SetValue(component, BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(owned));
+                    }
+                }
+            }
+        }
+
+        private static BlueprintAbility GetKnownSpell(AddKnownSpell component)
+        {
+            var reference = BlueprintFields.AddKnownSpellSpell?.GetValue(component) as BlueprintAbilityReference;
+            return reference?.Get();
+        }
+
+        private static bool IsModOwned(BlueprintFeatureBase feature)
+        {
+            return feature?.name != null && feature.name.StartsWith("WotrMod_", StringComparison.Ordinal);
+        }
+
+        private static void SetReferenceField<TReference>(
+            object instance,
+            string fieldName,
+            TReference reference)
+            where TReference : BlueprintReferenceBase
+        {
+            var field = FindField(instance.GetType(), fieldName);
+            if (field == null || field.FieldType != typeof(TReference))
+            {
+                return;
+            }
+
+            field.SetValue(instance, reference);
+        }
+
+        private static void SetField(object instance, string fieldName, object value)
+        {
+            var field = FindField(instance.GetType(), fieldName);
+            if (field == null)
+            {
+                return;
+            }
+
+            if (value != null && !field.FieldType.IsInstanceOfType(value))
+            {
+                return;
+            }
+
+            field.SetValue(instance, value);
+        }
+
+        private static void ReplaceProgressionUiFeature(
+            BlueprintProgression progression,
+            BlueprintFeatureBase source,
+            BlueprintFeatureBase replacement)
+        {
+            if (progression == null || source == null || replacement == null)
+            {
+                return;
+            }
+
+            var uiGroups = (progression.UIGroups ?? Array.Empty<UIGroup>()).ToList();
+            for (var i = 0; i < uiGroups.Count; i++)
+            {
+                var group = uiGroups[i];
+                var references = BlueprintFields.UIGroupFeatures?.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
+                if (references == null || references.All(reference => reference?.Get()?.AssetGuid != source.AssetGuid))
+                {
+                    continue;
+                }
+
+                BlueprintFields.UIGroupFeatures.SetValue(
+                    group,
+                    references
+                        .Select(reference => reference?.Get()?.AssetGuid == source.AssetGuid
+                            ? BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(replacement)
+                            : reference)
+                        .Where(reference => reference != null)
+                        .ToList());
+            }
         }
 
         private void SetProgressionClassesInternal(BlueprintFeatureBase feature, BlueprintCharacterClass[] classes, HashSet<BlueprintGuid> visited)
@@ -1689,6 +2107,42 @@ namespace wotr_mod.Infrastructure
         {
             var references = BlueprintFields.UIGroupFeatures?.GetValue(group) as IEnumerable<BlueprintFeatureBaseReference>;
             return references != null && references.Any(reference => reference?.Get() == feature);
+        }
+
+        private static IEnumerable<FieldInfo> GetInstanceFields(Type type)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            for (var current = type; current != null; current = current.BaseType)
+            {
+                foreach (var field in current.GetFields(flags))
+                {
+                    yield return field;
+                }
+            }
+        }
+
+        private static FieldInfo FindField(Type type, string fieldName)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            for (var current = type; current != null; current = current.BaseType)
+            {
+                var field = current.GetField(fieldName, flags);
+                if (field != null)
+                {
+                    return field;
+                }
+            }
+
+            return null;
+        }
+
+        private static string DeterministicGuid(string seed)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes("wotr_mod:" + seed));
+                return new Guid(bytes).ToString("N");
+            }
         }
 
         private static void CopySpellbookField(BlueprintSpellbook target, BlueprintSpellbook source, string fieldName)

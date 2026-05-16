@@ -6,8 +6,6 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
-using Kingmaker.UnitLogic.FactLogic;
-using UnityModManagerNet;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes.Necromancer.Archetypes
