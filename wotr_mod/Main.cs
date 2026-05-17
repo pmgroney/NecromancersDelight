@@ -17,6 +17,9 @@ namespace wotr_mod
         private static UnityModManager.ModEntry.ModLogger _logger;
         private static PatchRegistry _registry;
         private static bool _applied;
+        private const float TooltipSliderWidth = 180f;
+        private const float TooltipSliderIndent = 12f;
+        private static readonly Color OptionsAccentColor = new Color(0.58f, 0.78f, 1f);
 
         internal static string ModPath { get; private set; }
         internal static NecromancersDelightSettings Settings { get; private set; }
@@ -58,25 +61,73 @@ namespace wotr_mod
 
         private static void OnGUI(UnityModManager.ModEntry modEntry)
         {
+            GUILayout.Space(16f);
+
+            GUILayout.BeginVertical(GUILayout.Width(320f));
             Settings.EnableAchievementsWhileModded = GUILayout.Toggle(
                 Settings.EnableAchievementsWhileModded,
                 "Re-enable achievements while modded");
 
-            GUILayout.Space(8f);
+            GUILayout.Space(14f);
             GUILayout.Label("Mouseover tooltip icon size");
+            GUILayout.Space(4f);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(TooltipSliderIndent);
+            GUILayout.BeginVertical(GUILayout.Width(TooltipSliderWidth));
             Settings.TooltipIconMagnificationMode = Mathf.RoundToInt(
                 GUILayout.HorizontalSlider(
                     Settings.TooltipIconMagnificationMode,
                     0,
                     2,
-                    GUILayout.Width(96f)));
+                    GUILayout.Width(TooltipSliderWidth)));
             Settings.TooltipIconMagnificationMode = Mathf.Clamp(Settings.TooltipIconMagnificationMode, 0, 2);
-            GUILayout.BeginHorizontal(GUILayout.Width(96f));
-            GUILayout.Label("1", GUILayout.Width(32f));
-            GUILayout.Label("1.5", GUILayout.Width(40f));
-            GUILayout.Label("2", GUILayout.Width(24f));
+            DrawTooltipMagnificationScale(Settings.TooltipIconMagnificationMode);
+            GUILayout.Label(
+                TooltipIconMagnificationLabel(Settings.TooltipIconMagnificationMode),
+                SelectedTooltipValueStyle());
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
-            GUILayout.Label(TooltipIconMagnificationLabel(Settings.TooltipIconMagnificationMode));
+            GUILayout.EndVertical();
+        }
+
+        private static void DrawTooltipMagnificationScale(int selectedMode)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Width(TooltipSliderWidth));
+            DrawTooltipScaleMarker("Off", selectedMode == 0);
+            DrawTooltipScaleMarker("1.5x", selectedMode == 1);
+            DrawTooltipScaleMarker("2x", selectedMode == 2);
+            GUILayout.EndHorizontal();
+        }
+
+        private static void DrawTooltipScaleMarker(string label, bool selected)
+        {
+            GUILayout.Label(label, selected ? SelectedTooltipMarkerStyle() : TooltipMarkerStyle(), GUILayout.Width(60f));
+        }
+
+        private static GUIStyle TooltipMarkerStyle()
+        {
+            return new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter
+            };
+        }
+
+        private static GUIStyle SelectedTooltipMarkerStyle()
+        {
+            var style = TooltipMarkerStyle();
+            style.fontStyle = FontStyle.Bold;
+            style.normal.textColor = OptionsAccentColor;
+            return style;
+        }
+
+        private static GUIStyle SelectedTooltipValueStyle()
+        {
+            var style = new GUIStyle(GUI.skin.label)
+            {
+                fontStyle = FontStyle.Bold
+            };
+            style.normal.textColor = OptionsAccentColor;
+            return style;
         }
 
         private static string TooltipIconMagnificationLabel(int mode)

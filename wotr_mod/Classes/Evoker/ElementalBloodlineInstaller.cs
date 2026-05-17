@@ -6,13 +6,18 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.Enums;
+using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics;
+using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
+using wotr_mod.Spells.Modifiers;
 
 namespace wotr_mod.Classes.Evoker
 {
@@ -364,6 +369,7 @@ namespace wotr_mod.Classes.Evoker
                 arcanaBuffName,
                 theme);
             EvokerInstaller.ReplaceProgressionFeature(progression, sourceArcanaFeatureGuid, arcana);
+            ConfigureElementalRay(progression, theme, characterClass);
             var hellfireRayKnownSpell = EnsureElementalHellfireRayKnownSpell(theme, characterClass);
             if (hellfireRayKnownSpell != null)
             {
@@ -379,6 +385,215 @@ namespace wotr_mod.Classes.Evoker
             AddElementalBodySpellUiGroup(progression);
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(progression, internalName, characterClass);
             return progression;
+        }
+
+        private void ConfigureElementalRay(
+            BlueprintProgression progression,
+            SpellEffectTheme theme,
+            BlueprintCharacterClass characterClass)
+        {
+            switch (theme)
+            {
+                case SpellEffectTheme.Electric:
+                    ReplaceElementalRay(
+                        progression,
+                        GameBlueprintIds.Features.BloodlineElementalAirElementalRayFeature,
+                        GameBlueprintIds.Abilities.BloodlineElementalAirElementalRayAbility,
+                        ModBlueprintIds.Features.EvokerAirElementalRay,
+                        ModBlueprintIds.Abilities.EvokerAirElementalRay,
+                        "WotrMod_EvokerAirElementalRayFeature",
+                        "WotrMod_EvokerAirElementalRayAbility",
+                        ModBlueprintIds.Features.LegacyEvokerAirElementalRayOwned,
+                        characterClass);
+                    return;
+                case SpellEffectTheme.Acid:
+                    ReplaceElementalRay(
+                        progression,
+                        GameBlueprintIds.Features.BloodlineElementalEarthElementalRayFeature,
+                        GameBlueprintIds.Abilities.BloodlineElementalEarthElementalRayAbility,
+                        ModBlueprintIds.Features.EvokerEarthElementalRay,
+                        ModBlueprintIds.Abilities.EvokerEarthElementalRay,
+                        "WotrMod_EvokerEarthElementalRayFeature",
+                        "WotrMod_EvokerEarthElementalRayAbility",
+                        ModBlueprintIds.Features.LegacyEvokerEarthElementalRayOwned,
+                        characterClass);
+                    return;
+                case SpellEffectTheme.Fire:
+                    ReplaceElementalRay(
+                        progression,
+                        GameBlueprintIds.Features.BloodlineElementalFireElementalRayFeature,
+                        GameBlueprintIds.Abilities.BloodlineElementalFireElementalRayAbility,
+                        ModBlueprintIds.Features.EvokerFireElementalRay,
+                        ModBlueprintIds.Abilities.EvokerFireElementalRay,
+                        "WotrMod_EvokerFireElementalRayFeature",
+                        "WotrMod_EvokerFireElementalRayAbility",
+                        ModBlueprintIds.Features.LegacyEvokerFireElementalRayOwned,
+                        characterClass);
+                    return;
+                case SpellEffectTheme.Cold:
+                    ReplaceElementalRay(
+                        progression,
+                        GameBlueprintIds.Features.BloodlineElementalWaterElementalRayFeature,
+                        GameBlueprintIds.Abilities.BloodlineElementalWaterElementalRayAbility,
+                        ModBlueprintIds.Features.EvokerWaterElementalRay,
+                        ModBlueprintIds.Abilities.EvokerWaterElementalRay,
+                        "WotrMod_EvokerWaterElementalRayFeature",
+                        "WotrMod_EvokerWaterElementalRayAbility",
+                        ModBlueprintIds.Features.LegacyEvokerWaterElementalRayOwned,
+                        characterClass);
+                    return;
+                default:
+                    throw new InvalidOperationException($"Unsupported elemental bloodline theme {theme}.");
+            }
+        }
+
+        private void ReplaceElementalRay(
+            BlueprintProgression progression,
+            string sourceFeatureGuid,
+            string sourceAbilityGuid,
+            string featureGuid,
+            string abilityGuid,
+            string featureName,
+            string abilityName,
+            string legacyFeatureGuid,
+            BlueprintCharacterClass characterClass)
+        {
+            var feature = EnsureElementalRayFeature(
+                sourceFeatureGuid,
+                sourceAbilityGuid,
+                featureGuid,
+                abilityGuid,
+                featureName,
+                abilityName,
+                characterClass);
+            EnsureLegacyElementalRayFeature(
+                sourceFeatureGuid,
+                sourceAbilityGuid,
+                legacyFeatureGuid,
+                featureName + "_LegacyOwned",
+                _blueprints.Require<BlueprintAbility>(abilityGuid, abilityName));
+            EvokerInstaller.ReplaceProgressionFeature(progression, sourceFeatureGuid, feature);
+            EvokerInstaller.ReplaceProgressionFeature(progression, legacyFeatureGuid, feature);
+        }
+
+        private BlueprintFeature EnsureElementalRayFeature(
+            string sourceFeatureGuid,
+            string sourceAbilityGuid,
+            string featureGuid,
+            string abilityGuid,
+            string featureName,
+            string abilityName,
+            BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(sourceFeatureGuid, featureName + " donor"),
+                    featureGuid,
+                    featureName);
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+
+            var ability = EnsureElementalRayAbility(sourceAbilityGuid, abilityGuid, abilityName, characterClass);
+            foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
+            {
+                _blueprints.SetAddFacts(addFacts, ability);
+            }
+
+            EvokerInstaller.ReplaceAbilityReferences(feature, sourceAbilityGuid, ability);
+            _blueprints.BindAbilityComponentsToClass(feature, characterClass);
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvokerElementalRayName),
+                _localization.Text(LocalizationIds.Mod.EvokerElementalRayDescription));
+            if (ability.Icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, ability.Icon);
+            }
+
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
+        private BlueprintFeature EnsureLegacyElementalRayFeature(
+            string sourceFeatureGuid,
+            string sourceAbilityGuid,
+            string legacyFeatureGuid,
+            string legacyFeatureName,
+            BlueprintAbility currentAbility)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(legacyFeatureGuid);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(sourceFeatureGuid, legacyFeatureName + " donor"),
+                    legacyFeatureGuid,
+                    legacyFeatureName);
+                _blueprints.AddCachedBlueprint(legacyFeatureGuid, feature);
+            }
+
+            foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
+            {
+                _blueprints.SetAddFacts(addFacts, currentAbility);
+            }
+
+            EvokerInstaller.ReplaceAbilityReferences(feature, sourceAbilityGuid, currentAbility);
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.EvokerElementalRayName),
+                _localization.Text(LocalizationIds.Mod.EvokerElementalRayDescription));
+            if (currentAbility.Icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, currentAbility.Icon);
+            }
+
+            return feature;
+        }
+
+        private BlueprintAbility EnsureElementalRayAbility(
+            string sourceAbilityGuid,
+            string abilityGuid,
+            string abilityName,
+            BlueprintCharacterClass characterClass)
+        {
+            var ability = _blueprints.Get<BlueprintAbility>(abilityGuid);
+            if (ability == null)
+            {
+                ability = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintAbility>(sourceAbilityGuid, abilityName + " donor"),
+                    abilityGuid,
+                    abilityName);
+                _blueprints.AddCachedBlueprint(abilityGuid, ability);
+            }
+
+            _blueprints.SetAbilityDisplay(
+                ability,
+                _localization.Text(LocalizationIds.Mod.EvokerElementalRayName),
+                _localization.Text(LocalizationIds.Mod.EvokerElementalRayDescription));
+            _evoker.BindAbilityRankConfigsToClass(ability, characterClass);
+            foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(ability))
+            {
+                _blueprints.SetContextRankMinimum(rank, 1);
+            }
+
+            SpellModifierUtility.PatchRunActions(ability, action =>
+            {
+                var damage = action as ContextActionDealDamage;
+                if (damage?.Value == null || damage.Value.DiceType != DiceType.D6)
+                {
+                    return 0;
+                }
+
+                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.DamageBonus);
+                return 1;
+            });
+            ability.OnEnable();
+            return ability;
         }
 
         internal void MoveProtectionFromEnergyToCommunal(

@@ -203,6 +203,8 @@ namespace wotr_mod.Infrastructure
             public const string EvokerScalingFireDescription = "wotr_mod.evoker_bloodline.scaling.fire.description";
             public const string EvokerScalingWaterName = "wotr_mod.evoker_bloodline.scaling.water.name";
             public const string EvokerScalingWaterDescription = "wotr_mod.evoker_bloodline.scaling.water.description";
+            public const string EvokerElementalRayName = "wotr_mod.evoker_bloodline.elemental_ray.name";
+            public const string EvokerElementalRayDescription = "wotr_mod.evoker_bloodline.elemental_ray.description";
             public const string NecromancerBloodlineName = "wotr_mod.necromancer_bloodline.name";
             public const string NecromancerBloodlineDescription = "wotr_mod.necromancer_bloodline.description";
             public const string NecromancerBloodlineArcanaName = "wotr_mod.necromancer_bloodline.arcana.name";

@@ -4,12 +4,15 @@ using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
+using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
@@ -201,6 +204,10 @@ namespace wotr_mod.Classes.Evoker
         {
             EvokerInstaller.ReplaceProgressionFeature(bloodline, sourceFeatureGuid, replacement);
             EvokerInstaller.ReplaceProgressionFeature(bloodline, EvokerFireOwnedFeatureGuid(sourceFeatureGuid), replacement);
+            foreach (var ownedFeatureGuid in EvokerFireReplacementFeatureGuids(sourceFeatureGuid))
+            {
+                EvokerInstaller.ReplaceProgressionFeature(bloodline, ownedFeatureGuid, replacement);
+            }
         }
 
         private void RemoveFireProgressionFeature(
@@ -209,6 +216,10 @@ namespace wotr_mod.Classes.Evoker
         {
             EvokerInstaller.RemoveProgressionFeature(bloodline, sourceFeatureGuid);
             EvokerInstaller.RemoveProgressionFeature(bloodline, EvokerFireOwnedFeatureGuid(sourceFeatureGuid));
+            foreach (var ownedFeatureGuid in EvokerFireReplacementFeatureGuids(sourceFeatureGuid))
+            {
+                EvokerInstaller.RemoveProgressionFeature(bloodline, ownedFeatureGuid);
+            }
         }
 
         private void MoveFireProgressionFeatureToLevel(
@@ -231,6 +242,20 @@ namespace wotr_mod.Classes.Evoker
         {
             return EvokerInstaller.DeterministicGuid(
                 "WotrMod_EvokerBloodline_Fire.OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
+        }
+
+        private static string[] EvokerFireReplacementFeatureGuids(string sourceFeatureGuid)
+        {
+            if (BlueprintTool.NormalizeGuid(sourceFeatureGuid) == GameBlueprintIds.Features.BloodlineElementalFireElementalRayFeature)
+            {
+                return new[]
+                {
+                    ModBlueprintIds.Features.EvokerFireElementalRay,
+                    ModBlueprintIds.Features.LegacyEvokerFireElementalRayOwned
+                };
+            }
+
+            return new string[0];
         }
 
         internal BlueprintFeature EnsureLivingGhostFeature(BlueprintCharacterClass characterClass)
@@ -705,6 +730,11 @@ namespace wotr_mod.Classes.Evoker
             SpellModifierUtility.ReplaceDescriptor(ability, SpellDescriptor.Fire, SpellDescriptor.Death, _blueprints);
             _evoker.BindAbilityRankConfigsToClass(ability, characterClass);
             PatchFireDamageToNegativeEnergy(ability);
+            if (abilityGuid == ModBlueprintIds.Abilities.ShadowbornUmbralRay)
+            {
+                ConfigureUmbralRayDamage(ability);
+            }
+
             ConfigureShadowbornDamageVisuals(abilityGuid, ability);
 
             return ability;
@@ -860,6 +890,26 @@ namespace wotr_mod.Classes.Evoker
                 }
 
                 damage.DamageType = SpellModifierUtility.EnergyDamage(DamageEnergyType.NegativeEnergy);
+                return 1;
+            });
+        }
+
+        private void ConfigureUmbralRayDamage(BlueprintAbility ability)
+        {
+            foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(ability))
+            {
+                _blueprints.SetContextRankMinimum(rank, 1);
+            }
+
+            SpellModifierUtility.PatchRunActions(ability, action =>
+            {
+                var damage = action as ContextActionDealDamage;
+                if (damage?.Value == null || damage.Value.DiceType != DiceType.D6)
+                {
+                    return 0;
+                }
+
+                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.DamageBonus);
                 return 1;
             });
         }

@@ -54,7 +54,7 @@ namespace wotr_mod.Classes.Evoker
                 "Icons\\tempest_surge.png",
                 DamageEnergyType.Electricity,
                 conversionBuffGuid: null,
-                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalAirElementalRayAbility },
+                additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerAirElementalRay },
                 characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerEarthBloodline,
@@ -65,7 +65,7 @@ namespace wotr_mod.Classes.Evoker
                 "Icons\\corrosive_mastery.png",
                 DamageEnergyType.Acid,
                 conversionBuffGuid: null,
-                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalEarthElementalRayAbility },
+                additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerEarthElementalRay },
                 characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerFireBloodline,
@@ -76,7 +76,7 @@ namespace wotr_mod.Classes.Evoker
                 "Icons\\infernal_potency.png",
                 DamageEnergyType.Fire,
                 conversionBuffGuid: null,
-                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalFireElementalRayAbility },
+                additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerFireElementalRay },
                 characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerWaterBloodline,
@@ -87,7 +87,7 @@ namespace wotr_mod.Classes.Evoker
                 "Icons\\glacial_dominion.png",
                 DamageEnergyType.Cold,
                 conversionBuffGuid: null,
-                additionalAbilityGuids: new[] { GameBlueprintIds.Abilities.BloodlineElementalWaterElementalRayAbility },
+                additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerWaterElementalRay },
                 characterClass: characterClass);
             ApplyElement(
                 ModBlueprintIds.Progressions.ShadowbornBloodline,

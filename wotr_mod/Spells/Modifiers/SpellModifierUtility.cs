@@ -3,6 +3,7 @@ using System.Reflection;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
@@ -78,6 +79,16 @@ namespace wotr_mod.Spells.Modifiers
                 DiceType = diceType,
                 DiceCountValue = source.DiceCountValue,
                 BonusValue = source.BonusValue
+            };
+        }
+
+        public static ContextDiceValue RankedD6DiceOnly(AbilityRankType rankType)
+        {
+            return new ContextDiceValue
+            {
+                DiceType = DiceType.D6,
+                DiceCountValue = new ContextValue { ValueType = ContextValueType.Rank, ValueRank = rankType },
+                BonusValue = new ContextValue { ValueType = ContextValueType.Simple, Value = 0 }
             };
         }
 
