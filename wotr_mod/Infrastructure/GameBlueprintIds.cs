@@ -171,6 +171,8 @@ namespace wotr_mod.Infrastructure
             public const string BloodragerProficiencies = "7aa59f5998e5baf4182cac3ff7998974";
             public const string CombatCasting = "06964d468fde1dc4aa71a92ea04d930d";
             public const string DruidNatureBond = "8fd7e35bda894aa9ade8c1d3125bd411";
+            public const string FetchlingShadowBlending = "cfd446149a134bad87afd658876da234";
+            public const string FetchlingShadowyResistance = "6c36c004af214dba87a980c647c9d33e";
             public const string GreaterSpellFocus = "5b04b45b228461c43bad768eb0f7c7bf";
             public const string ImprovedInitiative = "797f25d709f559546b29e7bcb181cc74";
             public const string IronWill = "175d1577bb6c9a04baf88eec99c66334";

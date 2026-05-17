@@ -316,15 +316,50 @@ namespace wotr_mod.Infrastructure
 
         public void AddFeatureToRace(BlueprintRace race, BlueprintFeatureBase feature)
         {
-            var features = (BlueprintFeatureBaseReference[])BlueprintFields.RaceFeatures.GetValue(race)
-                           ?? Array.Empty<BlueprintFeatureBaseReference>();
-            if (features.Any(featureReference => featureReference.Get() == feature))
+            if (race == null || feature == null)
             {
                 return;
             }
 
-            var newReference = BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>(feature);
-            BlueprintFields.RaceFeatures.SetValue(race, features.Concat(new[] { newReference }).ToArray());
+            var features = GetRaceFeatures(race);
+            if (features.Any(existing => existing.AssetGuid == feature.AssetGuid))
+            {
+                return;
+            }
+
+            SetRaceFeatures(race, features.Concat(new[] { feature }));
+        }
+
+        public BlueprintFeatureBase[] GetRaceFeatures(BlueprintRace race)
+        {
+            if (race == null)
+            {
+                return Array.Empty<BlueprintFeatureBase>();
+            }
+
+            var references = (BlueprintFeatureBaseReference[])BlueprintFields.RaceFeatures.GetValue(race)
+                             ?? Array.Empty<BlueprintFeatureBaseReference>();
+            return references
+                .Select(reference => reference?.Get())
+                .Where(feature => feature != null)
+                .ToArray();
+        }
+
+        public void SetRaceFeatures(BlueprintRace race, IEnumerable<BlueprintFeatureBase> features)
+        {
+            if (race == null)
+            {
+                return;
+            }
+
+            var references = (features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                .Where(feature => feature != null)
+                .GroupBy(feature => feature.AssetGuid)
+                .Select(group => group.First())
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintFeatureBaseReference>)
+                .ToArray();
+
+            BlueprintFields.RaceFeatures.SetValue(race, references);
         }
 
         public void AddFactToUnitBlueprint(BlueprintUnit unit, BlueprintUnitFact fact)

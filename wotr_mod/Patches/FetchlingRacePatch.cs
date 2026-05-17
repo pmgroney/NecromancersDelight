@@ -25,8 +25,12 @@ namespace wotr_mod.Patches
             var fetchling = _blueprints.Require<BlueprintRace>(
                 GameBlueprintIds.Races.Fetchling,
                 "Fetchling race");
+            var human = _blueprints.Require<BlueprintRace>(
+                GameBlueprintIds.Races.Human,
+                "Human race");
 
             fetchling.IsClassFeature = true;
+            ConfigureHumanMechanics(fetchling, human);
 
             var heritageSelection = _heritageFactory.EnsureSelection(
                 ModBlueprintIds.Selections.FetchlingHeritage,
@@ -58,10 +62,25 @@ namespace wotr_mod.Patches
             var bonusFeat = _blueprints.Require<BlueprintFeatureSelection>(
                 GameBlueprintIds.Selections.BasicFeat,
                 "Basic feat selection");
-            _blueprints.AddFeatureToRace(fetchling, heritageSelection);
-            _blueprints.AddFeatureToRace(fetchling, bonusFeat);
+            var shadowBlending = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.FetchlingShadowBlending,
+                "Fetchling shadow blending");
+            var shadowyResistance = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.FetchlingShadowyResistance,
+                "Fetchling shadowy resistance");
+            _blueprints.SetRaceFeatures(
+                fetchling,
+                new BlueprintFeatureBase[] { shadowBlending, shadowyResistance, heritageSelection, bonusFeat });
 
             _blueprints.AddRaceToRoot(fetchling, insertAt: 3);
+        }
+
+        private static void ConfigureHumanMechanics(BlueprintRace fetchling, BlueprintRace human)
+        {
+            fetchling.RaceId = human.RaceId;
+            fetchling.Size = human.Size;
+            fetchling.MaleSpeedSettings = human.MaleSpeedSettings;
+            fetchling.FemaleSpeedSettings = human.FemaleSpeedSettings;
         }
     }
 }
