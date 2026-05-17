@@ -1,3 +1,4 @@
+using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.EntitySystem.Stats;
@@ -30,7 +31,7 @@ namespace wotr_mod.Patches
                 "Human race");
 
             fetchling.IsClassFeature = true;
-            ConfigureHumanMechanics(fetchling, human);
+            ConfigurePlayableRaceIdentity(fetchling, human);
 
             var heritageSelection = _heritageFactory.EnsureSelection(
                 ModBlueprintIds.Selections.FetchlingHeritage,
@@ -75,12 +76,10 @@ namespace wotr_mod.Patches
             _blueprints.AddRaceToRoot(fetchling, insertAt: 3);
         }
 
-        private static void ConfigureHumanMechanics(BlueprintRace fetchling, BlueprintRace human)
+        private static void ConfigurePlayableRaceIdentity(BlueprintRace fetchling, BlueprintRace human)
         {
-            fetchling.RaceId = human.RaceId;
+            fetchling.RaceId = Race.Catfolk;
             fetchling.Size = human.Size;
-            fetchling.MaleSpeedSettings = human.MaleSpeedSettings;
-            fetchling.FemaleSpeedSettings = human.FemaleSpeedSettings;
         }
     }
 }
