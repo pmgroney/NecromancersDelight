@@ -399,7 +399,6 @@ namespace wotr_mod.Classes.Evoker
                         ModBlueprintIds.Abilities.EvokerAirElementalRay,
                         "WotrMod_EvokerAirElementalRayFeature",
                         "WotrMod_EvokerAirElementalRayAbility",
-                        ModBlueprintIds.Features.LegacyEvokerAirElementalRayOwned,
                         characterClass);
                     return;
                 case SpellEffectTheme.Acid:
@@ -411,7 +410,6 @@ namespace wotr_mod.Classes.Evoker
                         ModBlueprintIds.Abilities.EvokerEarthElementalRay,
                         "WotrMod_EvokerEarthElementalRayFeature",
                         "WotrMod_EvokerEarthElementalRayAbility",
-                        ModBlueprintIds.Features.LegacyEvokerEarthElementalRayOwned,
                         characterClass);
                     return;
                 case SpellEffectTheme.Fire:
@@ -423,7 +421,6 @@ namespace wotr_mod.Classes.Evoker
                         ModBlueprintIds.Abilities.EvokerFireElementalRay,
                         "WotrMod_EvokerFireElementalRayFeature",
                         "WotrMod_EvokerFireElementalRayAbility",
-                        ModBlueprintIds.Features.LegacyEvokerFireElementalRayOwned,
                         characterClass);
                     return;
                 case SpellEffectTheme.Cold:
@@ -435,7 +432,6 @@ namespace wotr_mod.Classes.Evoker
                         ModBlueprintIds.Abilities.EvokerWaterElementalRay,
                         "WotrMod_EvokerWaterElementalRayFeature",
                         "WotrMod_EvokerWaterElementalRayAbility",
-                        ModBlueprintIds.Features.LegacyEvokerWaterElementalRayOwned,
                         characterClass);
                     return;
                 default:
@@ -451,7 +447,6 @@ namespace wotr_mod.Classes.Evoker
             string abilityGuid,
             string featureName,
             string abilityName,
-            string legacyFeatureGuid,
             BlueprintCharacterClass characterClass)
         {
             var feature = EnsureElementalRayFeature(
@@ -462,14 +457,7 @@ namespace wotr_mod.Classes.Evoker
                 featureName,
                 abilityName,
                 characterClass);
-            EnsureLegacyElementalRayFeature(
-                sourceFeatureGuid,
-                sourceAbilityGuid,
-                legacyFeatureGuid,
-                featureName + "_LegacyOwned",
-                _blueprints.Require<BlueprintAbility>(abilityGuid, abilityName));
             EvokerInstaller.ReplaceProgressionFeature(progression, sourceFeatureGuid, feature);
-            EvokerInstaller.ReplaceProgressionFeature(progression, legacyFeatureGuid, feature);
         }
 
         private BlueprintFeature EnsureElementalRayFeature(
@@ -511,41 +499,6 @@ namespace wotr_mod.Classes.Evoker
             if (characterClass != null)
             {
                 _blueprints.SetProgressionClasses(feature, characterClass);
-            }
-
-            return feature;
-        }
-
-        private BlueprintFeature EnsureLegacyElementalRayFeature(
-            string sourceFeatureGuid,
-            string sourceAbilityGuid,
-            string legacyFeatureGuid,
-            string legacyFeatureName,
-            BlueprintAbility currentAbility)
-        {
-            var feature = _blueprints.Get<BlueprintFeature>(legacyFeatureGuid);
-            if (feature == null)
-            {
-                feature = _blueprints.CloneBlueprint(
-                    _blueprints.Require<BlueprintFeature>(sourceFeatureGuid, legacyFeatureName + " donor"),
-                    legacyFeatureGuid,
-                    legacyFeatureName);
-                _blueprints.AddCachedBlueprint(legacyFeatureGuid, feature);
-            }
-
-            foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
-            {
-                _blueprints.SetAddFacts(addFacts, currentAbility);
-            }
-
-            EvokerInstaller.ReplaceAbilityReferences(feature, sourceAbilityGuid, currentAbility);
-            _blueprints.SetUnitFactDisplay(
-                feature,
-                _localization.Text(LocalizationIds.Mod.EvokerElementalRayName),
-                _localization.Text(LocalizationIds.Mod.EvokerElementalRayDescription));
-            if (currentAbility.Icon != null)
-            {
-                _blueprints.SetUnitFactIcon(feature, currentAbility.Icon);
             }
 
             return feature;

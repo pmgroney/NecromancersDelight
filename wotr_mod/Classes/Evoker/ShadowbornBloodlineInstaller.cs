@@ -248,11 +248,7 @@ namespace wotr_mod.Classes.Evoker
         {
             if (BlueprintTool.NormalizeGuid(sourceFeatureGuid) == GameBlueprintIds.Features.BloodlineElementalFireElementalRayFeature)
             {
-                return new[]
-                {
-                    ModBlueprintIds.Features.EvokerFireElementalRay,
-                    ModBlueprintIds.Features.LegacyEvokerFireElementalRayOwned
-                };
+                return new[] { ModBlueprintIds.Features.EvokerFireElementalRay };
             }
 
             return new string[0];
