@@ -115,6 +115,7 @@
         <Compile Include="Classes\Necromancer\Archetypes\SepulchritInstaller.cs" />
         <Compile Include="Content\ModContentPatch.cs"/>
         <Compile Include="Content\BillyQuestStarter.cs" />
+        <Compile Include="Content\DefendersHeartAssaultTimerPatch.cs" />
         <Compile Include="Content\QuestExperienceReward.cs" />
         <Compile Include="Content\BillyReactivityLines.cs" />
         <Compile Include="Content\CompanionInstaller.cs" />
@@ -131,6 +132,7 @@
         <Compile Include="Features\StygianPrecisionComponent.cs" />
         <Compile Include="Features\LivingDarknessComponents.cs" />
         <Compile Include="Features\ShadowbornNegativeEnergyHealing.cs" />
+        <Compile Include="Features\SpellbookRecommendationExceptClasses.cs" />
         <Compile Include="Features\SpellEffectThemeToggleComponent.cs" />
         <Compile Include="Features\SpellFocusSchoolRecommendation.cs" />
         <Compile Include="Features\SelectedRaceStatBonus.cs" />

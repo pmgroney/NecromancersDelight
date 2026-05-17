@@ -14,6 +14,7 @@ using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.EquipmentEnchants;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
+using Kingmaker.Designers.EventConditionActionSystem.Events;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Abilities.Components;
@@ -41,6 +42,9 @@ namespace wotr_mod.Infrastructure
             typeof(BlueprintScriptableObject).GetField("m_Components", BindingFlags.Instance | BindingFlags.NonPublic)
             ?? typeof(BlueprintScriptableObject).GetField("Components", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo EtudeInvokeActionsDelayedDays =
+            typeof(EtudeInvokeActionsDelayed).GetField("m_Days", BindingFlags.Instance | BindingFlags.NonPublic);
+
         static BlueprintFields()
         {
             // Logging for missing fields to help debugging
@@ -49,6 +53,7 @@ namespace wotr_mod.Infrastructure
             if (ProgressionUIGroups == null) PatchRegistry.FallbackError("WARNING: BlueprintProgression.UIGroups not found");
             if (UIGroupFeatures == null) PatchRegistry.FallbackError("WARNING: UIGroup.m_Features not found");
             if (BlueprintComponents == null) PatchRegistry.FallbackError("WARNING: BlueprintScriptableObject.m_Components (or Components) not found");
+            if (EtudeInvokeActionsDelayedDays == null) PatchRegistry.FallbackError("WARNING: EtudeInvokeActionsDelayed.m_Days not found");
             if (CharacterClassHiddenFields.Length == 0) PatchRegistry.FallbackError("WARNING: BlueprintCharacterClass hidden fields not found");
         }
 

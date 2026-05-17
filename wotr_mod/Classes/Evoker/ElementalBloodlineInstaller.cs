@@ -7,17 +7,13 @@ using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Enums;
-using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
-using Kingmaker.UnitLogic.Mechanics;
-using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
-using wotr_mod.Spells.Modifiers;
 
 namespace wotr_mod.Classes.Evoker
 {
@@ -575,24 +571,7 @@ namespace wotr_mod.Classes.Evoker
                 ability,
                 _localization.Text(LocalizationIds.Mod.EvokerElementalRayName),
                 _localization.Text(LocalizationIds.Mod.EvokerElementalRayDescription));
-            _evoker.BindAbilityRankConfigsToClass(ability, characterClass);
-            foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(ability))
-            {
-                _blueprints.SetContextRankMinimum(rank, 1);
-            }
-
-            SpellModifierUtility.PatchRunActions(ability, action =>
-            {
-                var damage = action as ContextActionDealDamage;
-                if (damage?.Value == null || damage.Value.DiceType != DiceType.D6)
-                {
-                    return 0;
-                }
-
-                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.DamageBonus);
-                return 1;
-            });
-            ability.OnEnable();
+            _evoker.ConfigureElementalRayDamage(ability, characterClass);
             return ability;
         }
 

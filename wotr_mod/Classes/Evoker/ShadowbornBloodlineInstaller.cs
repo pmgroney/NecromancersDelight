@@ -732,7 +732,7 @@ namespace wotr_mod.Classes.Evoker
             PatchFireDamageToNegativeEnergy(ability);
             if (abilityGuid == ModBlueprintIds.Abilities.ShadowbornUmbralRay)
             {
-                ConfigureUmbralRayDamage(ability);
+                _evoker.ConfigureElementalRayDamage(ability, characterClass);
             }
 
             ConfigureShadowbornDamageVisuals(abilityGuid, ability);
@@ -890,26 +890,6 @@ namespace wotr_mod.Classes.Evoker
                 }
 
                 damage.DamageType = SpellModifierUtility.EnergyDamage(DamageEnergyType.NegativeEnergy);
-                return 1;
-            });
-        }
-
-        private void ConfigureUmbralRayDamage(BlueprintAbility ability)
-        {
-            foreach (var rank in _blueprints.GetComponents<ContextRankConfig>(ability))
-            {
-                _blueprints.SetContextRankMinimum(rank, 1);
-            }
-
-            SpellModifierUtility.PatchRunActions(ability, action =>
-            {
-                var damage = action as ContextActionDealDamage;
-                if (damage?.Value == null || damage.Value.DiceType != DiceType.D6)
-                {
-                    return 0;
-                }
-
-                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.DamageBonus);
                 return 1;
             });
         }

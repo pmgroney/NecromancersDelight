@@ -93,28 +93,31 @@ namespace wotr_mod
         private static void DrawTooltipMagnificationScale(int selectedMode)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(TooltipSliderWidth));
-            DrawTooltipScaleMarker("Off", selectedMode == 0);
-            DrawTooltipScaleMarker("1.5x", selectedMode == 1);
-            DrawTooltipScaleMarker("2x", selectedMode == 2);
+            DrawTooltipScaleMarker("Off", selectedMode == 0, TextAnchor.MiddleLeft);
+            DrawTooltipScaleMarker("1.5x", selectedMode == 1, TextAnchor.MiddleCenter);
+            DrawTooltipScaleMarker("2x", selectedMode == 2, TextAnchor.MiddleRight);
             GUILayout.EndHorizontal();
         }
 
-        private static void DrawTooltipScaleMarker(string label, bool selected)
+        private static void DrawTooltipScaleMarker(string label, bool selected, TextAnchor alignment)
         {
-            GUILayout.Label(label, selected ? SelectedTooltipMarkerStyle() : TooltipMarkerStyle(), GUILayout.Width(60f));
+            GUILayout.Label(
+                label,
+                selected ? SelectedTooltipMarkerStyle(alignment) : TooltipMarkerStyle(alignment),
+                GUILayout.Width(60f));
         }
 
-        private static GUIStyle TooltipMarkerStyle()
+        private static GUIStyle TooltipMarkerStyle(TextAnchor alignment)
         {
             return new GUIStyle(GUI.skin.label)
             {
-                alignment = TextAnchor.MiddleCenter
+                alignment = alignment
             };
         }
 
-        private static GUIStyle SelectedTooltipMarkerStyle()
+        private static GUIStyle SelectedTooltipMarkerStyle(TextAnchor alignment)
         {
-            var style = TooltipMarkerStyle();
+            var style = TooltipMarkerStyle(alignment);
             style.fontStyle = FontStyle.Bold;
             style.normal.textColor = OptionsAccentColor;
             return style;

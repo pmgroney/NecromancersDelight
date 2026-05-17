@@ -99,6 +99,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string BillyRecruited = "da03f5bd8a9e44b89a5a7df675cb95df";
             public const string BillyBowQuestStarted = "e1f39ce3152c439080ac6f2565e1f861";
+            public const string DefendersHeartAssaultTimerAdjusted = "5e8a2f7db8f84b2797720f4fbb09ef90";
             public const string ShieldMazeRuntimeLootSeeded = "231ad8e13d8b400a98da928503969098";
         }
 

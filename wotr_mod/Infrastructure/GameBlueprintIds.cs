@@ -74,6 +74,13 @@ namespace wotr_mod.Infrastructure
             public const string PrologueLabyrinth = "944a6947fe8ffa8458c278aa1c0c4226";
         }
 
+        internal static class Etudes
+        {
+            public const string DefendersHeartReadyForAttack = "897cefd681c79c54fa70f2dcfac47a64";
+            public const string DefendersHeartAssaultTimer = "8f192638e02e7574b999a13fcbdb3e13";
+            public const string DefendersHeartWarning = "b76bfad91281ee24db6963c69b466c14";
+        }
+
         internal static class Spellbooks
         {
             public const string Ranger = "762858a4a28eaaf43aa00f50441d7027";

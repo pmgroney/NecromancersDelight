@@ -52,7 +52,7 @@ Common patterns:
 - `DamageTypeSpellModifier`: convert existing damage type, descriptor, dice type, and scaling when the donor spell already has the right shape.
 - `SpellModifierUtility.PatchRunActions`: patch actions inside `AbilityEffectRunAction`.
 - `ContextRankConfig`: control caster-level scaling and caps. Use `ConfigureContextRankConfig`, then `SetContextRankMaximum` when a cap is required.
-- Evoker elemental rays clone the Owlcat donor ability and replace the donor's flat `DamageBonus` rank with rank-driven d6 dice only, minimum 1 die, and zero flat bonus. Do not patch the vanilla source ray abilities globally.
+- Evoker elemental/Umbral rays must explicitly configure their `DamageBonus` `ContextRankConfig` to `ClassLevel` Div2 with min 1, then use that rank as the d6 dice count with a zero flat bonus; do not rely on the donor rank config surviving clone/bind. Do not patch the vanilla source ray abilities globally.
 - Old saves may contain the previous deterministic owned ray feature GUIDs, so migration changes must keep those legacy feature blueprints cached until saves can be migrated.
 - `ContextActionConditionalSaved`: add failed-save riders when the donor spell already has a saving throw context.
 - `ContextActionApplyBuff`: apply custom condition/debuff buffs. Use `SetApplyBuffActionBuff` instead of assigning private refs directly.

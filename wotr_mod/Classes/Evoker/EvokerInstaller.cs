@@ -12,14 +12,19 @@ using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.Designers.Mechanics.Recommendations;
+using Kingmaker.Enums;
+using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
+using wotr_mod.Spells.Modifiers;
 
 namespace wotr_mod.Classes.Evoker
 {
@@ -98,6 +103,7 @@ namespace wotr_mod.Classes.Evoker
             EnsureElementalConversionClassCardFeature(characterClass);
             EnsureEvokerFamiliarClassCardFeature(characterClass);
             ConfigureEvokerBonusFeatProgression(characterClass);
+            ConfigureEvokerCombatCasting(characterClass);
             EnsureShadowbornBonusFeatCompatibilityStub(characterClass);
             ReplaceSorcererProficiencies(characterClass);
             EnsureEvokerBloodlineSelection(characterClass);
@@ -224,6 +230,37 @@ namespace wotr_mod.Classes.Evoker
             }
 
             _blueprints.AddProgressionUiGroup(characterClass.Progression, evokerBonusFeat);
+        }
+
+        private void ConfigureEvokerCombatCasting(BlueprintCharacterClass characterClass)
+        {
+            var combatCasting = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.CombatCasting,
+                "Combat Casting");
+            ConfigureCombatCastingRecommendation(combatCasting, characterClass);
+            if (characterClass?.Progression == null)
+            {
+                return;
+            }
+
+            _blueprints.RemoveFeatureFromProgression(characterClass.Progression, combatCasting);
+            _blueprints.AddFeatureToLevel(characterClass.Progression, 2, combatCasting);
+        }
+
+        private void ConfigureCombatCastingRecommendation(
+            BlueprintFeature combatCasting,
+            BlueprintCharacterClass characterClass)
+        {
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(combatCasting);
+            var recommendation = _blueprints.EnsureComponent(
+                combatCasting,
+                () => new SpellbookRecommendationExceptClasses
+                {
+                    name = "$SpellbookRecommendationExceptClasses$CombatCasting"
+                });
+            recommendation.NotRecommendedClasses = characterClass == null
+                ? new BlueprintCharacterClass[0]
+                : new[] { characterClass };
         }
 
         internal BlueprintFeatureSelection EnsureEvokerBonusFeatSelection(BlueprintCharacterClass characterClass)
@@ -672,6 +709,52 @@ namespace wotr_mod.Classes.Evoker
                     Array.Empty<BlueprintArchetypeReference>());
                 _blueprints.ReplaceComponent(ability, oldConfig, newConfig);
             }
+        }
+
+        internal void ConfigureElementalRayDamage(BlueprintAbility ability, BlueprintCharacterClass characterClass)
+        {
+            var rank = EnsureElementalRayDamageRank(ability);
+            _blueprints.ConfigureContextRankConfig(
+                rank,
+                AbilityRankType.DamageBonus,
+                ContextRankBaseValueType.ClassLevel,
+                ContextRankProgression.Div2,
+                characterClass: characterClass);
+            _blueprints.SetContextRankMinimum(rank, 1);
+
+            SpellModifierUtility.PatchRunActions(ability, action =>
+            {
+                var damage = action as ContextActionDealDamage;
+                if (damage?.Value == null || damage.Value.DiceType != DiceType.D6)
+                {
+                    return 0;
+                }
+
+                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.DamageBonus);
+                return 1;
+            });
+            ability.OnEnable();
+        }
+
+        private ContextRankConfig EnsureElementalRayDamageRank(BlueprintAbility ability)
+        {
+            var rank = _blueprints.GetComponents<ContextRankConfig>(ability)
+                .FirstOrDefault(IsDamageBonusRank)
+                ?? _blueprints.GetComponents<ContextRankConfig>(ability).FirstOrDefault();
+            if (rank != null)
+            {
+                return rank;
+            }
+
+            rank = new ContextRankConfig { name = "$ContextRankConfig$ElementalRayDamageDice" };
+            _blueprints.AddComponent(ability, rank);
+            return rank;
+        }
+
+        private static bool IsDamageBonusRank(ContextRankConfig rank)
+        {
+            return BlueprintFields.ContextRankConfigType?.GetValue(rank) is AbilityRankType rankType &&
+                   rankType == AbilityRankType.DamageBonus;
         }
 
         internal static void ReplaceProgressionFeature(
