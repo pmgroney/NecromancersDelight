@@ -211,7 +211,8 @@ namespace wotr_mod.Content
         public void Install()
         {
             LoadBillyVoiceBank();
-            EnsureUndeadCiarCompanion();
+            var billy = EnsureUndeadCiarCompanion();
+            EnsureBillyShieldMazeStandIn(billy);
         }
 
         private void LoadBillyVoiceBank()
@@ -256,6 +257,31 @@ namespace wotr_mod.Content
             if (existing == null)
             {
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Units.UndeadCiarCompanion, unit);
+            }
+
+            return unit;
+        }
+
+        private BlueprintUnit EnsureBillyShieldMazeStandIn(BlueprintUnit billyCompanion)
+        {
+            var existing = _blueprints.Get<BlueprintUnit>(ModBlueprintIds.Units.BillyShieldMazeStandIn);
+            var undeadCiar = _blueprints.Require<BlueprintUnit>(
+                GameBlueprintIds.Units.CiarUndead,
+                "Undead Ciar unit");
+
+            var unit = existing ?? _blueprints.CloneBlueprint(
+                undeadCiar,
+                ModBlueprintIds.Units.BillyShieldMazeStandIn,
+                "WotrMod_BillyShieldMazeStandIn");
+
+            var dialog = _blueprints.Require<BlueprintDialog>(
+                ModBlueprintIds.Dialogs.BillyDialog,
+                "Billy dialog");
+            ConfigureBillyStandInUnit(unit, billyCompanion, undeadCiar, dialog);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Units.BillyShieldMazeStandIn, unit);
             }
 
             return unit;
@@ -1111,7 +1137,7 @@ namespace wotr_mod.Content
             var recruitData = new Recruit.RecruitData
             {
                 NPCUnit = new DialogCurrentSpeaker(),
-                MustBeInParty = false
+                MustBeInParty = true
             };
             SetField(
                 recruitData,
@@ -1122,6 +1148,16 @@ namespace wotr_mod.Content
             {
                 Actions = new GameAction[]
                 {
+                    new BillyRecruitmentCleanupAction
+                    {
+                        name = "WotrMod_BillyRecruitCleanup",
+                        Stage = "before Recruit"
+                    },
+                    new BillyRecruitmentLogAction
+                    {
+                        name = "WotrMod_BillyRecruitLogBefore",
+                        Stage = "before Recruit"
+                    },
                     new Recruit
                     {
                         name = "WotrMod_RecruitBilly",
@@ -1134,9 +1170,19 @@ namespace wotr_mod.Content
                         OnRecruit = new ActionList(),
                         OnRecruitImmediate = new ActionList()
                     },
+                    new BillyRecruitmentLogAction
+                    {
+                        name = "WotrMod_BillyRecruitLogAfterRecruit",
+                        Stage = "after Recruit"
+                    },
                     new BillyRecruitmentFallbackAction
                     {
                         name = "WotrMod_BillyRecruitFallback"
+                    },
+                    new BillyRecruitmentLogAction
+                    {
+                        name = "WotrMod_BillyRecruitLogAfterFallback",
+                        Stage = "after fallback"
                     },
                     CreateUnlockFlagAction(recruitedFlag),
                     new UnlockCompanionStory
@@ -1208,6 +1254,43 @@ namespace wotr_mod.Content
             target.Alignment = companionSource.Alignment;
             target.IsCheater = companionSource.IsCheater;
             target.IsFake = companionSource.IsFake;
+        }
+
+        private void ConfigureBillyStandInUnit(
+            BlueprintUnit target,
+            BlueprintUnit visualSource,
+            BlueprintUnit conversationSource,
+            BlueprintDialog dialog)
+        {
+            var dialogComponents = (conversationSource.ComponentsArray ?? Array.Empty<BlueprintComponent>())
+                .Where(component => component.GetType().Name == "DialogOnClick")
+                .Select(component => _blueprints.CloneComponent(component))
+                .ToArray();
+
+            foreach (var component in dialogComponents)
+            {
+                SetDialogOnClickDialog(component, dialog);
+            }
+
+            _blueprints.SetComponents(target, dialogComponents);
+            SetUnitName(target, LocalizationIds.Mod.BillyName);
+            CopyField(target, conversationSource, "m_Faction");
+            CopyField(target, conversationSource, "m_Brain");
+            CopyField(target, conversationSource, "m_AllowNonContextActions");
+            target.Alignment = visualSource.Alignment;
+            target.IsCheater = visualSource.IsCheater;
+            target.IsFake = visualSource.IsFake;
+            target.Strength = visualSource.Strength;
+            target.Dexterity = visualSource.Dexterity;
+            target.Constitution = visualSource.Constitution;
+            target.Intelligence = visualSource.Intelligence;
+            target.Wisdom = visualSource.Wisdom;
+            target.Charisma = visualSource.Charisma;
+            CopyVisualModel(target, visualSource);
+            SetStartingEquipment(target, _blueprints.Require<BlueprintItemWeapon>(
+                GameBlueprintIds.Items.CompositeLongbow,
+                "Composite Longbow"));
+            SetUnitBarks(target, EnsureBillyBarks());
         }
 
         private void ConfigureBillyRespecLevelLimit(BlueprintUnit unit)
@@ -1947,11 +2030,10 @@ namespace wotr_mod.Content
 
         private static void SetSpeakerBlueprint(DialogSpeaker speaker, BlueprintUnit unit)
         {
-            var reference = BlueprintReferenceBase.CreateTyped<BlueprintUnitReference>(unit);
             var blueprintField = FindField(typeof(DialogSpeaker), "m_Blueprint");
             var speakerPortraitField = FindField(typeof(DialogSpeaker), "m_SpeakerPortrait");
-            blueprintField?.SetValue(speaker, reference);
-            speakerPortraitField?.SetValue(speaker, reference);
+            blueprintField?.SetValue(speaker, null);
+            speakerPortraitField?.SetValue(speaker, BlueprintReferenceBase.CreateTyped<BlueprintUnitReference>(unit));
         }
 
         private static void SetUnitPortrait(BlueprintUnit unit, BlueprintPortrait portrait)

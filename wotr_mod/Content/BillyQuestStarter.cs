@@ -22,6 +22,7 @@ namespace wotr_mod.Content
     internal sealed class BillyQuestStarter : IContentModule, IAreaLoadModule, IItemsCollectionHandler
     {
         private static readonly BlueprintGuid BillyGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.UndeadCiarCompanion);
+        private static readonly BlueprintGuid BillyStandInGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.BillyShieldMazeStandIn);
         private static readonly BlueprintGuid BowGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.NeophytesLongbowOfDiscipline);
         private static readonly BlueprintGuid PilgrimageRecordGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.BillyPilgrimageRecord);
         private static readonly BlueprintGuid ArchersTunicGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.ArchersTunic);
@@ -555,7 +556,9 @@ namespace wotr_mod.Content
 
         private static bool IsBilly(UnitEntityData unit)
         {
-            return unit?.Descriptor?.Blueprint != null && unit.Descriptor.Blueprint.AssetGuid == BillyGuid;
+            return unit?.Descriptor?.Blueprint != null
+                   && (unit.Descriptor.Blueprint.AssetGuid == BillyGuid
+                       || unit.Descriptor.Blueprint.AssetGuid == BillyStandInGuid);
         }
     }
 }

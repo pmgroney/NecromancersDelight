@@ -11,6 +11,7 @@ namespace wotr_mod.Infrastructure
         internal static class Units
         {
             public const string UndeadCiarCompanion = "ad4b1f09c2e84f6db7a19305c8d62e4f";
+            public const string BillyShieldMazeStandIn = "56cc2f4e780f493a8f7b006d5751d279";
         }
 
         internal static class Items

@@ -14,6 +14,7 @@ namespace wotr_mod.Patches
     internal static class BillyVisualPatch
     {
         private static readonly BlueprintGuid BillyGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.UndeadCiarCompanion);
+        private static readonly BlueprintGuid BillyStandInGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.BillyShieldMazeStandIn);
         private static readonly HashSet<int> ApplyingViews = new HashSet<int>();
         private static readonly HashSet<int> LoggedViews = new HashSet<int>();
         private static readonly MethodInfo AddEquipmentEntityMethod = AccessTools.Method(
@@ -321,7 +322,9 @@ namespace wotr_mod.Patches
 
         private static bool IsBilly(UnitEntityData unit)
         {
-            return unit?.Descriptor?.Blueprint?.AssetGuid == BillyGuid;
+            return unit?.Descriptor?.Blueprint != null
+                   && (unit.Descriptor.Blueprint.AssetGuid == BillyGuid
+                       || unit.Descriptor.Blueprint.AssetGuid == BillyStandInGuid);
         }
 
         private static void LogOnce(int viewId, string message)
