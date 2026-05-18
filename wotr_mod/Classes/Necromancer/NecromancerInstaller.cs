@@ -614,7 +614,14 @@ namespace wotr_mod.Classes.Necromancer
             PatchWitheringRayDamage(ability);
             PatchAbilityResource(ability, resource);
             var rank = _blueprints.EnsureComponent(ability, () => new ContextRankConfig { name = "$ContextRankConfig$NecromancerWitheringRay" });
-            _blueprints.ConfigureContextRankConfig(rank, AbilityRankType.Default, ContextRankBaseValueType.ClassLevel, ContextRankProgression.Div2, characterClass: characterClass);
+            _blueprints.ConfigureContextRankConfig(
+                rank,
+                AbilityRankType.Default,
+                ContextRankBaseValueType.ClassLevel,
+                ContextRankProgression.OnePlusDivStep,
+                startLevel: 1,
+                stepLevel: 2,
+                characterClass: characterClass);
             _blueprints.SetContextRankMinimum(rank, 1);
             ConfigureWitheringRayVisuals(ability);
             return ability;

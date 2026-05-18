@@ -116,6 +116,7 @@
         <Compile Include="Content\ModContentPatch.cs"/>
         <Compile Include="Content\BillyQuestStarter.cs" />
         <Compile Include="Content\DefendersHeartAssaultTimerPatch.cs" />
+        <Compile Include="Content\MythicSpellbookMergeInstaller.cs" />
         <Compile Include="Content\QuestExperienceReward.cs" />
         <Compile Include="Content\BillyReactivityLines.cs" />
         <Compile Include="Content\CompanionInstaller.cs" />

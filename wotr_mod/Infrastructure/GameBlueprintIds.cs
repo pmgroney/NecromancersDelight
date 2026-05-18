@@ -183,6 +183,7 @@ namespace wotr_mod.Infrastructure
             public const string GreaterSpellFocus = "5b04b45b228461c43bad768eb0f7c7bf";
             public const string ImprovedInitiative = "797f25d709f559546b29e7bcb181cc74";
             public const string IronWill = "175d1577bb6c9a04baf88eec99c66334";
+            public const string LichIncorporateSpellbookFeature = "3f16e9caf7c683c40884c7c455ed26af";
             public const string SorcererCantrips = "c58b36ec3f759c84089c67611d1bcc21";
             public const string SorcererProficiencies = "25c97697236ccf2479d0c6a4185eae7f";
             public const string ReachSpell = "46fad72f54a33dc4692d3b62eca7bb78";

@@ -22,7 +22,7 @@ Use the existing spell pipeline unless a specific mechanic forces a different pa
    - Necromancy spells are also added to Cleric/Oracle by `IsDivineListSpell`.
    - Evoker availability requires an entry in `wotr_mod/Classes/Evoker/EvokerSpellRegistry.cs`.
    - Evoker spell-list entries resolve through Evoker-owned ability clones with deterministic GUIDs; update the clone path for Evoker-specific behavior or description changes rather than altering global source spell blueprints.
-   - Evoker-owned spell clones, including Evoker-cloned spawned area effects, clear `ContextRankConfig` maximums and projectile max-count caps for damaging Evocation spells; keep this rule isolated to the Evoker spell list.
+   - Evoker-owned spell clones, including Evoker-cloned spawned area effects, clear `ContextRankConfig` maximums for damaging Evocation spells; keep this rule isolated to the Evoker spell list and preserve rank-driven projectile delivery.
    - Reusable `PerDieBonusDamage` covers Evoker class-spellbook evocation per-die bonuses, explicit ability allowlists for granted rays, and force-damage matching for Arcwright Force Ray.
    - Necromancer availability requires an entry in `wotr_mod/Classes/Necromancer/NecromancerSpellRegistry.cs`.
 5. Add new modifier files to `wotr_mod/wotr_mod.csproj`.
@@ -52,7 +52,8 @@ Common patterns:
 - `DamageTypeSpellModifier`: convert existing damage type, descriptor, dice type, and scaling when the donor spell already has the right shape.
 - `SpellModifierUtility.PatchRunActions`: patch actions inside `AbilityEffectRunAction`.
 - `ContextRankConfig`: control caster-level scaling and caps. Use `ConfigureContextRankConfig`, then `SetContextRankMaximum` when a cap is required.
-- Evoker elemental/Umbral rays must explicitly configure their `DamageBonus` `ContextRankConfig` to `ClassLevel` Div2 with min 1, then use that rank as the d6 dice count with a zero flat bonus; do not rely on the donor rank config surviving clone/bind. Do not patch the vanilla source ray abilities globally.
+- Evoker elemental/Umbral rays and Necromancer Withering Ray use class-level `OnePlusDivStep(start 1, step 2)` for d6 dice count with zero flat bonus, avoiding `Div2` floor scaling at level 3.
+- Magic Missile-style custom missiles use `OnePlusDiv2`; non-Evokers retain a maximum of 5 missiles, while Evoker clones remove the rank-based cap but preserve rank-driven projectile delivery.
 - Elemental ray legacy placeholders have been removed after save migration/respec; necromancer legacy placeholders must remain until tested.
 - `ContextActionConditionalSaved`: add failed-save riders when the donor spell already has a saving throw context.
 - `ContextActionApplyBuff`: apply custom condition/debuff buffs. Use `SetApplyBuffActionBuff` instead of assigning private refs directly.

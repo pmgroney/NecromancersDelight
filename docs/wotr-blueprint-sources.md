@@ -45,6 +45,7 @@ ba0401fdeb4062f40a7aa95b6f07fe89 Classes/Wizard/WizardSpellList.jbp
 4ac47ddb9fa1eaf43a1b6809980cfbd2 Spells/Level1/MagicMissile.jbp
 cdb106d53c65bbc4086183d54c3b97c7 Spells/Level2/ScorchingRay.jbp
 dd3ad347240624d46a11a092b4dd4674 Spells/Level2/BlurBuff.jbp
+3f16e9caf7c683c40884c7c455ed26af Mythic/Lich/LichSpellbookSelection/LichIncorporateSpellbookFeature.jbp
 584d8b50817b49b2bb7aab3d6add8d3a Traits/Races/Gnome/GnomeHeritageSelection.jbp
 e29497e082014f35b0ef32e1560f1e8b Races/FetchlingRace.jbp
 0a5d473ead98b0646b94495af250fdc4 Races/HumanRace.jbp

@@ -7,6 +7,7 @@ This WotR mod should be built as one cohesive mod, not as a collection of separa
 - Follow SOLID design principles and C# best practices.
 - Keep systems modular so new classes, archetypes, feats, spells, bloodlines, companions, and fixes can be added without rewriting existing installers.
 - Favor reusable infrastructure for recurring blueprint tasks, localization, spell lists, class setup, selections, and patches.
+- Mythic merged spellbook eligibility is based on allowed spellbooks, not spell lists, so archetypes with replacement spellbooks must be added explicitly.
 - Keep content organized by domain and responsibility, not by the Kingmaker mod it originally came from.
 
 ## Porting Guidance

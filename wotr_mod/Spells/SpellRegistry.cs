@@ -156,9 +156,7 @@ namespace wotr_mod.Spells
                     scaling: new DamageTypeSpellModifier.ScalingConfig
                     {
                         RankType = Kingmaker.Enums.AbilityRankType.Default,
-                        Progression = Kingmaker.UnitLogic.Mechanics.Components.ContextRankProgression.OnePlusDivStep,
-                        StartLevel = 1,
-                        StepLevel = 2
+                        Progression = Kingmaker.UnitLogic.Mechanics.Components.ContextRankProgression.OnePlusDiv2
                     }));
         }
 

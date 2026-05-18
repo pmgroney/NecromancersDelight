@@ -716,9 +716,11 @@ namespace wotr_mod.Classes.Evoker
             var rank = EnsureElementalRayDamageRank(ability);
             _blueprints.ConfigureContextRankConfig(
                 rank,
-                AbilityRankType.DamageBonus,
+                AbilityRankType.Default,
                 ContextRankBaseValueType.ClassLevel,
-                ContextRankProgression.Div2,
+                ContextRankProgression.OnePlusDivStep,
+                startLevel: 1,
+                stepLevel: 2,
                 characterClass: characterClass);
             _blueprints.SetContextRankMinimum(rank, 1);
 
@@ -730,7 +732,7 @@ namespace wotr_mod.Classes.Evoker
                     return 0;
                 }
 
-                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.DamageBonus);
+                damage.Value = SpellModifierUtility.RankedD6DiceOnly(AbilityRankType.Default);
                 return 1;
             });
             ability.OnEnable();
@@ -739,7 +741,7 @@ namespace wotr_mod.Classes.Evoker
         private ContextRankConfig EnsureElementalRayDamageRank(BlueprintAbility ability)
         {
             var rank = _blueprints.GetComponents<ContextRankConfig>(ability)
-                .FirstOrDefault(IsDamageBonusRank)
+                .FirstOrDefault(IsDefaultRank)
                 ?? _blueprints.GetComponents<ContextRankConfig>(ability).FirstOrDefault();
             if (rank != null)
             {
@@ -751,10 +753,10 @@ namespace wotr_mod.Classes.Evoker
             return rank;
         }
 
-        private static bool IsDamageBonusRank(ContextRankConfig rank)
+        private static bool IsDefaultRank(ContextRankConfig rank)
         {
             return BlueprintFields.ContextRankConfigType?.GetValue(rank) is AbilityRankType rankType &&
-                   rankType == AbilityRankType.DamageBonus;
+                   rankType == AbilityRankType.Default;
         }
 
         internal static void ReplaceProgressionFeature(

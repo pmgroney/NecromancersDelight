@@ -59,6 +59,7 @@ namespace wotr_mod.Classes.Evoker
             }
 
             ClearDamageScalingCaps(clone);
+            RestoreRankDrivenProjectileDelivery(clone, source);
             foreach (var areaEffect in areaEffects)
             {
                 ClearDamageScalingCaps(areaEffect);
@@ -133,10 +134,23 @@ namespace wotr_mod.Classes.Evoker
             {
                 _blueprints.ClearContextRankMaximum(rank);
             }
+        }
 
-            foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(blueprint))
+        private void RestoreRankDrivenProjectileDelivery(BlueprintAbility clone, BlueprintAbility source)
+        {
+            var sourceDeliveries = _blueprints.GetComponents<AbilityDeliverProjectile>(source).ToArray();
+            var cloneDeliveries = _blueprints.GetComponents<AbilityDeliverProjectile>(clone).ToArray();
+            var count = Math.Min(sourceDeliveries.Length, cloneDeliveries.Length);
+
+            for (var i = 0; i < count; i++)
             {
-                _blueprints.ClearAbilityDeliverProjectileMaxProjectiles(delivery);
+                if (!sourceDeliveries[i].UseMaxProjectilesCount)
+                {
+                    continue;
+                }
+
+                cloneDeliveries[i].UseMaxProjectilesCount = true;
+                cloneDeliveries[i].MaxProjectilesCountRank = sourceDeliveries[i].MaxProjectilesCountRank;
             }
         }
 

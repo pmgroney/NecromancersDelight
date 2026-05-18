@@ -45,6 +45,11 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo EtudeInvokeActionsDelayedDays =
             typeof(EtudeInvokeActionsDelayed).GetField("m_Days", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo FeatureSelectMythicSpellbookAllowedSpellbooks =
+            typeof(BlueprintFeatureSelectMythicSpellbook).GetField(
+                "m_AllowedSpellbooks",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
         static BlueprintFields()
         {
             // Logging for missing fields to help debugging
@@ -54,6 +59,7 @@ namespace wotr_mod.Infrastructure
             if (UIGroupFeatures == null) PatchRegistry.FallbackError("WARNING: UIGroup.m_Features not found");
             if (BlueprintComponents == null) PatchRegistry.FallbackError("WARNING: BlueprintScriptableObject.m_Components (or Components) not found");
             if (EtudeInvokeActionsDelayedDays == null) PatchRegistry.FallbackError("WARNING: EtudeInvokeActionsDelayed.m_Days not found");
+            if (FeatureSelectMythicSpellbookAllowedSpellbooks == null) PatchRegistry.FallbackError("WARNING: BlueprintFeatureSelectMythicSpellbook.m_AllowedSpellbooks not found");
             if (CharacterClassHiddenFields.Length == 0) PatchRegistry.FallbackError("WARNING: BlueprintCharacterClass hidden fields not found");
         }
 
@@ -325,9 +331,6 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo AbilityDeliverProjectileLength =
             typeof(AbilityDeliverProjectile).GetField("m_Length", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        public static readonly FieldInfo AbilityDeliverProjectileUseMaxProjectilesCount =
-            typeof(AbilityDeliverProjectile).GetField("UseMaxProjectilesCount", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         public static readonly FieldInfo AbilityVariantsVariants =
             typeof(AbilityVariants).GetField("m_Variants", BindingFlags.Instance | BindingFlags.NonPublic);

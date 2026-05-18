@@ -850,6 +850,33 @@ namespace wotr_mod.Infrastructure
                 BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass));
         }
 
+        public void AddAllowedMythicSpellbooks(
+            BlueprintFeatureSelectMythicSpellbook feature,
+            IEnumerable<BlueprintSpellbook> spellbooks)
+        {
+            if (BlueprintFields.FeatureSelectMythicSpellbookAllowedSpellbooks == null)
+            {
+                throw new InvalidOperationException("BlueprintFeatureSelectMythicSpellbook.m_AllowedSpellbooks field was not found.");
+            }
+
+            var current =
+                (BlueprintSpellbookReference[])BlueprintFields.FeatureSelectMythicSpellbookAllowedSpellbooks.GetValue(feature)
+                ?? Array.Empty<BlueprintSpellbookReference>();
+            var merged = current.ToList();
+
+            foreach (var spellbook in spellbooks.Where(spellbook => spellbook != null))
+            {
+                if (merged.Any(reference => reference != null && reference.Guid == spellbook.AssetGuid))
+                {
+                    continue;
+                }
+
+                merged.Add(BlueprintReferenceBase.CreateTyped<BlueprintSpellbookReference>(spellbook));
+            }
+
+            BlueprintFields.FeatureSelectMythicSpellbookAllowedSpellbooks.SetValue(feature, merged.ToArray());
+        }
+
         public void SetLearnSpellParametrizedSource(
             BlueprintParametrizedFeature feature,
             LearnSpellParametrized component,
@@ -1236,16 +1263,6 @@ namespace wotr_mod.Infrastructure
             Feet length)
         {
             BlueprintFields.AbilityDeliverProjectileLength.SetValue(component, length);
-        }
-
-        public void ClearAbilityDeliverProjectileMaxProjectiles(AbilityDeliverProjectile component)
-        {
-            if (component == null || BlueprintFields.AbilityDeliverProjectileUseMaxProjectilesCount == null)
-            {
-                return;
-            }
-
-            BlueprintFields.AbilityDeliverProjectileUseMaxProjectilesCount.SetValue(component, false);
         }
 
         public void SetAbilityVariants(AbilityVariants component, params BlueprintAbility[] variants)
