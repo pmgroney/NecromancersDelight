@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -636,9 +637,9 @@ namespace wotr_mod.Classes.Evoker
             string iconPath)
         {
             var spell = _blueprints.Get<BlueprintAbility>(spellGuid);
+            var source = _blueprints.Require<BlueprintAbility>(sourceSpellGuid, spellName + " donor");
             if (spell == null)
             {
-                var source = _blueprints.Require<BlueprintAbility>(sourceSpellGuid, spellName + " donor");
                 spell = _blueprints.CloneBlueprint(source, spellGuid, spellName);
                 _blueprints.AddCachedBlueprint(spellGuid, spell);
             }
@@ -652,7 +653,8 @@ namespace wotr_mod.Classes.Evoker
             SpellModifierUtility.ReplaceDescriptor(spell, SpellDescriptor.Fire, SpellDescriptor.Death, _blueprints);
             PatchFireDamageToNegativeEnergy(spell);
             _evoker.ClearDamageScalingCaps(spell);
-            ConfigureShadowbornSpellVisuals(spellGuid, spell);
+            ConfigureShadowbornSpellVisuals(spellGuid, spell, source);
+            _evoker.RestoreRankDrivenProjectileDelivery(spell, source);
 
             return spell;
         }
@@ -768,7 +770,10 @@ namespace wotr_mod.Classes.Evoker
             ability.OnEnable();
         }
 
-        private void ConfigureShadowbornSpellVisuals(string spellGuid, BlueprintAbility spell)
+        private void ConfigureShadowbornSpellVisuals(
+            string spellGuid,
+            BlueprintAbility spell,
+            BlueprintAbility source)
         {
             if (spellGuid != ModBlueprintIds.Spells.ShadowbornBurningHands &&
                 spellGuid != ModBlueprintIds.Spells.ShadowbornScorchingRay)
@@ -791,19 +796,32 @@ namespace wotr_mod.Classes.Evoker
                 "WotrMod_ShadowbornScorchingRayProjectile");
             if (projectile == null) return;
 
-            ApplyShadowProjectileVisuals(spell, projectile);
+            ApplyShadowProjectileVisuals(spell, projectile, source);
             spell.OnEnable();
         }
 
-        private void ApplyShadowProjectileVisuals(BlueprintAbility ability, BlueprintProjectile projectile)
+        private void ApplyShadowProjectileVisuals(
+            BlueprintAbility ability,
+            BlueprintProjectile projectile,
+            BlueprintAbility source = null)
         {
             SpellEffectTintRegistry.RegisterProjectileTint(
                 projectile.AssetGuid.ToString(),
                 SpellEffectTheme.Shadow);
 
+            var sourceSlotCount = source == null
+                ? 0
+                : _blueprints.GetComponents<AbilityDeliverProjectile>(source)
+                    .Select(_blueprints.GetAbilityDeliverProjectileSlotCount)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
             foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
             {
-                _blueprints.SetAbilityDeliverProjectiles(delivery, projectile);
+                _blueprints.SetAbilityDeliverProjectilesRepeated(
+                    delivery,
+                    projectile,
+                    Math.Max(sourceSlotCount, _blueprints.GetAbilityDeliverProjectileSlotCount(delivery)));
             }
         }
 

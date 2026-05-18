@@ -54,6 +54,7 @@ Common patterns:
 - `ContextRankConfig`: control caster-level scaling and caps. Use `ConfigureContextRankConfig`, then `SetContextRankMaximum` when a cap is required.
 - Evoker elemental/Umbral rays and Necromancer Withering Ray use class-level `OnePlusDivStep(start 1, step 2)` for d6 dice count with zero flat bonus, avoiding `Div2` floor scaling at level 3.
 - Magic Missile-style custom missiles use `OnePlusDiv2`; non-Evokers retain a maximum of 5 missiles, while Evoker clones remove the rank-based cap but preserve rank-driven projectile delivery.
+- When swapping projectile visuals, preserve or restore the donor projectile slot count for all spells, not only Magic Missile; rank-driven deliveries such as Magic Missile, Scorching Ray, and Hellfire Ray require repeated projectile refs up to their max rank, and Evoker uncapped clones must expand slots after clearing the rank maximum.
 - Elemental ray legacy placeholders have been removed after save migration/respec; necromancer legacy placeholders must remain until tested.
 - `ContextActionConditionalSaved`: add failed-save riders when the donor spell already has a saving throw context.
 - `ContextActionApplyBuff`: apply custom condition/debuff buffs. Use `SetApplyBuffActionBuff` instead of assigning private refs directly.

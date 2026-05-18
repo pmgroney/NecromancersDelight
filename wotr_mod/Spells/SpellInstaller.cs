@@ -172,28 +172,28 @@ namespace wotr_mod.Spells
             var rayVisuals = GetRayVisuals(definition.NewSpellGuid);
             if (rayVisuals.HasValue)
             {
-                ConfigureProjectileVisuals(spell, rayVisuals.Value);
+                ConfigureProjectileVisuals(spell, definition, rayVisuals.Value);
                 return;
             }
 
             var hellfireRayVisuals = GetHellfireRayVisuals(definition.NewSpellGuid);
             if (hellfireRayVisuals.HasValue)
             {
-                ConfigureProjectileVisuals(spell, hellfireRayVisuals.Value);
+                ConfigureProjectileVisuals(spell, definition, hellfireRayVisuals.Value);
                 return;
             }
 
             var necroProjectileVisuals = GetNecroProjectileVisuals(definition.NewSpellGuid);
             if (necroProjectileVisuals.HasValue)
             {
-                ConfigureProjectileVisuals(spell, necroProjectileVisuals.Value);
+                ConfigureProjectileVisuals(spell, definition, necroProjectileVisuals.Value);
                 return;
             }
 
             var missileVisuals = GetMissileVisuals(definition.NewSpellGuid);
             if (missileVisuals.HasValue)
             {
-                ConfigureProjectileVisuals(spell, missileVisuals.Value);
+                ConfigureProjectileVisuals(spell, definition, missileVisuals.Value);
             }
         }
 
@@ -242,6 +242,25 @@ namespace wotr_mod.Spells
 
         private void ConfigureProjectileVisuals(BlueprintAbility ability, ProjectileVisuals visuals)
         {
+            ConfigureProjectileVisuals(
+                ability,
+                visuals,
+                delivery => Math.Max(1, _blueprints.GetAbilityDeliverProjectileSlotCount(delivery)));
+        }
+
+        private void ConfigureProjectileVisuals(BlueprintAbility ability, SpellDefinition definition, ProjectileVisuals visuals)
+        {
+            ConfigureProjectileVisuals(
+                ability,
+                visuals,
+                delivery => GetProjectileSlotCount(definition, delivery));
+        }
+
+        private void ConfigureProjectileVisuals(
+            BlueprintAbility ability,
+            ProjectileVisuals visuals,
+            Func<AbilityDeliverProjectile, int> getProjectileSlotCount)
+        {
             SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
                 ability.AssetGuid.ToString(),
                 visuals.Theme);
@@ -255,10 +274,27 @@ namespace wotr_mod.Spells
 
             foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
             {
-                _blueprints.SetAbilityDeliverProjectiles(delivery, projectile);
+                _blueprints.SetAbilityDeliverProjectilesRepeated(
+                    delivery,
+                    projectile,
+                    getProjectileSlotCount(delivery));
             }
 
             ability.OnEnable();
+        }
+
+        private int GetProjectileSlotCount(SpellDefinition definition, AbilityDeliverProjectile delivery)
+        {
+            var currentCount = _blueprints.GetAbilityDeliverProjectileSlotCount(delivery);
+            var donor = _blueprints.Get<BlueprintAbility>(definition.BaseSpellGuid);
+            var donorCount = donor == null
+                ? 0
+                : _blueprints.GetComponents<AbilityDeliverProjectile>(donor)
+                    .Select(_blueprints.GetAbilityDeliverProjectileSlotCount)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+            return Math.Max(1, Math.Max(currentCount, donorCount));
         }
 
         private static void ConfigureEldritchHorrorVisuals(BlueprintAbility ability)

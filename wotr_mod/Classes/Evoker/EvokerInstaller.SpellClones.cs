@@ -19,6 +19,7 @@ namespace wotr_mod.Classes.Evoker
         private const string EvokerSpellClonePrefix = "WotrMod_EvokerSpell_";
         private const string EvokerDamageCapDescriptionNote =
             "Evoker: when cast from the Evoker spellbook, this spell's damage scaling ignores its normal maximum cap.";
+        private const int EvokerUncappedProjectileSlotCount = 40;
 
         private BlueprintAbility EnsureEvokerSpellClone(ClassSpellDefinition definition)
         {
@@ -136,7 +137,7 @@ namespace wotr_mod.Classes.Evoker
             }
         }
 
-        private void RestoreRankDrivenProjectileDelivery(BlueprintAbility clone, BlueprintAbility source)
+        internal void RestoreRankDrivenProjectileDelivery(BlueprintAbility clone, BlueprintAbility source)
         {
             var sourceDeliveries = _blueprints.GetComponents<AbilityDeliverProjectile>(source).ToArray();
             var cloneDeliveries = _blueprints.GetComponents<AbilityDeliverProjectile>(clone).ToArray();
@@ -151,6 +152,9 @@ namespace wotr_mod.Classes.Evoker
 
                 cloneDeliveries[i].UseMaxProjectilesCount = true;
                 cloneDeliveries[i].MaxProjectilesCountRank = sourceDeliveries[i].MaxProjectilesCountRank;
+                _blueprints.EnsureAbilityDeliverProjectileSlotCount(
+                    cloneDeliveries[i],
+                    EvokerUncappedProjectileSlotCount);
             }
         }
 

@@ -1258,6 +1258,41 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.AbilityDeliverProjectileProjectiles.SetValue(component, references);
         }
 
+        public int GetAbilityDeliverProjectileSlotCount(AbilityDeliverProjectile component)
+        {
+            var references = BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(component) as BlueprintProjectileReference[];
+            return references?.Length ?? 0;
+        }
+
+        public void SetAbilityDeliverProjectilesRepeated(
+            AbilityDeliverProjectile component,
+            BlueprintProjectile projectile,
+            int count)
+        {
+            SetAbilityDeliverProjectiles(
+                component,
+                Enumerable.Repeat(projectile, Math.Max(1, count)).ToArray());
+        }
+
+        public void EnsureAbilityDeliverProjectileSlotCount(AbilityDeliverProjectile component, int minimumCount)
+        {
+            var references = BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(component) as BlueprintProjectileReference[];
+            if (references == null || references.Length == 0 || references.Length >= minimumCount)
+            {
+                return;
+            }
+
+            var fill = references.LastOrDefault(reference => reference != null);
+            if (fill == null)
+            {
+                return;
+            }
+
+            BlueprintFields.AbilityDeliverProjectileProjectiles.SetValue(
+                component,
+                references.Concat(Enumerable.Repeat(fill, minimumCount - references.Length)).ToArray());
+        }
+
         public void SetAbilityDeliverProjectileLength(
             AbilityDeliverProjectile component,
             Feet length)
