@@ -26,6 +26,8 @@ namespace wotr_mod.Classes.Evoker
 {
     internal sealed class ShadowbornBloodlineInstaller
     {
+        private const float ShadowbornUmbralRayProjectileSpeed = 18f;
+
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -887,20 +889,40 @@ namespace wotr_mod.Classes.Evoker
             var projectile = _blueprints.Get<BlueprintProjectile>(ModBlueprintIds.Projectiles.ShadowbornUmbralRay);
             if (projectile != null)
             {
+                ConfigureShadowbornUmbralRayProjectile(projectile);
                 return projectile;
             }
 
-            var donor = _blueprints.Require<BlueprintProjectile>(
-                GameBlueprintIds.Projectiles.Enervation,
-                "Enervation projectile donor");
+            var rayOfFrostDonor = _blueprints.Require<BlueprintProjectile>(
+                GameBlueprintIds.Projectiles.RayOfFrost,
+                "Ray of Frost projectile donor");
             projectile = _blueprints.CloneBlueprint(
-                donor,
+                rayOfFrostDonor,
                 ModBlueprintIds.Projectiles.ShadowbornUmbralRay,
                 "WotrMod_ShadowbornUmbralRayProjectile");
+            ConfigureShadowbornUmbralRayProjectile(projectile);
             projectile.OnEnable();
             _blueprints.AddCachedBlueprint(ModBlueprintIds.Projectiles.ShadowbornUmbralRay, projectile);
 
             return projectile;
+        }
+
+        private void ConfigureShadowbornUmbralRayProjectile(BlueprintProjectile projectile)
+        {
+            var enervationDonor = _blueprints.Require<BlueprintProjectile>(
+                GameBlueprintIds.Projectiles.Enervation,
+                "Enervation projectile donor");
+
+            projectile.Speed = ShadowbornUmbralRayProjectileSpeed;
+            projectile.MinTime = enervationDonor.MinTime;
+            projectile.CastFx = enervationDonor.CastFx;
+            projectile.CastEffectDuration = enervationDonor.CastEffectDuration;
+            projectile.LifetimeParticlesAfterHit = enervationDonor.LifetimeParticlesAfterHit;
+            projectile.ProjectileHit = enervationDonor.ProjectileHit;
+            projectile.DamageHit = enervationDonor.DamageHit;
+            projectile.MissMinRadius = enervationDonor.MissMinRadius;
+            projectile.MissMaxRadius = enervationDonor.MissMaxRadius;
+            projectile.MissRaycastDistance = enervationDonor.MissRaycastDistance;
         }
 
         private BlueprintProjectile EnsureShadowbornProjectile(

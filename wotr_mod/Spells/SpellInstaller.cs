@@ -31,6 +31,8 @@ namespace wotr_mod.Spells
 {
     internal sealed class SpellInstaller : IContentModule
     {
+        private const float CustomMagicMissileDelayBetweenProjectiles = 0.08f;
+
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -250,13 +252,15 @@ namespace wotr_mod.Spells
             ConfigureProjectileVisuals(
                 ability,
                 visuals,
-                delivery => GetProjectileSlotCount(definition, delivery));
+                delivery => GetProjectileSlotCount(definition, delivery),
+                GetProjectileDelay(definition));
         }
 
         private void ConfigureProjectileVisuals(
             BlueprintAbility ability,
             ProjectileVisuals visuals,
-            Func<AbilityDeliverProjectile, int> getProjectileSlotCount)
+            Func<AbilityDeliverProjectile, int> getProjectileSlotCount,
+            float? delayBetweenProjectiles = null)
         {
             SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
                 ability.AssetGuid.ToString(),
@@ -275,6 +279,10 @@ namespace wotr_mod.Spells
                     delivery,
                     projectile,
                     getProjectileSlotCount(delivery));
+                if (delayBetweenProjectiles.HasValue)
+                {
+                    delivery.DelayBetweenProjectiles = delayBetweenProjectiles.Value;
+                }
             }
 
             ability.OnEnable();
@@ -292,6 +300,13 @@ namespace wotr_mod.Spells
                     .Max();
 
             return Math.Max(1, Math.Max(currentCount, donorCount));
+        }
+
+        private static float? GetProjectileDelay(SpellDefinition definition)
+        {
+            return definition.BaseSpellGuid == GameBlueprintIds.Spells.MagicMissile
+                ? CustomMagicMissileDelayBetweenProjectiles
+                : (float?)null;
         }
 
         private static void ConfigureEldritchHorrorVisuals(BlueprintAbility ability)
