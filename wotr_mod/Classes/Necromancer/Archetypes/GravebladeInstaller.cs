@@ -79,6 +79,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var reapingEdgeTiers = EnsureGravebladeReapingEdge(characterClass);
             var reapingEdge = reapingEdgeTiers[0];
             var bonusFeat = EnsureGravebladeBonusFeatSelection();
+            EnsureWeaponFocusRecommendation(archetype, bonusFeat);
             var fighterTraining = EnsureGravebladeFighterTraining(characterClass, bonusFeat);
             var armorTraining = EnsureGravebladeArmorTraining();
             var armorMastery = EnsureGravebladeArmorMastery();
@@ -120,21 +121,12 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 CreateLevelEntry(20, reapingEdgeTiers[4])
             };
 
-            var masterworkScythe = _blueprints.Require<BlueprintItem>(
-                GameBlueprintIds.Items.MasterworkScythe,
-                "Masterwork scythe");
-            var cureLightWoundsPotion = _blueprints.Require<BlueprintItem>(
-                GameBlueprintIds.Items.PotionOfCureLightWounds,
-                "Potion of Cure Light Wounds");
-
             _blueprints.SetArchetypeReplaceSpellbook(archetype, gravebladeSpellbook);
             _blueprints.SetArchetypeStartingEquipment(
                 archetype,
                 true,
                 _blueprints.GetCharacterClassStartingGold(characterClass),
-                masterworkScythe,
-                cureLightWoundsPotion,
-                cureLightWoundsPotion);
+                GetGravebladeStartingEquipment(characterClass));
             _blueprints.SetArchetypeFeatureChanges(
                 archetype,
                 gravebladeLevelEntries,
@@ -148,6 +140,40 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
+        }
+
+        private void EnsureWeaponFocusRecommendation(
+            BlueprintArchetype archetype,
+            BlueprintFeatureSelection bonusFeat)
+        {
+            var weaponFocus = _blueprints.Require<BlueprintParametrizedFeature>(
+                GameBlueprintIds.Features.WeaponFocus,
+                "Weapon Focus");
+            var recommendation = _blueprints.EnsureComponent(
+                weaponFocus,
+                () => new GravebladeWeaponFocusRecommendation
+                {
+                    name = "$GravebladeWeaponFocusRecommendation$Scythe"
+                });
+            recommendation.AddGravebladeArchetype(archetype);
+            recommendation.AddGravebladeSelection(bonusFeat);
+        }
+
+        private BlueprintItem[] GetGravebladeStartingEquipment(BlueprintCharacterClass characterClass)
+        {
+            var cureLightWoundsPotion = _blueprints.Require<BlueprintItem>(
+                GameBlueprintIds.Items.PotionOfCureLightWounds,
+                "Potion of Cure Light Wounds");
+
+            var startingEquipment = _blueprints.GetCharacterClassStartingEquipment(characterClass)
+                .Where(item => item != null)
+                .Concat(new[]
+                {
+                    cureLightWoundsPotion,
+                    cureLightWoundsPotion
+                })
+                .ToArray();
+            return startingEquipment;
         }
 
         // ─── Remove feature entries ───────────────────────────────────────────

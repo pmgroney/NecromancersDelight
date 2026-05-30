@@ -223,6 +223,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineUndeadIncorporealForm = "eafdc6762cbfa7d4d8220c6d6372973d";
             public const string BloodlineUndeadOneOfUs = "b3e403ebbdad8314386270fefc4b4cc8";
             public const string Incorporeal = "c4a7f98d743bc784c9d4cf2105852c39";
+            public const string WeaponFocus = "1e1f627d26ad36f43bbd26cc2bf8ac7e";
             public const string BloodlineElementalFireArcana = "c33b319082a7edc468d3eda248a527f3";
             public const string BloodlineElementalAirArcana = "54ae8876bb5d78242beec0752592a018";
             public const string BloodlineElementalEarthArcana = "5282afee8f3dfda49a34e36c3cee9d2c";

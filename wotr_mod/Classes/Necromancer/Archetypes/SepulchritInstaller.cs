@@ -46,6 +46,10 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 _localization.Text(LocalizationIds.Mod.SepulchritDescription));
             _blueprints.SetArchetypeParentClass(archetype, characterClass);
             _blueprints.SetArchetypeReplaceSpellbook(archetype, sepulchritSpellbook);
+            _blueprints.SetArchetypeStartingEquipment(
+                archetype,
+                false,
+                _blueprints.GetCharacterClassStartingGold(characterClass));
             _blueprints.SetArchetypeFeatureChanges(archetype, Array.Empty<LevelEntry>(), Array.Empty<LevelEntry>());
             _blueprints.SetArchetypeBuildChanging(archetype, true);
             _blueprints.SetArchetypeAttributeRecommendations(

@@ -789,9 +789,22 @@ namespace wotr_mod.Infrastructure
                 items);
         }
 
+        public void SetCharacterClassStartingEquipment(
+            BlueprintCharacterClass characterClass,
+            int startingGold,
+            params BlueprintItem[] items)
+        {
+            _characterClasses.SetCharacterClassStartingEquipment(characterClass, startingGold, items);
+        }
+
         public int GetCharacterClassStartingGold(BlueprintCharacterClass characterClass)
         {
             return _characterClasses.GetCharacterClassStartingGold(characterClass);
+        }
+
+        public BlueprintItem[] GetCharacterClassStartingEquipment(BlueprintCharacterClass characterClass)
+        {
+            return _characterClasses.GetCharacterClassStartingEquipment(characterClass);
         }
 
         public void SetArchetypeAttributeRecommendations(

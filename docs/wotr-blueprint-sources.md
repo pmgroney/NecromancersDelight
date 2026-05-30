@@ -59,4 +59,5 @@ f957b4444b6fb404e84ae2a5765797bb CreatureAbilities/TrippingBite.jbp
 5ae6dc5f479b5ea408ccaf75212155e8 Classes/Pets/AnimalCompanionUpgradeVelociraptor.jbp
 54cf380dee486ff42b803174d1b9da1b Classes/Pets/AnimalCompanionUnitLeopard.jbp
 28d1986d57a7081439fbb581aa6f960c Classes/Pets/AnimalCompanionUnitVelociraptor.jbp
+1e1f627d26ad36f43bbd26cc2bf8ac7e Feats/WeaponFocus/WeaponFocus.jbp
 ```

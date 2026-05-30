@@ -73,6 +73,7 @@ namespace wotr_mod.Classes.Necromancer
                 GameBlueprintIds.Classes.Wizard,
                 "Wizard class");
             _blueprints.SetCharacterClassAppearanceFromClass(characterClass, wizardClass);
+            ConfigureStartingEquipment(characterClass);
 
             EnsureNecromancerBloodline();
             RegisterNecromancerFeatures(characterClass);
@@ -87,6 +88,13 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.SetCharacterClassArchetypes(
                 characterClass,
                 EnsureArchetypes(characterClass, spellbook, spellList));
+        }
+
+        private void ConfigureStartingEquipment(BlueprintCharacterClass characterClass)
+        {
+            _blueprints.SetCharacterClassStartingEquipment(
+                characterClass,
+                _blueprints.GetCharacterClassStartingGold(characterClass));
         }
 
         private void ConfigureNecromancerSpellList(BlueprintSpellList spellList, int minimumSpellLevel = 0)

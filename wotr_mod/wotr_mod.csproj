@@ -128,6 +128,7 @@
         <Compile Include="Features\PerDieBonusDamage.cs" />
         <Compile Include="Features\EvokerForceSpellConversion.cs" />
         <Compile Include="Features\EvokerSpellShaping.cs" />
+        <Compile Include="Features\GravebladeWeaponFocusRecommendation.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
         <Compile Include="Features\StygianPrecisionComponent.cs" />
@@ -198,8 +199,7 @@
         <Compile Include="Patches\BillyRecruitmentFallbackAction.cs" />
         <Compile Include="Patches\BillyPlacementPatch.cs" />
         <Compile Include="Patches\BillyVisualPatch.cs" />
-        <Compile Include="Patches\GravebladeStartingEquipmentPatch.cs" />
-        <Compile Include="Patches\StartingEquipmentPatch.cs" />
+        <Compile Include="Patches\NecromancerStartingEquipmentPatch.cs" />
         <Compile Include="Patches\CustomHeritagePatch.cs" />
         <Compile Include="Patches\AchievementReenablePatch.cs" />
         <Compile Include="Patches\CoreDifficultyOverridePatch.cs" />

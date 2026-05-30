@@ -177,11 +177,37 @@ namespace wotr_mod.Infrastructure
                     .ToArray());
         }
 
+        public void SetCharacterClassStartingEquipment(
+            BlueprintCharacterClass characterClass,
+            int startingGold,
+            params BlueprintItem[] items)
+        {
+            BlueprintFields.CharacterClassStartingGold?.SetValue(characterClass, startingGold);
+            BlueprintFields.CharacterClassStartingItems?.SetValue(
+                characterClass,
+                (items ?? Array.Empty<BlueprintItem>())
+                    .Where(item => item != null)
+                    .Select(BlueprintReferenceBase.CreateTyped<BlueprintItemReference>)
+                    .ToArray());
+        }
+
         public int GetCharacterClassStartingGold(BlueprintCharacterClass characterClass)
         {
             return BlueprintFields.CharacterClassStartingGold?.GetValue(characterClass) is int gold
                 ? gold
                 : 0;
+        }
+
+        public BlueprintItem[] GetCharacterClassStartingEquipment(BlueprintCharacterClass characterClass)
+        {
+            if (characterClass == null)
+            {
+                return Array.Empty<BlueprintItem>();
+            }
+
+            return characterClass.StartingItems
+                .Where(item => item != null)
+                .ToArray();
         }
 
         public void SetArchetypeAttributeRecommendations(
