@@ -11,6 +11,7 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.PubSubSystem;
+using Kingmaker.ResourceLinks;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.RuleSystem.Rules.Damage;
@@ -86,6 +87,7 @@ namespace wotr_mod.Spells.Modifiers
             area.AggroEnemies = true;
             area.AffectDead = false;
             area.IgnoreSleepingUnits = false;
+            area.Fx = new PrefabLink { AssetId = GameBlueprintIds.FxAssets.CloudThunderstormBlastArea };
 
             var enterActions = EnemyOnly("$Conditional$HeavensWrathEnemyEnter",
                 StrikeActions(context, stunnedBuff, metalArmorPenaltyBuff, "Enter"));

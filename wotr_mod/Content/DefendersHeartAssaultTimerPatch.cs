@@ -11,8 +11,11 @@ namespace wotr_mod.Content
 {
     internal sealed class DefendersHeartAssaultTimerPatch : IContentModule, IAreaLoadModule
     {
-        private const int OriginalDelayDays = 3;
-        private const int ModdedDelayDays = 6;
+        private const int BaseDelayDays = 3;
+        private const int PreviousExtraDelayDays = 3;
+        private const int ExtraDelayDays = 6;
+        private const int PreviousModdedDelayDays = BaseDelayDays + PreviousExtraDelayDays;
+        private const int ModdedDelayDays = BaseDelayDays + ExtraDelayDays;
 
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -33,7 +36,12 @@ namespace wotr_mod.Content
 
         public void Install()
         {
-            EnsureRuntimeAdjustmentFlag();
+            EnsureRuntimeAdjustmentFlag(
+                ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjusted,
+                "WotrMod_DefendersHeartAssaultTimerAdjusted");
+            EnsureRuntimeAdjustmentFlag(
+                ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjustedSixExtra,
+                "WotrMod_DefendersHeartAssaultTimerAdjustedSixExtra");
             ApplyBlueprintDelay();
             RepairSavedTimerIfNeeded("install");
         }
@@ -60,7 +68,9 @@ namespace wotr_mod.Content
             }
 
             var currentDelayDays = (int)BlueprintFields.EtudeInvokeActionsDelayedDays.GetValue(delayedActions);
-            if (currentDelayDays != OriginalDelayDays && currentDelayDays != ModdedDelayDays)
+            if (currentDelayDays != BaseDelayDays
+                && currentDelayDays != PreviousModdedDelayDays
+                && currentDelayDays != ModdedDelayDays)
             {
                 _logger.Warning(
                     $"Defender's Heart assault timer had unexpected delay {currentDelayDays} days; overriding to {ModdedDelayDays}.");
@@ -70,9 +80,9 @@ namespace wotr_mod.Content
             _logger.Log($"Defender's Heart assault timer set to {ModdedDelayDays} days.");
         }
 
-        private BlueprintUnlockableFlag EnsureRuntimeAdjustmentFlag()
+        private BlueprintUnlockableFlag EnsureRuntimeAdjustmentFlag(string flagGuid, string flagName)
         {
-            var flag = _blueprints.Get<BlueprintUnlockableFlag>(ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjusted);
+            var flag = _blueprints.Get<BlueprintUnlockableFlag>(flagGuid);
             if (flag != null)
             {
                 return flag;
@@ -80,10 +90,10 @@ namespace wotr_mod.Content
 
             flag = new BlueprintUnlockableFlag
             {
-                name = "WotrMod_DefendersHeartAssaultTimerAdjusted",
-                AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjusted)
+                name = flagName,
+                AssetGuid = BlueprintGuid.Parse(flagGuid)
             };
-            _blueprints.AddCachedBlueprint(ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjusted, flag);
+            _blueprints.AddCachedBlueprint(flagGuid, flag);
             return flag;
         }
 
@@ -95,11 +105,24 @@ namespace wotr_mod.Content
             }
 
             var player = Game.Instance.Player;
-            var adjustmentFlag = EnsureRuntimeAdjustmentFlag();
+            var previousAdjustmentFlag = EnsureRuntimeAdjustmentFlag(
+                ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjusted,
+                "WotrMod_DefendersHeartAssaultTimerAdjusted");
+            var adjustmentFlag = EnsureRuntimeAdjustmentFlag(
+                ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjustedSixExtra,
+                "WotrMod_DefendersHeartAssaultTimerAdjustedSixExtra");
             if (player.UnlockableFlags.IsUnlocked(adjustmentFlag))
             {
                 return;
             }
+
+            var previousAdjustmentApplied = player.UnlockableFlags.IsUnlocked(previousAdjustmentFlag);
+            var remainingDelayToAddDays = previousAdjustmentApplied
+                ? ExtraDelayDays - PreviousExtraDelayDays
+                : ExtraDelayDays;
+            var maximumAlreadyAdjustedDays = previousAdjustmentApplied
+                ? PreviousModdedDelayDays
+                : BaseDelayDays;
 
             var etudes = player.EtudesSystem;
             if (etudes == null)
@@ -124,7 +147,13 @@ namespace wotr_mod.Content
 
             if (etudes.EtudeIsStarted(timer) && !etudes.EtudeIsCompleted(timer))
             {
-                if (TryAddSavedTimerDelay(etudes, timer, TimeSpan.FromDays(OriginalDelayDays), out var before, out var after))
+                if (TryAddSavedTimerDelay(
+                        etudes,
+                        timer,
+                        TimeSpan.FromDays(remainingDelayToAddDays),
+                        TimeSpan.FromDays(maximumAlreadyAdjustedDays),
+                        out var before,
+                        out var after))
                 {
                     player.UnlockableFlags.Unlock(adjustmentFlag);
                     _logger.Log(
@@ -138,9 +167,9 @@ namespace wotr_mod.Content
                 etudes.UnstartEtude(warning, false);
                 etudes.UnstartEtude(timer, false);
                 etudes.StartEtude(timer, false, true);
-                SetSavedTimerRemaining(etudes, timer, TimeSpan.FromDays(OriginalDelayDays));
+                SetSavedTimerRemaining(etudes, timer, TimeSpan.FromDays(remainingDelayToAddDays));
                 player.UnlockableFlags.Unlock(adjustmentFlag);
-                _logger.Log($"Defender's Heart warning state rolled back to a {OriginalDelayDays}-day remaining timer from {source}.");
+                _logger.Log($"Defender's Heart warning state rolled back to a {remainingDelayToAddDays}-day remaining timer from {source}.");
                 return;
             }
 
@@ -152,6 +181,7 @@ namespace wotr_mod.Content
             EtudesSystem etudes,
             BlueprintEtude timer,
             TimeSpan extraDelay,
+            TimeSpan maximumAlreadyAdjustedDelay,
             out TimeSpan before,
             out TimeSpan after)
         {
@@ -164,7 +194,7 @@ namespace wotr_mod.Content
             }
 
             before = timerData.TimeRemaining;
-            if (before > extraDelay)
+            if (before > maximumAlreadyAdjustedDelay)
             {
                 after = before;
                 return false;

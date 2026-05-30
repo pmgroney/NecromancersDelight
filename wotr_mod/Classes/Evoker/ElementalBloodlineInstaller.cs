@@ -7,13 +7,18 @@ using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Enums;
+using Kingmaker.Enums.Damage;
+using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
+using wotr_mod.Spells.Modifiers;
 
 namespace wotr_mod.Classes.Evoker
 {
@@ -159,10 +164,12 @@ namespace wotr_mod.Classes.Evoker
                 LocalizationIds.Mod.EvokerArcaneName,
                 LocalizationIds.Mod.EvokerArcaneDescription);
             var forceArcana = EnsureEvokerForceArcanaFeature(characterClass);
+            var forceRay = EnsureEvokerForceRayFeature(characterClass);
             EvokerInstaller.ReplaceProgressionFeature(
                 progression,
                 GameBlueprintIds.Features.BloodlineArcaneArcaneBondFeature,
                 forceArcana);
+            _blueprints.AddFeatureToLevel(progression, 1, forceRay);
             EvokerInstaller.ReplaceProgressionFeature(
                 progression,
                 GameBlueprintIds.Features.BloodlineArcaneNewArcanaSelection,
@@ -173,11 +180,8 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.RemoveFeatureFromProgression(
                 progression,
                 GameBlueprintIds.Selections.SorcererFeatSelection);
-            _blueprints.MoveFeatureToLevel(
-                progression,
-                GameBlueprintIds.Features.BloodlineArcaneSpellLevel1,
-                FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineArcaneSpellLevel1),
-                2);
+            RemoveArcaneProgressionFeature(progression, GameBlueprintIds.Features.BloodlineArcaneClassSkillSelection);
+            RemoveArcaneProgressionFeature(progression, GameBlueprintIds.Features.BloodlineArcaneSpellLevel1);
             if (characterClass != null)
             {
                 _blueprints.EnsureCustomClassOwnsProgressionFeatures(
@@ -186,6 +190,7 @@ namespace wotr_mod.Classes.Evoker
                     characterClass);
             }
 
+            RemoveArcaneProgressionFeature(progression, GameBlueprintIds.Features.BloodlineArcaneSpellLevel1);
             return progression;
         }
 
@@ -329,6 +334,117 @@ namespace wotr_mod.Classes.Evoker
             _evoker.SetIcon(fact, "Icons\\force_arcana.png");
         }
 
+        private BlueprintFeature EnsureEvokerForceRayFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = EnsureElementalRayFeature(
+                GameBlueprintIds.Features.BloodlineElementalFireElementalRayFeature,
+                GameBlueprintIds.Abilities.BloodlineElementalFireElementalRayAbility,
+                ModBlueprintIds.Features.EvokerForceRay,
+                ModBlueprintIds.Abilities.EvokerForceRay,
+                "WotrMod_EvokerForceRayFeature",
+                "WotrMod_EvokerForceRayAbility",
+                characterClass);
+            var ability = _blueprints.Require<BlueprintAbility>(
+                ModBlueprintIds.Abilities.EvokerForceRay,
+                "Evoker force ray ability");
+
+            ConfigureEvokerForceRayDisplay(ability);
+            ConfigureEvokerForceRayAbility(ability, characterClass);
+            ConfigureEvokerForceRayDisplay(feature);
+            if (ability.Icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, ability.Icon);
+            }
+
+            return feature;
+        }
+
+        private void ConfigureEvokerForceRayAbility(
+            BlueprintAbility ability,
+            BlueprintCharacterClass characterClass)
+        {
+            SpellModifierUtility.ReplaceDescriptor(ability, SpellDescriptor.Fire, SpellDescriptor.Force, _blueprints);
+            SpellModifierUtility.PatchRunActions(ability, action =>
+            {
+                var damage = action as ContextActionDealDamage;
+                if (damage == null ||
+                    damage.DamageType.Type != DamageType.Energy ||
+                    damage.DamageType.Energy != DamageEnergyType.Fire)
+                {
+                    return 0;
+                }
+
+                damage.DamageType = SpellModifierUtility.ForceDamage();
+                return 1;
+            });
+            _evoker.ConfigureElementalRayDamage(ability, characterClass);
+            ConfigureEvokerForceRayVisuals(ability);
+        }
+
+        private void ConfigureEvokerForceRayVisuals(BlueprintAbility ability)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Force);
+
+            var projectile = EnsureEvokerForceRayProjectile(ability);
+            if (projectile == null)
+            {
+                ability.OnEnable();
+                return;
+            }
+
+            SpellEffectTintRegistry.RegisterProjectileTint(
+                projectile.AssetGuid.ToString(),
+                SpellEffectTheme.Force);
+            foreach (var delivery in _blueprints.GetComponents<AbilityDeliverProjectile>(ability))
+            {
+                _blueprints.SetAbilityDeliverProjectilesRepeated(
+                    delivery,
+                    projectile,
+                    Math.Max(1, _blueprints.GetAbilityDeliverProjectileSlotCount(delivery)));
+            }
+
+            ability.OnEnable();
+        }
+
+        private BlueprintProjectile EnsureEvokerForceRayProjectile(BlueprintAbility ability)
+        {
+            var projectile = _blueprints.Get<BlueprintProjectile>(ModBlueprintIds.Projectiles.ForceRay);
+            if (projectile != null)
+            {
+                return projectile;
+            }
+
+            var donor = _blueprints.GetComponents<AbilityDeliverProjectile>(ability)
+                .SelectMany(delivery =>
+                    BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(delivery) as BlueprintProjectileReference[]
+                    ?? Array.Empty<BlueprintProjectileReference>())
+                .Select(reference => reference?.Get())
+                .FirstOrDefault(existing => existing != null);
+            if (donor == null)
+            {
+                return null;
+            }
+
+            projectile = _blueprints.CloneBlueprint(
+                donor,
+                ModBlueprintIds.Projectiles.ForceRay,
+                "WotrMod_ForceRayProjectile");
+            projectile.OnEnable();
+            _blueprints.AddCachedBlueprint(ModBlueprintIds.Projectiles.ForceRay, projectile);
+            return projectile;
+        }
+
+        private void ConfigureEvokerForceRayDisplay(BlueprintUnitFact fact)
+        {
+            _blueprints.SetUnitFactDisplay(
+                fact,
+                _localization.Text(LocalizationIds.Mod.EvokerForceRayName),
+                _localization.Text(LocalizationIds.Mod.EvokerForceRayDescription));
+            _evoker.SetIcon(fact, "Icons\\force_beam.png");
+        }
+
         private BlueprintProgression EnsureEvokerBloodline(
             string donorGuid,
             string newGuid,
@@ -377,9 +493,12 @@ namespace wotr_mod.Classes.Evoker
             }
 
             _blueprints.RemoveFeatureFromProgression(progression, GameBlueprintIds.Selections.SorcererFeatSelection);
-            MoveProtectionFromEnergyToCommunal(progression, characterClass);
+            RemoveElementalProtectionFromEnergyGrant(progression, internalName);
+            RemoveElementalLevel17SpellGrant(progression);
             AddElementalBodySpellUiGroup(progression);
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(progression, internalName, characterClass);
+            RemoveElementalProtectionFromEnergyGrant(progression, internalName);
+            RemoveElementalLevel17SpellGrant(progression);
             return progression;
         }
 
@@ -753,6 +872,81 @@ namespace wotr_mod.Classes.Evoker
                 FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel6),
                 FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel7),
                 FindProgressionFeature(progression, GameBlueprintIds.Features.BloodlineElementalSpellLevel9));
+        }
+
+        private static void RemoveArcaneProgressionFeature(
+            BlueprintProgression progression,
+            string sourceFeatureGuid)
+        {
+            EvokerInstaller.RemoveProgressionFeature(progression, sourceFeatureGuid);
+            EvokerInstaller.RemoveProgressionFeature(progression, EvokerArcaneOwnedFeatureGuid(sourceFeatureGuid));
+        }
+
+        private static string EvokerArcaneOwnedFeatureGuid(string sourceFeatureGuid)
+        {
+            return EvokerInstaller.DeterministicGuid(
+                "WotrMod_EvokerBloodline_Arcane.OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
+        }
+
+        private static void RemoveElementalProtectionFromEnergyGrant(
+            BlueprintProgression progression,
+            string ownershipSeed)
+        {
+            RemoveElementalProgressionFeature(
+                progression,
+                ownershipSeed,
+                GameBlueprintIds.Features.BloodlineElementalSpellLevel3);
+            EvokerInstaller.RemoveProgressionFeature(
+                progression,
+                ModBlueprintIds.Features.EvokerProtectionFromEnergyCommunalKnownSpell);
+        }
+
+        private static void RemoveElementalProgressionFeature(
+            BlueprintProgression progression,
+            string ownershipSeed,
+            string sourceFeatureGuid)
+        {
+            EvokerInstaller.RemoveProgressionFeature(progression, sourceFeatureGuid);
+            EvokerInstaller.RemoveProgressionFeature(
+                progression,
+                EvokerElementalOwnedFeatureGuid(ownershipSeed, sourceFeatureGuid));
+        }
+
+        private static string EvokerElementalOwnedFeatureGuid(
+            string ownershipSeed,
+            string sourceFeatureGuid)
+        {
+            return EvokerInstaller.DeterministicGuid(
+                ownershipSeed + ".OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
+        }
+
+        private void RemoveElementalLevel17SpellGrant(BlueprintProgression progression)
+        {
+            var sourceFeatureGuid = BlueprintGuid.Parse(GameBlueprintIds.Features.BloodlineElementalSpellLevel8);
+            foreach (var entry in progression.LevelEntries ?? Array.Empty<LevelEntry>())
+            {
+                if (entry.Level != 17)
+                {
+                    continue;
+                }
+
+                entry.SetFeatures((entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                    .Where(feature =>
+                        feature == null
+                        || (feature.AssetGuid != sourceFeatureGuid
+                            && !GrantsKnownSpellAtLevel(feature, 8))));
+            }
+        }
+
+        private bool GrantsKnownSpellAtLevel(BlueprintFeatureBase feature, int spellLevel)
+        {
+            if (feature == null)
+            {
+                return false;
+            }
+
+            return _blueprints.GetComponents<AddKnownSpell>(feature)
+                .Any(component => component.SpellLevel == spellLevel);
         }
 
         private static BlueprintFeatureBase FindProgressionFeature(

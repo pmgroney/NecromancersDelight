@@ -206,7 +206,6 @@
         <Compile Include="Patches\FetchlingRacePatch.cs" />
         <Compile Include="Patches\CompanionSelectionPatch.cs" />
         <Compile Include="Patches\LeopardTripPatch.cs" />
-        <Compile Include="Patches\ReapingEdgeProgressionFramePatch.cs" />
         <Compile Include="Patches\SpellEffectTintPatch.cs" />
         <Compile Include="Patches\TooltipIconMagnificationPatch.cs" />
         <Compile Include="Patches\VelociraptorGrowthPatch.cs" />
@@ -238,6 +237,9 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\force_arcana.png">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Icons\force_beam.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="Icons\glacial_prison.png">

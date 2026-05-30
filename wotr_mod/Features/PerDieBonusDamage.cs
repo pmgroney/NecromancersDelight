@@ -24,6 +24,8 @@ namespace wotr_mod.Features
         public bool CountAnyEnergyDamageWhileConversionBuffActive;
         public BlueprintBuff ConversionBuff;
         public BlueprintAbility[] AdditionalAbilities;
+        public int CapstoneRank;
+        public int CapstoneBonusDamagePerDie;
 
         public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
@@ -40,6 +42,12 @@ namespace wotr_mod.Features
                 return;
             }
 
+            var bonusPerDie = rank;
+            if (CapstoneRank > 0 && rank >= CapstoneRank)
+            {
+                bonusPerDie += CapstoneBonusDamagePerDie;
+            }
+
             foreach (var baseDamage in evt.DamageBundle)
             {
                 if (!MatchesDamage(baseDamage))
@@ -47,7 +55,7 @@ namespace wotr_mod.Features
                     continue;
                 }
 
-                baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls * rank, Fact);
+                baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls * bonusPerDie, Fact);
             }
         }
 

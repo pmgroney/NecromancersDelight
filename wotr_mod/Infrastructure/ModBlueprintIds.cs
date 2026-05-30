@@ -100,6 +100,7 @@ namespace wotr_mod.Infrastructure
             public const string BillyRecruited = "da03f5bd8a9e44b89a5a7df675cb95df";
             public const string BillyBowQuestStarted = "e1f39ce3152c439080ac6f2565e1f861";
             public const string DefendersHeartAssaultTimerAdjusted = "5e8a2f7db8f84b2797720f4fbb09ef90";
+            public const string DefendersHeartAssaultTimerAdjustedSixExtra = "e75c257c77274b7a870e5118a2dd3b68";
             public const string ShieldMazeRuntimeLootSeeded = "231ad8e13d8b400a98da928503969098";
         }
 
@@ -239,6 +240,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerFireArcana = "e4ceefc1300d4e94a9ee904759396368";
             public const string EvokerFireElementalRay = "6c9b3571f9a64aee9fc684a08f22d271";
             public const string EvokerForceArcana = "b477679c5ad445c090c7115fa98d1dc4";
+            public const string EvokerForceRay = "073f8d9d39dcb8a8b9c971dab7f26ab4";
             public const string EvokerWaterArcana = "be13bd160a8a481e8e44b7cac5a2b82c";
             public const string EvokerWaterElementalRay = "124224dc9c3242919d31f0f992bd5339";
             public const string ShadowbornArcana = "5f58f3ee60f44ec0bdc4a85190d11883";
@@ -346,6 +348,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerFireElementalRay = "0452c4577aff414ab90fd346c787127a";
             public const string EvokerFireHellfireRayKnownSpell = "5b0f18110390440487ca602666805971";
             public const string EvokerForceArcana = "ca19c654656d420aa3c61fcbacfdd77f";
+            public const string EvokerForceRay = "7dc04a1d45c78de7ebbb7d73f99ed915";
             public const string ArcanistEvokerNewArcana = "4f26835da74043c398783158a998b01d";
             public const string EvokerWaterArcana = "d46d14b765934f1a93e9aaec4ec74ed7";
             public const string EvokerWaterElementalRay = "bf1d96b6583746beb75b44d752920e12";
@@ -384,6 +387,10 @@ namespace wotr_mod.Infrastructure
             public const string GravebladeFighterTraining = "1f3a5c7e9b204d6f8a0c2e4b6d8f0132";
             public const string GravebladeProficiencies = "0e2f4a6c8b104d3e9f1a2c5b7d9e0f31";
             public const string GravebladeReapingEdge = "c6f5e4d3a2b14c8d9e0f1a3b5c7d9e02";
+            public const string GravebladeReapingEdgeBrittleBone = "aa38077017d146439fff869a329c1768";
+            public const string GravebladeReapingEdgeEvil = "c7bf0285c4624313b5c977a656773f1c";
+            public const string GravebladeReapingEdgeLingeringRot = "aa5cefbb5d434c7186b3f1e294a3c1dd";
+            public const string GravebladeReapingEdgeBoneShards = "27b063ccd56547c1ab44c0fda0299841";
             public const string GravebladeTwoHandedWeaponTraining = "a7d2e4f6b8094c1d9235e7f0a2b4c6d8";
         }
 

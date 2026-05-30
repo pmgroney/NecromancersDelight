@@ -224,11 +224,8 @@ namespace wotr_mod.Spells
             var existing = _blueprints.Get<BlueprintProjectile>(ModBlueprintIds.Projectiles.VitriolicBlast);
             if (existing != null) return existing;
 
-            var delivery = _blueprints.GetComponents<AbilityDeliverProjectile>(ability).FirstOrDefault();
-            var projectileRefs = delivery != null
-                ? BlueprintFields.AbilityDeliverProjectileProjectiles.GetValue(delivery) as BlueprintProjectileReference[]
-                : null;
-            var donor = projectileRefs?.FirstOrDefault()?.Get() as BlueprintProjectile;
+            var donor = _blueprints.Get<BlueprintProjectile>(GameBlueprintIds.Projectiles.AlchemistAcidBomb)
+                ?? GetFirstProjectile(ability);
             if (donor == null) return null;
 
             var projectile = _blueprints.CloneBlueprint(
@@ -265,7 +262,7 @@ namespace wotr_mod.Spells
                 ability.AssetGuid.ToString(),
                 visuals.Theme);
 
-            var projectile = EnsureProjectile(ability, visuals.ProjectileGuid, visuals.ProjectileName);
+            var projectile = EnsureProjectile(ability, visuals);
             if (projectile == null) return;
 
             SpellEffectTintRegistry.RegisterProjectileTint(
@@ -354,7 +351,8 @@ namespace wotr_mod.Spells
                 new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.VitriolicApocalypse,
                     "WotrMod_VitriolicApocalypseProjectile",
-                    SpellEffectTheme.Acid));
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AlchemistAcidBomb));
 
             var buff = _blueprints.Get<Kingmaker.UnitLogic.Buffs.Blueprints.BlueprintBuff>(
                 ModBlueprintIds.Buffs.MolecularDissolution);
@@ -375,17 +373,19 @@ namespace wotr_mod.Spells
             }
         }
 
-        private BlueprintProjectile EnsureProjectile(BlueprintAbility ability, string projectileGuid, string projectileName)
+        private BlueprintProjectile EnsureProjectile(BlueprintAbility ability, ProjectileVisuals visuals)
         {
-            var existing = _blueprints.Get<BlueprintProjectile>(projectileGuid);
+            var existing = _blueprints.Get<BlueprintProjectile>(visuals.ProjectileGuid);
             if (existing != null) return existing;
 
-            var donor = GetFirstProjectile(ability);
+            var donor = string.IsNullOrEmpty(visuals.SourceProjectileGuid)
+                ? GetFirstProjectile(ability)
+                : _blueprints.Get<BlueprintProjectile>(visuals.SourceProjectileGuid);
             if (donor == null) return null;
 
-            var projectile = _blueprints.CloneBlueprint(donor, projectileGuid, projectileName);
+            var projectile = _blueprints.CloneBlueprint(donor, visuals.ProjectileGuid, visuals.ProjectileName);
             projectile.OnEnable();
-            _blueprints.AddCachedBlueprint(projectileGuid, projectile);
+            _blueprints.AddCachedBlueprint(visuals.ProjectileGuid, projectile);
             return projectile;
         }
 
@@ -405,7 +405,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.CausticBeam,
                     "WotrMod_CausticBeamProjectile",
-                    SpellEffectTheme.Acid);
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AcidArrow);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.EmperorsWrath)
@@ -413,7 +414,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.EmperorsWrath,
                     "WotrMod_EmperorsWrathProjectile",
-                    SpellEffectTheme.Electric);
+                    SpellEffectTheme.Electric,
+                    GameBlueprintIds.Projectiles.LightningBoltMiss);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.ForceRay)
@@ -429,7 +431,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.FrostBlast,
                     "WotrMod_FrostBlastProjectile",
-                    SpellEffectTheme.Cold);
+                    SpellEffectTheme.Cold,
+                    GameBlueprintIds.Projectiles.RayOfFrost);
             }
 
             return null;
@@ -442,7 +445,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.AcidHellfireRay,
                     "WotrMod_AcidHellfireRayProjectile",
-                    SpellEffectTheme.Acid);
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AcidLine);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.ColdHellfireRay)
@@ -450,7 +454,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.ColdHellfireRay,
                     "WotrMod_ColdHellfireRayProjectile",
-                    SpellEffectTheme.Cold);
+                    SpellEffectTheme.Cold,
+                    GameBlueprintIds.Projectiles.PolarRay);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.ElectricHellfireRay)
@@ -458,7 +463,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.ElectricHellfireRay,
                     "WotrMod_ElectricHellfireRayProjectile",
-                    SpellEffectTheme.Electric);
+                    SpellEffectTheme.Electric,
+                    GameBlueprintIds.Projectiles.LightningBoltMiss);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.FireHellfireRay)
@@ -524,7 +530,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.CorrosiveCascade,
                     "WotrMod_CorrosiveCascadeProjectile",
-                    SpellEffectTheme.Acid);
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AcidLine);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.CausticOblivion)
@@ -532,7 +539,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.CausticOblivion,
                     "WotrMod_CausticOblivionProjectile",
-                    SpellEffectTheme.Acid);
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AcidLine);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.DissolutionWave)
@@ -540,7 +548,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.DissolutionWave,
                     "WotrMod_DissolutionWaveProjectile",
-                    SpellEffectTheme.Acid);
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AcidCone50Feet);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.ElectricMissile)
@@ -564,7 +573,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.FrozenLance,
                     "WotrMod_FrozenLanceProjectile",
-                    SpellEffectTheme.Cold);
+                    SpellEffectTheme.Cold,
+                    GameBlueprintIds.Projectiles.Snowball);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.VitriolicSphere)
@@ -572,7 +582,8 @@ namespace wotr_mod.Spells
                 return new ProjectileVisuals(
                     ModBlueprintIds.Projectiles.VitriolicSphere,
                     "WotrMod_VitriolicSphereProjectile",
-                    SpellEffectTheme.Acid);
+                    SpellEffectTheme.Acid,
+                    GameBlueprintIds.Projectiles.AlchemistAcidBomb);
             }
 
             if (spellGuid == ModBlueprintIds.Spells.IceMissile)
@@ -1004,16 +1015,22 @@ namespace wotr_mod.Spells
 
         private readonly struct ProjectileVisuals
         {
-            public ProjectileVisuals(string projectileGuid, string projectileName, SpellEffectTheme theme)
+            public ProjectileVisuals(
+                string projectileGuid,
+                string projectileName,
+                SpellEffectTheme theme,
+                string sourceProjectileGuid = null)
             {
                 ProjectileGuid = projectileGuid;
                 ProjectileName = projectileName;
                 Theme = theme;
+                SourceProjectileGuid = sourceProjectileGuid;
             }
 
             public string ProjectileGuid { get; }
             public string ProjectileName { get; }
             public SpellEffectTheme Theme { get; }
+            public string SourceProjectileGuid { get; }
         }
     }
 }

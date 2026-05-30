@@ -479,10 +479,11 @@ namespace wotr_mod.Classes.Necromancer
                 feature = _blueprints.CloneBlueprint(
                     _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SorcererProficiencies, "Sorcerer Proficiencies"),
                     ModBlueprintIds.Features.NecromancerProficiencies,
-                    "NecromancerProficiencies");
+                    "WotrMod_NecromancerProficiencies");
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerProficiencies, feature);
             }
 
+            feature.name = "WotrMod_NecromancerProficiencies";
             feature.IsClassFeature = true;
             feature.Ranks = 1;
             _blueprints.SetUnitFactDisplay(feature,

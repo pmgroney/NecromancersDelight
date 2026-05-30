@@ -134,6 +134,7 @@ namespace wotr_mod.Infrastructure
             public const string ScorchingRay = "cdb106d53c65bbc4086183d54c3b97c7";
             public const string Sirocco = "093ed1d67a539ad4c939d9d05cfe192c";
             public const string Snowball = "9f10909f0be1f5141bf1c102041f93d9";
+            public const string SummonMonsterVIII = "d3ac756a229830243a72e84f3ab050d0";
         }
 
         internal static class Selections
@@ -168,6 +169,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string ArcaneBloodlineArcana = "e8e4f56618dd8b04490aa6a0b75ac24f";
             public const string BloodlineArcaneArcaneBondFeature = "1740a701ac0a14c4394a7f76f0b07799";
+            public const string BloodlineArcaneClassSkillSelection = "19ab16dba857d1a4ba617074f203f975";
             public const string BloodlineArcaneNewArcanaFeature = "4a2e8388c2f0dd3478811d9c947bebfb";
             public const string BloodlineArcaneNewArcanaSelection = "20a2435574bdd7f4e947f405df2b25ce";
             public const string BloodlineArcaneSchoolPowerSelection = "3524a71d57d99bb4b835ad20582cf613";
@@ -225,6 +227,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalAirArcana = "54ae8876bb5d78242beec0752592a018";
             public const string BloodlineElementalEarthArcana = "5282afee8f3dfda49a34e36c3cee9d2c";
             public const string BloodlineElementalWaterArcana = "68d7772fa2f03e247ad1676ddd5eb4e2";
+            public const string BloodlineElementalClassSkill = "582a0ee43b0a38c4581c96cec8ddcdfd";
             public const string BloodlineElementalFireElementalRayFeature = "ce0889b5c1b392e48baf1e004d1efd67";
             public const string BloodlineElementalWaterElementalRayFeature = "f6a811bf5650ac04ea2c21f4df390455";
             public const string BloodlineElementalFireElementalBlastFeature = "3022a5066a5604a498dd289b37dfd8aa";
@@ -239,6 +242,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalSpellLevel5 = "053df94db3c29444b96c0c50592e4cc1";
             public const string BloodlineElementalSpellLevel6 = "7c479457662909e4f8023742b6df1447";
             public const string BloodlineElementalSpellLevel7 = "06adbfd3dde3f8a40896224e3d0822b1";
+            public const string BloodlineElementalSpellLevel8 = "a97a9d3ce2ea0d24e8a9b96642c576f5";
             public const string BloodlineElementalSpellLevel9 = "1ed7c112f89d1024ea6c4e862f1d28d7";
             public const string PyromaniacGnome = "fc74a68e18a8479a9e8af34e761a70b3";
             public const string TrippingBite = "f957b4444b6fb404e84ae2a5765797bb";
@@ -271,7 +275,23 @@ namespace wotr_mod.Infrastructure
 
         internal static class Projectiles
         {
+            public const string AcidArrow = "89cd363b66b1df440b5281f7d3ef188d";
+            public const string AcidCommonProjectile = "d8abd128c02331a45a4f250a62722e8b";
+            public const string AcidCone50Feet = "214036a0c1b35464780ad140324c249c";
+            public const string AcidLine = "33af0c7694f8d734397bd03e6d4b72f1";
+            public const string AlchemistAcidBomb = "b33865d0fbc186946a485fbd549f74ec";
+            public const string ElectroCommonProjectile = "1af8385214ca8774b98922b56caa0e92";
             public const string Enervation = "72aa6191e153a31468d76668cbc72fc7";
+            public const string LightningBoltMiss = "23cffcf4535a9654895fc7815aa0442d";
+            public const string PolarRay = "68ce28c9ac213e7458670a72da007dd8";
+            public const string RayOfFrost = "d6c9daec1256561408a7a72a6979359e";
+            public const string Snowball = "81a8bff536bae184bacb3a58f0bc381a";
+        }
+
+        internal static class FxAssets
+        {
+            public const string CloudThunderstormBlastArea = "ea0829270d8996146be0b8e39c6ec472";
+            public const string IceStormArea = "4a5d52b2e20e1e449a7a79bf3882dc06";
         }
 
         internal static class Enchantments

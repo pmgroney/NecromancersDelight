@@ -8,6 +8,7 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums.Damage;
+using Kingmaker.ResourceLinks;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
@@ -67,6 +68,7 @@ namespace wotr_mod.Spells.Modifiers
             area.AggroEnemies = true;
             area.AffectDead = false;
             area.IgnoreSleepingUnits = false;
+            area.Fx = new PrefabLink { AssetId = GameBlueprintIds.FxAssets.CloudThunderstormBlastArea };
 
             var enterActions = EnemyOnly(new GameAction[]
             {

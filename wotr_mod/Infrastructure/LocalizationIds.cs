@@ -167,6 +167,16 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerReapersJudgementDescription = "wotr_mod.class.necromancer.reapers_judgement.description";
             public const string GravebladeReapingEdgeName = "wotr_mod.archetype.graveblade.reaping_edge.name";
             public const string GravebladeReapingEdgeDescription = "wotr_mod.archetype.graveblade.reaping_edge.description";
+            public const string GravebladeReapingEdgeBaseName = "wotr_mod.archetype.graveblade.reaping_edge.base.name";
+            public const string GravebladeReapingEdgeBaseDescription = "wotr_mod.archetype.graveblade.reaping_edge.base.description";
+            public const string GravebladeReapingEdgeBrittleBoneFeatureName = "wotr_mod.archetype.graveblade.reaping_edge.brittle_bone_feature.name";
+            public const string GravebladeReapingEdgeBrittleBoneFeatureDescription = "wotr_mod.archetype.graveblade.reaping_edge.brittle_bone_feature.description";
+            public const string GravebladeReapingEdgeEvilName = "wotr_mod.archetype.graveblade.reaping_edge.evil.name";
+            public const string GravebladeReapingEdgeEvilDescription = "wotr_mod.archetype.graveblade.reaping_edge.evil.description";
+            public const string GravebladeReapingEdgeLingeringRotFeatureName = "wotr_mod.archetype.graveblade.reaping_edge.lingering_rot_feature.name";
+            public const string GravebladeReapingEdgeLingeringRotFeatureDescription = "wotr_mod.archetype.graveblade.reaping_edge.lingering_rot_feature.description";
+            public const string GravebladeReapingEdgeBoneShardsName = "wotr_mod.archetype.graveblade.reaping_edge.bone_shards.name";
+            public const string GravebladeReapingEdgeBoneShardsDescription = "wotr_mod.archetype.graveblade.reaping_edge.bone_shards.description";
             public const string GravebladeReapingEdgeBuffName = "wotr_mod.archetype.graveblade.reaping_edge.buff.name";
             public const string GravebladeReapingEdgeBuffDescription = "wotr_mod.archetype.graveblade.reaping_edge.buff.description";
             public const string GravebladeReapingEdgeBrittleBoneName = "wotr_mod.archetype.graveblade.reaping_edge.brittle_bone.name";
@@ -185,6 +195,8 @@ namespace wotr_mod.Infrastructure
             public const string EvokerArcaneDescription = "wotr_mod.evoker_bloodline.arcane.description";
             public const string EvokerForceArcanaName = "wotr_mod.evoker_bloodline.force_arcana.name";
             public const string EvokerForceArcanaDescription = "wotr_mod.evoker_bloodline.force_arcana.description";
+            public const string EvokerForceRayName = "wotr_mod.evoker_bloodline.force_ray.name";
+            public const string EvokerForceRayDescription = "wotr_mod.evoker_bloodline.force_ray.description";
             public const string EvokerAirName = "wotr_mod.evoker_bloodline.air.name";
             public const string EvokerAirDescription = "wotr_mod.evoker_bloodline.air.description";
             public const string EvokerEarthName = "wotr_mod.evoker_bloodline.earth.name";

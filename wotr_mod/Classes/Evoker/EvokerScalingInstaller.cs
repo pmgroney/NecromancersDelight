@@ -16,6 +16,7 @@ namespace wotr_mod.Classes.Evoker
     internal sealed class EvokerScalingInstaller
     {
         private static readonly int[] ElementScalingLevels = { 1, 5, 9, 13, 17 };
+        private static readonly int[] ElementalCapstoneScalingLevels = { 1, 5, 9, 13, 17, 20 };
         private static readonly int[] ArcaneScalingLevels = { 1, 4, 8, 12, 16, 20 };
 
         private readonly BlueprintTool _blueprints;
@@ -55,7 +56,8 @@ namespace wotr_mod.Classes.Evoker
                 DamageEnergyType.Electricity,
                 conversionBuffGuid: null,
                 additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerAirElementalRay },
-                characterClass: characterClass);
+                characterClass: characterClass,
+                hasLevel20DamageCapstone: true);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerEarthBloodline,
                 ModBlueprintIds.Features.EvokerScalingEarth,
@@ -66,7 +68,8 @@ namespace wotr_mod.Classes.Evoker
                 DamageEnergyType.Acid,
                 conversionBuffGuid: null,
                 additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerEarthElementalRay },
-                characterClass: characterClass);
+                characterClass: characterClass,
+                hasLevel20DamageCapstone: true);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerFireBloodline,
                 ModBlueprintIds.Features.EvokerScalingFire,
@@ -77,7 +80,8 @@ namespace wotr_mod.Classes.Evoker
                 DamageEnergyType.Fire,
                 conversionBuffGuid: null,
                 additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerFireElementalRay },
-                characterClass: characterClass);
+                characterClass: characterClass,
+                hasLevel20DamageCapstone: true);
             ApplyElement(
                 ModBlueprintIds.Progressions.EvokerWaterBloodline,
                 ModBlueprintIds.Features.EvokerScalingWater,
@@ -88,7 +92,8 @@ namespace wotr_mod.Classes.Evoker
                 DamageEnergyType.Cold,
                 conversionBuffGuid: null,
                 additionalAbilityGuids: new[] { ModBlueprintIds.Abilities.EvokerWaterElementalRay },
-                characterClass: characterClass);
+                characterClass: characterClass,
+                hasLevel20DamageCapstone: true);
             ApplyElement(
                 ModBlueprintIds.Progressions.ShadowbornBloodline,
                 ModBlueprintIds.Features.ShadowbornScaling,
@@ -114,7 +119,8 @@ namespace wotr_mod.Classes.Evoker
             string conversionBuffGuid,
             string[] additionalAbilityGuids,
             BlueprintCharacterClass characterClass,
-            bool bindProgressionToClass = true)
+            bool bindProgressionToClass = true,
+            bool hasLevel20DamageCapstone = false)
         {
             var progression = _blueprints.Get<BlueprintProgression>(progressionGuid);
             if (progression == null)
@@ -132,8 +138,14 @@ namespace wotr_mod.Classes.Evoker
                 energyType,
                 conversionBuffGuid,
                 additionalAbilityGuids,
+                hasLevel20DamageCapstone,
                 characterClass);
-            AddScalingFeature(progression, feature, ElementScalingLevels, characterClass, bindProgressionToClass);
+            AddScalingFeature(
+                progression,
+                feature,
+                hasLevel20DamageCapstone ? ElementalCapstoneScalingLevels : ElementScalingLevels,
+                characterClass,
+                bindProgressionToClass);
         }
 
         private void ApplyElement(
@@ -194,15 +206,17 @@ namespace wotr_mod.Classes.Evoker
             DamageEnergyType energyType,
             string conversionBuffGuid,
             string[] additionalAbilityGuids,
+            bool hasLevel20DamageCapstone,
             BlueprintCharacterClass characterClass)
         {
+            var scalingLevels = hasLevel20DamageCapstone ? ElementalCapstoneScalingLevels : ElementScalingLevels;
             var feature = EnsureScalingFeature(
                 featureGuid,
                 internalName,
                 nameKey,
                 descriptionKey,
                 iconPath,
-                ElementScalingLevels.Length,
+                scalingLevels.Length,
                 characterClass);
             var conversionBuff = string.IsNullOrWhiteSpace(conversionBuffGuid)
                 ? null
@@ -222,7 +236,9 @@ namespace wotr_mod.Classes.Evoker
                     EnergyType = energyType,
                     CountAnyEnergyDamageWhileConversionBuffActive = conversionBuff != null,
                     ConversionBuff = conversionBuff,
-                    AdditionalAbilities = additionalAbilities
+                    AdditionalAbilities = additionalAbilities,
+                    CapstoneRank = hasLevel20DamageCapstone ? scalingLevels.Length : 0,
+                    CapstoneBonusDamagePerDie = hasLevel20DamageCapstone ? 1 : 0
                 });
             return feature;
         }
@@ -257,8 +273,9 @@ namespace wotr_mod.Classes.Evoker
                     MatchForceDamage = true,
                     AdditionalAbilities = new[]
                     {
-                        _blueprints.Get<BlueprintAbility>(ModBlueprintIds.Spells.ForceRay)
-                    }
+                        _blueprints.Get<BlueprintAbility>(ModBlueprintIds.Spells.ForceRay),
+                        _blueprints.Get<BlueprintAbility>(ModBlueprintIds.Abilities.EvokerForceRay)
+                    }.Where(ability => ability != null).ToArray()
                 });
             return feature;
         }

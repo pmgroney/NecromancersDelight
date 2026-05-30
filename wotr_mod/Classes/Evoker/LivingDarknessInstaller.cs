@@ -63,9 +63,9 @@ namespace wotr_mod.Classes.Evoker
             RemoveProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel6);
             RemoveProgressionFeature(shadowbornBloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel7);
             MoveProgressionFeatureToLevel(shadowbornBloodline, feature1, 7);
-            MoveProgressionFeatureToLevel(shadowbornBloodline, feature2, 10);
-            MoveProgressionFeatureToLevel(shadowbornBloodline, feature3, 13);
-            MoveProgressionFeatureToLevel(shadowbornBloodline, feature4, 16);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature2, 11);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature3, 15);
+            MoveProgressionFeatureToLevel(shadowbornBloodline, feature4, 19);
             _blueprints.AddProgressionUiGroup(shadowbornBloodline, feature1, feature2, feature3, feature4);
             if (characterClass?.Progression != null)
             {

@@ -76,7 +76,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
                 GameBlueprintIds.StatProgressions.BaseAttackBonusHigh, "Graveblade base attack bonus progression");
             var proficiencies = EnsureGravebladeProficiencies(characterClass);
-            var reapingEdge = EnsureGravebladeReapingEdge(characterClass);
+            var reapingEdgeTiers = EnsureGravebladeReapingEdge(characterClass);
+            var reapingEdge = reapingEdgeTiers[0];
             var bonusFeat = EnsureGravebladeBonusFeatSelection();
             var fighterTraining = EnsureGravebladeFighterTraining(characterClass, bonusFeat);
             var armorTraining = EnsureGravebladeArmorTraining();
@@ -90,7 +91,10 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var necromancerBonusFeat = new NecromancerInstaller(_blueprints, _localization, _logger, _icons).EnsureNecromancerBonusFeatSelection();
 
             _blueprints.SetProgressionClasses(proficiencies, characterClass);
-            _blueprints.SetProgressionClasses(reapingEdge, characterClass);
+            foreach (var reapingEdgeTier in reapingEdgeTiers)
+            {
+                _blueprints.SetProgressionClasses(reapingEdgeTier, characterClass);
+            }
             _blueprints.SetProgressionClassesShallow(bonusFeat, characterClass);
             _blueprints.SetProgressionClasses(fighterTraining, characterClass);
             _blueprints.SetProgressionClasses(armorTraining, characterClass);
@@ -102,17 +106,18 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, bonusFeat),
                 CreateLevelEntry(2,  bonusFeat),
                 CreateLevelEntry(3,  armorTraining, overhandChop),
-                CreateLevelEntry(5,  twoHandedWeaponTraining),
+                CreateLevelEntry(5,  twoHandedWeaponTraining, reapingEdgeTiers[1]),
                 CreateLevelEntry(6,  bonusFeat),
                 CreateLevelEntry(7,  armorTraining, backswing),
                 CreateLevelEntry(9,  twoHandedWeaponTraining),
-                CreateLevelEntry(10, bonusFeat),
+                CreateLevelEntry(10, bonusFeat, reapingEdgeTiers[2]),
                 CreateLevelEntry(11, armorTraining, piledriver),
                 CreateLevelEntry(13, twoHandedWeaponTraining),
-                CreateLevelEntry(15, armorTraining, greaterPowerAttack),
+                CreateLevelEntry(15, armorTraining, greaterPowerAttack, reapingEdgeTiers[3]),
                 CreateLevelEntry(16, bonusFeat),
                 CreateLevelEntry(17, twoHandedWeaponTraining),
-                CreateLevelEntry(19, armorMastery, weaponMastery)
+                CreateLevelEntry(19, armorMastery, weaponMastery),
+                CreateLevelEntry(20, reapingEdgeTiers[4])
             };
 
             var masterworkScythe = _blueprints.Require<BlueprintItem>(
@@ -138,7 +143,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetArchetypeSignatureAbilities(archetype, reapingEdge);
             AddGravebladeFeaturesToProgressionUi(
                 characterClass.Progression,
-                reapingEdge, armorTraining, armorMastery, twoHandedWeaponTraining,
+                reapingEdgeTiers, armorTraining, armorMastery, twoHandedWeaponTraining,
                 overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery);
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
@@ -151,7 +156,6 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
         {
             var entries = new List<LevelEntry>();
             AddLevelEntryIfAny(entries, 1,
-                GetFeatureIfAvailable(GameBlueprintIds.Features.SorcererCantrips, "Sorcerer Cantrips"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerProficiencies, "Necromancer Proficiencies"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
                 necromancerBonusFeat);
@@ -200,13 +204,13 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
 
         private void AddGravebladeFeaturesToProgressionUi(
             BlueprintProgression progression,
-            BlueprintFeatureBase reapingEdge, BlueprintFeatureBase armorTraining,
+            BlueprintFeatureBase[] reapingEdgeTiers, BlueprintFeatureBase armorTraining,
             BlueprintFeatureBase armorMastery, BlueprintFeatureBase twoHandedWeaponTraining,
             BlueprintFeatureBase overhandChop, BlueprintFeatureBase backswing,
             BlueprintFeatureBase piledriver, BlueprintFeatureBase greaterPowerAttack,
             BlueprintFeatureBase weaponMastery)
         {
-            if (progression == null || reapingEdge == null || armorTraining == null || armorMastery == null) return;
+            if (progression == null || reapingEdgeTiers == null || reapingEdgeTiers.Length == 0 || armorTraining == null || armorMastery == null) return;
 
             var necro = new NecromancerInstaller(_blueprints, _localization, _logger, _icons);
             var features = necro.GetNecromancerFeatures();
@@ -247,7 +251,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 new[] { armorTraining, armorMastery },
                 new[] { twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery },
                 new[] { stygianPrecision, reapersJudgement },
-                new[] { reapingEdge },
+                reapingEdgeTiers,
                 new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
         }
@@ -445,19 +449,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             return feature;
         }
 
-        private BlueprintFeature EnsureGravebladeReapingEdge(BlueprintCharacterClass characterClass)
+        private BlueprintFeature[] EnsureGravebladeReapingEdge(BlueprintCharacterClass characterClass)
         {
-            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.GravebladeReapingEdge);
-            if (feature == null)
-            {
-                feature = new BlueprintFeature
-                {
-                    name = "WotrMod_NecromancerGravebladeReapingEdgeFeature",
-                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.GravebladeReapingEdge)
-                };
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.GravebladeReapingEdge, feature);
-            }
-
             var brittleBoneBuff = EnsureReapingEdgeBrittleBoneBuff();
             var fatigueBuff = EnsureReapingEdgeConditionBuff(
                 ModBlueprintIds.Buffs.ReapingEdgeFatigue, "WotrMod_NecromancerGravebladeReapingEdgeFatigueBuff",
@@ -472,20 +465,90 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var buff = EnsureReapingEdgeBuff(characterClass, brittleBoneBuff, fatigueBuff, exhaustionBuff);
             var resource = EnsureReapingEdgeResource(characterClass);
             var ability = EnsureReapingEdgeAbility(resource, buff);
+            var baseFeature = EnsureReapingEdgeTierFeature(
+                ModBlueprintIds.Features.GravebladeReapingEdge,
+                "WotrMod_NecromancerGravebladeReapingEdgeBaseFeature",
+                LocalizationIds.Mod.GravebladeReapingEdgeBaseName,
+                LocalizationIds.Mod.GravebladeReapingEdgeBaseDescription,
+                characterClass,
+                ability,
+                resource);
+            var brittleBoneFeature = EnsureReapingEdgeTierFeature(
+                ModBlueprintIds.Features.GravebladeReapingEdgeBrittleBone,
+                "WotrMod_NecromancerGravebladeReapingEdgeBrittleBoneFeature",
+                LocalizationIds.Mod.GravebladeReapingEdgeBrittleBoneFeatureName,
+                LocalizationIds.Mod.GravebladeReapingEdgeBrittleBoneFeatureDescription,
+                characterClass);
+            var evilFeature = EnsureReapingEdgeTierFeature(
+                ModBlueprintIds.Features.GravebladeReapingEdgeEvil,
+                "WotrMod_NecromancerGravebladeReapingEdgeEvilFeature",
+                LocalizationIds.Mod.GravebladeReapingEdgeEvilName,
+                LocalizationIds.Mod.GravebladeReapingEdgeEvilDescription,
+                characterClass);
+            var lingeringRotFeature = EnsureReapingEdgeTierFeature(
+                ModBlueprintIds.Features.GravebladeReapingEdgeLingeringRot,
+                "WotrMod_NecromancerGravebladeReapingEdgeLingeringRotFeature",
+                LocalizationIds.Mod.GravebladeReapingEdgeLingeringRotFeatureName,
+                LocalizationIds.Mod.GravebladeReapingEdgeLingeringRotFeatureDescription,
+                characterClass);
+            var boneShardsFeature = EnsureReapingEdgeTierFeature(
+                ModBlueprintIds.Features.GravebladeReapingEdgeBoneShards,
+                "WotrMod_NecromancerGravebladeReapingEdgeBoneShardsFeature",
+                LocalizationIds.Mod.GravebladeReapingEdgeBoneShardsName,
+                LocalizationIds.Mod.GravebladeReapingEdgeBoneShardsDescription,
+                characterClass);
+
+            return new[]
+            {
+                baseFeature, brittleBoneFeature, evilFeature, lingeringRotFeature, boneShardsFeature
+            };
+        }
+
+        private BlueprintFeature EnsureReapingEdgeTierFeature(
+            string featureGuid,
+            string internalName,
+            string displayNameKey,
+            string descriptionKey,
+            BlueprintCharacterClass characterClass,
+            BlueprintAbility ability = null,
+            BlueprintAbilityResource resource = null)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = internalName,
+                    AssetGuid = BlueprintGuid.Parse(featureGuid)
+                };
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
 
             feature.IsClassFeature = true;
             feature.Ranks = 1;
-            _blueprints.SetUnitFactDisplay(feature,
-                _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeName),
-                _localization.Text(LocalizationIds.Mod.GravebladeReapingEdgeDescription));
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(displayNameKey),
+                _localization.Text(descriptionKey));
             var icon = _icons.Load("Icons\\reaping_edge.png");
             if (icon != null) _blueprints.SetUnitFactIcon(feature, icon);
-            var addFacts = new AddFacts { name = "$AddFacts$GravebladeReapingEdge" };
-            _blueprints.SetAddFacts(addFacts, ability);
-            _blueprints.SetComponents(feature, addFacts);
 
-            var necroInstaller = new NecromancerInstaller(_blueprints, _localization, _logger, _icons);
-            necroInstaller.PatchFeatureResource(feature, resource);
+            if (ability != null)
+            {
+                var addFacts = new AddFacts { name = "$AddFacts$" + internalName };
+                _blueprints.SetAddFacts(addFacts, ability);
+                _blueprints.SetComponents(feature, addFacts);
+                if (resource != null)
+                {
+                    var necroInstaller = new NecromancerInstaller(_blueprints, _localization, _logger, _icons);
+                    necroInstaller.PatchFeatureResource(feature, resource);
+                }
+            }
+            else
+            {
+                _blueprints.SetComponents(feature);
+            }
+
             if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
             return feature;
         }

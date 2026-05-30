@@ -4,6 +4,7 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums.Damage;
+using Kingmaker.ResourceLinks;
 using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
@@ -70,6 +71,7 @@ namespace wotr_mod.Spells.Modifiers
             area.AggroEnemies = true;
             area.AffectDead = false;
             area.IgnoreSleepingUnits = false;
+            area.Fx = new PrefabLink { AssetId = GameBlueprintIds.FxAssets.CloudThunderstormBlastArea };
 
             var enterActions = EnemyOnly("$Conditional$CataclysmicStormEnemyEnter", new GameAction[]
             {

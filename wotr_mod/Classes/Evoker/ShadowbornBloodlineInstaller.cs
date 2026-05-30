@@ -156,17 +156,14 @@ namespace wotr_mod.Classes.Evoker
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireElementalBlastFeature,
                 umbralBlast);
-            ReplaceFireProgressionFeature(
+            MoveFireProgressionFeatureToLevel(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalSpellLevel9,
-                elementalBody);
+                elementalBody,
+                14);
             RemoveFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireElementalBodyFeature);
-            _blueprints.RemoveFeatureFromProgressionExceptLevel(
-                bloodline,
-                elementalBody,
-                19);
             ReplaceFireProgressionFeature(
                 bloodline,
                 GameBlueprintIds.Features.BloodlineElementalFireResistanceFeature,
@@ -190,12 +187,55 @@ namespace wotr_mod.Classes.Evoker
             EvokerInstaller.RemoveProgressionFeature(
                 bloodline,
                 EvokerFireOwnedFeatureGuid(GameBlueprintIds.Features.BloodlineElementalSpellLevel3));
+            RemoveFireProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalClassSkill);
+            RemoveFireProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel8);
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(
                 bloodline,
                 "WotrMod_ShadowbornBloodline",
                 characterClass);
+            RemoveShadowbornOwnedProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalClassSkill);
+            RemoveShadowbornOwnedProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel8);
+            RemoveGrantedSpellFromProgression(bloodline, GameBlueprintIds.Spells.SummonMonsterVIII);
 
             return bloodline;
+        }
+
+        private void RemoveGrantedSpellFromProgression(BlueprintProgression progression, string spellGuid)
+        {
+            var grantedSpellGuid = BlueprintGuid.Parse(spellGuid);
+            var grants = (progression.LevelEntries ?? Array.Empty<LevelEntry>())
+                .SelectMany(entry => entry.Features ?? Enumerable.Empty<BlueprintFeatureBase>())
+                .Where(feature => GrantsKnownSpell(feature, grantedSpellGuid))
+                .GroupBy(feature => feature.AssetGuid)
+                .Select(group => group.First())
+                .ToArray();
+
+            foreach (var feature in grants)
+            {
+                _blueprints.RemoveFeatureFromProgression(progression, feature);
+            }
+        }
+
+        private void RemoveShadowbornOwnedProgressionFeature(
+            BlueprintProgression progression,
+            string sourceFeatureGuid)
+        {
+            var ownedFeatureGuid = EvokerInstaller.DeterministicGuid(
+                "WotrMod_ShadowbornBloodline.OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
+            _blueprints.RemoveFeatureFromProgression(progression, ownedFeatureGuid);
+        }
+
+        private bool GrantsKnownSpell(BlueprintFeatureBase feature, BlueprintGuid spellGuid)
+        {
+            if (feature == null)
+            {
+                return false;
+            }
+
+            return _blueprints.GetComponents<AddKnownSpell>(feature)
+                .Any(component =>
+                    BlueprintFields.AddKnownSpellSpell.GetValue(component) is BlueprintAbilityReference spell
+                    && spell.Guid == spellGuid);
         }
 
         private static void ReplaceFireProgressionFeature(
