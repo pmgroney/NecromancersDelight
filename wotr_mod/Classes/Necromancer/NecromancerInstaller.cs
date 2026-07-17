@@ -582,6 +582,7 @@ namespace wotr_mod.Classes.Necromancer
             var resource = EnsureAbilityResource(
                 GameBlueprintIds.AbilityResources.BloodlineElementalElementalRayResource,
                 ModBlueprintIds.AbilityResources.WitheringRay, "WotrMod_NecromancerWitheringRayResource");
+            _blueprints.ConfigureAbilityResourceMaxAmount(resource, 0, StatType.Charisma, characterClass, 1);
             var ability = EnsureWitheringRayAbility(characterClass, resource);
             foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
                 _blueprints.SetAddFacts(addFacts, ability);

@@ -471,7 +471,12 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyHeavy, "Heavy Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SimpleWeaponProficiency, "Simple Weapon Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency, "Martial Weapon Proficiency"));
-            _blueprints.SetComponents(feature, addFacts);
+            var athleticsClassSkill = new AddClassSkill
+            {
+                name = "$AddClassSkill$GravebladeAthletics",
+                Skill = StatType.SkillAthletics
+            };
+            _blueprints.SetComponents(feature, addFacts, athleticsClassSkill);
             return feature;
         }
 

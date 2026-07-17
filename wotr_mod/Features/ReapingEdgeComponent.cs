@@ -142,7 +142,7 @@ namespace wotr_mod.Features
 
         private int GetBonusDice(ItemEntityWeapon weapon)
         {
-            var dice = Math.Max(GetClassLevel(), 0);
+            var dice = Math.Max((GetClassLevel() + 1) / 2, 0);
             return IsScythe(weapon) ? dice * 2 : dice;
         }
 

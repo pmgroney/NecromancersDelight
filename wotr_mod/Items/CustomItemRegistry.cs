@@ -56,8 +56,8 @@ namespace wotr_mod.Items
                     placements: new[]
                     {
                         ItemPlacementDefinition.InChestLoot(
-                            GameBlueprintIds.Loot.KenabresBurningSpecialThieflingStash,
-                            "Market Square thiefling stash",
+                            GameBlueprintIds.Loot.KenabresBurningCrusaderCorpseWithScroll,
+                            "Market Square crusader corpse with scroll",
                             count: 1,
                             identify: true)
                     }),

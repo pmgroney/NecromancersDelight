@@ -42,6 +42,7 @@ namespace wotr_mod.Infrastructure
         internal static class Loot
         {
             public const string CultistsLairLuxeryCasket = "de82c5ff1d3879e468c02fc86709be5d";
+            public const string KenabresBurningCrusaderCorpseWithScroll = "2d3ec4e0d147a7044a5fd3b7d1c1010e";
             public const string KenabresBurningSpecialThieflingStash = "4b7d47f312f186646a05beff7f501c3b";
             public const string ShieldMazeShittyCultistScytheLoot = "3538022738594a4eae08e72d5a611577";
         }
