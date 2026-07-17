@@ -7,6 +7,7 @@ namespace wotr_mod.Infrastructure
             public const string Arcanist = "52dbfd8505e22f84fad8d702611f60b7";
             public const string Cleric = "67819271767a9dd4fbfd4ae700befea0";
             public const string Fighter = "48ac8db94d5de7645906c7d0ad3bcfbd";
+            public const string Rogue = "299aa766dee3cbf4790da4efb8c72484";
             public const string Sorcerer = "b3a505fb61437dc4097f43c3f8f9a4cf";
             public const string Wizard = "ba34257984f4c41408ce1dc2004e342e";
         }
@@ -84,6 +85,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Spellbooks
         {
+            public const string Inquisitor = "57fab75111f377248810ece84193a5a5";
             public const string Ranger = "762858a4a28eaaf43aa00f50441d7027";
             public const string Sorcerer = "b3db3766a4b605040b366265e2af0e50";
             public const string Wizard = "5a38c9ac8607890409fcb8f6342da6f4";
@@ -145,6 +147,7 @@ namespace wotr_mod.Infrastructure
             public const string DhampirHeritage = "1246f548304a7654c97d8f2e9488e25f";
             public const string Domain = "48525e5da45c9c243a343fc6545dbdb9";
             public const string FighterFeat = "41c8486641f7d6d4283ca9dae4147a9f";
+            public const string RogueTalent = "c074a5d615200494b8f2a9c845799d93";
             public const string GnomeHeritage = "584d8b50817b49b2bb7aab3d6add8d3a";
             public const string HalfElfHeritage = "9df7b68d60544bcf8e5b56c0a4688e04";
             public const string HalfOrcHeritage = "8c3244440e0b4d1d9d9b182685cbacbd";
@@ -256,7 +259,12 @@ namespace wotr_mod.Infrastructure
             public const string TwoHandedFighterOverhandChop = "ad4d4db6bb9c75a4a9bc59174b948769";
             public const string TwoHandedFighterPiledriver = "4723b31d7defd3d4e85395e2a3353b01";
             public const string TwoHandedFighterWeaponTraining = "88da2a5dfc505054f933bb81014e864f";
+            public const string TwoWeaponFighting = "ac8aaf29054f5b74eb18f2af950e752d";
             public const string ZenArcherWayOfTheBowLongbowFocus = "2e659493076249f49821925b9b7dc389";
+            public const string RogueSneakAttack = "9b9eac6709e1c084cb18c3a366e0ec87";
+            public const string RogueTrapfinding = "dbb6b3bffe6db3547b31c3711653838e";
+            public const string RogueMasterStrike = "72dcf1fb106d5054a81fd804fdc168d3";
+            public const string RogueFinesseTrainingSelection = "b78d146cea711a84598f0acef69462ea";
         }
 
         internal static class Items
@@ -268,11 +276,14 @@ namespace wotr_mod.Infrastructure
             public const string CompositeLongbowPlus1 = "2753a0159681be94da3a5eeabc8c8d1a";
             public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
+            public const string Scythe = "1052a1f7128861942aa0c2ee6078531e";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
             public const string PotionOfCureLightWounds = "d52566ae8cbe8dc4dae977ef51c27d91";
             public const string PotionOfInflictLightWounds = "115c4dcc899ce9747a6e97335955092a";
             public const string PotionOfInflictModerateWounds = "a9991bfea27096f46bb7b4ccf0fb7eb7";
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
+            public const string Shortsword = "f717b39c351b8b44388c471d4d272f4e";
+            public const string ShortswordPlus1 = "9f455505128866146a9bd81895d4cecd";
         }
 
         internal static class Projectiles
@@ -316,6 +327,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalFireElementalBlastAbility = "b2d1d39cd406e0f4185c52fecc73c3b5";
             public const string BloodlineUndeadGraspOfTheDeadAbility = "a5c9f06155d772849be82e8965837813";
             public const string BloodlineUndeadIncorporealFormAbility = "853b5266404060f4f8afd9cf7859ef1f";
+            public const string RogueMasterStrikeToggle = "926bff1386d58824688363a3eeb98260";
         }
 
         internal static class AbilityResources
@@ -336,6 +348,7 @@ namespace wotr_mod.Infrastructure
             public const string MonkAcBonusBuff = "f132c4c4279e4646a05de26635941bfe";
             public const string MonkAcBonusBuffUnarmored = "d7ff7a9f1fe84e679f98b36e4bacd63c";
             public const string SnowballStaggered = "f767ee03a6cb62943b59bacbd8ced2e0";
+            public const string RogueMasterStrikeBuff = "eab680abdb0194343af169af393c2603";
         }
 
         internal static class Units

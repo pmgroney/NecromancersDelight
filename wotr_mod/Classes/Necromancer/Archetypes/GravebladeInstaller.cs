@@ -83,7 +83,6 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var fighterTraining = EnsureGravebladeFighterTraining(characterClass, bonusFeat);
             var armorTraining = EnsureGravebladeArmorTraining();
             var armorMastery = EnsureGravebladeArmorMastery();
-            var twoHandedWeaponTraining = EnsureGravebladeTwoHandedWeaponTraining(characterClass);
             var overhandChop = _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterOverhandChop, "Two-Handed Fighter Overhand Chop");
             var backswing = _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterBackswing, "Two-Handed Fighter Backswing");
             var piledriver = _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterPiledriver, "Two-Handed Fighter Piledriver");
@@ -100,23 +99,20 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetProgressionClasses(fighterTraining, characterClass);
             _blueprints.SetProgressionClasses(armorTraining, characterClass);
             _blueprints.SetProgressionClasses(armorMastery, characterClass);
-            _blueprints.SetProgressionClasses(twoHandedWeaponTraining, characterClass);
 
             var gravebladeLevelEntries = new[]
             {
                 CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, bonusFeat),
                 CreateLevelEntry(2,  bonusFeat),
                 CreateLevelEntry(3,  armorTraining, overhandChop),
-                CreateLevelEntry(5,  twoHandedWeaponTraining, reapingEdgeTiers[1]),
+                CreateLevelEntry(5,  reapingEdgeTiers[1]),
                 CreateLevelEntry(6,  bonusFeat),
                 CreateLevelEntry(7,  armorTraining, backswing),
-                CreateLevelEntry(9,  twoHandedWeaponTraining),
                 CreateLevelEntry(10, bonusFeat, reapingEdgeTiers[2]),
                 CreateLevelEntry(11, armorTraining, piledriver),
-                CreateLevelEntry(13, twoHandedWeaponTraining),
+                CreateLevelEntry(14, bonusFeat),
                 CreateLevelEntry(15, armorTraining, greaterPowerAttack, reapingEdgeTiers[3]),
-                CreateLevelEntry(16, bonusFeat),
-                CreateLevelEntry(17, twoHandedWeaponTraining),
+                CreateLevelEntry(18, bonusFeat),
                 CreateLevelEntry(19, armorMastery, weaponMastery),
                 CreateLevelEntry(20, reapingEdgeTiers[4])
             };
@@ -135,7 +131,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetArchetypeSignatureAbilities(archetype, reapingEdge);
             AddGravebladeFeaturesToProgressionUi(
                 characterClass.Progression,
-                reapingEdgeTiers, armorTraining, armorMastery, twoHandedWeaponTraining,
+                reapingEdgeTiers, armorTraining, armorMastery,
                 overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery);
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
@@ -186,7 +182,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
                 necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 2,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"),
+                necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 3,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
             AddLevelEntryIfAny(entries, 4,
@@ -200,10 +197,11 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             AddLevelEntryIfAny(entries, 10, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 11,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen granted spell"));
+            AddLevelEntryIfAny(entries, 14, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 15,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form"));
-            AddLevelEntryIfAny(entries, 16, necromancerBonusFeat);
+            AddLevelEntryIfAny(entries, 18, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 19,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth granted spell"));
             AddLevelEntryIfAny(entries, 20,
@@ -231,78 +229,21 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
         private void AddGravebladeFeaturesToProgressionUi(
             BlueprintProgression progression,
             BlueprintFeatureBase[] reapingEdgeTiers, BlueprintFeatureBase armorTraining,
-            BlueprintFeatureBase armorMastery, BlueprintFeatureBase twoHandedWeaponTraining,
+            BlueprintFeatureBase armorMastery,
             BlueprintFeatureBase overhandChop, BlueprintFeatureBase backswing,
             BlueprintFeatureBase piledriver, BlueprintFeatureBase greaterPowerAttack,
             BlueprintFeatureBase weaponMastery)
         {
             if (progression == null || reapingEdgeTiers == null || reapingEdgeTiers.Length == 0 || armorTraining == null || armorMastery == null) return;
 
-            var necro = new NecromancerInstaller(_blueprints, _localization, _logger, _icons);
-            var features = necro.GetNecromancerFeatures();
-            var witheringRay = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBloodlinePower1, "Withering Ray");
-            var deathsGift = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift");
-            var graspOfTheDead = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead");
-            var incorporealForm = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form");
-            var oneOfUs = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us");
-            var boneArmor = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBoneArmor, "Bone Armor");
-            var boneSpike = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike");
-            var corpseExplosion = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion");
-            var eldritchHorror = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror");
-            var harvestTheFallen = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen");
-            var hellOnEarth = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth");
-            var necromancerBonusFeat = NecromancerInstaller.FindNecromancerFeature<BlueprintFeatureSelection>(
-                features, ModBlueprintIds.Selections.NecromancerBonusFeat, "Necromancer Bonus Feat");
-            var stygianPrecision = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision");
-            var reapersJudgement = NecromancerInstaller.FindNecromancerFeature<BlueprintFeature>(
-                features, ModBlueprintIds.Features.NecromancerReapersJudgement, "Reaper's Judgement");
-
-            _blueprints.SetProgressionUiGroups(
-                progression,
-                new[] { boneArmor },
-                new[] { deathsGift },
-                new[] { necromancerBonusFeat },
-                new[] { armorTraining, armorMastery },
-                new[] { twoHandedWeaponTraining, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery },
-                new[] { stygianPrecision, reapersJudgement },
-                reapingEdgeTiers,
-                new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
-                new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
+            // Appends (rather than replacing) since the base Necromancer class and other
+            // archetypes already populated progression.UIGroups on this shared progression.
+            _blueprints.AddProgressionUiGroup(progression, armorTraining, armorMastery);
+            _blueprints.AddProgressionUiGroup(progression, overhandChop, backswing, piledriver, greaterPowerAttack, weaponMastery);
+            _blueprints.AddProgressionUiGroup(progression, reapingEdgeTiers);
         }
 
         // ─── Graveblade-specific features ────────────────────────────────────
-
-        private BlueprintFeature EnsureGravebladeTwoHandedWeaponTraining(BlueprintCharacterClass characterClass)
-        {
-            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.GravebladeTwoHandedWeaponTraining);
-            if (feature == null)
-            {
-                feature = _blueprints.CloneBlueprint(
-                    _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoHandedFighterWeaponTraining, "Two-Handed Fighter Weapon Training"),
-                    ModBlueprintIds.Features.GravebladeTwoHandedWeaponTraining,
-                    "WotrMod_NecromancerGravebladeTwoHandedWeaponTraining");
-                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.GravebladeTwoHandedWeaponTraining, feature);
-            }
-            feature.IsClassFeature = true;
-            feature.Ranks = 10;
-            var components = _blueprints.GetComponents<BlueprintComponent>(feature)
-                .Where(c => c.GetType().Name != "PrerequisiteArchetypeLevel").ToArray();
-            _blueprints.SetComponents(feature, components);
-            if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
-            return feature;
-        }
 
         private BlueprintFeature EnsureGravebladeArmorMastery()
         {

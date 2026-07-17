@@ -204,7 +204,7 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.BlueprintComponents.SetValue(clone, clonedComponents);
         }
 
-        private BlueprintComponent CloneComponent(BlueprintComponent component, BlueprintScriptableObject owner)
+        internal BlueprintComponent CloneComponent(BlueprintComponent component, BlueprintScriptableObject owner)
         {
             if (component == null)
             {

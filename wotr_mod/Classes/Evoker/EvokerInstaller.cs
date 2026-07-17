@@ -38,7 +38,7 @@ namespace wotr_mod.Classes.Evoker
         private readonly ElementalBloodlineInstaller _elementalBloodlines;
         private readonly DraconicBloodlineInstaller _draconicBloodline;
         private readonly ShadowbornBloodlineInstaller _shadowbornBloodline;
-        private static readonly int[] EvokerBonusFeatLevels = { 1, 6, 10, 16, 20 };
+        private static readonly int[] EvokerBonusFeatLevels = { 2, 6, 10, 14, 18 };
 
         public EvokerInstaller(
             BlueprintTool blueprints,

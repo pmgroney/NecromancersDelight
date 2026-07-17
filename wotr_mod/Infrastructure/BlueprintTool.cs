@@ -940,6 +940,41 @@ namespace wotr_mod.Infrastructure
             }
         }
 
+        public void AddClassLevelsForPrerequisites(
+            BlueprintFeature feature,
+            BlueprintCharacterClass fakeClass,
+            BlueprintCharacterClass actualClass,
+            BlueprintFeatureSelection selection,
+            double modifier,
+            int summand,
+            string componentName)
+        {
+            var existing = GetComponents<BlueprintComponent>(feature)
+                .FirstOrDefault(component =>
+                    component.GetType().Name == "ClassLevelsForPrerequisites" && component.name == componentName);
+
+            var target = existing;
+            if (target == null)
+            {
+                var template = GetComponents<BlueprintComponent>(feature)
+                    .FirstOrDefault(component => component.GetType().Name == "ClassLevelsForPrerequisites");
+                if (template == null)
+                {
+                    return;
+                }
+
+                target = _cloner.CloneComponent(template, feature);
+                target.name = componentName;
+                AddComponent(feature, target);
+            }
+
+            SetComponentField(target, "m_FakeClass", BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(fakeClass));
+            SetComponentField(target, "m_ActualClass", BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(actualClass));
+            SetComponentField(target, "m_ForSelection", BlueprintReferenceBase.CreateTyped<BlueprintFeatureSelectionReference>(selection));
+            SetComponentField(target, "Modifier", modifier);
+            SetComponentField(target, "Summand", summand);
+        }
+
         public void SetProgressionClasses(BlueprintFeatureBase feature, params BlueprintCharacterClass[] classes)
         {
             _progressionOwnership.SetProgressionClasses(feature, classes);

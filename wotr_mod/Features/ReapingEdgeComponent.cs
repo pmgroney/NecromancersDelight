@@ -55,7 +55,7 @@ namespace wotr_mod.Features
 
                 if (GetClassLevel() >= 10)
                 {
-                    physical.AlignmentsMask |= DamageAlignment.Evil;
+                    physical.IgnoreReduction = true;
                 }
             }
 

@@ -31,7 +31,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("PerniciousPoison", "dee3074b2fbfb064b80b973f9b56319e", 2),
             Spell("PoxPustules", "bc153808ef4884a4594bc9bec2299b69", 2),
             Spell("Scare", "08cb5f4c3b2695e44971bf5c45205df0", 2),
-            Spell("CorpseExplosion", ModBlueprintIds.Spells.CorpseExplosion, 2),
+            Spell("CorpseExplosion", ModBlueprintIds.Spells.CorpseExplosion, 2, SelectionRecommendation.NotRecommended),
             Spell("DeathRay", ModBlueprintIds.Spells.DeathRay, 2),
 
             Spell("AnimateDead", "4b76d32feb089ad4499c3a1ce8e1ac27", 3),
@@ -44,7 +44,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("PoisonCast", "2a6eda8ef30379142a4b75448fb214a3", 3),
             Spell("RayOfExhaustion", "8eead52509987034ea9025d60cc05985", 3),
             Spell("VampiricTouchCast", "8a28a811ca5d20d49a863e832c31cce1", 3),
-            Spell("EldritchHorror", ModBlueprintIds.Spells.EldritchHorror, 3),
+            Spell("EldritchHorror", ModBlueprintIds.Spells.EldritchHorror, 3, SelectionRecommendation.NotRecommended),
 
             Spell("Boneshatter", "f2f1efac32ea2884e84ecaf14657298b", 4),
             Spell("DeathWardCast", "e9cc9378fd6841f48ad59384e79e9953", 4),
@@ -62,7 +62,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("WavesOfFatigue", "8878d0c46dfbd564e9d5756349d5e439", 5),
             Spell("WrackingRay", "1cde0691195feae45bab5b83ea3f221e", 5),
             Spell("DespairOfTheSepulchre", ModBlueprintIds.Spells.DespairOfTheSepulchre, 5),
-            Spell("HarvestTheFallen", ModBlueprintIds.Spells.HarvestTheFallen, 5),
+            Spell("HarvestTheFallen", ModBlueprintIds.Spells.HarvestTheFallen, 5, SelectionRecommendation.NotRecommended),
 
             Spell("BansheeBlast", "d42c6d3f29e07b6409d670792d72bc82", 6),
             Spell("CircleOfDeath", "a89dcbbab8f40e44e920cc60636097cf", 6),
@@ -94,7 +94,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("EnergyDrain", "37302f72b06ced1408bf5bb965766d46", 9),
             Spell("Weird", "870af83be6572594d84d276d7fc583e0", 9),
             Spell("WailOfBanshee", "b24583190f36a8442b212e45226c54fc", 9),
-            Spell("HellOnEarth", ModBlueprintIds.Spells.HellOnEarth, 9)
+            Spell("HellOnEarth", ModBlueprintIds.Spells.HellOnEarth, 9, SelectionRecommendation.NotRecommended)
         };
 
         public static IReadOnlyList<ClassSpellDefinition> GetAll()

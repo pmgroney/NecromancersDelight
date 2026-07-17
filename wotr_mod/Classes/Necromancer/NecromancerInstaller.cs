@@ -116,6 +116,22 @@ namespace wotr_mod.Classes.Necromancer
         private void ApplySelectionRecommendation(BlueprintScriptableObject blueprint, ClassSpellDefinition definition)
         {
             if (!definition.Recommendation.HasValue) return;
+
+            if (definition.Recommendation.Value == SelectionRecommendation.NotRecommended)
+            {
+                // These spells are only auto-granted for free by the base Necromancer bloodline chain.
+                // Graveblade and Deathstalker remove that chain, so the spell is a normal pick for them.
+                var recommendation = _blueprints.EnsureComponent(
+                    blueprint,
+                    () => new GrantedSpellRecommendation { name = $"$GrantedSpellRecommendation${definition.DisplayName}" });
+                recommendation.ExemptArchetypeGuids = new[]
+                {
+                    BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(ModBlueprintIds.Archetypes.Graveblade)),
+                    BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(ModBlueprintIds.Archetypes.Deathstalker))
+                };
+                return;
+            }
+
             _blueprints.AddSelectionRecommendation(
                 blueprint,
                 definition.Recommendation.Value,
@@ -333,7 +349,7 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Selections.NecromancerBonusFeat);
 
             _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
-            _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike);
+            _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift);
             _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision);
             _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor);
@@ -345,9 +361,11 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.AddFeaturesToLevel(progression, 11, harvestTheFallen);
             _blueprints.AddFeaturesToLevel(progression, 12, stygianPrecision);
             _blueprints.AddFeaturesToLevel(progression, 13, boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 14, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 15, deathsGift, incorporealForm);
-            _blueprints.AddFeaturesToLevel(progression, 16, necromancerBonusFeat, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 16, stygianPrecision);
             _blueprints.AddFeaturesToLevel(progression, 17, boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 18, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 19, hellOnEarth);
             _blueprints.AddFeaturesToLevel(progression, 20, oneOfUs, reapersJudgement);
 

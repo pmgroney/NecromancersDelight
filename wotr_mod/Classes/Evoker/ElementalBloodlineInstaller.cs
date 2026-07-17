@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.RuleSystem.Rules.Damage;
@@ -643,8 +644,32 @@ namespace wotr_mod.Classes.Evoker
                 ability,
                 _localization.Text(LocalizationIds.Mod.EvokerElementalRayName),
                 _localization.Text(LocalizationIds.Mod.EvokerElementalRayDescription));
+            var resource = EnsureElementalRayResource(abilityName, characterClass);
+            foreach (var resourceLogic in _blueprints.GetComponents<AbilityResourceLogic>(ability))
+            {
+                _blueprints.SetAbilityResourceLogicResource(resourceLogic, resource);
+            }
             _evoker.ConfigureElementalRayDamage(ability, characterClass);
             return ability;
+        }
+
+        private BlueprintAbilityResource EnsureElementalRayResource(
+            string abilityName,
+            BlueprintCharacterClass characterClass)
+        {
+            var resourceGuid = EvokerInstaller.DeterministicGuid(abilityName + ".Resource");
+            var resource = _blueprints.Get<BlueprintAbilityResource>(resourceGuid);
+            if (resource == null)
+            {
+                var donor = _blueprints.Require<BlueprintAbilityResource>(
+                    GameBlueprintIds.AbilityResources.BloodlineElementalElementalRayResource,
+                    "Elemental ray resource donor");
+                resource = _blueprints.CloneBlueprint(donor, resourceGuid, abilityName + "Resource");
+                _blueprints.AddCachedBlueprint(resourceGuid, resource);
+            }
+
+            _blueprints.ConfigureAbilityResourceMaxAmount(resource, 0, StatType.Charisma, characterClass, 1);
+            return resource;
         }
 
         internal void MoveProtectionFromEnergyToCommunal(

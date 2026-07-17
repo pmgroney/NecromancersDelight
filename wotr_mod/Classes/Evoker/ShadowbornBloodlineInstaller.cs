@@ -5,6 +5,7 @@ using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.RuleSystem;
@@ -773,11 +774,33 @@ namespace wotr_mod.Classes.Evoker
             if (abilityGuid == ModBlueprintIds.Abilities.ShadowbornUmbralRay)
             {
                 _evoker.ConfigureElementalRayDamage(ability, characterClass);
+                var resource = EnsureShadowbornUmbralRayResource(characterClass);
+                foreach (var resourceLogic in _blueprints.GetComponents<AbilityResourceLogic>(ability))
+                {
+                    _blueprints.SetAbilityResourceLogicResource(resourceLogic, resource);
+                }
             }
 
             ConfigureShadowbornDamageVisuals(abilityGuid, ability);
 
             return ability;
+        }
+
+        private BlueprintAbilityResource EnsureShadowbornUmbralRayResource(BlueprintCharacterClass characterClass)
+        {
+            var resourceGuid = EvokerInstaller.DeterministicGuid("WotrMod_ShadowbornUmbralRayAbility.Resource");
+            var resource = _blueprints.Get<BlueprintAbilityResource>(resourceGuid);
+            if (resource == null)
+            {
+                var donor = _blueprints.Require<BlueprintAbilityResource>(
+                    GameBlueprintIds.AbilityResources.BloodlineElementalElementalRayResource,
+                    "Elemental ray resource donor");
+                resource = _blueprints.CloneBlueprint(donor, resourceGuid, "WotrMod_ShadowbornUmbralRayResource");
+                _blueprints.AddCachedBlueprint(resourceGuid, resource);
+            }
+
+            _blueprints.ConfigureAbilityResourceMaxAmount(resource, 0, StatType.Charisma, characterClass, 1);
+            return resource;
         }
 
         private static readonly FieldInfo CasterAppearProjectileField =

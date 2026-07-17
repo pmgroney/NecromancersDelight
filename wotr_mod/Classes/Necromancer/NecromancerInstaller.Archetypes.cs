@@ -16,6 +16,8 @@ namespace wotr_mod.Classes.Necromancer
                 new SepulchritInstaller(_blueprints, _localization)
                     .Ensure(characterClass, spellbook, spellList),
                 new GravebladeInstaller(_blueprints, _localization, _logger, _icons)
+                    .Ensure(characterClass, spellbook, spellList),
+                new DeathstalkerInstaller(_blueprints, _localization, _logger, _icons)
                     .Ensure(characterClass, spellbook, spellList)
             };
         }

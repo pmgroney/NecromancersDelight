@@ -14,8 +14,8 @@ namespace wotr_mod.Patches
 {
     internal sealed class NecromancerStartingEquipmentPatch : IGamePatch, IAreaLoadHandler, IUnitLoadHandler
     {
-        private static readonly BlueprintGuid MasterworkScytheGuid =
-            BlueprintGuid.Parse(GameBlueprintIds.Items.MasterworkScythe);
+        private static readonly BlueprintGuid ScytheGuid =
+            BlueprintGuid.Parse(GameBlueprintIds.Items.Scythe);
 
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -40,8 +40,8 @@ namespace wotr_mod.Patches
                 ModBlueprintIds.Classes.Necromancer,
                 "Necromancer class");
             _blueprints.Require<BlueprintItem>(
-                GameBlueprintIds.Items.MasterworkScythe,
-                "Masterwork scythe");
+                GameBlueprintIds.Items.Scythe,
+                "Scythe");
         }
 
         public void OnAreaLoaded()
@@ -67,8 +67,8 @@ namespace wotr_mod.Patches
                 }
 
                 var scythe = _blueprints.Require<BlueprintItem>(
-                    GameBlueprintIds.Items.MasterworkScythe,
-                    "Masterwork scythe");
+                    GameBlueprintIds.Items.Scythe,
+                    "Scythe");
                 ItemEntity item = null;
                 mainCharacter.Inventory.Add(scythe, 1, true, createdItem =>
                 {
@@ -76,7 +76,7 @@ namespace wotr_mod.Patches
                     item?.Identify();
                 });
                 TryEquip(mainCharacter, item);
-                _logger.Log($"Added Necromancer starting equipment item Masterwork scythe from {source}.");
+                _logger.Log($"Added Necromancer starting equipment item Scythe from {source}.");
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace wotr_mod.Patches
 
             if (HasScythe(mainCharacter))
             {
-                reason = "masterwork scythe already present";
+                reason = "scythe already present";
                 return false;
             }
 
@@ -113,11 +113,11 @@ namespace wotr_mod.Patches
         private static bool HasScythe(UnitEntityData mainCharacter)
         {
             var personalInventoryHasItem = mainCharacter.Inventory?.Items
-                ?.Any(item => item?.Blueprint?.AssetGuid == MasterworkScytheGuid) == true;
+                ?.Any(item => item?.Blueprint?.AssetGuid == ScytheGuid) == true;
             var partyInventoryHasItem = Game.Instance?.Player?.Inventory?.Items
-                ?.Any(item => item?.Blueprint?.AssetGuid == MasterworkScytheGuid) == true;
+                ?.Any(item => item?.Blueprint?.AssetGuid == ScytheGuid) == true;
             var equippedHasItem = mainCharacter.Body?.CurrentEquipmentSlots
-                ?.Any(slot => slot?.MaybeItem?.Blueprint?.AssetGuid == MasterworkScytheGuid) == true;
+                ?.Any(slot => slot?.MaybeItem?.Blueprint?.AssetGuid == ScytheGuid) == true;
 
             return personalInventoryHasItem || partyInventoryHasItem || equippedHasItem;
         }

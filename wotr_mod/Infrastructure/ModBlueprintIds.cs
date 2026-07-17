@@ -20,6 +20,7 @@ namespace wotr_mod.Infrastructure
             public const string BillyPilgrimageRecord = "c87a5a91737e4e149073650f543b45df";
             public const string NeophytesLongbowOfDiscipline = "067f5d63c7ec42f08207b6c5189e1715";
             public const string ScythePlus1 = "ff9cbddecbd54932a73734f47d5c99cf";
+            public const string ShortswordPlus1 = "d14589cfa1524261bef8a62b23075a6c";
         }
 
         internal static class Enchantments
@@ -134,6 +135,7 @@ namespace wotr_mod.Infrastructure
             public const string Necromancer = "f27c21f5cb9f401a8e23995188e8fb1d";
             public const string Sepulchrit = "3a6f7b1c9d024ca0a3e72f1d5b8c9046";
             public const string Graveblade = "4d7e9f1a2b3c40e5a6f8b0c2d4e6f810";
+            public const string Deathstalker = "c6b96f65f9854a7f870d7a6f4c326b6d";
         }
 
         internal static class SpellLists
@@ -142,6 +144,7 @@ namespace wotr_mod.Infrastructure
             public const string Necromancer = "d5ac5f898a2b4a7c804db407fba710a3";
             public const string Sepulchrit = "817ca4f5309b4d6c8e2f1a70b5c934d2";
             public const string Graveblade = "6b7c8d9e0f1a4b2c8d9e0f1a2b3c4d5e";
+            public const string Deathstalker = "ab1f659c45f840dba39cca4728e8eff0";
         }
 
         internal static class Spells
@@ -247,6 +250,7 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornLivingGhost = "b340122d4aa945b8a7193080f0f06827";
             public const string ShadowbornUmbralRay = "70e2d1d47f924bd1ac3721b3905f0035";
             public const string ShadowbornUmbralBlast = "8e6bea96313f40b2a217bc43ade2b99a";
+            public const string DeathstalkerMasterStrikeToggle = "241559349f6c49309c16e599ef98c265";
         }
 
         internal static class AbilityResources
@@ -265,6 +269,7 @@ namespace wotr_mod.Infrastructure
             public const string DraconicEvoker = "7c9a8cf2f3db467883f704ad969b5866";
             public const string Sepulchrit = "7b9d1e3f5a6c4b08a2d7e9f103c5b864";
             public const string Graveblade = "8c0a2b4d6e7f49b1a3c5d8e0f2a4b6c9";
+            public const string Deathstalker = "b92e24d1bba54f7386217c36d899047a";
         }
 
         internal static class AreaEffects
@@ -297,6 +302,9 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornBonusFeat = "18134c5d585741aabcf13b57e9a705b2";
             public const string NecromancerBonusFeat = "c3d4e5f6a7b84960d1e2f3a4b5c6d7e8";
             public const string GravebladeBonusFeat = "9d1b3c5e7f804a2b9c0d1e3f5a6b8c02";
+            public const string DeathstalkerBonusFeat = "dd813186485a47edb2f4626484a76ab0";
+            public const string DeathstalkerFinesseTraining = "eb33368337614cb48e0790378e91a229";
+            public const string DeathstalkerFinesseTrainingUpgrade = "a60d03a743ce4ca99e38c14e7ba357bf";
         }
 
         internal static class Features
@@ -392,6 +400,13 @@ namespace wotr_mod.Infrastructure
             public const string GravebladeReapingEdgeLingeringRot = "aa5cefbb5d434c7186b3f1e294a3c1dd";
             public const string GravebladeReapingEdgeBoneShards = "27b063ccd56547c1ab44c0fda0299841";
             public const string GravebladeTwoHandedWeaponTraining = "a7d2e4f6b8094c1d9235e7f0a2b4c6d8";
+            public const string DeathstalkerArcaneArmorProficiency = "8e8d5bfe41d44b2ba671ca3931b46d54";
+            public const string DeathstalkerFighterTraining = "916197507a3044bfacc9c1a716aa984e";
+            public const string DeathstalkerProficiencies = "917edb7ab3194191a74ab6ce583d768d";
+            public const string DeathstalkerTwoHandedWeaponTraining = "f7a9fb9a001b446f805a017efeceff7a";
+            public const string DeathstalkerSneakAttack = "88d82a43539f4f8983486f40c89316bf";
+            public const string DeathstalkerTrapfinding = "1bdce21868ed40b3a34586e1990c6785";
+            public const string DeathstalkerMasterStrike = "384da5eceb544958b5e02391e8c45c3c";
         }
 
         internal static class Buffs
@@ -431,6 +446,7 @@ namespace wotr_mod.Infrastructure
             public const string ReapingEdgeBrittleBone = "e8b7a6f5d4c34e0f9a1b2c4d6e8f0132";
             public const string ReapingEdgeFatigue = "f9c8b7a6e5d44f10ab2c3d5e7f901243";
             public const string ReapingEdgeExhaustion = "0ad9c8b7f6e55021bc3d4e6f80912354";
+            public const string DeathstalkerMasterStrikeBuff = "fdc5d5477ccb46a7b51bb412d0b5b4a2";
             public const string EvokerAirArcana = "75e8bf2b8bfe4aab97e7b8174d1de5ba";
             public const string EvokerEarthArcana = "3ed9d661d943463c965bca3f8630c697";
             public const string EvokerFireArcana = "ca95c7b081294b3880e1a4a8c36c6a8c";

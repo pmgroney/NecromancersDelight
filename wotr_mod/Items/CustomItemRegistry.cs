@@ -76,7 +76,22 @@ namespace wotr_mod.Items
                             count: 1,
                             identify: true)
                     }),
-                
+
+                new CustomItemDefinition(
+                    "WotrMod_ShortswordPlus1",
+                    ModBlueprintIds.Items.ShortswordPlus1,
+                    GameBlueprintIds.Items.ShortswordPlus1,
+                    LocalizationIds.Mod.ShortswordPlus1Name,
+                    LocalizationIds.Mod.ShortswordPlus1Description,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InMapObjectLoot(
+                            "bcfce8e8-f634-446f-9a7f-9974d5c51c01",
+                            "Shield Maze Weapon Rack",
+                            count: 1,
+                            identify: true)
+                    }),
+
             });
 
         public static IReadOnlyList<CustomItemDefinition> GetAll()
