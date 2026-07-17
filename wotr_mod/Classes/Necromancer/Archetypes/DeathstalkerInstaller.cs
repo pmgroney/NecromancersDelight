@@ -88,6 +88,26 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var masterStrike = EnsureDeathstalkerMasterStrike(characterClass);
             var finesseTraining = EnsureDeathstalkerFinesseTraining(characterClass);
             var finesseTrainingUpgrade = EnsureDeathstalkerFinesseTrainingUpgrade(finesseTraining);
+            var wraithstep1 = EnsureDeathstalkerWraithstepTier(
+                ModBlueprintIds.Features.DeathstalkerWraithstep1,
+                LocalizationIds.Mod.DeathstalkerWraithstep1Name, LocalizationIds.Mod.DeathstalkerWraithstep1Description,
+                characterClass);
+            var wraithstep2 = EnsureDeathstalkerWraithstepTier(
+                ModBlueprintIds.Features.DeathstalkerWraithstep2,
+                LocalizationIds.Mod.DeathstalkerWraithstep2Name, LocalizationIds.Mod.DeathstalkerWraithstep2Description,
+                characterClass);
+            EnsureDonorComponent(wraithstep2, GameBlueprintIds.Features.DruidWoodlandStride, "Druid Woodland Stride");
+            var wraithstep3 = EnsureDeathstalkerWraithstepTier(
+                ModBlueprintIds.Features.DeathstalkerWraithstep3,
+                LocalizationIds.Mod.DeathstalkerWraithstep3Name, LocalizationIds.Mod.DeathstalkerWraithstep3Description,
+                characterClass);
+            EnsureDonorComponent(wraithstep3, GameBlueprintIds.Features.VelociraptorAgileMovement, "Velociraptor Agile Movement");
+            var wraithstep4 = EnsureDeathstalkerWraithstepTier(
+                ModBlueprintIds.Features.DeathstalkerWraithstep4,
+                LocalizationIds.Mod.DeathstalkerWraithstep4Name, LocalizationIds.Mod.DeathstalkerWraithstep4Description,
+                characterClass);
+            var dimensionDoor = EnsureDeathstalkerDimensionDoorAbility();
+            EnsureFeatureGrantsFact(wraithstep4, dimensionDoor, "$AddFacts$DeathstalkerTrueWraithstepDimensionDoor");
             var necromancerBonusFeat = new NecromancerInstaller(_blueprints, _localization, _logger, _icons).EnsureNecromancerBonusFeatSelection();
 
             _blueprints.SetProgressionClasses(proficiencies, characterClass);
@@ -100,16 +120,18 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             {
                 CreateLevelEntry(1,  proficiencies, fighterTraining, bonusFeat, trapfinding),
                 CreateLevelEntry(2,  bonusFeat, finesseTraining),
-                CreateLevelEntry(3,  sneakAttack),
+                CreateLevelEntry(3,  sneakAttack, wraithstep1),
                 CreateLevelEntry(5,  finesseTrainingUpgrade),
                 CreateLevelEntry(6,  bonusFeat, sneakAttack),
+                CreateLevelEntry(7,  wraithstep2),
                 CreateLevelEntry(8,  finesseTrainingUpgrade),
                 CreateLevelEntry(9,  sneakAttack),
                 CreateLevelEntry(10, bonusFeat),
+                CreateLevelEntry(11, wraithstep3),
                 CreateLevelEntry(12, sneakAttack),
                 CreateLevelEntry(13, finesseTrainingUpgrade),
                 CreateLevelEntry(14, bonusFeat),
-                CreateLevelEntry(15, sneakAttack),
+                CreateLevelEntry(15, sneakAttack, wraithstep4),
                 CreateLevelEntry(18, bonusFeat, sneakAttack),
                 CreateLevelEntry(20, masterStrike)
             };
@@ -128,6 +150,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             AddDeathstalkerFeaturesToProgressionUi(
                 characterClass.Progression,
                 sneakAttack, trapfinding, masterStrike);
+            _blueprints.AddProgressionUiGroup(characterClass.Progression, wraithstep1, wraithstep2, wraithstep3, wraithstep4);
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
@@ -402,6 +425,70 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetAddFacts(addFacts, finesseTraining);
             _blueprints.SetComponents(feature, addFacts);
             return feature;
+        }
+
+        private BlueprintFeature EnsureDeathstalkerWraithstepTier(
+            string featureGuid,
+            string nameKey,
+            string descriptionKey,
+            BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerDeathstalkerWraithstep" + featureGuid,
+                    AssetGuid = BlueprintGuid.Parse(featureGuid),
+                    IsClassFeature = true,
+                    Ranks = 1
+                };
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(feature, _localization.Text(nameKey), _localization.Text(descriptionKey));
+            var speedBonus = new AddStatBonus
+            {
+                name = "$AddStatBonus$" + featureGuid,
+                Stat = StatType.Speed,
+                Value = 5,
+                Descriptor = ModifierDescriptor.UntypedStackable
+            };
+            _blueprints.SetComponents(feature, speedBonus);
+            if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
+            return feature;
+        }
+
+        private void EnsureDonorComponent(BlueprintFeature feature, string donorGuid, string donorName)
+        {
+            var donor = _blueprints.Require<BlueprintFeature>(donorGuid, donorName);
+            var donorComponent = _blueprints.GetComponents<BlueprintComponent>(donor).First();
+            var donorType = donorComponent.GetType();
+            if (_blueprints.GetComponents<BlueprintComponent>(feature).Any(c => c.GetType() == donorType))
+            {
+                return;
+            }
+
+            _blueprints.AddComponent(feature, _blueprints.CloneComponent(donorComponent));
+        }
+
+        private BlueprintAbility EnsureDeathstalkerDimensionDoorAbility()
+        {
+            var ability = _blueprints.Get<BlueprintAbility>(ModBlueprintIds.Abilities.DeathstalkerDimensionDoor);
+            if (ability == null)
+            {
+                ability = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintAbility>(GameBlueprintIds.Abilities.DarkLurkerDimensionDoor, "Dark Lurker Dimension Door"),
+                    ModBlueprintIds.Abilities.DeathstalkerDimensionDoor,
+                    "WotrMod_NecromancerDeathstalkerDimensionDoor");
+                ability.OnEnable();
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Abilities.DeathstalkerDimensionDoor, ability);
+            }
+            _blueprints.SetAbilityDisplay(ability,
+                _localization.Text(LocalizationIds.Mod.DeathstalkerDimensionDoorName),
+                _localization.Text(LocalizationIds.Mod.DeathstalkerDimensionDoorDescription));
+            return ability;
         }
 
         private BlueprintFeature EnsureDeathstalkerFighterTraining(

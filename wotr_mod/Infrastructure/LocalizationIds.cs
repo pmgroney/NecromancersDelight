@@ -177,6 +177,16 @@ namespace wotr_mod.Infrastructure
             public const string DeathstalkerMasterStrikeDescription = "wotr_mod.archetype.deathstalker.master_strike.description";
             public const string DeathstalkerFinesseTrainingName = "wotr_mod.archetype.deathstalker.finesse_training.name";
             public const string DeathstalkerFinesseTrainingDescription = "wotr_mod.archetype.deathstalker.finesse_training.description";
+            public const string DeathstalkerWraithstep1Name = "wotr_mod.archetype.deathstalker.wraithstep1.name";
+            public const string DeathstalkerWraithstep1Description = "wotr_mod.archetype.deathstalker.wraithstep1.description";
+            public const string DeathstalkerWraithstep2Name = "wotr_mod.archetype.deathstalker.wraithstep2.name";
+            public const string DeathstalkerWraithstep2Description = "wotr_mod.archetype.deathstalker.wraithstep2.description";
+            public const string DeathstalkerWraithstep3Name = "wotr_mod.archetype.deathstalker.wraithstep3.name";
+            public const string DeathstalkerWraithstep3Description = "wotr_mod.archetype.deathstalker.wraithstep3.description";
+            public const string DeathstalkerWraithstep4Name = "wotr_mod.archetype.deathstalker.wraithstep4.name";
+            public const string DeathstalkerWraithstep4Description = "wotr_mod.archetype.deathstalker.wraithstep4.description";
+            public const string DeathstalkerDimensionDoorName = "wotr_mod.archetype.deathstalker.dimension_door.name";
+            public const string DeathstalkerDimensionDoorDescription = "wotr_mod.archetype.deathstalker.dimension_door.description";
             public const string NecromancerStygianPrecisionName = "wotr_mod.class.necromancer.stygian_precision.name";
             public const string NecromancerStygianPrecisionDescription = "wotr_mod.class.necromancer.stygian_precision.description";
             public const string NecromancerReapersJudgementName = "wotr_mod.class.necromancer.reapers_judgement.name";

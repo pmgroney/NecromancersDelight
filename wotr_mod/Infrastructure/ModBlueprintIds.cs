@@ -251,6 +251,7 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornUmbralRay = "70e2d1d47f924bd1ac3721b3905f0035";
             public const string ShadowbornUmbralBlast = "8e6bea96313f40b2a217bc43ade2b99a";
             public const string DeathstalkerMasterStrikeToggle = "241559349f6c49309c16e599ef98c265";
+            public const string DeathstalkerDimensionDoor = "20a41c8ee0dd4252b70dc49348af5c76";
         }
 
         internal static class AbilityResources
@@ -407,6 +408,10 @@ namespace wotr_mod.Infrastructure
             public const string DeathstalkerSneakAttack = "88d82a43539f4f8983486f40c89316bf";
             public const string DeathstalkerTrapfinding = "1bdce21868ed40b3a34586e1990c6785";
             public const string DeathstalkerMasterStrike = "384da5eceb544958b5e02391e8c45c3c";
+            public const string DeathstalkerWraithstep1 = "62ff7be2abe14287bea789d8ec6448e0";
+            public const string DeathstalkerWraithstep2 = "384a519f37cf4e20b4d78c6e635c62f1";
+            public const string DeathstalkerWraithstep3 = "0236a36a6b514c14925bfa39fe4f1128";
+            public const string DeathstalkerWraithstep4 = "b509fd0b620044ff853fa3f1beb7cbd9";
         }
 
         internal static class Buffs

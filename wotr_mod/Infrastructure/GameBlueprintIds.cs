@@ -265,6 +265,8 @@ namespace wotr_mod.Infrastructure
             public const string RogueTrapfinding = "dbb6b3bffe6db3547b31c3711653838e";
             public const string RogueMasterStrike = "72dcf1fb106d5054a81fd804fdc168d3";
             public const string RogueFinesseTrainingSelection = "b78d146cea711a84598f0acef69462ea";
+            public const string DruidWoodlandStride = "4c1419ef6cfc430a9071405788da4a73";
+            public const string VelociraptorAgileMovement = "9a44fc170dbe46d2a9e0e1e44666c714";
         }
 
         internal static class Items
@@ -328,6 +330,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineUndeadGraspOfTheDeadAbility = "a5c9f06155d772849be82e8965837813";
             public const string BloodlineUndeadIncorporealFormAbility = "853b5266404060f4f8afd9cf7859ef1f";
             public const string RogueMasterStrikeToggle = "926bff1386d58824688363a3eeb98260";
+            public const string DarkLurkerDimensionDoor = "e439fcfa702d4cd294e9d26c337ab77b";
         }
 
         internal static class AbilityResources

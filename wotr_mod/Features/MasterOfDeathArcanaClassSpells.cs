@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
+using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Features
 {
@@ -13,17 +14,38 @@ namespace wotr_mod.Features
         IRulebookHandler<RuleCalculateDamage>,
         IInitiatorRulebookSubscriber
     {
+        private static readonly BlueprintGuid WitheringRayGuid = BlueprintGuid.Parse(ModBlueprintIds.Abilities.WitheringRay);
+
         public BlueprintCharacterClass[] Classes;
 
         public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
             var context = evt.Reason.Context;
-            if (context?.SourceAbility == null || !context.SourceAbility.IsSpell)
+            var sourceAbility = context?.SourceAbility;
+            if (sourceAbility == null)
             {
                 return;
             }
 
-            if (context.SourceAbility.School != SpellSchool.Necromancy)
+            // Withering Ray is a supernatural bloodline power, not a spellbook spell, so it
+            // can't be matched by the IsSpell/spellbook checks below. Match it directly instead.
+            if (sourceAbility.AssetGuid == WitheringRayGuid)
+            {
+                foreach (var characterClass in Classes ?? new BlueprintCharacterClass[0])
+                {
+                    if (characterClass == null || Owner.Progression.GetClassLevel(characterClass) <= 0)
+                    {
+                        continue;
+                    }
+
+                    ApplyBonus(evt, characterClass);
+                    return;
+                }
+
+                return;
+            }
+
+            if (!sourceAbility.IsSpell || sourceAbility.School != SpellSchool.Necromancy)
             {
                 return;
             }
@@ -41,18 +63,22 @@ namespace wotr_mod.Features
                     continue;
                 }
 
-                var bonusPerDie = GetBonusPerDie(characterClass);
-                if (bonusPerDie <= 0)
-                {
-                    return;
-                }
-
-                foreach (var baseDamage in evt.DamageBundle)
-                {
-                    baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls * bonusPerDie, Fact);
-                }
-
+                ApplyBonus(evt, characterClass);
                 return;
+            }
+        }
+
+        private void ApplyBonus(RuleCalculateDamage evt, BlueprintCharacterClass characterClass)
+        {
+            var bonusPerDie = GetBonusPerDie(characterClass);
+            if (bonusPerDie <= 0)
+            {
+                return;
+            }
+
+            foreach (var baseDamage in evt.DamageBundle)
+            {
+                baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls * bonusPerDie, Fact);
             }
         }
 
