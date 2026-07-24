@@ -125,6 +125,7 @@
         <Compile Include="Content\Localization\ModText.cs"/>
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
         <Compile Include="Features\DraconicEvokerBreathDamage.cs" />
+        <Compile Include="Features\EvocationUnleashedDamageBonus.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
         <Compile Include="Features\PerDieBonusDamage.cs" />
         <Compile Include="Features\EvokerForceSpellConversion.cs" />

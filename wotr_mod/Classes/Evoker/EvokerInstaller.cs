@@ -396,7 +396,12 @@ namespace wotr_mod.Classes.Evoker
                 _blueprints.SetUnitFactIcon(feature, icon);
             }
 
-            _blueprints.SetComponents(feature);
+            _blueprints.SetComponents(
+                feature,
+                new EvocationUnleashedDamageBonus
+                {
+                    name = "$EvocationUnleashedDamageBonus$Evoker"
+                });
             if (characterClass != null)
             {
                 _blueprints.SetProgressionClasses(feature, characterClass);

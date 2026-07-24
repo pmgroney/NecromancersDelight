@@ -103,7 +103,7 @@ namespace wotr_mod.Content.Localization
             { LocalizationIds.Mod.ElementalConversionName, "Elemental Conversion" },
             { LocalizationIds.Mod.ElementalConversionDescription, "An Evoker's elemental arcana can be invoked as a toggle, retuning destructive spells to the element they command. Flame, frost, thunder, and acid become choices of expression rather than limits of the spell." },
             { LocalizationIds.Mod.EvocationUnleashedName, "Evocation Unleashed" },
-            { LocalizationIds.Mod.EvocationUnleashedDescription, "An Evoker shapes destruction with absolute control. Evocation spells cast from the Evoker spellbook surge beyond ordinary damage limits, while spell shaping bends the blast around allies caught in the spell's fury." },
+            { LocalizationIds.Mod.EvocationUnleashedDescription, "An Evoker shapes destruction with absolute control. Their Evocation spells add the Evoker's Charisma bonus to damage, and Evocation spells cast from the Evoker spellbook shape to bend the blast around allies caught in the spell's fury." },
             { LocalizationIds.Mod.EvokerFamiliarName, "Evoker's Familiar" },
             { LocalizationIds.Mod.EvokerFamiliarDescription, "An Evoker forms a bond with a familiar companion that fights at their side and grows in power with their Evoker levels." },
             { LocalizationIds.Mod.ArcanistEvokerName, "Arcwright" },

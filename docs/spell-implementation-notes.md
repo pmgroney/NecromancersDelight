@@ -23,6 +23,7 @@ Use the existing spell pipeline unless a specific mechanic forces a different pa
    - Evoker availability requires an entry in `wotr_mod/Classes/Evoker/EvokerSpellRegistry.cs`.
    - Evoker spell-list entries resolve through Evoker-owned ability clones with deterministic GUIDs; update the clone path for Evoker-specific behavior or description changes rather than altering global source spell blueprints.
    - Evoker-owned spell clones, including Evoker-cloned spawned area effects, clear `ContextRankConfig` maximums for damaging Evocation spells; keep this rule isolated to the Evoker spell list and preserve rank-driven projectile delivery.
+   - `EvocationUnleashedDamageBonus` adds the caster's Charisma bonus as flat damage to all Evocation spells regardless of casting spellbook; Evoker spell shaping still handles ally damage removal separately for Evoker-spellbook casts.
    - Reusable `PerDieBonusDamage` covers Evoker class-spellbook evocation per-die bonuses, explicit ability allowlists for granted rays, and force-damage matching for Arcwright Force Ray.
    - Necromancer availability requires an entry in `wotr_mod/Classes/Necromancer/NecromancerSpellRegistry.cs`.
 5. Add new modifier files to `wotr_mod/wotr_mod.csproj`.
