@@ -500,6 +500,7 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(progression, internalName, characterClass);
             RemoveElementalProtectionFromEnergyGrant(progression, internalName);
             RemoveElementalLevel17SpellGrant(progression);
+            MoveProtectionFromEnergyToCommunal(progression, characterClass);
             return progression;
         }
 

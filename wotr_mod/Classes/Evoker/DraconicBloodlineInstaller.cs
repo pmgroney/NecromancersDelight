@@ -21,13 +21,16 @@ namespace wotr_mod.Classes.Evoker
     {
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
+        private readonly EvokerInstaller _evoker;
 
         public DraconicBloodlineInstaller(
             BlueprintTool blueprints,
-            LocalizationTool localization)
+            LocalizationTool localization,
+            EvokerInstaller evoker)
         {
             _blueprints = blueprints;
             _localization = localization;
+            _evoker = evoker;
         }
 
         internal BlueprintFeatureSelection EnsureSelection(BlueprintCharacterClass characterClass = null)
@@ -121,6 +124,7 @@ namespace wotr_mod.Classes.Evoker
 
             _blueprints.CopyUnitFactDisplay(bloodline, donor);
             ConfigureDraconicEvokerBreathWeapon(bloodline, donor, internalName, characterClass);
+            _evoker.MoveProtectionFromEnergyToCommunal(bloodline, characterClass);
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(bloodline, internalName, characterClass);
             return bloodline;
         }

@@ -153,6 +153,13 @@
     <value>You call down a massive 40-foot-radius storm for 1 round per caster level. Hostile creatures entering the storm or beginning their turn within it are struck for 1d8 electricity damage per caster level. Creatures that fail a Reflex save are knocked prone.</value>
   </data>
 
+  <data name="wotr_mod.spell.polar_catastrophe.name" xml:space="preserve">
+    <value>Polar Catastrophe</value>
+  </data>
+  <data name="wotr_mod.spell.polar_catastrophe.description" xml:space="preserve">
+    <value>You summon a 40-foot-radius polar maelstrom for 1 round per caster level. Hostile creatures entering the storm or beginning their turn within it are struck for 1d8 cold damage per caster level. Creatures that fail a Fortitude save are left exhausted for 1 round.</value>
+  </data>
+
   <data name="wotr_mod.spell.caustic_oblivion.name" xml:space="preserve">
     <value>Caustic Oblivion</value>
   </data>

@@ -159,6 +159,12 @@ namespace wotr_mod.Spells
                 return;
             }
 
+            if (definition.NewSpellGuid == ModBlueprintIds.Spells.PolarCatastrophe)
+            {
+                ConfigurePolarCatastropheVisuals(spell);
+                return;
+            }
+
             if (definition.NewSpellGuid == ModBlueprintIds.Spells.HeavensWrath)
             {
                 ConfigureHeavensWrathVisuals(spell);
@@ -347,6 +353,16 @@ namespace wotr_mod.Spells
             SpellEffectTintRegistry.RegisterAreaEffectTint(
                 ModBlueprintIds.AreaEffects.CataclysmicStorm,
                 SpellEffectTheme.Electric);
+        }
+
+        private static void ConfigurePolarCatastropheVisuals(BlueprintAbility ability)
+        {
+            SpellEffectTintRegistry.RegisterAbilitySpawnFxTint(
+                ability.AssetGuid.ToString(),
+                SpellEffectTheme.Cold);
+            SpellEffectTintRegistry.RegisterAreaEffectTint(
+                ModBlueprintIds.AreaEffects.PolarCatastrophe,
+                SpellEffectTheme.Cold);
         }
 
         private static void ConfigureHeavensWrathVisuals(BlueprintAbility ability)

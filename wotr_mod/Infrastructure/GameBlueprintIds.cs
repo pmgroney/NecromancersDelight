@@ -212,6 +212,7 @@ namespace wotr_mod.Infrastructure
             public const string RedDragonBloodlineArcana = "a8baee8eb681d53438cc17bd1d125890";
             public const string RobeOfConsciousnessFeature = "1bf46667d31201848b77a95212827274";
             public const string SimpleWeaponProficiency = "e70ecf1ed95ca2f40b754f1adb22bbdd";
+            public const string ScytheProficiency = "96c174b0ebca7b246b82d4bc4aac4574";
             public const string WeaponFocusClaw = "153937f44fcd42a429a286a10babd82d";
             public const string ShortbowProficiency = "e8096942d950c8843857c2545f8dc18f";
             public const string UndeadType = "734a29b693e9ec346ba2951b27987e33";
@@ -260,6 +261,8 @@ namespace wotr_mod.Infrastructure
             public const string TwoHandedFighterPiledriver = "4723b31d7defd3d4e85395e2a3353b01";
             public const string TwoHandedFighterWeaponTraining = "88da2a5dfc505054f933bb81014e864f";
             public const string TwoWeaponFighting = "ac8aaf29054f5b74eb18f2af950e752d";
+            public const string LightningReflexes = "15e7da6645a7f3d41bdad7c8c4b9de1e";
+            public const string WeaponFinesse = "90e54424d682d104ab36436bd527af09";
             public const string ZenArcherWayOfTheBowLongbowFocus = "2e659493076249f49821925b9b7dc389";
             public const string RogueSneakAttack = "9b9eac6709e1c084cb18c3a366e0ec87";
             public const string RogueTrapfinding = "dbb6b3bffe6db3547b31c3711653838e";

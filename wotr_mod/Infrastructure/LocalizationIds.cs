@@ -149,6 +149,8 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornBonusFeatDescription = "wotr_mod.archetype.shadowborn.bonus_feat.description";
             public const string ShadowbornLivingGhostName = "wotr_mod.archetype.shadowborn.living_ghost.name";
             public const string ShadowbornLivingGhostDescription = "wotr_mod.archetype.shadowborn.living_ghost.description";
+            public const string ShadowbornShadowMasteryName = "wotr_mod.archetype.shadowborn.shadow_mastery.name";
+            public const string ShadowbornShadowMasteryDescription = "wotr_mod.archetype.shadowborn.shadow_mastery.description";
             public const string NecromancerName = "wotr_mod.class.necromancer.name";
             public const string NecromancerDescription = "wotr_mod.class.necromancer.description";
             public const string SepulchritName = "wotr_mod.archetype.sepulchrit.name";

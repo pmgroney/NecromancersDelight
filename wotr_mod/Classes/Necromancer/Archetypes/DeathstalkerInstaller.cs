@@ -448,11 +448,17 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             feature.IsClassFeature = true;
             feature.Ranks = 1;
             _blueprints.SetUnitFactDisplay(feature, _localization.Text(nameKey), _localization.Text(descriptionKey));
+            var icon = _icons.Load("Icons\\wraith_step.png");
+            if (icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, icon);
+            }
+
             var speedBonus = new AddStatBonus
             {
                 name = "$AddStatBonus$" + featureGuid,
                 Stat = StatType.Speed,
-                Value = 5,
+                Value = 10,
                 Descriptor = ModifierDescriptor.UntypedStackable
             };
             _blueprints.SetComponents(feature, speedBonus);
@@ -610,7 +616,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight, "Light Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SimpleWeaponProficiency, "Simple Weapon Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency, "Martial Weapon Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.TwoWeaponFighting, "Two-Weapon Fighting"));
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.LightningReflexes, "Lightning Reflexes"),
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.WeaponFinesse, "Weapon Finesse"));
             var athleticsClassSkill = new AddClassSkill
             {
                 name = "$AddClassSkill$DeathstalkerAthletics",

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;

@@ -517,8 +517,8 @@ namespace wotr_mod.Classes.Necromancer
                 _localization.Text(LocalizationIds.Mod.NecromancerProficienciesDescription));
             var addFacts = _blueprints.EnsureComponent(feature, () => new AddFacts());
             _blueprints.SetAddFacts(addFacts,
-                _blueprints.Require<BlueprintFeature>("e70ecf1ed95ca2f40b754f1adb22bbdd", "Simple Weapon Proficiency"),
-                _blueprints.Require<BlueprintFeature>("96c174b0ebca7b246b82d4bc4aac4574", "Scythe Proficiency"));
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SimpleWeaponProficiency, "Simple Weapon Proficiency"),
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ScytheProficiency, "Scythe Proficiency"));
             return feature;
         }
 

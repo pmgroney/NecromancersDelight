@@ -185,6 +185,7 @@ namespace wotr_mod.Infrastructure
             public const string HeavensWrath = "26a010fbab814d35accc45456b987845";
             public const string HellOnEarth = "462cb107e84141afa6ac45aeebdbf1bf";
             public const string IceMissile = "4a7c2e9f8d6b4c1aa3f5e7d9b2c8e014";
+            public const string PolarCatastrophe = "fb50466931a64994b3af7105ba481e24";
             public const string ShadowbornBurningHands = "8df963eadcb64726b953f20ee028b47d";
             public const string ShadowbornScorchingRay = "c1096d20240448d8892f01d840dfa263";
             public const string ShadowHellfireRay = "69365c2e41194605b2506ee5bbc89dda";
@@ -287,6 +288,7 @@ namespace wotr_mod.Infrastructure
             public const string GlacialPrison = "42ee770f9a2447af8d184f060bb0d55d";
             public const string HeavensWrath = "243844f978354d7a8f65d125bd097c41";
             public const string Thunderhead = "b66f364d5f6a46c1b762e45bb0fec60f";
+            public const string PolarCatastrophe = "422a185c854c4dc8ae73c2ba9374c988";
         }
 
         internal static class Selections
@@ -377,6 +379,7 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornResistanceLevel1 = "5e6f708192a34b4cc5d6e7f8091a2b3c";
             public const string ShadowbornResistanceLevel2 = "6f708192a3b44c5dd6e7f8091a2b3c4d";
             public const string ShadowbornScaling = "7a8192a3b4c54d6ee7f8091a2b3c4d5e";
+            public const string ShadowbornShadowMastery = "a2c961eae10046b1a5e19a1397e22675";
             public const string EvokerScalingFire = "8e5f7c9a3d4245f9a1c2e6b7d8f90111";
             public const string EvokerScalingWater = "3b7a91f4c2d6483ea9f0c1d2e3b45672";
             public const string EvokerScalingAir = "5d2e7f4a9c1b4a3f8e6d0c2b7a981234";
@@ -444,6 +447,7 @@ namespace wotr_mod.Infrastructure
             public const string CorrosiveCascadeArmorDebuff = "daea64db9e5d4b4ea0eb0181e88169db";
             public const string FrozenLanceImmobilized = "384de55300e54e6e8573f62e5fcf6374";
             public const string ThunderheadDaze = "7e3e73a5983741289de2ac25b902d685";
+            public const string PolarCatastropheExhausted = "9e0705c9ea414dcaaacf8b70b6b88a38";
             public const string VitriolicSphereNauseated = "5f7717caf6ac42fc91082983d8676f1b";
             public const string GravebladeArmorMastery = "d0b8a6f4c2e1437a9b5d1f3c8e0a6247";
             public const string HarvestTheFallenTemporaryHitPoints = "5f3354ded7aa47099793031dbf459009";

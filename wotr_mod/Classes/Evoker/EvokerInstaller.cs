@@ -56,7 +56,7 @@ namespace wotr_mod.Classes.Evoker
                 localization,
                 _grantedSpellFeatures,
                 this);
-            _draconicBloodline = new DraconicBloodlineInstaller(blueprints, localization);
+            _draconicBloodline = new DraconicBloodlineInstaller(blueprints, localization, this);
             _shadowbornBloodline = new ShadowbornBloodlineInstaller(
                 blueprints,
                 localization,
@@ -586,6 +586,11 @@ namespace wotr_mod.Classes.Evoker
         internal BlueprintFeature EnsureShadowbornLivingGhostFeature(BlueprintCharacterClass characterClass)
         {
             return _shadowbornBloodline.EnsureLivingGhostFeature(characterClass);
+        }
+
+        internal BlueprintFeature EnsureShadowbornShadowMasteryFeature(BlueprintCharacterClass characterClass)
+        {
+            return _shadowbornBloodline.EnsureShadowMasteryFeature(characterClass);
         }
 
         internal void ReplaceDescriptor(BlueprintScriptableObject blueprint, SpellDescriptor remove, SpellDescriptor add)

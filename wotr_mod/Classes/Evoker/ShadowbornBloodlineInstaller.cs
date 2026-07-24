@@ -5,6 +5,7 @@ using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
@@ -200,6 +201,11 @@ namespace wotr_mod.Classes.Evoker
             RemoveShadowbornOwnedProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel8);
             RemoveGrantedSpellFromProgression(bloodline, GameBlueprintIds.Spells.SummonMonsterVIII);
 
+            if (characterClass?.Progression != null)
+            {
+                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowHands, shadowRay, shadowHellfireRay);
+            }
+
             return bloodline;
         }
 
@@ -322,6 +328,39 @@ namespace wotr_mod.Classes.Evoker
                 _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostName),
                 _localization.Text(LocalizationIds.Mod.ShadowbornLivingGhostDescription));
             _evoker.SetIcon(feature, "Icons\\living_ghost.png");
+            _blueprints.SetProgressionClasses(feature, characterClass);
+
+            return feature;
+        }
+
+        internal BlueprintFeature EnsureShadowMasteryFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.ShadowbornShadowMastery);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_ShadowbornShadowMasteryFeature",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.ShadowbornShadowMastery),
+                    IsClassFeature = true,
+                    Ranks = 1,
+                    ReapplyOnLevelUp = false
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.ShadowbornShadowMastery, feature);
+            }
+
+            _blueprints.SetComponents(
+                feature,
+                new AscendantElement
+                {
+                    name = "$AscendantElement$ShadowbornShadowMastery",
+                    Element = DamageEnergyType.NegativeEnergy
+                });
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.ShadowbornShadowMasteryName),
+                _localization.Text(LocalizationIds.Mod.ShadowbornShadowMasteryDescription));
+            _evoker.SetIcon(feature, "Icons\\shadow_mastery.png");
             _blueprints.SetProgressionClasses(feature, characterClass);
 
             return feature;

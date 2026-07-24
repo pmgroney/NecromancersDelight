@@ -42,6 +42,7 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 "Evoker bloodline selection");
             var shadowbornBloodline = _evoker.EnsureShadowbornBloodline(characterClass);
             var shadowbornLivingGhost = _evoker.EnsureShadowbornLivingGhostFeature(characterClass);
+            var shadowbornShadowMastery = _evoker.EnsureShadowbornShadowMasteryFeature(characterClass);
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
@@ -54,11 +55,13 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 archetype,
                 CreateFeatureEntries(
                     shadowbornBloodline,
-                    shadowbornLivingGhost),
+                    shadowbornLivingGhost,
+                    shadowbornShadowMastery),
                 CreateRemoveFeatureEntries(evokerBloodlineSelection));
             if (characterClass.Progression != null)
             {
                 _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornLivingGhost);
+                _blueprints.AddProgressionUiGroup(characterClass.Progression, shadowbornShadowMastery);
             }
 
             _blueprints.SetArchetypeBuildChanging(archetype, true);
@@ -77,7 +80,8 @@ namespace wotr_mod.Classes.Evoker.Archetypes
 
         private static LevelEntry[] CreateFeatureEntries(
             BlueprintProgression shadowbornBloodline,
-            BlueprintFeature shadowbornLivingGhost)
+            BlueprintFeature shadowbornLivingGhost,
+            BlueprintFeature shadowbornShadowMastery)
         {
             var entries = (shadowbornBloodline.LevelEntries ?? Array.Empty<LevelEntry>())
                 .Select(entry =>
@@ -90,6 +94,7 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 .Where(entry => entry != null)
                 .ToList();
 
+            AddFeatureToLevel(entries, 6, shadowbornShadowMastery);
             AddFeatureToLevel(entries, 20, shadowbornLivingGhost);
             return entries
                 .OrderBy(entry => entry.Level)
