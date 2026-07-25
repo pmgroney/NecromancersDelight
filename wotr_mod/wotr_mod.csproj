@@ -131,6 +131,7 @@
         <Compile Include="Features\EvokerForceSpellConversion.cs" />
         <Compile Include="Features\EvokerSpellShaping.cs" />
         <Compile Include="Features\GravebladeWeaponFocusRecommendation.cs" />
+        <Compile Include="Features\ArchetypeFeatureRecommendation.cs" />
         <Compile Include="Features\GrantedSpellRecommendation.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
@@ -203,7 +204,6 @@
         <Compile Include="Patches\BillyRecruitmentFallbackAction.cs" />
         <Compile Include="Patches\BillyPlacementPatch.cs" />
         <Compile Include="Patches\BillyVisualPatch.cs" />
-        <Compile Include="Patches\NecromancerStartingEquipmentPatch.cs" />
         <Compile Include="Patches\CustomHeritagePatch.cs" />
         <Compile Include="Patches\AchievementReenablePatch.cs" />
         <Compile Include="Patches\CoreDifficultyOverridePatch.cs" />
@@ -213,6 +213,7 @@
         <Compile Include="Patches\SpellEffectTintPatch.cs" />
         <Compile Include="Patches\TooltipIconMagnificationPatch.cs" />
         <Compile Include="Patches\VelociraptorGrowthPatch.cs" />
+        <Compile Include="Patches\PrologueStartingWeaponsChestPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>

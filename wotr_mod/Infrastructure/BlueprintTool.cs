@@ -807,6 +807,27 @@ namespace wotr_mod.Infrastructure
             return _characterClasses.GetCharacterClassStartingEquipment(characterClass);
         }
 
+        // Adds an item to a placed loot container (BlueprintLoot), such as the starting
+        // weapons chest in the prologue. Reliable by construction: the container's
+        // contents are read directly by the game's loot UI whenever it's opened, with no
+        // chargen/new-character timing to race. Idempotent — safe to call on every mod load.
+        public void AddLootItem(BlueprintLoot loot, BlueprintItem item, int count = 1)
+        {
+            if (loot == null || item == null)
+            {
+                return;
+            }
+
+            if (loot.Items.Any(entry => entry?.Item?.AssetGuid == item.AssetGuid))
+            {
+                return;
+            }
+
+            loot.Items = loot.Items
+                .Concat(new[] { new LootEntry { Item = item, Count = count } })
+                .ToArray();
+        }
+
         public void SetArchetypeAttributeRecommendations(
             BlueprintArchetype archetype,
             IEnumerable<StatType> recommendedAttributes,

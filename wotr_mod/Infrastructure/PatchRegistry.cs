@@ -39,7 +39,6 @@ namespace wotr_mod.Infrastructure
                             "Necromancer",
                             ModBlueprintIds.Classes.Necromancer,
                             ModBlueprintIds.Progressions.Necromancer)),
-                    new NecromancerStartingEquipmentPatch(blueprints, logger),
                     new BillyPlacementPatch(blueprints, logger),
                     new FetchlingRacePatch(blueprints, localization),
                     new CustomHeritagePatch(blueprints, localization),

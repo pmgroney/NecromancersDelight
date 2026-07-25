@@ -606,6 +606,17 @@ namespace wotr_mod.Classes.Evoker
                 _blueprints.SetAddFacts(addFacts, ability);
             }
 
+            var abilityResource = _blueprints.GetComponents<AbilityResourceLogic>(ability)
+                .Select(logic => logic.RequiredResource)
+                .FirstOrDefault(resource => resource != null);
+            if (abilityResource != null)
+            {
+                foreach (var addResources in _blueprints.GetComponents<AddAbilityResources>(feature))
+                {
+                    _blueprints.SetAddAbilityResourcesResource(addResources, abilityResource);
+                }
+            }
+
             EvokerInstaller.ReplaceAbilityReferences(feature, sourceAbilityGuid, ability);
             _blueprints.BindAbilityComponentsToClass(feature, characterClass);
             _blueprints.SetUnitFactDisplay(

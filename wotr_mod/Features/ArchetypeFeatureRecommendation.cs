@@ -4,53 +4,49 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Designers.Mechanics.Recommendations;
-using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Class.LevelUp;
 
 namespace wotr_mod.Features
 {
-    public sealed class GravebladeWeaponFocusRecommendation : ParametrizedLevelUpRecommendationComponent
+    // Recommends a plain (non-parametrized) feature only for characters on one of the
+    // given archetypes; neutral for everyone else. Mirrors
+    // GravebladeWeaponFocusRecommendation's archetype-detection logic, for features that
+    // don't take a FeatureParam (e.g. Two-Weapon Fighting, vs. Weapon Focus's weapon category).
+    public sealed class ArchetypeFeatureRecommendation : LevelUpRecommendationComponent
     {
-        public BlueprintArchetype[] GravebladeArchetypes;
-        public BlueprintFeatureSelection[] GravebladeSelections;
+        public BlueprintArchetype[] RecommendedArchetypes;
+        public BlueprintFeatureSelection[] RecommendedSelections;
 
-        public override RecommendationPriority GetPriority(FeatureParam param, LevelUpState levelUpState)
+        public override RecommendationPriority GetPriority(LevelUpState levelUpState)
         {
-            if (param == null || !param.WeaponCategory.HasValue || !IsGraveblade(levelUpState))
-            {
-                return RecommendationPriority.Same;
-            }
-
-            return param.WeaponCategory.Value == WeaponCategory.Scythe
-                ? RecommendationPriority.Good
-                : RecommendationPriority.Same;
+            return IsRecommendedArchetype(levelUpState) ? RecommendationPriority.Good : RecommendationPriority.Same;
         }
 
-        public void AddGravebladeArchetype(BlueprintArchetype archetype)
+        public void AddArchetype(BlueprintArchetype archetype)
         {
             if (archetype == null || HasArchetype(archetype))
             {
                 return;
             }
 
-            GravebladeArchetypes = (GravebladeArchetypes ?? new BlueprintArchetype[0])
+            RecommendedArchetypes = (RecommendedArchetypes ?? new BlueprintArchetype[0])
                 .Concat(new[] { archetype })
                 .ToArray();
         }
 
-        public void AddGravebladeSelection(BlueprintFeatureSelection selection)
+        public void AddSelection(BlueprintFeatureSelection selection)
         {
             if (selection == null || HasSelection(selection))
             {
                 return;
             }
 
-            GravebladeSelections = (GravebladeSelections ?? new BlueprintFeatureSelection[0])
+            RecommendedSelections = (RecommendedSelections ?? new BlueprintFeatureSelection[0])
                 .Concat(new[] { selection })
                 .ToArray();
         }
 
-        private bool IsGraveblade(LevelUpState levelUpState)
+        private bool IsRecommendedArchetype(LevelUpState levelUpState)
         {
             if (levelUpState?.Selections != null &&
                 levelUpState.Selections.Any(selectionState =>
@@ -75,17 +71,17 @@ namespace wotr_mod.Features
 
         private bool HasSelection(BlueprintScriptableObject selection)
         {
-            return GravebladeSelections != null &&
+            return RecommendedSelections != null &&
                    selection != null &&
-                   GravebladeSelections.Any(candidate =>
+                   RecommendedSelections.Any(candidate =>
                        candidate != null && candidate.AssetGuid == selection.AssetGuid);
         }
 
         private bool HasArchetype(BlueprintArchetype archetype)
         {
-            return GravebladeArchetypes != null &&
+            return RecommendedArchetypes != null &&
                    archetype != null &&
-                   GravebladeArchetypes.Any(candidate =>
+                   RecommendedArchetypes.Any(candidate =>
                        candidate != null && candidate.AssetGuid == archetype.AssetGuid);
         }
     }

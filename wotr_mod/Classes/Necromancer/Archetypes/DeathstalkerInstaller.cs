@@ -11,6 +11,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
@@ -80,8 +81,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var baseAttackBonus = _blueprints.Require<BlueprintStatProgression>(
                 GameBlueprintIds.StatProgressions.BaseAttackBonusHigh, "Deathstalker base attack bonus progression");
             var proficiencies = EnsureDeathstalkerProficiencies(characterClass);
-            var bonusFeat = EnsureDeathstalkerBonusFeatSelection();
-            EnsureWeaponFocusRecommendation(archetype, bonusFeat);
+            var bonusFeat = EnsureDeathstalkerBonusFeatSelection(archetype);
             var fighterTraining = EnsureDeathstalkerFighterTraining(characterClass, bonusFeat);
             var sneakAttack = EnsureDeathstalkerSneakAttack(characterClass);
             var trapfinding = EnsureDeathstalkerTrapfinding(characterClass);
@@ -156,21 +156,42 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             return archetype;
         }
 
-        private void EnsureWeaponFocusRecommendation(
+        // Two-Weapon Fighting is a shared vanilla feature used by every class in the
+        // game, and already carries vanilla recommendation components (e.g.
+        // RecommendationWeaponSubcategoryFocus, which returns Bad for anyone who hasn't
+        // already taken Weapon Focus in a matching weapon — true for a fresh Deathstalker).
+        // The game's recommendation aggregator (LevelUpRecommendationEx) lets a single Bad
+        // permanently veto any later Good from another component, so simply adding our
+        // recommendation to the shared blueprint would get silently overridden. Instead,
+        // clone the feature for Deathstalker's own bonus feat list, strip the vanilla
+        // recommendation components from the clone (leaving prerequisites/effects intact),
+        // and attach only our archetype-aware recommendation there.
+        private BlueprintFeature EnsureDeathstalkerTwoWeaponFighting(
             BlueprintArchetype archetype,
             BlueprintFeatureSelection bonusFeat)
         {
-            var weaponFocus = _blueprints.Require<BlueprintParametrizedFeature>(
-                GameBlueprintIds.Features.WeaponFocus,
-                "Weapon Focus");
+            var source = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.TwoWeaponFighting,
+                "Two-Weapon Fighting");
+            var guid = EvokerInstaller.DeterministicGuid("WotrMod_DeathstalkerTwoWeaponFighting");
+            var feature = _blueprints.Get<BlueprintFeature>(guid);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(source, guid, "WotrMod_DeathstalkerTwoWeaponFighting");
+                _blueprints.AddCachedBlueprint(guid, feature);
+            }
+
+            _blueprints.RemoveComponents<LevelUpRecommendationComponent>(feature);
             var recommendation = _blueprints.EnsureComponent(
-                weaponFocus,
-                () => new GravebladeWeaponFocusRecommendation
+                feature,
+                () => new ArchetypeFeatureRecommendation
                 {
-                    name = "$GravebladeWeaponFocusRecommendation$Scythe"
+                    name = "$ArchetypeFeatureRecommendation$DeathstalkerTwoWeaponFighting"
                 });
-            recommendation.AddGravebladeArchetype(archetype);
-            recommendation.AddGravebladeSelection(bonusFeat);
+            recommendation.AddArchetype(archetype);
+            recommendation.AddSelection(bonusFeat);
+
+            return feature;
         }
 
         private BlueprintItem[] GetDeathstalkerStartingEquipment(BlueprintCharacterClass characterClass)
@@ -655,7 +676,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             return feature;
         }
 
-        private BlueprintFeatureSelection EnsureDeathstalkerBonusFeatSelection()
+        private BlueprintFeatureSelection EnsureDeathstalkerBonusFeatSelection(BlueprintArchetype archetype)
         {
             var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Selections.DeathstalkerBonusFeat);
             var necromancerBonusFeat = new NecromancerInstaller(_blueprints, _localization, _logger, _icons).EnsureNecromancerBonusFeatSelection();
@@ -670,11 +691,13 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetUnitFactDisplay(selection,
                 _localization.Text(LocalizationIds.Mod.DeathstalkerBonusFeatName),
                 _localization.Text(LocalizationIds.Mod.DeathstalkerBonusFeatDescription));
+            var twoWeaponFighting = EnsureDeathstalkerTwoWeaponFighting(archetype, selection);
             var choices = _blueprints.GetFeatureSelectionAllFeatures(necromancerBonusFeat)
                 .Concat(_blueprints.GetFeatureSelectionAllFeatures(
                     _blueprints.Require<BlueprintFeatureSelection>(GameBlueprintIds.Selections.FighterFeat, "Fighter Bonus Feat")))
                 .Concat(_blueprints.GetFeatureSelectionAllFeatures(
                     _blueprints.Require<BlueprintFeatureSelection>(GameBlueprintIds.Selections.RogueTalent, "Rogue Talent")))
+                .Select(f => f?.AssetGuid.ToString() == GameBlueprintIds.Features.TwoWeaponFighting ? twoWeaponFighting : f)
                 .GroupBy(f => f.AssetGuid)
                 .Select(g => g.First())
                 .ToArray();

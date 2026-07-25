@@ -46,6 +46,7 @@ namespace wotr_mod.Infrastructure
             public const string KenabresBurningCrusaderCorpseWithScroll = "2d3ec4e0d147a7044a5fd3b7d1c1010e";
             public const string KenabresBurningSpecialThieflingStash = "4b7d47f312f186646a05beff7f501c3b";
             public const string ShieldMazeShittyCultistScytheLoot = "3538022738594a4eae08e72d5a611577";
+            public const string PrologueKenabresLoot = "11d711acd9bd4b89b48f920cbc5677ee";
         }
         
         internal static class UnitAsks
@@ -280,6 +281,7 @@ namespace wotr_mod.Infrastructure
             public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
             public const string CompositeLongbowPlus1 = "2753a0159681be94da3a5eeabc8c8d1a";
             public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
+            public const string MasterworkRapier = "d8ecfcf0db3de304681f8632da4b6b8c";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string Scythe = "1052a1f7128861942aa0c2ee6078531e";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";
