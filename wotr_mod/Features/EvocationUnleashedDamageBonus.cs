@@ -21,6 +21,13 @@ namespace wotr_mod.Features
                 return;
             }
 
+            var casterUnit = Owner;
+            if (casterUnit != null && casterUnit != evt.Target && !casterUnit.IsEnemy(evt.Target))
+            {
+                evt.Remove(_ => true);
+                return;
+            }
+
             var charismaBonus = Owner?.Stats?.Charisma?.Bonus ?? 0;
             if (charismaBonus <= 0)
             {

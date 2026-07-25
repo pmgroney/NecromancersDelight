@@ -192,9 +192,10 @@ namespace wotr_mod.Spells
                 (area, context) => AreaNecromancyModifier.ConfigureCasterLevelRank(
                     area,
                     context,
-                    Kingmaker.UnitLogic.Mechanics.Components.ContextRankProgression.DelayedStartPlusDivStep,
-                    5,
-                    2));
+                    Kingmaker.UnitLogic.Mechanics.Components.ContextRankProgression.AsIs,
+                    0,
+                    0,
+                    10));
         }
 
         private static ISpellModifier HellOnEarth()

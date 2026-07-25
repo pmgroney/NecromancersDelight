@@ -121,19 +121,21 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 CreateLevelEntry(1,  proficiencies, fighterTraining, bonusFeat, trapfinding),
                 CreateLevelEntry(2,  bonusFeat, finesseTraining),
                 CreateLevelEntry(3,  sneakAttack, wraithstep1),
+                CreateLevelEntry(4,  bonusFeat),
                 CreateLevelEntry(5,  finesseTrainingUpgrade),
                 CreateLevelEntry(6,  bonusFeat, sneakAttack),
                 CreateLevelEntry(7,  wraithstep2),
-                CreateLevelEntry(8,  finesseTrainingUpgrade),
+                CreateLevelEntry(8,  bonusFeat, finesseTrainingUpgrade),
                 CreateLevelEntry(9,  sneakAttack),
                 CreateLevelEntry(10, bonusFeat),
                 CreateLevelEntry(11, wraithstep3),
-                CreateLevelEntry(12, sneakAttack),
+                CreateLevelEntry(12, bonusFeat, sneakAttack),
                 CreateLevelEntry(13, finesseTrainingUpgrade),
                 CreateLevelEntry(14, bonusFeat),
                 CreateLevelEntry(15, sneakAttack, wraithstep4),
+                CreateLevelEntry(16, bonusFeat),
                 CreateLevelEntry(18, bonusFeat, sneakAttack),
-                CreateLevelEntry(20, masterStrike)
+                CreateLevelEntry(20, bonusFeat, masterStrike)
             };
 
             _blueprints.SetArchetypeReplaceSpellbook(archetype, deathstalkerSpellbook);
@@ -232,12 +234,14 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
             AddLevelEntryIfAny(entries, 4,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"),
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
             AddLevelEntryIfAny(entries, 6, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 7,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror granted spell"));
             AddLevelEntryIfAny(entries, 8,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
             AddLevelEntryIfAny(entries, 9,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead"));
@@ -245,19 +249,25 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             AddLevelEntryIfAny(entries, 11,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen granted spell"));
             AddLevelEntryIfAny(entries, 12,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"));
-            AddLevelEntryIfAny(entries, 14, necromancerBonusFeat);
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
+            AddLevelEntryIfAny(entries, 14,
+                necromancerBonusFeat,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHarvestSoulKnownSpell, "Harvest Soul granted spell"));
             AddLevelEntryIfAny(entries, 15,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form"));
             AddLevelEntryIfAny(entries, 16,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerDeathClutchKnownSpell, "Death Clutch granted spell"));
             AddLevelEntryIfAny(entries, 18, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 19,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth granted spell"));
             AddLevelEntryIfAny(entries, 20,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us"),
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerReapersJudgement, "Reaper's Judgement"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerReapersJudgement, "Reaper's Judgement"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
             return entries.ToArray();
         }
 

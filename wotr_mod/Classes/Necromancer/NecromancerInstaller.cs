@@ -227,32 +227,47 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Spells.HarvestTheFallen, "Harvest the Fallen",
                 LocalizationIds.Mod.SpellHarvestTheFallenName, LocalizationIds.Mod.SpellHarvestTheFallenDescription,
                 5, necromancerClass);
+            var harvestSoul = EnsureKnownSpellFeature(
+                GameBlueprintIds.Features.BloodlineUndeadSpellLevel9,
+                ModBlueprintIds.Features.NecromancerHarvestSoulKnownSpell,
+                "WotrMod_NecromancerKnownSpell_HarvestSoul", "Harvest Soul donor",
+                ModBlueprintIds.Spells.HarvestSoul, "Harvest Soul",
+                LocalizationIds.Mod.SpellHarvestSoulName, LocalizationIds.Mod.SpellHarvestSoulDescription,
+                7, necromancerClass);
+            var deathClutch = EnsureKnownSpellFeature(
+                GameBlueprintIds.Features.BloodlineUndeadSpellLevel9,
+                ModBlueprintIds.Features.NecromancerDeathClutchKnownSpell,
+                "WotrMod_NecromancerKnownSpell_DeathClutch", "Death Clutch donor",
+                GameBlueprintIds.Spells.DeathClutch, "Death Clutch",
+                LocalizationIds.Game.DeathClutchName, LocalizationIds.Game.DeathClutchDescription,
+                8, necromancerClass);
             var stygianPrecision = EnsureStygianPrecisionFeature(necromancerClass);
             var reapersJudgement = EnsureReapersJudgementFeature(necromancerClass);
 
             var visibleFeatures = new BlueprintFeatureBase[]
             {
                 arcana, power1, power3, boneSpike, corpseExplosion,
-                eldritchHorror, power9, harvestTheFallen, power15, hellOnEarth, power20, stygianPrecision, reapersJudgement
+                eldritchHorror, power9, harvestTheFallen, harvestSoul, deathClutch, power15, hellOnEarth, power20, stygianPrecision, reapersJudgement
             };
             clone.LevelEntries = new[]
             {
                 _blueprints.CreateLevelEntry(1, arcana, power1, boneArmor),
                 _blueprints.CreateLevelEntry(2, boneSpike),
                 _blueprints.CreateLevelEntry(3, power3),
-                _blueprints.CreateLevelEntry(4, corpseExplosion, stygianPrecision),
+                _blueprints.CreateLevelEntry(4, corpseExplosion, stygianPrecision, arcana),
                 _blueprints.CreateLevelEntry(5, boneArmor),
                 _blueprints.CreateLevelEntry(7, eldritchHorror),
-                _blueprints.CreateLevelEntry(8, stygianPrecision),
+                _blueprints.CreateLevelEntry(8, stygianPrecision, arcana),
                 _blueprints.CreateLevelEntry(9, power3, power9, boneArmor),
                 _blueprints.CreateLevelEntry(11, harvestTheFallen),
-                _blueprints.CreateLevelEntry(12, stygianPrecision),
+                _blueprints.CreateLevelEntry(12, stygianPrecision, arcana),
                 _blueprints.CreateLevelEntry(13, boneArmor),
+                _blueprints.CreateLevelEntry(14, harvestSoul),
                 _blueprints.CreateLevelEntry(15, power3, power15),
-                _blueprints.CreateLevelEntry(16, stygianPrecision),
+                _blueprints.CreateLevelEntry(16, stygianPrecision, arcana, deathClutch),
                 _blueprints.CreateLevelEntry(17, boneArmor),
                 _blueprints.CreateLevelEntry(19, hellOnEarth),
-                _blueprints.CreateLevelEntry(20, power20, reapersJudgement)
+                _blueprints.CreateLevelEntry(20, power20, reapersJudgement, arcana)
             };
             _blueprints.SetProgressionUiDeterminators(clone, visibleFeatures);
             _blueprints.SetProgressionUiGroups(clone, new[] { visibleFeatures });
@@ -283,6 +298,8 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen"),
+                _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHarvestSoulKnownSpell, "Harvest Soul"),
+                _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerDeathClutchKnownSpell, "Death Clutch"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth"),
                 EnsureNecromancerBonusFeatSelection(),
                 EnsureStygianPrecisionFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer)),
@@ -331,6 +348,10 @@ namespace wotr_mod.Classes.Necromancer
                 features, ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror");
             var harvestTheFallen = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen");
+            var harvestSoul = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerHarvestSoulKnownSpell, "Harvest Soul");
+            var deathClutch = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerDeathClutchKnownSpell, "Death Clutch");
             var hellOnEarth = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth");
             var necromancerBonusFeat = FindNecromancerFeature<BlueprintFeatureSelection>(
@@ -351,33 +372,34 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift);
-            _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision, masterOfDeath);
             _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor);
             _blueprints.AddFeaturesToLevel(progression, 6,  necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 7,  eldritchHorror);
-            _blueprints.AddFeaturesToLevel(progression, 8,  stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 8,  stygianPrecision, masterOfDeath);
             _blueprints.AddFeaturesToLevel(progression, 9,  deathsGift, graspOfTheDead, boneArmor);
             _blueprints.AddFeaturesToLevel(progression, 10, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 11, harvestTheFallen);
-            _blueprints.AddFeaturesToLevel(progression, 12, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 12, stygianPrecision, masterOfDeath);
             _blueprints.AddFeaturesToLevel(progression, 13, boneArmor);
-            _blueprints.AddFeaturesToLevel(progression, 14, necromancerBonusFeat);
+            _blueprints.AddFeaturesToLevel(progression, 14, necromancerBonusFeat, harvestSoul);
             _blueprints.AddFeaturesToLevel(progression, 15, deathsGift, incorporealForm);
-            _blueprints.AddFeaturesToLevel(progression, 16, stygianPrecision);
+            _blueprints.AddFeaturesToLevel(progression, 16, stygianPrecision, masterOfDeath, deathClutch);
             _blueprints.AddFeaturesToLevel(progression, 17, boneArmor);
             _blueprints.AddFeaturesToLevel(progression, 18, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 19, hellOnEarth);
-            _blueprints.AddFeaturesToLevel(progression, 20, oneOfUs, reapersJudgement);
+            _blueprints.AddFeaturesToLevel(progression, 20, oneOfUs, reapersJudgement, masterOfDeath);
 
-            _blueprints.SetProgressionUiDeterminators(progression, new List<BlueprintFeatureBase> { masterOfDeath });
+            _blueprints.SetProgressionUiDeterminators(progression, Array.Empty<BlueprintFeatureBase>());
             _blueprints.SetProgressionUiGroups(
                 progression,
+                new[] { masterOfDeath },
                 new[] { boneArmor },
                 new[] { deathsGift },
                 new[] { necromancerBonusFeat },
                 new[] { stygianPrecision, reapersJudgement },
-                new[] { witheringRay, graspOfTheDead, incorporealForm, oneOfUs },
-                new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, hellOnEarth });
+                new[] { graspOfTheDead, incorporealForm, oneOfUs },
+                new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, harvestSoul, deathClutch, hellOnEarth });
         }
 
         internal static T FindNecromancerFeature<T>(
@@ -564,19 +586,22 @@ namespace wotr_mod.Classes.Necromancer
             var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerBloodlineArcana);
             if (feature == null)
             {
-                feature = _blueprints.CloneBlueprint(
-                    _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.RedDragonBloodlineArcana, "Red Dragon Arcana donor"),
-                    ModBlueprintIds.Features.NecromancerBloodlineArcana, "WotrMod_NecromancerMasterOfDeath");
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerMasterOfDeath",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.NecromancerBloodlineArcana)
+                };
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerBloodlineArcana, feature);
             }
             feature.IsClassFeature = true;
-            feature.Ranks = 1;
+            feature.Ranks = 6;
+            feature.ReapplyOnLevelUp = false;
             _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.NecromancerBloodlineArcanaName),
                 _localization.Text(LocalizationIds.Mod.NecromancerBloodlineArcanaDescription));
             _blueprints.SetUnitFactShortDescription(feature,
                 _localization.Text(LocalizationIds.Mod.NecromancerMasterOfDeathClassCardDescription));
-            var icon = _icons.Load("Icons\\necromancer.png");
+            var icon = _icons.Load("Icons\\master_of_death.png");
             if (icon != null) _blueprints.SetUnitFactIcon(feature, icon);
             _blueprints.SetComponents(feature, new MasterOfDeathArcanaClassSpells
             {
@@ -611,6 +636,13 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.SetAddFacts(af, ability);
             }
             PatchFeatureResource(feature, resource);
+            var castingStatDamage = _blueprints.EnsureComponent(
+                feature,
+                () => new WitheringRayCastingStatDamageBonus
+                {
+                    name = "$WitheringRayCastingStatDamageBonus$Necromancer"
+                });
+            castingStatDamage.CharacterClass = characterClass;
             feature.IsClassFeature = true;
             feature.Ranks = 1;
             _blueprints.SetUnitFactDisplay(feature,

@@ -169,7 +169,13 @@ namespace wotr_mod.Spells.Modifiers
             };
         }
 
-        public static void ConfigureCasterLevelRank(BlueprintAbilityAreaEffect area, SpellModifierContext context, ContextRankProgression progression, int startLevel, int stepLevel)
+        public static void ConfigureCasterLevelRank(
+            BlueprintAbilityAreaEffect area,
+            SpellModifierContext context,
+            ContextRankProgression progression,
+            int startLevel,
+            int stepLevel,
+            int maximum = 0)
         {
             var rank = context.Blueprints.EnsureComponent(area, () => new ContextRankConfig());
             context.Blueprints.ConfigureContextRankConfig(
@@ -177,6 +183,10 @@ namespace wotr_mod.Spells.Modifiers
                 progression: progression,
                 startLevel: startLevel,
                 stepLevel: stepLevel);
+            if (maximum > 0)
+            {
+                context.Blueprints.SetContextRankMaximum(rank, maximum);
+            }
         }
     }
 }

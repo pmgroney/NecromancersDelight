@@ -119,6 +119,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Spells
         {
+            public const string DeathClutch = "c3d2294a6740bc147870fff652f3ced5";
             public const string AcidicSpray = "c543eef6d725b184ea8669dd09b3894c";
             public const string AuraOfGreaterCourage = "acb787cf9f76e924a9a93bbd011af040";
             public const string BurningHands = "4783c3709a74a794dbe7c8e7e0b1b038";

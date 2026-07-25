@@ -187,24 +187,35 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             AddLevelEntryIfAny(entries, 3,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
             AddLevelEntryIfAny(entries, 4,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
             AddLevelEntryIfAny(entries, 6, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 7,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror granted spell"));
+            AddLevelEntryIfAny(entries, 8,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
             AddLevelEntryIfAny(entries, 9,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead"));
             AddLevelEntryIfAny(entries, 10, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 11,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHarvestTheFallenKnownSpell, "Harvest the Fallen granted spell"));
-            AddLevelEntryIfAny(entries, 14, necromancerBonusFeat);
+            AddLevelEntryIfAny(entries, 12,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
+            AddLevelEntryIfAny(entries, 14,
+                necromancerBonusFeat,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHarvestSoulKnownSpell, "Harvest Soul granted spell"));
             AddLevelEntryIfAny(entries, 15,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form"));
+            AddLevelEntryIfAny(entries, 16,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerDeathClutchKnownSpell, "Death Clutch granted spell"));
             AddLevelEntryIfAny(entries, 18, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 19,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth granted spell"));
             AddLevelEntryIfAny(entries, 20,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us"));
             return entries.ToArray();
         }

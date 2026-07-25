@@ -391,6 +391,8 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerCorpseExplosionKnownSpell = "afa9787ecde14b13a74c4b0344e3a905";
             public const string NecromancerEldritchHorrorKnownSpell = "e68ad047a48644488b30597ee522e652";
             public const string NecromancerHarvestTheFallenKnownSpell = "10eb39090e5241df9fb688e75fa1c3c6";
+            public const string NecromancerHarvestSoulKnownSpell = "e0d6adfe3a8e401da136012cdcb23ddd";
+            public const string NecromancerDeathClutchKnownSpell = "77ae8dea58dd45869568f1f22b8e516c";
             public const string NecromancerHellOnEarthKnownSpell = "f879a75258924ef6a37ef95bb4794c8f";
             public const string NecromancerProficiencies = "6e5d4c3b2a1a4b5c6d7e8f9a0b1c2d3e";
             public const string GravebladeArmorMastery = "34c0f9a8d2e14f6b9c7a5e3d1b8024ac";

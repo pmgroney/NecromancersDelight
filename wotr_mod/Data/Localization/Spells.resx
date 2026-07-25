@@ -234,7 +234,7 @@
     <value>Eldritch Horror</value>
   </data>
   <data name="wotr_mod.spell.eldritch_horror.description" xml:space="preserve">
-    <value>A terrifying force from beyond creeps from the ground to ensnare and harm your enemies. Creatures that fail their saving throw are entangled and take unholy damage that increases with caster level.</value>
+    <value>A terrifying force from beyond creeps from the ground to ensnare and harm your enemies. Creatures that fail their saving throw are entangled. Each round, creatures in the area take 1d4 unholy damage per caster level, to a maximum of 10d4.</value>
   </data>
 
   <data name="wotr_mod.spell.gravebolt_cascade.name" xml:space="preserve">

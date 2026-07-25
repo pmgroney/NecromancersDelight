@@ -6,6 +6,8 @@ namespace wotr_mod.Infrastructure
         {
             public const string AnimalCompanionLeopardDescription = "36598b51-fc3a-47fb-8904-433a409e1c17";
             public const string AnimalCompanionVelociraptorDescription = "3506ff37-e034-489a-8d87-bf2b91deaaa4";
+            public const string DeathClutchName = "5c315d9f-517d-4efd-b8c6-9449691ce70d";
+            public const string DeathClutchDescription = "58af3403-70f4-47c3-bf30-2ed3c3bdc5c4";
         }
 
         internal static class Mod
@@ -272,6 +274,8 @@ namespace wotr_mod.Infrastructure
             public const string SpellEldritchHorrorDescription = "wotr_mod.spell.eldritch_horror.description";
             public const string SpellHarvestTheFallenName = "wotr_mod.spell.harvest_the_fallen.name";
             public const string SpellHarvestTheFallenDescription = "wotr_mod.spell.harvest_the_fallen.description";
+            public const string SpellHarvestSoulName = "wotr_mod.spell.harvest_soul.name";
+            public const string SpellHarvestSoulDescription = "wotr_mod.spell.harvest_soul.description";
             public const string SpellHellOnEarthName = "wotr_mod.spell.hell_on_earth.name";
             public const string SpellHellOnEarthDescription = "wotr_mod.spell.hell_on_earth.description";
             public const string LivingDarknessName1 = "wotr_mod.archetype.shadowborn.living_darkness_1.name";

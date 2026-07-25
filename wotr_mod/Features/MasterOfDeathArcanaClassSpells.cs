@@ -1,7 +1,9 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Enums.Damage;
 using Kingmaker.PubSubSystem;
+using Kingmaker.RuleSystem.Rules;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
 using wotr_mod.Infrastructure;
@@ -64,6 +66,7 @@ namespace wotr_mod.Features
                 }
 
                 ApplyBonus(evt, characterClass);
+                ApplyEnergyResistancePenetration(evt, characterClass);
                 return;
             }
         }
@@ -79,6 +82,36 @@ namespace wotr_mod.Features
             foreach (var baseDamage in evt.DamageBundle)
             {
                 baseDamage.AddModifier(baseDamage.Dice.ModifiedValue.Rolls * bonusPerDie, Fact);
+            }
+        }
+
+        private void ApplyEnergyResistancePenetration(
+            RuleCalculateDamage evt,
+            BlueprintCharacterClass characterClass)
+        {
+            var classLevel = characterClass == null ? 0 : Owner.Progression.GetClassLevel(characterClass);
+            if (classLevel < 4)
+            {
+                return;
+            }
+
+            foreach (var damage in evt.DamageBundle)
+            {
+                if (!(damage is EnergyDamage energyDamage)
+                    || (energyDamage.EnergyType != DamageEnergyType.Unholy
+                        && energyDamage.EnergyType != DamageEnergyType.NegativeEnergy))
+                {
+                    continue;
+                }
+
+                if (classLevel >= 12)
+                {
+                    damage.IgnoreReduction = true;
+                    continue;
+                }
+
+                var penetration = classLevel >= 8 ? 10 : 5;
+                damage.ReductionPenalty.Add(new Modifier(penetration, Fact));
             }
         }
 
@@ -108,5 +141,42 @@ namespace wotr_mod.Features
     public sealed class GetKnownSpellsFromMemorizationSpellbook : BlueprintComponent
     {
         public BlueprintSpellbook Spellbook;
+    }
+
+    public sealed class WitheringRayCastingStatDamageBonus :
+        UnitFactComponentDelegate,
+        IInitiatorRulebookHandler<RuleCalculateDamage>,
+        IRulebookHandler<RuleCalculateDamage>,
+        IInitiatorRulebookSubscriber
+    {
+        private static readonly BlueprintGuid WitheringRayGuid =
+            BlueprintGuid.Parse(ModBlueprintIds.Abilities.WitheringRay);
+
+        public BlueprintCharacterClass CharacterClass;
+
+        public void OnEventAboutToTrigger(RuleCalculateDamage evt)
+        {
+            if (evt.Reason.Context?.SourceAbility?.AssetGuid != WitheringRayGuid || CharacterClass == null)
+            {
+                return;
+            }
+
+            var castingAttribute = Owner.GetSpellbook(CharacterClass)?.Blueprint.CastingAttribute
+                ?? Kingmaker.EntitySystem.Stats.StatType.Charisma;
+            var castingStatBonus = Owner.Stats.GetAttribute(castingAttribute)?.Bonus ?? 0;
+            if (castingStatBonus <= 0)
+            {
+                return;
+            }
+
+            foreach (var damage in evt.DamageBundle)
+            {
+                damage.AddModifier(castingStatBonus, Fact);
+            }
+        }
+
+        public void OnEventDidTrigger(RuleCalculateDamage evt)
+        {
+        }
     }
 }

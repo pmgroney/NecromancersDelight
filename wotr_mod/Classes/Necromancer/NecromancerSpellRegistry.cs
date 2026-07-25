@@ -86,7 +86,7 @@ namespace wotr_mod.Classes.Necromancer
             Spell("WavesOfExhaustion", "3e4d3b9a5bd03734d9b053b9067c2f38", 7),
 
             Spell("CreateUndeadGreaterBase", "8ba9b6e4df4c46a597154e2b8e7e6e4a", 8),
-            Spell("DeathClutch", "c3d2294a6740bc147870fff652f3ced5", 8),
+            Spell("DeathClutch", GameBlueprintIds.Spells.DeathClutch, 8),
             Spell("HorridWilting", "08323922485f7e246acb3d2276515526", 8),
             Spell("InflictCriticalWoundsMass", "5ee395a2423808c4baf342a4f8395b19", 8),
             Spell("Soulreaver", "b4afacd337dac4a40a769a567c038ab7", 8),
