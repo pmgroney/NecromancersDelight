@@ -326,8 +326,16 @@ namespace wotr_mod.Infrastructure
             public const string CryptguardDhampirHeritage = "9102837465af4e3d2c1b0a9b8c7d6e5f";
             public const string GraveltoeGnomeHeritage = "f28b0d5e7a3c4921b6d4e8f0a2c71593";
             public const string ShadowGnomeHeritage = "0a9c1e6f8b4d4032a7e5f901b3d826a4";
+            public const string GlintpebbleGnomeHeritage = "9f0a1b2c3d4e956708192a3b4c5d6789";
+            public const string HearthsongHalflingHeritage = "a01b2c3d4e5f4678192a3b4c5d6e7890";
+            public const string StonebackHalflingHeritage = "b12c3d4e5f6a4789293b4c5d6e7f8901";
+            public const string StarwatchHalflingHeritage = "c23d4e5f6a7b48903a4c5d6e7f809012";
+            public const string LorefinderHalflingHeritage = "d34e5f6a7b8c49014b5d6e7f8091a123";
             public const string DefaultFetchlingHeritage = "4a5b6c7d8e9f5012b3c4d5e6f7081234";
             public const string ShadowWarriorFetchlingHeritage = "5b6c7d8e9f0a6123c4d5e6f708192345";
+            public const string GloomscribeFetchlingHeritage = "6c7d8e9f0a1b6234d5e6f708192a3456";
+            public const string VeilseerFetchlingHeritage = "7d8e9f0a1b2c7345e6f708192a3b4567";
+            public const string NightwardenFetchlingHeritage = "8e9f0a1b2c3d8456f708192a3b4c5678";
             public const string NormalHumanHeritage = "3a5c7e9f1b244e68a0d2f4b6c8e01357";
             public const string DescendantOfKingsHeritage = "4b6d8f102c354f79b1e3a5c7d9f02468";
             public const string OrcLordsBloodHeritage = "5c8e102a4b6d4f78a9c1e3d5f7092468";

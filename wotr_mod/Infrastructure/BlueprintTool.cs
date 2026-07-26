@@ -405,6 +405,68 @@ namespace wotr_mod.Infrastructure
             }
         }
 
+        public bool ConvertClassLevelsToBaseClass(
+            BlueprintScriptableObject blueprint,
+            BlueprintCharacterClass characterClass)
+        {
+            var converted = false;
+            foreach (var component in GetComponents<AddClassLevels>(blueprint))
+            {
+                var classReference =
+                    (BlueprintCharacterClassReference)BlueprintFields.AddClassLevelsCharacterClass.GetValue(component);
+                if (classReference?.Get() != characterClass)
+                {
+                    continue;
+                }
+
+                BlueprintFields.AddClassLevelsArchetypes.SetValue(
+                    component,
+                    Array.Empty<BlueprintArchetypeReference>());
+                BlueprintFields.AddClassLevelsSelectSpells.SetValue(
+                    component,
+                    Array.Empty<BlueprintAbilityReference>());
+                BlueprintFields.AddClassLevelsMemorizeSpells.SetValue(
+                    component,
+                    Array.Empty<BlueprintAbilityReference>());
+                converted = true;
+            }
+
+            return converted;
+        }
+
+        public bool ReplaceClassLevelSelectionFeature(
+            BlueprintScriptableObject blueprint,
+            BlueprintFeature oldFeature,
+            BlueprintFeature newFeature)
+        {
+            var replaced = false;
+            foreach (var classLevels in GetComponents<AddClassLevels>(blueprint))
+            {
+                foreach (var selection in classLevels.Selections ?? Array.Empty<SelectionEntry>())
+                {
+                    if (selection.IsParametrizedFeature)
+                    {
+                        continue;
+                    }
+
+                    var features =
+                        (BlueprintFeatureReference[])BlueprintFields.SelectionEntryFeatures.GetValue(selection);
+                    for (var index = 0; index < features.Length; index++)
+                    {
+                        if (features[index]?.Get() != oldFeature)
+                        {
+                            continue;
+                        }
+
+                        features[index] = BlueprintReferenceBase.CreateTyped<BlueprintFeatureReference>(newFeature);
+                        replaced = true;
+                    }
+                }
+            }
+
+            return replaced;
+        }
+
         public void SetProgressionUiDeterminators(BlueprintProgression progression, IEnumerable<BlueprintFeatureBase> features)
         {
             if (BlueprintFields.ProgressionUIDeterminatorsGroup == null)

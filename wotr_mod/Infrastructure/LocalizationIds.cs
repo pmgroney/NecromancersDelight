@@ -14,14 +14,20 @@ namespace wotr_mod.Infrastructure
         {
             public const string CleverPyromaniacName = "wotr_mod.clever_pyromaniac_gnome.name";
             public const string CleverPyromaniacDescription = "wotr_mod.clever_pyromaniac_gnome.description";
-            public const string UmbralDhampirHeritageName = "wotr_mod.heritage.umbral_dhampir.name";
-            public const string UmbralDhampirHeritageDescription = "wotr_mod.heritage.umbral_dhampir.description";
-            public const string CryptguardDhampirHeritageName = "wotr_mod.heritage.cryptguard_dhampir.name";
-            public const string CryptguardDhampirHeritageDescription = "wotr_mod.heritage.cryptguard_dhampir.description";
             public const string GraveltoeGnomeHeritageName = "wotr_mod.heritage.graveltoe_gnome.name";
             public const string GraveltoeGnomeHeritageDescription = "wotr_mod.heritage.graveltoe_gnome.description";
             public const string ShadowGnomeHeritageName = "wotr_mod.heritage.shadow_gnome.name";
             public const string ShadowGnomeHeritageDescription = "wotr_mod.heritage.shadow_gnome.description";
+            public const string GlintpebbleGnomeHeritageName = "wotr_mod.heritage.glintpebble_gnome.name";
+            public const string GlintpebbleGnomeHeritageDescription = "wotr_mod.heritage.glintpebble_gnome.description";
+            public const string HearthsongHalflingHeritageName = "wotr_mod.heritage.hearthsong_halfling.name";
+            public const string HearthsongHalflingHeritageDescription = "wotr_mod.heritage.hearthsong_halfling.description";
+            public const string StonebackHalflingHeritageName = "wotr_mod.heritage.stoneback_halfling.name";
+            public const string StonebackHalflingHeritageDescription = "wotr_mod.heritage.stoneback_halfling.description";
+            public const string StarwatchHalflingHeritageName = "wotr_mod.heritage.starwatch_halfling.name";
+            public const string StarwatchHalflingHeritageDescription = "wotr_mod.heritage.starwatch_halfling.description";
+            public const string LorefinderHalflingHeritageName = "wotr_mod.heritage.lorefinder_halfling.name";
+            public const string LorefinderHalflingHeritageDescription = "wotr_mod.heritage.lorefinder_halfling.description";
             public const string HumanHeritageName = "wotr_mod.heritage.human.name";
             public const string HumanHeritageDescription = "wotr_mod.heritage.human.description";
             public const string NormalHumanHeritageName = "wotr_mod.heritage.human.normal.name";
@@ -38,6 +44,12 @@ namespace wotr_mod.Infrastructure
             public const string DefaultFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.default.description";
             public const string ShadowWarriorFetchlingHeritageName = "wotr_mod.heritage.fetchling.shadow_warrior.name";
             public const string ShadowWarriorFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.shadow_warrior.description";
+            public const string GloomscribeFetchlingHeritageName = "wotr_mod.heritage.fetchling.gloomscribe.name";
+            public const string GloomscribeFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.gloomscribe.description";
+            public const string VeilseerFetchlingHeritageName = "wotr_mod.heritage.fetchling.veilseer.name";
+            public const string VeilseerFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.veilseer.description";
+            public const string NightwardenFetchlingHeritageName = "wotr_mod.heritage.fetchling.nightwarden.name";
+            public const string NightwardenFetchlingHeritageDescription = "wotr_mod.heritage.fetchling.nightwarden.description";
             public const string BillyName = "wotr_mod.companion.billy.name";
             public const string BillyGreeting = "wotr_mod.companion.billy.dialog.greeting";
             public const string BillyJoinCue = "wotr_mod.companion.billy.dialog.join_cue";

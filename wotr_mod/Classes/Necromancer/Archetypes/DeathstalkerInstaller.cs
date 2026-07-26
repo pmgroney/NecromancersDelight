@@ -497,7 +497,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             {
                 name = "$AddStatBonus$" + featureGuid,
                 Stat = StatType.Speed,
-                Value = 10,
+                Value = 5,
                 Descriptor = ModifierDescriptor.UntypedStackable
             };
             _blueprints.SetComponents(feature, speedBonus);

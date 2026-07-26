@@ -41,8 +41,8 @@ namespace wotr_mod.Items
                     placements: new[]
                     {
                         ItemPlacementDefinition.InChestLoot(
-                            GameBlueprintIds.Loot.CultistsLairLuxeryCasket,
-                            "Cultists' Lair luxury casket",
+                            GameBlueprintIds.Loot.EstrodTowerBasementBox,
+                            "Tower of Estrod basement box",
                             count: 1,
                             identify: true)
                     }),
@@ -56,8 +56,8 @@ namespace wotr_mod.Items
                     placements: new[]
                     {
                         ItemPlacementDefinition.InChestLoot(
-                            GameBlueprintIds.Loot.KenabresBurningCrusaderCorpseWithScroll,
-                            "Market Square crusader corpse with scroll",
+                            GameBlueprintIds.Loot.KenabresBurningChestNearBridge,
+                            "Market Square chest near bridge",
                             count: 1,
                             identify: true)
                     }),

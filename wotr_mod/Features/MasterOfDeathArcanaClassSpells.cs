@@ -52,15 +52,9 @@ namespace wotr_mod.Features
                 return;
             }
 
-            var spellbook = context.SourceAbilityContext?.Ability?.Spellbook;
-            if (spellbook == null)
-            {
-                return;
-            }
-
             foreach (var characterClass in Classes ?? new BlueprintCharacterClass[0])
             {
-                if (Owner.GetSpellbook(characterClass) != GetClassSpellbook(spellbook))
+                if (characterClass == null || Owner.Progression.GetClassLevel(characterClass) <= 0)
                 {
                     continue;
                 }
@@ -117,12 +111,6 @@ namespace wotr_mod.Features
 
         public void OnEventDidTrigger(RuleCalculateDamage evt)
         {
-        }
-
-        private Spellbook GetClassSpellbook(Spellbook spellbook)
-        {
-            var memorizedSource = spellbook?.Blueprint.GetComponent<GetKnownSpellsFromMemorizationSpellbook>()?.Spellbook;
-            return memorizedSource != null ? Owner.GetSpellbook(memorizedSource) : spellbook;
         }
 
         private int GetBonusPerDie(BlueprintCharacterClass characterClass)

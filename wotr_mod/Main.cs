@@ -68,6 +68,10 @@ namespace wotr_mod
                 Settings.EnableAchievementsWhileModded,
                 "Re-enable achievements while modded");
 
+            Settings.MakeWoljifBaseRogue = GUILayout.Toggle(
+                Settings.MakeWoljifBaseRogue,
+                "Make Woljif a base Rogue (requires restart)");
+
             GUILayout.Space(14f);
             GUILayout.Label("Mouseover tooltip icon size");
             GUILayout.Space(4f);

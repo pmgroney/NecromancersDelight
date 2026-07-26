@@ -27,7 +27,7 @@
   },
   "act1QuestDialogue": {
     "BillyAct1JalmerayAnswer": "Someone at Defender's Heart recognized one of your training phrases.",
-    "BillyAct1JalmerayCue": "Three breaths, one shot? That's not a Kenabres drill. That's from the Jalmeray temples, or close enough that my bones remember the rhythm. If someone here knows it, then my path to this city left tracks. Good. Tracks can be followed.",
+    "BillyAct1JalmerayCue": "Three breaths, one shot? That is a Jalmeray temple drill. If someone recorded my arrival in Kenabres, the merchants or guards in Market Square may have kept the ledger. Assuming the demons left anything legible.",
     "BillyAct1RecordAnswer": "We found a scorched record about a Jalmeray archer.",
     "BillyAct1RecordCue": "That is me, unless Kenabres imported a second dead Iroran with excellent posture and terrible luck. \"Body absent from second count\" is a tidy way to say someone misplaced my corpse on purpose. Hosilla had my bow, but this says she was only one hand on the rope.",
     "BillyAct1TunicAnswer": "This tunic was hidden in the cult cache.",

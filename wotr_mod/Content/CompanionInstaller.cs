@@ -210,9 +210,55 @@ namespace wotr_mod.Content
 
         public void Install()
         {
+            ConvertWoljifToBaseRogue();
+            ReplaceSeelahShieldFocus();
             LoadBillyVoiceBank();
             var billy = EnsureUndeadCiarCompanion();
             EnsureBillyShieldMazeStandIn(billy);
+        }
+
+        private void ConvertWoljifToBaseRogue()
+        {
+            if (Main.Settings == null || !Main.Settings.MakeWoljifBaseRogue)
+            {
+                return;
+            }
+
+            var featureList = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Units.WoljifFeatureList,
+                "Woljif starting feature list");
+            var rogue = _blueprints.Require<BlueprintCharacterClass>(
+                GameBlueprintIds.Classes.Rogue,
+                "Rogue class");
+
+            if (!_blueprints.ConvertClassLevelsToBaseClass(featureList, rogue))
+            {
+                throw new InvalidOperationException(
+                    "Woljif starting feature list does not have Rogue class levels.");
+            }
+
+            Main.Log("Converted Woljif's starting build from Eldritch Scoundrel to base Rogue.");
+        }
+
+        private void ReplaceSeelahShieldFocus()
+        {
+            var featureList = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Units.SeelahFeatureList,
+                "Seelah starting feature list");
+            var shieldFocus = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.ShieldFocus,
+                "Shield Focus feat");
+            var powerAttack = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.PowerAttack,
+                "Power Attack feat");
+
+            if (!_blueprints.ReplaceClassLevelSelectionFeature(featureList, shieldFocus, powerAttack))
+            {
+                throw new InvalidOperationException(
+                    "Seelah starting feature list does not select Shield Focus.");
+            }
+
+            Main.Log("Replaced Seelah's starting Shield Focus feat with Power Attack.");
         }
 
         private void LoadBillyVoiceBank()

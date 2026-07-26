@@ -57,8 +57,38 @@ namespace wotr_mod.Patches
                 _heritageFactory.CreateStatBonus("ShadowWarriorFetchling", StatType.Charisma, 3),
                 _heritageFactory.CreateStatBonus("ShadowWarriorFetchling", StatType.Constitution, 2));
 
+            var gloomscribe = _heritageFactory.EnsureHeritage(
+                ModBlueprintIds.Features.GloomscribeFetchlingHeritage,
+                "WotrMod_GloomscribeFetchlingHeritage",
+                LocalizationIds.Mod.GloomscribeFetchlingHeritageName,
+                LocalizationIds.Mod.GloomscribeFetchlingHeritageDescription,
+                _heritageFactory.CreateStatBonus("GloomscribeFetchling", StatType.Dexterity, 3),
+                _heritageFactory.CreateStatBonus("GloomscribeFetchling", StatType.Intelligence, 3),
+                _heritageFactory.CreateStatBonus("GloomscribeFetchling", StatType.Constitution, 2));
+
+            var veilseer = _heritageFactory.EnsureHeritage(
+                ModBlueprintIds.Features.VeilseerFetchlingHeritage,
+                "WotrMod_VeilseerFetchlingHeritage",
+                LocalizationIds.Mod.VeilseerFetchlingHeritageName,
+                LocalizationIds.Mod.VeilseerFetchlingHeritageDescription,
+                _heritageFactory.CreateStatBonus("VeilseerFetchling", StatType.Dexterity, 3),
+                _heritageFactory.CreateStatBonus("VeilseerFetchling", StatType.Wisdom, 3),
+                _heritageFactory.CreateStatBonus("VeilseerFetchling", StatType.Constitution, 2));
+
+            var nightwarden = _heritageFactory.EnsureHeritage(
+                ModBlueprintIds.Features.NightwardenFetchlingHeritage,
+                "WotrMod_NightwardenFetchlingHeritage",
+                LocalizationIds.Mod.NightwardenFetchlingHeritageName,
+                LocalizationIds.Mod.NightwardenFetchlingHeritageDescription,
+                _heritageFactory.CreateStatBonus("NightwardenFetchling", StatType.Strength, 3),
+                _heritageFactory.CreateStatBonus("NightwardenFetchling", StatType.Dexterity, 3),
+                _heritageFactory.CreateStatBonus("NightwardenFetchling", StatType.Constitution, 2));
+
             _blueprints.AddFeatureToSelection(heritageSelection, defaultFetchling);
             _blueprints.AddFeatureToSelection(heritageSelection, shadowWarrior);
+            _blueprints.AddFeatureToSelection(heritageSelection, gloomscribe);
+            _blueprints.AddFeatureToSelection(heritageSelection, veilseer);
+            _blueprints.AddFeatureToSelection(heritageSelection, nightwarden);
 
             var bonusFeat = _blueprints.Require<BlueprintFeatureSelection>(
                 GameBlueprintIds.Selections.BasicFeat,

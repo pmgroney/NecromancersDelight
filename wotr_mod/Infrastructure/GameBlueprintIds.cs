@@ -43,6 +43,8 @@ namespace wotr_mod.Infrastructure
         internal static class Loot
         {
             public const string CultistsLairLuxeryCasket = "de82c5ff1d3879e468c02fc86709be5d";
+            public const string EstrodTowerBasementBox = "b277a50b549848738b06319a6f6295c1";
+            public const string KenabresBurningChestNearBridge = "45f5a6e1bbe3c194fb6682cd2a763510";
             public const string KenabresBurningCrusaderCorpseWithScroll = "2d3ec4e0d147a7044a5fd3b7d1c1010e";
             public const string KenabresBurningSpecialThieflingStash = "4b7d47f312f186646a05beff7f501c3b";
             public const string ShieldMazeShittyCultistScytheLoot = "3538022738594a4eae08e72d5a611577";
@@ -66,6 +68,7 @@ namespace wotr_mod.Infrastructure
         {
             public const string Fetchling = "e29497e082014f35b0ef32e1560f1e8b";
             public const string Gnome = "ef35a22c9a27da345a4528f0d5889157";
+            public const string Halfling = "b0c3ef2729c498f47970bb50fa1acd30";
             public const string Human = "0a5d473ead98b0646b94495af250fdc4";
         }
 
@@ -151,6 +154,7 @@ namespace wotr_mod.Infrastructure
             public const string FighterFeat = "41c8486641f7d6d4283ca9dae4147a9f";
             public const string RogueTalent = "c074a5d615200494b8f2a9c845799d93";
             public const string GnomeHeritage = "584d8b50817b49b2bb7aab3d6add8d3a";
+            public const string HalflingHeritage = "b3bebe76e6c64e2ca11585f9e3e2554a";
             public const string HalfElfHeritage = "9df7b68d60544bcf8e5b56c0a4688e04";
             public const string HalfOrcHeritage = "8c3244440e0b4d1d9d9b182685cbacbd";
             public const string SecondaryDomain = "43281c3d7fe18cc4d91928395837cd1e";
@@ -173,6 +177,10 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string PowerAttack = "9972f33f977fc724c838e59641b2fca5";
+            public const string ShieldFocus = "ac57069b6bf8c904086171683992a92a";
+            public const string SlowSpeedGnome = "09bc9ccb8ee0ffe4b8827066b1ed7e11";
+            public const string SlowSpeedHalfling = "b8926aeaac17dc7408a5059788255819";
             public const string ArcaneBloodlineArcana = "e8e4f56618dd8b04490aa6a0b75ac24f";
             public const string BloodlineArcaneArcaneBondFeature = "1740a701ac0a14c4394a7f76f0b07799";
             public const string BloodlineArcaneClassSkillSelection = "19ab16dba857d1a4ba617074f203f975";
@@ -365,6 +373,8 @@ namespace wotr_mod.Infrastructure
             public const string CiarUndead = "1f341d3068d6b7a429134125f7141e18";
             public const string CiarCompanion = "7ece3afabe2b6f343b17d1eaa409d273";
             public const string CiarFeatureList = "ec014b7a7a6cd814090c1cd6c7a599d8";
+            public const string SeelahFeatureList = "777ae11136378a64883059457966a325";
+            public const string WoljifFeatureList = "4bf1e3da22a4fe44f8a516cc24e6ef79";
             public const string Dlc5StartPregenFighter = "8cc548325b5b48f588aeb0cbedf3f619";
             public const string Hosilla = "64dcc27d70edc1148b31257fcc2241ce";
             public const string MythicLichSkeletonArcher = "2b0c36c34172ac440a8e6d373094c3bd";

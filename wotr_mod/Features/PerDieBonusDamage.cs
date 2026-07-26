@@ -31,7 +31,7 @@ namespace wotr_mod.Features
         {
             var context = evt.Reason.Context;
             var sourceAbility = context?.SourceAbility;
-            if (sourceAbility == null || !IsEligibleSource(sourceAbility, context.SourceAbilityContext?.Ability?.Spellbook))
+            if (sourceAbility == null || !IsEligibleSource(sourceAbility))
             {
                 return;
             }
@@ -63,7 +63,7 @@ namespace wotr_mod.Features
         {
         }
 
-        private bool IsEligibleSource(BlueprintAbility sourceAbility, Spellbook spellbook)
+        private bool IsEligibleSource(BlueprintAbility sourceAbility)
         {
             if (IsAdditionalAbility(sourceAbility))
             {
@@ -72,26 +72,12 @@ namespace wotr_mod.Features
 
             if (!IncludeClassSpellbookSpells ||
                 !sourceAbility.IsSpell ||
-                sourceAbility.School != SpellSchool.Evocation ||
-                spellbook == null)
+                sourceAbility.School != SpellSchool.Evocation)
             {
                 return false;
             }
 
-            return IsClassSpellbook(spellbook);
-        }
-
-        private bool IsClassSpellbook(Spellbook spellbook)
-        {
-            foreach (var characterClass in Classes ?? new BlueprintCharacterClass[0])
-            {
-                if (Owner.GetSpellbook(characterClass) == GetClassSpellbook(spellbook))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return true;
         }
 
         private bool MatchesDamage(BaseDamage damage)
@@ -130,10 +116,5 @@ namespace wotr_mod.Features
             return false;
         }
 
-        private Spellbook GetClassSpellbook(Spellbook spellbook)
-        {
-            var memorizedSource = spellbook?.Blueprint.GetComponent<GetKnownSpellsFromMemorizationSpellbook>()?.Spellbook;
-            return memorizedSource != null ? Owner.GetSpellbook(memorizedSource) : spellbook;
-        }
     }
 }

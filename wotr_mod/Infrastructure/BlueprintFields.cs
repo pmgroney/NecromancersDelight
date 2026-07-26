@@ -50,6 +50,21 @@ namespace wotr_mod.Infrastructure
                 "m_AllowedSpellbooks",
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo AddClassLevelsCharacterClass =
+            typeof(AddClassLevels).GetField("m_CharacterClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddClassLevelsArchetypes =
+            typeof(AddClassLevels).GetField("m_Archetypes", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddClassLevelsSelectSpells =
+            typeof(AddClassLevels).GetField("m_SelectSpells", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddClassLevelsMemorizeSpells =
+            typeof(AddClassLevels).GetField("m_MemorizeSpells", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo SelectionEntryFeatures =
+            typeof(SelectionEntry).GetField("m_Features", BindingFlags.Instance | BindingFlags.NonPublic);
+
         static BlueprintFields()
         {
             // Logging for missing fields to help debugging
@@ -60,6 +75,11 @@ namespace wotr_mod.Infrastructure
             if (BlueprintComponents == null) PatchRegistry.FallbackError("WARNING: BlueprintScriptableObject.m_Components (or Components) not found");
             if (EtudeInvokeActionsDelayedDays == null) PatchRegistry.FallbackError("WARNING: EtudeInvokeActionsDelayed.m_Days not found");
             if (FeatureSelectMythicSpellbookAllowedSpellbooks == null) PatchRegistry.FallbackError("WARNING: BlueprintFeatureSelectMythicSpellbook.m_AllowedSpellbooks not found");
+            if (AddClassLevelsCharacterClass == null) PatchRegistry.FallbackError("WARNING: AddClassLevels.m_CharacterClass not found");
+            if (AddClassLevelsArchetypes == null) PatchRegistry.FallbackError("WARNING: AddClassLevels.m_Archetypes not found");
+            if (AddClassLevelsSelectSpells == null) PatchRegistry.FallbackError("WARNING: AddClassLevels.m_SelectSpells not found");
+            if (AddClassLevelsMemorizeSpells == null) PatchRegistry.FallbackError("WARNING: AddClassLevels.m_MemorizeSpells not found");
+            if (SelectionEntryFeatures == null) PatchRegistry.FallbackError("WARNING: SelectionEntry.m_Features not found");
             if (CharacterClassHiddenFields.Length == 0) PatchRegistry.FallbackError("WARNING: BlueprintCharacterClass hidden fields not found");
         }
 
