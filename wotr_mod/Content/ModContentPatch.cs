@@ -14,6 +14,7 @@ namespace wotr_mod.Content
         private readonly UnityModManager.ModEntry.ModLogger _logger;
         private readonly LocalizationTool _localization;
         private readonly IContentModule[] _modules;
+        private readonly DefendersHeartAssaultTimerPatch _defendersHeartAssaultTimer;
 
         public ModContentPatch(
             BlueprintTool blueprints,
@@ -23,6 +24,7 @@ namespace wotr_mod.Content
         {
             _logger = logger;
             _localization = localization;
+            _defendersHeartAssaultTimer = new DefendersHeartAssaultTimerPatch(blueprints, logger);
             _modules = new IContentModule[]
             {
                 new SpellInstaller(blueprints, localization, logger, modPath),
@@ -31,7 +33,7 @@ namespace wotr_mod.Content
                 new MythicSpellbookMergeInstaller(blueprints, logger),
                 new BillyQuestStarter(blueprints, logger),
                 new CompanionInstaller(blueprints, localization, modPath),
-                new DefendersHeartAssaultTimerPatch(blueprints, logger)
+                _defendersHeartAssaultTimer
             };
         }
 
@@ -80,6 +82,18 @@ namespace wotr_mod.Content
                 {
                     _logger.Error($"Failed area load for {((IContentModule)module).Name}: {ex}");
                 }
+            }
+        }
+
+        public void ApplySettings()
+        {
+            try
+            {
+                _defendersHeartAssaultTimer.ApplyCurrentSetting("settings change");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Failed to apply Defender's Heart assault timer setting: {ex}");
             }
         }
     }

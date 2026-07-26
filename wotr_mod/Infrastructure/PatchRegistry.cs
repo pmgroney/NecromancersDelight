@@ -106,5 +106,13 @@ namespace wotr_mod.Infrastructure
                 handler.OnAreaLoaded();
             }
         }
+
+        public void ApplySettings()
+        {
+            foreach (var patch in _patches.OfType<ModContentPatch>())
+            {
+                patch.ApplySettings();
+            }
+        }
     }
 }

@@ -68,6 +68,18 @@ namespace wotr_mod
                 Settings.EnableAchievementsWhileModded,
                 "Re-enable achievements while modded");
 
+            var delayDefendersHeartAssault = GUILayout.Toggle(
+                Settings.DelayDefendersHeartAssault,
+                "Delay Defender's Heart assault");
+            if (delayDefendersHeartAssault != Settings.DelayDefendersHeartAssault)
+            {
+                Settings.DelayDefendersHeartAssault = delayDefendersHeartAssault;
+                if (_applied)
+                {
+                    _registry.ApplySettings();
+                }
+            }
+
             Settings.MakeWoljifBaseRogue = GUILayout.Toggle(
                 Settings.MakeWoljifBaseRogue,
                 "Make Woljif a base Rogue (requires restart)");
