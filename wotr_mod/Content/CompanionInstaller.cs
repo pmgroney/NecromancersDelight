@@ -1370,6 +1370,9 @@ namespace wotr_mod.Content
             var shortbowProficiency = _blueprints.Require<BlueprintUnitFact>(
                 GameBlueprintIds.Features.ShortbowProficiency,
                 "Shortbow Proficiency");
+            var dodge = _blueprints.Require<BlueprintUnitFact>(
+                GameBlueprintIds.Features.Dodge,
+                "Dodge");
             var undeadType = _blueprints.Require<BlueprintUnitFact>(
                 GameBlueprintIds.Features.UndeadType,
                 "Undead Type");
@@ -1399,6 +1402,7 @@ namespace wotr_mod.Content
                 undeadType,
                 longbowProficiency,
                 shortbowProficiency,
+                dodge,
                 positiveEnergyImmunity,
                 monkAcBonus,
                 wayOfTheBow);

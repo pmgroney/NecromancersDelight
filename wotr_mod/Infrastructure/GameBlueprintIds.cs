@@ -177,6 +177,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string Dodge = "97e216dbb46ae3c4faef90cf6bbe6fd5";
             public const string PowerAttack = "9972f33f977fc724c838e59641b2fca5";
             public const string ShieldFocus = "ac57069b6bf8c904086171683992a92a";
             public const string SlowSpeedGnome = "09bc9ccb8ee0ffe4b8827066b1ed7e11";
