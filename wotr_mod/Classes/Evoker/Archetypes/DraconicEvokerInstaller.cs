@@ -51,13 +51,6 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             var weaponFocusClaw = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.WeaponFocusClaw,
                 "Weapon Focus (Claw)");
-            var lightArmorProficiency = EnsureArmorProficiency(
-                GameBlueprintIds.Features.ArmorProficiencyLight,
-                ModBlueprintIds.Features.DraconicEvokerLightArmorProficiency,
-                "WotrMod_DraconicEvokerLightArmorProficiency",
-                LocalizationIds.Mod.DraconicEvokerLightArmorProficiencyName,
-                LocalizationIds.Mod.DraconicEvokerLightArmorProficiencyDescription,
-                characterClass);
             var mediumArmorProficiency = EnsureArmorProficiency(
                 GameBlueprintIds.Features.ArmorProficiencyMedium,
                 ModBlueprintIds.Features.DraconicEvokerMediumArmorProficiency,
@@ -106,7 +99,6 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                         1,
                         draconicBloodlineSelection,
                         weaponFocusClaw,
-                        lightArmorProficiency,
                         lightArcaneArmorProficiency),
                     CreateLevelEntry(
                         4,

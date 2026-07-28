@@ -10,6 +10,7 @@ using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Mechanics.Recommendations;
@@ -18,6 +19,7 @@ using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
@@ -357,12 +359,54 @@ namespace wotr_mod.Classes.Evoker
                 feature,
                 _localization.Text(LocalizationIds.Mod.EvokerProficienciesName),
                 _localization.Text(LocalizationIds.Mod.EvokerProficienciesDescription));
+            var addFacts = _blueprints.EnsureComponent(feature, () => new AddFacts());
+            _blueprints.SetAddFacts(
+                addFacts,
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.ArmorProficiencyLight,
+                    "Light Armor Proficiency"),
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.SimpleWeaponProficiency,
+                    "Simple Weapon Proficiency"));
+            EnsureLightArmorCastingProficiency(feature);
             if (characterClass != null)
             {
                 _blueprints.SetProgressionClasses(feature, characterClass);
             }
 
             return feature;
+        }
+
+        private void EnsureLightArmorCastingProficiency(BlueprintFeature feature)
+        {
+            const string componentName = "$ArcaneArmorProficiency$EvokerLightArmor";
+            var existing = _blueprints.GetComponents<ArcaneArmorProficiency>(feature)
+                .FirstOrDefault(component => component.name == componentName);
+            if (existing != null)
+            {
+                existing.Armor = new[] { ArmorProficiencyGroup.Light };
+                return;
+            }
+
+            var bloodragerProficiencies = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.BloodragerProficiencies,
+                "Bloodrager Proficiencies");
+            var source = _blueprints.GetComponents<BlueprintComponent>(bloodragerProficiencies)
+                .FirstOrDefault(component => component.GetType().Name == nameof(ArcaneArmorProficiency));
+            if (source == null)
+            {
+                _logger.Error("Bloodrager Proficiencies has no ArcaneArmorProficiency component to clone.");
+                return;
+            }
+
+            var clonedComponent = _blueprints.CloneComponent(source);
+            clonedComponent.name = componentName;
+            if (clonedComponent is ArcaneArmorProficiency armorProficiency)
+            {
+                armorProficiency.Armor = new[] { ArmorProficiencyGroup.Light };
+            }
+
+            _blueprints.AddComponent(feature, clonedComponent);
         }
 
         private BlueprintFeature EnsureEvocationUnleashedClassCardFeature(BlueprintCharacterClass characterClass)

@@ -5,6 +5,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
@@ -539,9 +540,43 @@ namespace wotr_mod.Classes.Necromancer
                 _localization.Text(LocalizationIds.Mod.NecromancerProficienciesDescription));
             var addFacts = _blueprints.EnsureComponent(feature, () => new AddFacts());
             _blueprints.SetAddFacts(addFacts,
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight, "Light Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SimpleWeaponProficiency, "Simple Weapon Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ScytheProficiency, "Scythe Proficiency"));
+            EnsureLightArmorCastingProficiency(feature);
             return feature;
+        }
+
+        private void EnsureLightArmorCastingProficiency(BlueprintFeature feature)
+        {
+            const string componentName = "$ArcaneArmorProficiency$NecromancerLightArmor";
+            var existing = _blueprints.GetComponents<ArcaneArmorProficiency>(feature)
+                .FirstOrDefault(component => component.name == componentName);
+            if (existing != null)
+            {
+                existing.Armor = new[] { ArmorProficiencyGroup.Light };
+                return;
+            }
+
+            var bloodragerProficiencies = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.BloodragerProficiencies,
+                "Bloodrager Proficiencies");
+            var source = _blueprints.GetComponents<BlueprintComponent>(bloodragerProficiencies)
+                .FirstOrDefault(component => component.GetType().Name == nameof(ArcaneArmorProficiency));
+            if (source == null)
+            {
+                _logger.Error("Bloodrager Proficiencies has no ArcaneArmorProficiency component to clone.");
+                return;
+            }
+
+            var clonedComponent = _blueprints.CloneComponent(source);
+            clonedComponent.name = componentName;
+            if (clonedComponent is ArcaneArmorProficiency armorProficiency)
+            {
+                armorProficiency.Armor = new[] { ArmorProficiencyGroup.Light };
+            }
+
+            _blueprints.AddComponent(feature, clonedComponent);
         }
 
         private BlueprintFeature EnsureNecromancerBloodlineFeature(
