@@ -115,6 +115,7 @@ namespace wotr_mod.Patches
                 addPyromaniac,
                 removeCleverPyromaniacSlowSpeed,
                 _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Charisma, -2),
+                _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Constitution, 2),
                 _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Dexterity, 3),
                 _heritageFactory.CreateStatBonus("CleverPyromaniacGnome", StatType.Intelligence, 3));
 

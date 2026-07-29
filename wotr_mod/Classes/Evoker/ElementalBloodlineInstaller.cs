@@ -614,6 +614,7 @@ namespace wotr_mod.Classes.Evoker
                 foreach (var addResources in _blueprints.GetComponents<AddAbilityResources>(feature))
                 {
                     _blueprints.SetAddAbilityResourcesResource(addResources, abilityResource);
+                    addResources.RestoreOnLevelUp = true;
                 }
             }
 

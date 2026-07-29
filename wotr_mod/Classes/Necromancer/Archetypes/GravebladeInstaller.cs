@@ -103,7 +103,6 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var gravebladeLevelEntries = new[]
             {
                 CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, bonusFeat),
-                CreateLevelEntry(2,  bonusFeat),
                 CreateLevelEntry(3,  armorTraining, overhandChop),
                 CreateLevelEntry(5,  reapingEdgeTiers[1]),
                 CreateLevelEntry(6,  bonusFeat),

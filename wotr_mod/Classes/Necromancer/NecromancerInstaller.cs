@@ -371,7 +371,7 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Selections.NecromancerBonusFeat);
 
             _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
-            _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike, necromancerBonusFeat);
+            _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike);
             _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift);
             _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision, masterOfDeath);
             _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor);
@@ -671,6 +671,10 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.SetAddFacts(af, ability);
             }
             PatchFeatureResource(feature, resource);
+            foreach (var addResources in _blueprints.GetComponents<AddAbilityResources>(feature))
+            {
+                addResources.RestoreOnLevelUp = true;
+            }
             var castingStatDamage = _blueprints.EnsureComponent(
                 feature,
                 () => new WitheringRayCastingStatDamageBonus

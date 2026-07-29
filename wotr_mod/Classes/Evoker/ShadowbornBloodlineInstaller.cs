@@ -782,6 +782,10 @@ namespace wotr_mod.Classes.Evoker
                 foreach (var addResources in _blueprints.GetComponents<AddAbilityResources>(feature))
                 {
                     _blueprints.SetAddAbilityResourcesResource(addResources, abilityResource);
+                    if (abilityGuid == ModBlueprintIds.Abilities.ShadowbornUmbralRay)
+                    {
+                        addResources.RestoreOnLevelUp = true;
+                    }
                 }
             }
 

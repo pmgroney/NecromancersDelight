@@ -119,7 +119,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var deathstalkerLevelEntries = new[]
             {
                 CreateLevelEntry(1,  proficiencies, fighterTraining, bonusFeat, trapfinding),
-                CreateLevelEntry(2,  bonusFeat, finesseTraining),
+                CreateLevelEntry(2,  finesseTraining),
                 CreateLevelEntry(3,  sneakAttack, wraithstep1),
                 CreateLevelEntry(4,  bonusFeat),
                 CreateLevelEntry(5,  finesseTrainingUpgrade),
