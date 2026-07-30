@@ -3,6 +3,7 @@ using System.Linq;
 using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Ecnchantments;
@@ -12,11 +13,13 @@ using Kingmaker.Blueprints.Loot;
 using Kingmaker.Designers.Mechanics.EquipmentEnchants;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Enums;
 using Kingmaker.Items;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
+using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using Kingmaker.View.MapObjects;
@@ -95,6 +98,14 @@ namespace wotr_mod.Items
                         definition.InternalName + " enchantment");
                     _blueprints.AddWeaponEnchantment(weapon, enchantment);
                 }
+
+                if (string.Equals(
+                        definition.ItemGuid,
+                        ModBlueprintIds.Items.ApprenticeEvokersStaff,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    ConfigureApprenticeEvokersStaffItem(weapon);
+                }
             }
 
             if (item is BlueprintItemArmor armor
@@ -123,9 +134,88 @@ namespace wotr_mod.Items
 
         private void EnsureSupportBlueprints()
         {
+            EnsureApprenticeEvokersStaffFeature();
+            EnsureApprenticeEvokersStaffEnchantment();
             EnsureArchersTunicBowTrainingFeature();
             EnsureArchersTunicEnchantment();
             EnsureNeophytesLongbowOfDisciplineEnchantment();
+        }
+
+        private void EnsureApprenticeEvokersStaffFeature()
+        {
+            var existing = _blueprints.Get<BlueprintFeature>(
+                ModBlueprintIds.Features.ApprenticeEvokersStaff);
+            var feature = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.Ashmaker,
+                    "Ashmaker donor feature"),
+                ModBlueprintIds.Features.ApprenticeEvokersStaff,
+                "WotrMod_ApprenticeEvokersStaff_Feature");
+
+            _blueprints.SetComponents(
+                feature,
+                new AddStatBonus
+                {
+                    name = "$AddStatBonus$WotrMod_ApprenticeEvokersStaff",
+                    Descriptor = ModifierDescriptor.UntypedStackable,
+                    Stat = StatType.AdditionalAttackBonus,
+                    Value = 1
+                },
+                new IncreaseSpellSchoolCasterLevel
+                {
+                    name = "$IncreaseSpellSchoolCasterLevel$WotrMod_ApprenticeEvokersStaff",
+                    School = SpellSchool.Evocation,
+                    BonusLevel = 1,
+                    Descriptor = ModifierDescriptor.UntypedStackable
+                });
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Features.ApprenticeEvokersStaff,
+                    feature);
+            }
+        }
+
+        private void EnsureApprenticeEvokersStaffEnchantment()
+        {
+            var existing = _blueprints.Get<BlueprintWeaponEnchantment>(
+                ModBlueprintIds.Enchantments.ApprenticeEvokersStaff);
+            var enchantment = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintWeaponEnchantment>(
+                    GameBlueprintIds.Enchantments.Ashmaker,
+                    "Ashmaker donor enchantment"),
+                ModBlueprintIds.Enchantments.ApprenticeEvokersStaff,
+                "WotrMod_ApprenticeEvokersStaff_Enchantment");
+            var feature = _blueprints.Require<BlueprintFeature>(
+                ModBlueprintIds.Features.ApprenticeEvokersStaff,
+                "Apprentice Evoker's Staff feature");
+            var addFeature = new AddUnitFeatureEquipment
+            {
+                name = "$AddUnitFeatureEquipment$WotrMod_ApprenticeEvokersStaff"
+            };
+            _blueprints.SetAddUnitFeatureEquipmentFeature(addFeature, feature);
+            _blueprints.SetComponents(enchantment, addFeature);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Enchantments.ApprenticeEvokersStaff,
+                    enchantment);
+            }
+        }
+
+        private void ConfigureApprenticeEvokersStaffItem(BlueprintItemWeapon weapon)
+        {
+            var enhancement = _blueprints.Require<BlueprintWeaponEnchantment>(
+                GameBlueprintIds.Enchantments.WeaponEnhancementBonus1,
+                "+1 weapon enhancement");
+            var enchantment = _blueprints.Require<BlueprintWeaponEnchantment>(
+                ModBlueprintIds.Enchantments.ApprenticeEvokersStaff,
+                "Apprentice Evoker's Staff enchantment");
+
+            _blueprints.SetComponents(weapon);
+            _blueprints.SetWeaponEnchantments(weapon, enhancement, enchantment);
         }
 
         private void EnsureArchersTunicBowTrainingFeature()

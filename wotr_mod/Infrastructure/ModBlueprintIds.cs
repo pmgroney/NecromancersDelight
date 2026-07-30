@@ -16,6 +16,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Items
         {
+            public const string ApprenticeEvokersStaff = "3416ac07b8e9ab1d37efa2d4a35e001a";
             public const string ArchersTunic = "8e5de80b19d140e3b884fe3105dbc0a2";
             public const string BillyPilgrimageRecord = "c87a5a91737e4e149073650f543b45df";
             public const string NeophytesLongbowOfDiscipline = "067f5d63c7ec42f08207b6c5189e1715";
@@ -25,6 +26,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Enchantments
         {
+            public const string ApprenticeEvokersStaff = "fdfa9833d8b1aa609219c517a35cd51c";
             public const string ArchersTunic = "98802d04c1764e66b1616ccd492dec9a";
             public const string NeophytesLongbowOfDisciplineForceDamage = "52524073c51a4ec8bd5109751c85056a";
         }
@@ -312,6 +314,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string ApprenticeEvokersStaff = "183be6dd0c2478d4b2a12d9725ec2c31";
             public const string ArchersTunicBowTraining = "ebac5091069e4fccb9824008a8304fb2";
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
             public const string LivingDarknessFeature1 = "a1b2c3d4e5f648901a2b3c4d5e6f0001";

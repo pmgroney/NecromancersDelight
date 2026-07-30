@@ -43,7 +43,7 @@ namespace wotr_mod.Infrastructure
                     new FetchlingRacePatch(blueprints, localization),
                     new CustomHeritagePatch(blueprints, localization),
                     new LeopardTripPatch(blueprints, logger),
-                    new VelociraptorGrowthPatch(blueprints, logger)
+                    new CompanionPetGrowthPatch(blueprints, localization, logger)
                 });
         }
 

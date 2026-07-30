@@ -10,6 +10,21 @@ namespace wotr_mod.Items
             Array.AsReadOnly(new[]
             {
                 new CustomItemDefinition(
+                    "WotrMod_ApprenticeEvokersStaff",
+                    ModBlueprintIds.Items.ApprenticeEvokersStaff,
+                    GameBlueprintIds.Items.Ashmaker,
+                    LocalizationIds.Mod.ApprenticeEvokersStaffName,
+                    LocalizationIds.Mod.ApprenticeEvokersStaffDescription,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.EstrodTowerBasementBox,
+                            "Tower of Estrod basement box",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
                     "WotrMod_NeophytesLongbowOfDiscipline",
                     ModBlueprintIds.Items.NeophytesLongbowOfDiscipline,
                     GameBlueprintIds.Items.CompositeLongbowPlus1,

@@ -5,7 +5,6 @@ namespace wotr_mod.Infrastructure
         internal static class Game
         {
             public const string AnimalCompanionLeopardDescription = "36598b51-fc3a-47fb-8904-433a409e1c17";
-            public const string AnimalCompanionVelociraptorDescription = "3506ff37-e034-489a-8d87-bf2b91deaaa4";
             public const string DeathClutchName = "5c315d9f-517d-4efd-b8c6-9449691ce70d";
             public const string DeathClutchDescription = "58af3403-70f4-47c3-bf30-2ed3c3bdc5c4";
         }
@@ -99,6 +98,8 @@ namespace wotr_mod.Infrastructure
             public const string BillyConditionTransferRecordDescription = "wotr_mod.companion.billy.quest.condition.transfer_record.description";
             public const string CompanionPetName = "wotr_mod.feature.companion_pet.name";
             public const string CompanionPetDescription = "wotr_mod.feature.companion_pet.description";
+            public const string ApprenticeEvokersStaffName = "wotr_mod.item.apprentice_evokers_staff.name";
+            public const string ApprenticeEvokersStaffDescription = "wotr_mod.item.apprentice_evokers_staff.description";
             public const string NeophytesLongbowOfDisciplineName = "wotr_mod.item.neophytes_longbow_of_discipline.name";
             public const string NeophytesLongbowOfDisciplineDescription = "wotr_mod.item.neophytes_longbow_of_discipline.description";
             public const string BillyPilgrimageRecordName = "wotr_mod.item.billy_pilgrimage_record.name";

@@ -84,6 +84,10 @@ namespace wotr_mod
                 Settings.MakeWoljifBaseRogue,
                 "Make Woljif a base Rogue (requires restart)");
 
+            Settings.FasterPetGrowth = GUILayout.Toggle(
+                Settings.FasterPetGrowth,
+                "Faster pet growth");
+
             GUILayout.Space(14f);
             GUILayout.Label("Mouseover tooltip icon size");
             GUILayout.Space(4f);

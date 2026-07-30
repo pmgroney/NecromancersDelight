@@ -690,6 +690,23 @@ namespace wotr_mod.Infrastructure
                     .ToArray());
         }
 
+        public void SetWeaponEnchantments(
+            BlueprintItemWeapon weapon,
+            params BlueprintWeaponEnchantment[] enchantments)
+        {
+            if (weapon == null || BlueprintFields.ItemWeaponEnchantments == null)
+            {
+                return;
+            }
+
+            var references = (enchantments ?? Array.Empty<BlueprintWeaponEnchantment>())
+                .Where(enchantment => enchantment != null)
+                .Select(BlueprintReferenceBase.CreateTyped<BlueprintWeaponEnchantmentReference>)
+                .ToArray();
+
+            BlueprintFields.ItemWeaponEnchantments.SetValue(weapon, references);
+        }
+
         public void SetArmorEnchantments(BlueprintItemArmor armor, params BlueprintArmorEnchantment[] enchantments)
         {
             if (armor == null || BlueprintFields.ItemArmorEnchantments == null)

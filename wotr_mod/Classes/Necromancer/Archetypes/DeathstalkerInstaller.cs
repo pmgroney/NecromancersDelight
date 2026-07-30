@@ -85,6 +85,9 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             var fighterTraining = EnsureDeathstalkerFighterTraining(characterClass, bonusFeat);
             var sneakAttack = EnsureDeathstalkerSneakAttack(characterClass);
             var trapfinding = EnsureDeathstalkerTrapfinding(characterClass);
+            var advancedTalents = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.RogueAdvancedTalents,
+                "Rogue Advanced Talents");
             var masterStrike = EnsureDeathstalkerMasterStrike(characterClass);
             var finesseTraining = EnsureDeathstalkerFinesseTraining(characterClass);
             var finesseTrainingUpgrade = EnsureDeathstalkerFinesseTrainingUpgrade(finesseTraining);
@@ -127,7 +130,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 CreateLevelEntry(7,  wraithstep2),
                 CreateLevelEntry(8,  bonusFeat, finesseTrainingUpgrade),
                 CreateLevelEntry(9,  sneakAttack),
-                CreateLevelEntry(10, bonusFeat),
+                CreateLevelEntry(10, bonusFeat, advancedTalents),
                 CreateLevelEntry(11, wraithstep3),
                 CreateLevelEntry(12, bonusFeat, sneakAttack),
                 CreateLevelEntry(13, finesseTrainingUpgrade),
@@ -228,8 +231,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
                 necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 2,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"),
-                necromancerBonusFeat);
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"));
             AddLevelEntryIfAny(entries, 3,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
             AddLevelEntryIfAny(entries, 4,

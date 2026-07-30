@@ -212,7 +212,7 @@
         <Compile Include="Patches\LeopardTripPatch.cs" />
         <Compile Include="Patches\SpellEffectTintPatch.cs" />
         <Compile Include="Patches\TooltipIconMagnificationPatch.cs" />
-        <Compile Include="Patches\VelociraptorGrowthPatch.cs" />
+        <Compile Include="Patches\CompanionPetGrowthPatch.cs" />
         <Compile Include="Patches\PrologueStartingWeaponsChestPatch.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

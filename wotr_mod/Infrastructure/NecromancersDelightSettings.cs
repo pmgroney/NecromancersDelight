@@ -7,6 +7,7 @@ namespace wotr_mod.Infrastructure
         public bool EnableAchievementsWhileModded = true;
         public bool DelayDefendersHeartAssault = true;
         public bool MakeWoljifBaseRogue = true;
+        public bool FasterPetGrowth = true;
         public int TooltipIconMagnificationMode = 1;
 
         public override void Save(UnityModManager.ModEntry modEntry)

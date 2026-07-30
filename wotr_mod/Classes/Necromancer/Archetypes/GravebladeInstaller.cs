@@ -181,8 +181,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
                 necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 2,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"),
-                necromancerBonusFeat);
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"));
             AddLevelEntryIfAny(entries, 3,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
             AddLevelEntryIfAny(entries, 4,

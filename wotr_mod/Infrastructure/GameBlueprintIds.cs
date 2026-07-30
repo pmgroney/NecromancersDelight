@@ -275,16 +275,19 @@ namespace wotr_mod.Infrastructure
             public const string LightningReflexes = "15e7da6645a7f3d41bdad7c8c4b9de1e";
             public const string WeaponFinesse = "90e54424d682d104ab36436bd527af09";
             public const string ZenArcherWayOfTheBowLongbowFocus = "2e659493076249f49821925b9b7dc389";
+            public const string RogueAdvancedTalents = "a33b99f95322d6741af83e9381b2391c";
             public const string RogueSneakAttack = "9b9eac6709e1c084cb18c3a366e0ec87";
             public const string RogueTrapfinding = "dbb6b3bffe6db3547b31c3711653838e";
             public const string RogueMasterStrike = "72dcf1fb106d5054a81fd804fdc168d3";
             public const string RogueFinesseTrainingSelection = "b78d146cea711a84598f0acef69462ea";
             public const string DruidWoodlandStride = "4c1419ef6cfc430a9071405788da4a73";
             public const string VelociraptorAgileMovement = "9a44fc170dbe46d2a9e0e1e44666c714";
+            public const string Ashmaker = "27ffa0263026b3c449c7db15795c27fa";
         }
 
         internal static class Items
         {
+            public const string Ashmaker = "036ce89f2df7e2b428af9ff177f68caf";
             public const string ZachariusNecromancy = "de12840a4662481f937ff9542a6beb6b";
             public const string ColdIronMasterworkRapier = "47ee06073c429ad46916bf75e7455a5e";
             public const string BreastplatePlus1 = "5041415db3e6c394a8b2173c39fd4ec4";
@@ -327,8 +330,10 @@ namespace wotr_mod.Infrastructure
         internal static class Enchantments
         {
             public const string ArmorEnhancementBonus1 = "a9ea95c5e02f9b7468447bc1010fe152";
+            public const string Ashmaker = "3cf303da46e98c54d857a9a7ef5a58a2";
             public const string LongswordOfRightEnchantment = "59c2b96ee4525144e9ba7b8063ae20bb";
             public const string RobeOfConsciousnessEnchantment = "dce5be8495d271349b8ca796d4fd8996";
+            public const string WeaponEnhancementBonus1 = "d42fc23b92c640846ac137dc26e000d4";
         }
 
         internal static class Abilities
