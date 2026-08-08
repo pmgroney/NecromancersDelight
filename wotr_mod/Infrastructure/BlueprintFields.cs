@@ -98,6 +98,9 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo ItemDescription =
             typeof(BlueprintItem).GetField("m_DescriptionText", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo ItemCost =
+            typeof(BlueprintItem).GetField("m_Cost", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo ItemWeaponEnchantments =
             typeof(BlueprintItemWeapon).GetField("m_Enchantments", BindingFlags.Instance | BindingFlags.NonPublic);
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Kingmaker;
 using Kingmaker.Blueprints;
@@ -16,6 +17,7 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Enums;
+using Kingmaker.Enums.Damage;
 using Kingmaker.Items;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules.Damage;
@@ -31,6 +33,8 @@ namespace wotr_mod.Items
 {
     internal sealed class CustomItemInstaller : IContentModule, IAreaLoadModule
     {
+        private const string ShadowDemonHouseChestUniqueId = "15fcbf37-2f36-42e4-a595-261694b5ac9c";
+        private static readonly BlueprintGuid KenabresBurningGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.KenabresBurning);
         private static readonly BlueprintGuid PrologueLabyrinthGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.PrologueLabyrinth);
         private static readonly string[] ShieldMazeWeaponRackIds =
         {
@@ -114,6 +118,38 @@ namespace wotr_mod.Items
                 ConfigureArchersTunicItem(armor);
             }
 
+            if (item is BlueprintItemArmor cutpurseVest
+                && string.Equals(definition.ItemGuid, ModBlueprintIds.Items.CutpurseVest, StringComparison.OrdinalIgnoreCase))
+            {
+                ConfigureCutpurseVest(cutpurseVest);
+            }
+
+            if (item is BlueprintItemArmor battleMageVest
+                && string.Equals(definition.ItemGuid, ModBlueprintIds.Items.BattleMageVest, StringComparison.OrdinalIgnoreCase))
+            {
+                ConfigureBattleMageVest(battleMageVest);
+            }
+
+            if (item is BlueprintItemArmor acolyteArmor
+                && string.Equals(definition.ItemGuid, ModBlueprintIds.Items.IroriAcolytesArmor, StringComparison.OrdinalIgnoreCase))
+            {
+                ConfigureBillyArmorItem(
+                    acolyteArmor,
+                    GameBlueprintIds.Enchantments.ArmorEnhancementBonus2,
+                    ModBlueprintIds.Enchantments.IroriAcolytesArmor,
+                    "Irori Acolyte's Armor");
+            }
+
+            if (item is BlueprintItemArmor adeptArmor
+                && string.Equals(definition.ItemGuid, ModBlueprintIds.Items.IroriAdeptsArmor, StringComparison.OrdinalIgnoreCase))
+            {
+                ConfigureBillyArmorItem(
+                    adeptArmor,
+                    GameBlueprintIds.Enchantments.ArmorEnhancementBonus3,
+                    ModBlueprintIds.Enchantments.IroriAdeptsArmor,
+                    "Irori Adept's Armor");
+            }
+
             if (string.Equals(definition.ItemGuid, ModBlueprintIds.Items.BillyPilgrimageRecord, StringComparison.OrdinalIgnoreCase))
             {
                 ConfigureBillyPilgrimageRecord(item);
@@ -138,7 +174,37 @@ namespace wotr_mod.Items
             EnsureApprenticeEvokersStaffEnchantment();
             EnsureArchersTunicBowTrainingFeature();
             EnsureArchersTunicEnchantment();
+            EnsureBattleMageVestFeature();
+            EnsureBattleMageVestEnchantment();
+            EnsureBillyArmorFeature(
+                ModBlueprintIds.Features.IroriAcolytesArmor,
+                "WotrMod_IroriAcolytesArmor_Feature",
+                2,
+                GameBlueprintIds.Features.PositiveChannelingBonus1Die,
+                GameBlueprintIds.Features.NegativeChannelingBonus1Die);
+            EnsureBillyArmorEnchantment(
+                ModBlueprintIds.Enchantments.IroriAcolytesArmor,
+                ModBlueprintIds.Features.IroriAcolytesArmor,
+                "WotrMod_IroriAcolytesArmor_Enchantment");
+            EnsureBillyArmorFeature(
+                ModBlueprintIds.Features.IroriAdeptsArmor,
+                "WotrMod_IroriAdeptsArmor_Feature",
+                3,
+                GameBlueprintIds.Features.PositiveChannelingBonus2Dice,
+                GameBlueprintIds.Features.NegativeChannelingBonus2Dice);
+            EnsureBillyArmorEnchantment(
+                ModBlueprintIds.Enchantments.IroriAdeptsArmor,
+                ModBlueprintIds.Features.IroriAdeptsArmor,
+                "WotrMod_IroriAdeptsArmor_Enchantment");
             EnsureNeophytesLongbowOfDisciplineEnchantment();
+            EnsureDisciplineForceDamageEnchantment(
+                ModBlueprintIds.Enchantments.AcolytesLongbowOfDisciplineForceDamage,
+                "WotrMod_AcolytesLongbowOfDiscipline_ForceDamage",
+                DiceType.D8);
+            EnsureDisciplineForceDamageEnchantment(
+                ModBlueprintIds.Enchantments.AdeptsLongbowOfDisciplineForceDamage,
+                "WotrMod_AdeptsLongbowOfDiscipline_ForceDamage",
+                DiceType.D10);
         }
 
         private void EnsureApprenticeEvokersStaffFeature()
@@ -273,6 +339,94 @@ namespace wotr_mod.Items
             _blueprints.SetArmorEnchantments(armor, enhancement, enchantment);
         }
 
+        private void ConfigureCutpurseVest(BlueprintItemArmor armor)
+        {
+            var enhancement = _blueprints.Require<BlueprintArmorEnchantment>(
+                GameBlueprintIds.Enchantments.ArmorEnhancementBonus1,
+                "+1 armor enhancement");
+            var dexterity = _blueprints.Require<BlueprintEquipmentEnchantment>(
+                GameBlueprintIds.Enchantments.Dexterity1,
+                "+1 Dexterity equipment enchantment");
+
+            // StuddedStandartPlus1 uses the original StuddedBandits visual.
+            armor.ForcedRampColorPresetIndex = 0;
+            _blueprints.SetItemCost(armor, 4175);
+            _blueprints.SetArmorEnchantments(armor, enhancement, dexterity);
+        }
+
+        private void ConfigureBattleMageVest(BlueprintItemArmor armor)
+        {
+            var enhancement = _blueprints.Require<BlueprintArmorEnchantment>(
+                GameBlueprintIds.Enchantments.ArmorEnhancementBonus2,
+                "+2 armor enhancement");
+            var charisma = _blueprints.Require<BlueprintEquipmentEnchantment>(
+                GameBlueprintIds.Enchantments.Charisma2,
+                "+2 Charisma equipment enchantment");
+            var slashingResistance = _blueprints.Require<BlueprintArmorEnchantment>(
+                ModBlueprintIds.Enchantments.BattleMageVest,
+                "Battle Mage Vest slashing resistance enchantment");
+
+            armor.ForcedRampColorPresetIndex = 2;
+            _blueprints.SetComponents(armor);
+            _blueprints.SetArmorEnchantments(armor, enhancement, charisma, slashingResistance);
+        }
+
+        private void EnsureBattleMageVestFeature()
+        {
+            var existing = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.BattleMageVest);
+            var feature = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.UnbendingArmor,
+                    "Unbending Armor feature donor"),
+                ModBlueprintIds.Features.BattleMageVest,
+                "WotrMod_BattleMageVest_Feature");
+
+            _blueprints.SetComponents(
+                feature,
+                new AddDamageResistancePhysical
+                {
+                    name = "$AddDamageResistancePhysical$WotrMod_BattleMageVest_Slashing",
+                    Value = new ContextValue
+                    {
+                        ValueType = ContextValueType.Simple,
+                        Value = 5
+                    },
+                    BypassedByForm = true,
+                    Form = PhysicalDamageForm.Bludgeoning | PhysicalDamageForm.Piercing
+                });
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.BattleMageVest, feature);
+            }
+        }
+
+        private void EnsureBattleMageVestEnchantment()
+        {
+            var existing = _blueprints.Get<BlueprintArmorEnchantment>(ModBlueprintIds.Enchantments.BattleMageVest);
+            var enchantment = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintArmorEnchantment>(
+                    GameBlueprintIds.Enchantments.UnbendingArmorEnchantment,
+                    "Unbending Armor enchantment donor"),
+                ModBlueprintIds.Enchantments.BattleMageVest,
+                "WotrMod_BattleMageVest_Enchantment");
+            var addFeature = new AddUnitFeatureEquipment
+            {
+                name = "$AddUnitFeatureEquipment$WotrMod_BattleMageVest"
+            };
+            _blueprints.SetAddUnitFeatureEquipmentFeature(
+                addFeature,
+                _blueprints.Require<BlueprintFeature>(
+                    ModBlueprintIds.Features.BattleMageVest,
+                    "Battle Mage Vest feature"));
+            _blueprints.SetComponents(enchantment, addFeature);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Enchantments.BattleMageVest, enchantment);
+            }
+        }
+
         private void ConfigureArchersTunicEnchantment(BlueprintArmorEnchantment enchantment)
         {
             var feature = _blueprints.Require<BlueprintFeature>(
@@ -312,39 +466,150 @@ namespace wotr_mod.Items
                 });
         }
 
+        private void EnsureBillyArmorFeature(
+            string featureGuid,
+            string internalName,
+            int bowBonus,
+            string positiveChannelFeatureGuid,
+            string negativeChannelFeatureGuid)
+        {
+            var existing = _blueprints.Get<BlueprintFeature>(featureGuid);
+            var feature = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintFeature>(
+                    GameBlueprintIds.Features.RobeOfConsciousnessFeature,
+                    "Robe of Consciousness donor feature"),
+                featureGuid,
+                internalName);
+            var components = new List<BlueprintComponent>
+            {
+                new WeaponGroupAttackBonus
+                {
+                    name = "$WeaponGroupAttackBonus$" + internalName,
+                    WeaponGroup = WeaponFighterGroup.Bows,
+                    AttackBonus = bowBonus,
+                    Descriptor = ModifierDescriptor.None,
+                    multiplyByContext = false,
+                    contextMultiplier = new ContextValue()
+                },
+                new WeaponGroupDamageBonus
+                {
+                    name = "$WeaponGroupDamageBonus$" + internalName,
+                    WeaponGroup = WeaponFighterGroup.Bows,
+                    DamageBonus = bowBonus,
+                    Descriptor = ModifierDescriptor.None,
+                    AdditionalValue = new ContextValue()
+                }
+            };
+            var addChannelFeatures = new AddFacts
+            {
+                name = "$AddFacts$" + internalName + "_Channel"
+            };
+            _blueprints.SetAddFacts(
+                addChannelFeatures,
+                _blueprints.Require<BlueprintFeature>(
+                    positiveChannelFeatureGuid,
+                    internalName + " positive channel bonus"),
+                _blueprints.Require<BlueprintFeature>(
+                    negativeChannelFeatureGuid,
+                    internalName + " negative channel bonus"));
+            components.Add(addChannelFeatures);
+            _blueprints.SetComponents(feature, components.ToArray());
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(featureGuid, feature);
+            }
+        }
+
+        private void EnsureBillyArmorEnchantment(
+            string enchantmentGuid,
+            string featureGuid,
+            string internalName)
+        {
+            var existing = _blueprints.Get<BlueprintArmorEnchantment>(enchantmentGuid);
+            var enchantment = existing ?? _blueprints.CloneBlueprint(
+                _blueprints.Require<BlueprintArmorEnchantment>(
+                    GameBlueprintIds.Enchantments.RobeOfConsciousnessEnchantment,
+                    "Robe of Consciousness donor enchantment"),
+                enchantmentGuid,
+                internalName);
+            var feature = _blueprints.Require<BlueprintFeature>(
+                featureGuid,
+                internalName + " feature");
+            var addFeature = new AddUnitFeatureEquipment
+            {
+                name = "$AddUnitFeatureEquipment$" + internalName
+            };
+            _blueprints.SetAddUnitFeatureEquipmentFeature(addFeature, feature);
+            _blueprints.SetComponents(enchantment, addFeature);
+
+            if (existing == null)
+            {
+                _blueprints.AddCachedBlueprint(enchantmentGuid, enchantment);
+            }
+        }
+
+        private void ConfigureBillyArmorItem(
+            BlueprintItemArmor armor,
+            string enhancementGuid,
+            string enchantmentGuid,
+            string itemName)
+        {
+            var enhancement = _blueprints.Require<BlueprintArmorEnchantment>(
+                enhancementGuid,
+                itemName + " enhancement");
+            var enchantment = _blueprints.Require<BlueprintArmorEnchantment>(
+                enchantmentGuid,
+                itemName + " enchantment");
+
+            _blueprints.SetComponents(armor);
+            _blueprints.SetArmorEnchantments(armor, enhancement, enchantment);
+        }
+
         private void EnsureNeophytesLongbowOfDisciplineEnchantment()
         {
-            var existing = _blueprints.Get<BlueprintWeaponEnchantment>(
-                ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage);
+            EnsureDisciplineForceDamageEnchantment(
+                ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage,
+                "WotrMod_NeophytesLongbowOfDiscipline_ForceDamage",
+                DiceType.D6);
+        }
+
+        private void EnsureDisciplineForceDamageEnchantment(
+            string enchantmentGuid,
+            string internalName,
+            DiceType diceType)
+        {
+            var existing = _blueprints.Get<BlueprintWeaponEnchantment>(enchantmentGuid);
             var enchantment = existing ?? _blueprints.CloneBlueprint(
                 _blueprints.Require<BlueprintWeaponEnchantment>(
                     GameBlueprintIds.Enchantments.LongswordOfRightEnchantment,
                     "Longsword of Right donor enchantment"),
-                ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage,
-                "WotrMod_NeophytesLongbowOfDiscipline_ForceDamage");
+                enchantmentGuid,
+                internalName);
 
-            ConfigureDisciplineForceDamage(enchantment);
+            ConfigureDisciplineForceDamage(enchantment, diceType, internalName);
 
             if (existing == null)
             {
-                _blueprints.AddCachedBlueprint(
-                    ModBlueprintIds.Enchantments.NeophytesLongbowOfDisciplineForceDamage,
-                    enchantment);
+                _blueprints.AddCachedBlueprint(enchantmentGuid, enchantment);
             }
         }
 
-        private BlueprintWeaponEnchantment ConfigureDisciplineForceDamage(BlueprintWeaponEnchantment enchantment)
+        private BlueprintWeaponEnchantment ConfigureDisciplineForceDamage(
+            BlueprintWeaponEnchantment enchantment,
+            DiceType diceType,
+            string internalName)
         {
             var component = _blueprints.EnsureComponent(
                 enchantment,
                 () => new WeaponConditionalDamageDice
                 {
-                    name = "$WeaponConditionalDamageDice$WotrMod_NeophytesLongbowOfDiscipline_ForceDamage"
+                    name = "$WeaponConditionalDamageDice$" + internalName
                 });
 
             component.Damage = new DamageDescription
             {
-                Dice = new DiceFormula(1, DiceType.D6),
+                Dice = new DiceFormula(1, diceType),
                 Bonus = 0,
                 TypeDescription = new DamageTypeDescription
                 {
@@ -364,7 +629,7 @@ namespace wotr_mod.Items
                 {
                     new ContextConditionAlignment
                     {
-                        name = "$ContextConditionAlignment$WotrMod_NeophytesLongbowOfDiscipline_Chaotic",
+                        name = "$ContextConditionAlignment$" + internalName + "_Chaotic",
                         CheckCaster = false,
                         Alignment = AlignmentComponent.Chaotic
                     }
@@ -414,6 +679,8 @@ namespace wotr_mod.Items
 
         public void OnAreaLoaded()
         {
+            AddShadowDemonHouseLockpicks();
+
             var isShieldMazeLoaded = IsShieldMazeLoaded();
             var shieldMazeRuntimeLootSeeded = isShieldMazeLoaded && IsShieldMazeRuntimeLootSeeded();
             var shieldMazeRuntimeLootTargetsReady = isShieldMazeLoaded && AreShieldMazeRuntimeLootTargetsReady();
@@ -464,6 +731,24 @@ namespace wotr_mod.Items
             {
                 MarkShieldMazeRuntimeLootSeeded();
             }
+        }
+
+        private void AddShadowDemonHouseLockpicks()
+        {
+            if (!IsKenabresBurningLoaded())
+            {
+                return;
+            }
+
+            var lockpick = _blueprints.Require<BlueprintItem>(
+                GameBlueprintIds.Items.ConsumableLockpickPlus5,
+                "Lockpick +5");
+            EnsureMapObjectLootItemCount(
+                ShadowDemonHouseChestUniqueId,
+                "Market Square Shadow Demon house book chest",
+                lockpick,
+                count: 6,
+                identify: true);
         }
 
         private void AddShieldMazeFixedLoot()
@@ -568,6 +853,13 @@ namespace wotr_mod.Items
                 loadedIds.Contains(requiredId, StringComparer.OrdinalIgnoreCase));
         }
 
+        private static bool IsKenabresBurningLoaded()
+        {
+            return Game.HasInstance
+                && Game.Instance.CurrentlyLoadedArea != null
+                && Game.Instance.CurrentlyLoadedArea.AssetGuid == KenabresBurningGuid;
+        }
+
         private static bool IsShieldMazeRuntimeLootPlacement(ItemPlacementDefinition placement)
         {
             return placement.Kind == ItemPlacementKind.MapObjectLoot
@@ -669,6 +961,67 @@ namespace wotr_mod.Items
             });
 
             _logger.Log($"Added {item.name} to map object loot {targetName}.");
+        }
+
+        private void EnsureMapObjectLootItemCount(
+            string mapObjectUniqueId,
+            string targetName,
+            BlueprintItem item,
+            int count,
+            bool identify)
+        {
+            var mapObject = Game.Instance?.State?.LoadedAreaState?.AllEntityData
+                ?.OfType<MapObjectEntityData>()
+                ?.FirstOrDefault(entity => string.Equals(
+                    entity.UniqueId,
+                    mapObjectUniqueId,
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (mapObject == null)
+            {
+                _logger.Log($"Map object loot target not found: {targetName} / {mapObjectUniqueId}");
+                return;
+            }
+
+            var lootPart = mapObject.Parts.Get<InteractionLootPart>();
+            if (lootPart == null)
+            {
+                _logger.Log($"Map object has no InteractionLootPart: {targetName} / {mapObject.UniqueId}");
+                return;
+            }
+
+            if (lootPart.Loot == null)
+            {
+                lootPart.Loot = new ItemsCollection(mapObject);
+            }
+
+            var existingItem = lootPart.Loot.Items.FirstOrDefault(existing => existing?.Blueprint?.AssetGuid == item.AssetGuid);
+            if (existingItem != null)
+            {
+                if (existingItem.Count < count)
+                {
+                    existingItem.SetCount(count);
+                    _logger.Log($"Updated {item.name} count in map object loot {targetName} to {count}.");
+                }
+
+                if (identify)
+                {
+                    existingItem.Identify();
+                }
+
+                return;
+            }
+
+            lootPart.Loot.Add(item, count, identify, createdItem =>
+            {
+                createdItem.SetCount(count);
+                if (identify)
+                {
+                    createdItem.Identify();
+                }
+            });
+
+            _logger.Log($"Added {count} {item.name} to map object loot {targetName}.");
         }
 
         private void AddToLoadedUnitInventory(ItemPlacementDefinition placement, BlueprintItem item)

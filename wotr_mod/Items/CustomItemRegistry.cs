@@ -44,6 +44,44 @@ namespace wotr_mod.Items
                     }),
 
                 new CustomItemDefinition(
+                    "WotrMod_AcolytesLongbowOfDiscipline",
+                    ModBlueprintIds.Items.AcolytesLongbowOfDiscipline,
+                    GameBlueprintIds.Items.CompositeLongbowPlus2,
+                    LocalizationIds.Mod.AcolytesLongbowOfDisciplineName,
+                    LocalizationIds.Mod.AcolytesLongbowOfDisciplineDescription,
+                    enchantmentGuids: new[]
+                    {
+                        ModBlueprintIds.Enchantments.AcolytesLongbowOfDisciplineForceDamage
+                    },
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.GibberingSwarmVescavorQueen,
+                            "Leper's Smile Vescavor Queen loot",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
+                    "WotrMod_AdeptsLongbowOfDiscipline",
+                    ModBlueprintIds.Items.AdeptsLongbowOfDiscipline,
+                    GameBlueprintIds.Items.CompositeLongbowPlus3,
+                    LocalizationIds.Mod.AdeptsLongbowOfDisciplineName,
+                    LocalizationIds.Mod.AdeptsLongbowOfDisciplineDescription,
+                    enchantmentGuids: new[]
+                    {
+                        ModBlueprintIds.Enchantments.AdeptsLongbowOfDisciplineForceDamage
+                    },
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.MidnightFaneReserveBalorCorpse,
+                            "Midnight Fane reserve balor corpse",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
                     "WotrMod_ArchersTunic",
                     ModBlueprintIds.Items.ArchersTunic,
                     GameBlueprintIds.Items.BreastplatePlus1,
@@ -63,6 +101,36 @@ namespace wotr_mod.Items
                     }),
 
                 new CustomItemDefinition(
+                    "WotrMod_IroriAcolytesArmor",
+                    ModBlueprintIds.Items.IroriAcolytesArmor,
+                    GameBlueprintIds.Items.BreastplatePlus2,
+                    LocalizationIds.Mod.IroriAcolytesArmorName,
+                    LocalizationIds.Mod.IroriAcolytesArmorDescription,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.LostChapelLibraryCupboard,
+                            "Lost Chapel library cupboard",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
+                    "WotrMod_IroriAdeptsArmor",
+                    ModBlueprintIds.Items.IroriAdeptsArmor,
+                    GameBlueprintIds.Items.BreastplatePlus3,
+                    LocalizationIds.Mod.IroriAdeptsArmorName,
+                    LocalizationIds.Mod.IroriAdeptsArmorDescription,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.IvorySanctumXantirNotes,
+                            "Ivory Sanctum Xanthir notes",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
                     "WotrMod_BillyPilgrimageRecord",
                     ModBlueprintIds.Items.BillyPilgrimageRecord,
                     GameBlueprintIds.Items.ZachariusNecromancy,
@@ -73,6 +141,36 @@ namespace wotr_mod.Items
                         ItemPlacementDefinition.InChestLoot(
                             GameBlueprintIds.Loot.KenabresBurningChestNearBridge,
                             "Market Square chest near bridge",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
+                    "WotrMod_BattleMageVest",
+                    ModBlueprintIds.Items.BattleMageVest,
+                    GameBlueprintIds.Items.StuddedHolyAgainstBlindnessPlus3,
+                    LocalizationIds.Mod.BattleMageVestName,
+                    LocalizationIds.Mod.BattleMageVestDescription,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.DrezenCitadelLevel2GoodLootChest,
+                            "Drezen Citadel level 2 good loot chest",
+                            count: 1,
+                            identify: true)
+                    }),
+
+                new CustomItemDefinition(
+                    "WotrMod_CutpurseVest",
+                    ModBlueprintIds.Items.CutpurseVest,
+                    GameBlueprintIds.Items.StuddedLeatherPlus1,
+                    LocalizationIds.Mod.CutpurseVestName,
+                    LocalizationIds.Mod.CutpurseVestDescription,
+                    placements: new[]
+                    {
+                        ItemPlacementDefinition.InChestLoot(
+                            GameBlueprintIds.Loot.KenabresBurningHouseWithDemonsChest,
+                            "Market Square House with Demons chest",
                             count: 1,
                             identify: true)
                     }),

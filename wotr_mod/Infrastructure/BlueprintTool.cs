@@ -669,6 +669,11 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.ItemDescription.SetValue(item, description);
         }
 
+        public void SetItemCost(BlueprintItem item, int cost)
+        {
+            BlueprintFields.ItemCost.SetValue(item, cost);
+        }
+
         public void AddWeaponEnchantment(BlueprintItemWeapon weapon, BlueprintWeaponEnchantment enchantment)
         {
             if (weapon == null || enchantment == null || BlueprintFields.ItemWeaponEnchantments == null)
@@ -707,7 +712,7 @@ namespace wotr_mod.Infrastructure
             BlueprintFields.ItemWeaponEnchantments.SetValue(weapon, references);
         }
 
-        public void SetArmorEnchantments(BlueprintItemArmor armor, params BlueprintArmorEnchantment[] enchantments)
+        public void SetArmorEnchantments(BlueprintItemArmor armor, params BlueprintEquipmentEnchantment[] enchantments)
         {
             if (armor == null || BlueprintFields.ItemArmorEnchantments == null)
             {

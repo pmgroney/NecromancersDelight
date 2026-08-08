@@ -206,6 +206,10 @@ namespace wotr_mod.Content
             _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct1JalmerayCue,       "Play_CMP_Billy_Dialog_Act1JalmerayCue");
             _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct1RecordCue,         "Play_CMP_Billy_Dialog_Act1RecordCue");
             _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct1TunicCue,          "Play_CMP_Billy_Dialog_Act1TunicCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct2BowCue,            "Play_CMP_Billy_Dialog_Act2BowCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct2ArmorCue,          "Play_CMP_Billy_Dialog_Act2ArmorCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct3ArmorCue,          "Play_CMP_Billy_Dialog_Act3ArmorCue");
+            _localization.PutSoundEvent(LocalizationIds.Mod.BillyAct3BowCue,            "Play_CMP_Billy_Dialog_Act3BowCue");
         }
 
         public void Install()
@@ -372,6 +376,26 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Dialogs.BillyAct1TunicDialog,
                 "WotrMod_BillyAct1TunicDialog",
                 "Ciar zombie dialog");
+            var act2BowDialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyAct2BowDialog,
+                "WotrMod_BillyAct2BowDialog",
+                "Ciar zombie dialog");
+            var act2ArmorDialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyAct2ArmorDialog,
+                "WotrMod_BillyAct2ArmorDialog",
+                "Ciar zombie dialog");
+            var act3ArmorDialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyAct3ArmorDialog,
+                "WotrMod_BillyAct3ArmorDialog",
+                "Ciar zombie dialog");
+            var act3BowDialog = GetOrClone<BlueprintDialog>(
+                GameBlueprintIds.Dialogs.CiarZombieDialog,
+                ModBlueprintIds.Dialogs.BillyAct3BowDialog,
+                "WotrMod_BillyAct3BowDialog",
+                "Ciar zombie dialog");
             var leaveAnswer = GetOrClone<BlueprintAnswer>(
                 GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
                 ModBlueprintIds.Dialogs.BillyLeaveAnswer,
@@ -437,6 +461,26 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Dialogs.BillyAct1TunicCue,
                 "WotrMod_BillyAct1TunicCue",
                 "Ciar zombie greeting cue");
+            var act2BowCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct2BowCue,
+                "WotrMod_BillyAct2BowCue",
+                "Ciar zombie greeting cue");
+            var act2ArmorCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct2ArmorCue,
+                "WotrMod_BillyAct2ArmorCue",
+                "Ciar zombie greeting cue");
+            var act3ArmorCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct3ArmorCue,
+                "WotrMod_BillyAct3ArmorCue",
+                "Ciar zombie greeting cue");
+            var act3BowCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct3BowCue,
+                "WotrMod_BillyAct3BowCue",
+                "Ciar zombie greeting cue");
             var act1JalmerayAnswer = GetOrClone<BlueprintAnswer>(
                 GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
                 ModBlueprintIds.Dialogs.BillyAct1JalmerayAnswer,
@@ -456,6 +500,26 @@ namespace wotr_mod.Content
                 GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
                 ModBlueprintIds.Dialogs.BillyAct1TunicAnswer,
                 "WotrMod_BillyAct1TunicAnswer",
+                "Ciar zombie leave answer");
+            var act2BowAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct2BowAnswer,
+                "WotrMod_BillyAct2BowAnswer",
+                "Ciar zombie leave answer");
+            var act2ArmorAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct2ArmorAnswer,
+                "WotrMod_BillyAct2ArmorAnswer",
+                "Ciar zombie leave answer");
+            var act3ArmorAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct3ArmorAnswer,
+                "WotrMod_BillyAct3ArmorAnswer",
+                "Ciar zombie leave answer");
+            var act3BowAnswer = GetOrClone<BlueprintAnswer>(
+                GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
+                ModBlueprintIds.Dialogs.BillyAct3BowAnswer,
+                "WotrMod_BillyAct3BowAnswer",
                 "Ciar zombie leave answer");
 
             dialog.FirstCue = CreateCueSelection(greeting, hubGreeting);
@@ -510,6 +574,10 @@ namespace wotr_mod.Content
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act1JalmerayAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act1RecordAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act1TunicAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act2BowAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act2ArmorAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act3ArmorAnswer),
+                BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(act3BowAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(joinAnswer),
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(leaveAnswer)
             };
@@ -521,6 +589,10 @@ namespace wotr_mod.Content
             ConfigureBillyInfoCue(act1JalmerayCue, LocalizationIds.Mod.BillyAct1JalmerayCue, speaker, answers);
             ConfigureBillyInfoCue(act1RecordCue, LocalizationIds.Mod.BillyAct1RecordCue, speaker, answers);
             ConfigureBillyInfoCue(act1TunicCue, LocalizationIds.Mod.BillyAct1TunicCue, speaker, answers);
+            ConfigureBillyInfoCue(act2BowCue, LocalizationIds.Mod.BillyAct2BowCue, speaker, answers);
+            ConfigureBillyInfoCue(act2ArmorCue, LocalizationIds.Mod.BillyAct2ArmorCue, speaker, answers);
+            ConfigureBillyInfoCue(act3ArmorCue, LocalizationIds.Mod.BillyAct3ArmorCue, speaker, answers);
+            ConfigureBillyInfoCue(act3BowCue, LocalizationIds.Mod.BillyAct3BowCue, speaker, answers);
             ConfigureBillyQuestionAnswer(
                 whatAreYouAnswer,
                 LocalizationIds.Mod.BillyWhatAreYouAnswer,
@@ -545,6 +617,38 @@ namespace wotr_mod.Content
             ConfigureBillyQuestCueExit(act1TunicCue, act1JalmerayContinueAnswer);
             ConfigureBillySingleCueDialog(act1RecordDialog, act1RecordCue);
             ConfigureBillySingleCueDialog(act1TunicDialog, act1TunicCue);
+            ConfigureBillyQuestStatusAnswer(
+                act2BowAnswer,
+                LocalizationIds.Mod.BillyAct2BowAnswer,
+                act2BowCue,
+                ModBlueprintIds.QuestObjectives.BillyConditionAct2LostChapel,
+                QuestObjectiveState.Started);
+            ConfigureBillyQuestCueExit(act2BowCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestStatusAnswer(
+                act2ArmorAnswer,
+                LocalizationIds.Mod.BillyAct2ArmorAnswer,
+                act2ArmorCue,
+                ModBlueprintIds.QuestObjectives.BillyConditionAct3IvorySanctum,
+                QuestObjectiveState.Started);
+            ConfigureBillyQuestCueExit(act2ArmorCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestStatusAnswer(
+                act3ArmorAnswer,
+                LocalizationIds.Mod.BillyAct3ArmorAnswer,
+                act3ArmorCue,
+                ModBlueprintIds.QuestObjectives.BillyConditionAct3MidnightFane,
+                QuestObjectiveState.Started);
+            ConfigureBillyQuestCueExit(act3ArmorCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestStatusAnswer(
+                act3BowAnswer,
+                LocalizationIds.Mod.BillyAct3BowAnswer,
+                act3BowCue,
+                ModBlueprintIds.QuestObjectives.BillyConditionAct4Abyss,
+                QuestObjectiveState.Started);
+            ConfigureBillyQuestCueExit(act3BowCue, act1JalmerayContinueAnswer);
+            ConfigureBillySingleCueDialog(act2BowDialog, act2BowCue);
+            ConfigureBillySingleCueDialog(act2ArmorDialog, act2ArmorCue);
+            ConfigureBillySingleCueDialog(act3ArmorDialog, act3ArmorCue);
+            ConfigureBillySingleCueDialog(act3BowDialog, act3BowCue);
 
             joinAnswer.Text = _localization.Text(LocalizationIds.Mod.BillyJoinAnswer);
             joinAnswer.ShowConditions = CreateBillyRecruitedConditions(speaker, not: true);

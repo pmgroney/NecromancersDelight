@@ -31,6 +31,14 @@
     "BillyAct1RecordAnswer": "We found a scorched record about a Jalmeray archer.",
     "BillyAct1RecordCue": "Foreign Iroran novice, transferred under Hosilla's authority, body absent from the second count. Efficient paperwork for stealing a corpse. The receiving mark belongs to the Tower of Estrod. We should search whatever cache the cultists left there.",
     "BillyAct1TunicAnswer": "This tunic was hidden in the cult cache.",
-    "BillyAct1TunicCue": "Temple work, altered for a corpse expected to keep fighting. There is another notation inside the collar: \"north convoy, retrieval beneath the split earth.\" Cryptic, but the road to Drezen appears determined to provide us with both halves."
+    "BillyAct1TunicCue": "Temple work, altered for a corpse expected to keep fighting. There is another notation inside the collar: \"north convoy, retrieval beneath the split earth.\" Cryptic, but the road to Drezen appears determined to provide us with both halves.",
+    "BillyAct2BowAnswer": "These reinforcements bear the same marks as your bow.",
+    "BillyAct2BowCue": "Same inventory marks as the Kenabres record. These reinforcement strips are from Jalmeray. Whoever handled my bow knew where it came from. It still remembers my grip. That is either comforting or deeply unsettling. I will decide after I shoot something.",
+    "BillyAct2ArmorAnswer": "The chapel cache held plates made to fit your armor.",
+    "BillyAct2ArmorCue": "Prepared for the alterations in my breastplate, complete with channeling matrices. They expected their dead archer to survive long enough to collect the next issue. Efficient. The maker's cipher points to a laboratory serving the Ivory Sanctum.",
+    "BillyAct3ArmorAnswer": "Xanthir's records describe what they did to you.",
+    "BillyAct3ArmorCue": "They were not trying to preserve me. They were measuring how much of me they could remove before the rest stopped being useful. The notes call my memories \"behavioral residue.\" I preferred them when they merely called me cargo. These corrections should make the armor answer to me instead of their design.",
+    "BillyAct3BowAnswer": "The records from the Midnight Fane explain why your bow mattered.",
+    "BillyAct3BowCue": "Three breaths. One shot. Again and again, while they tried to hollow everything else out. I thought the bow remembered me. It was the other way around. I remembered myself through it. They wanted a weapon that could obey after death. They succeeded at the weapon part."
   }
 }

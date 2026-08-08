@@ -6,6 +6,7 @@ using Kingmaker;
 using Kingmaker.AreaLogic.QuestSystem;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Experience;
+using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.EntitySystem.Entities;
@@ -26,12 +27,24 @@ namespace wotr_mod.Content
         private static readonly BlueprintGuid BowGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.NeophytesLongbowOfDiscipline);
         private static readonly BlueprintGuid PilgrimageRecordGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.BillyPilgrimageRecord);
         private static readonly BlueprintGuid ArchersTunicGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.ArchersTunic);
+        private static readonly BlueprintGuid AcolyteBowGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.AcolytesLongbowOfDiscipline);
+        private static readonly BlueprintGuid AcolyteArmorGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.IroriAcolytesArmor);
+        private static readonly BlueprintGuid AdeptArmorGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.IroriAdeptsArmor);
+        private static readonly BlueprintGuid AdeptBowGuid = BlueprintGuid.Parse(ModBlueprintIds.Items.AdeptsLongbowOfDiscipline);
         private static readonly QuestExperienceReward Act1JalmerayLeadReward =
             new QuestExperienceReward(EncounterType.ChallengeMinor, 3);
         private static readonly QuestExperienceReward Act1TransferRecordReward =
             new QuestExperienceReward(EncounterType.ChallengeMinor, 4);
         private static readonly QuestExperienceReward Act1TrailColdReward =
             new QuestExperienceReward(EncounterType.QuestNormal, 4);
+        private static readonly QuestExperienceReward Act2LeperSmileReward =
+            new QuestExperienceReward(EncounterType.QuestNormal, 6);
+        private static readonly QuestExperienceReward Act2LostChapelReward =
+            new QuestExperienceReward(EncounterType.QuestNormal, 8);
+        private static readonly QuestExperienceReward Act3IvorySanctumReward =
+            new QuestExperienceReward(EncounterType.QuestNormal, 12);
+        private static readonly QuestExperienceReward Act3MidnightFaneReward =
+            new QuestExperienceReward(EncounterType.QuestNormal, 14);
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
 
@@ -64,6 +77,10 @@ namespace wotr_mod.Content
             TryStartBowQuest();
             TryAdvancePilgrimageRecordClue();
             TryAdvanceArchersTunicReward();
+            TryAdvanceAcolyteBowReward();
+            TryAdvanceAcolyteArmorReward();
+            TryAdvanceAdeptArmorReward();
+            TryAdvanceAdeptBowReward();
         }
 
         public void HandleItemsAdded(ItemsCollection collection, ItemEntity item, int count)
@@ -86,6 +103,26 @@ namespace wotr_mod.Content
             if (item.Blueprint.AssetGuid == ArchersTunicGuid)
             {
                 TryAdvanceArchersTunicReward(startDialog: true);
+            }
+
+            if (item.Blueprint.AssetGuid == AcolyteBowGuid)
+            {
+                TryAdvanceAcolyteBowReward(startDialog: true);
+            }
+
+            if (item.Blueprint.AssetGuid == AcolyteArmorGuid)
+            {
+                TryAdvanceAcolyteArmorReward(startDialog: true);
+            }
+
+            if (item.Blueprint.AssetGuid == AdeptArmorGuid)
+            {
+                TryAdvanceAdeptArmorReward(startDialog: true);
+            }
+
+            if (item.Blueprint.AssetGuid == AdeptBowGuid)
+            {
+                TryAdvanceAdeptBowReward(startDialog: true);
             }
         }
 
@@ -203,6 +240,109 @@ namespace wotr_mod.Content
             }
         }
 
+        private bool TryAdvanceAcolyteBowReward(bool startDialog = false)
+        {
+            return TryAdvanceEquipmentReward(
+                AcolyteBowGuid,
+                EnsureBillyConditionAct1TrailColdObjective,
+                EnsureBillyConditionAct2LostChapelObjective,
+                ModBlueprintIds.Items.NeophytesLongbowOfDiscipline,
+                ModBlueprintIds.Dialogs.BillyAct2BowDialog,
+                "Billy Act 2 Leper's Smile bow reward",
+                startDialog);
+        }
+
+        private bool TryAdvanceAcolyteArmorReward(bool startDialog = false)
+        {
+            return TryAdvanceEquipmentReward(
+                AcolyteArmorGuid,
+                EnsureBillyConditionAct2LostChapelObjective,
+                EnsureBillyConditionAct3IvorySanctumObjective,
+                ModBlueprintIds.Items.ArchersTunic,
+                ModBlueprintIds.Dialogs.BillyAct2ArmorDialog,
+                "Billy Act 2 Lost Chapel armor reward",
+                startDialog);
+        }
+
+        private bool TryAdvanceAdeptArmorReward(bool startDialog = false)
+        {
+            return TryAdvanceEquipmentReward(
+                AdeptArmorGuid,
+                EnsureBillyConditionAct3IvorySanctumObjective,
+                EnsureBillyConditionAct3MidnightFaneObjective,
+                ModBlueprintIds.Items.IroriAcolytesArmor,
+                ModBlueprintIds.Dialogs.BillyAct3ArmorDialog,
+                "Billy Act 3 Ivory Sanctum armor reward",
+                startDialog);
+        }
+
+        private bool TryAdvanceAdeptBowReward(bool startDialog = false)
+        {
+            return TryAdvanceEquipmentReward(
+                AdeptBowGuid,
+                EnsureBillyConditionAct3MidnightFaneObjective,
+                EnsureBillyConditionAct4AbyssObjective,
+                ModBlueprintIds.Items.AcolytesLongbowOfDiscipline,
+                ModBlueprintIds.Dialogs.BillyAct3BowDialog,
+                "Billy Act 3 Midnight Fane bow reward",
+                startDialog);
+        }
+
+        private bool TryAdvanceEquipmentReward(
+            BlueprintGuid rewardItemGuid,
+            Func<BlueprintQuestObjective> currentObjectiveFactory,
+            Func<BlueprintQuestObjective> nextObjectiveFactory,
+            string previousItemGuid,
+            string dialogGuid,
+            string logName,
+            bool startDialog)
+        {
+            try
+            {
+                var player = Game.Instance?.Player;
+                if (player?.QuestBook == null || !PlayerHasItem(rewardItemGuid))
+                {
+                    return false;
+                }
+
+                var currentObjective = currentObjectiveFactory();
+                var nextObjective = nextObjectiveFactory();
+                if (player.QuestBook.GetObjectiveState(nextObjective) != QuestObjectiveState.None)
+                {
+                    return false;
+                }
+
+                var currentState = player.QuestBook.GetObjectiveState(currentObjective);
+                if (currentState == QuestObjectiveState.None)
+                {
+                    return false;
+                }
+
+                var previousItem = _blueprints.Require<BlueprintItem>(
+                    previousItemGuid,
+                    logName + " prior item");
+                if (currentState == QuestObjectiveState.Started)
+                {
+                    player.QuestBook.CompleteObjective(currentObjective);
+                }
+
+                player.Inventory.Remove(previousItem, 1, allowRemoveEquipped: true);
+                StartQuestObjective(player, nextObjective);
+                _logger.Log("Advanced " + logName + " and replaced the prior equipment tier.");
+                if (startDialog)
+                {
+                    TryStartBillyQuestDialog(dialogGuid, logName + " dialog");
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Warning(logName + " trigger failed: " + ex);
+                return false;
+            }
+        }
+
         private void TryStartBowQuest()
         {
             try
@@ -279,6 +419,10 @@ namespace wotr_mod.Content
             var jalmerayObjective = EnsureBillyConditionAct1JalmerayLeadObjective();
             var transferObjective = EnsureBillyConditionTransferRecordObjective();
             var trailColdObjective = EnsureBillyConditionAct1TrailColdObjective();
+            var act2LostChapelObjective = EnsureBillyConditionAct2LostChapelObjective();
+            var act3IvorySanctumObjective = EnsureBillyConditionAct3IvorySanctumObjective();
+            var act3MidnightFaneObjective = EnsureBillyConditionAct3MidnightFaneObjective();
+            var act4AbyssObjective = EnsureBillyConditionAct4AbyssObjective();
             quest.Title = CreateText(LocalizationIds.Mod.BillyConditionQuestTitle);
             quest.Description = CreateText(LocalizationIds.Mod.BillyConditionQuestDescription);
             quest.CompletionText = CreateText(LocalizationIds.Mod.BillyConditionQuestCompletion);
@@ -294,7 +438,11 @@ namespace wotr_mod.Content
                     BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(objective),
                     BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(jalmerayObjective),
                     BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(transferObjective),
-                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(trailColdObjective)
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(trailColdObjective),
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(act2LostChapelObjective),
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(act3IvorySanctumObjective),
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(act3MidnightFaneObjective),
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(act4AbyssObjective)
                 });
 
             return quest;
@@ -466,7 +614,14 @@ namespace wotr_mod.Content
             SetField(objective, "m_Areas", new List<BlueprintAreaReference>());
             SetField(objective, "m_FinishParent", false);
             SetField(objective, "m_Hidden", false);
-            SetField(objective, "m_NextObjectives", new List<BlueprintQuestObjectiveReference>());
+            SetField(
+                objective,
+                "m_NextObjectives",
+                new List<BlueprintQuestObjectiveReference>
+                {
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(
+                        EnsureBillyConditionAct2LostChapelObjective())
+                });
             SetField(
                 objective,
                 "m_Quest",
@@ -476,7 +631,112 @@ namespace wotr_mod.Content
                 _blueprints,
                 objective,
                 "WotrMod_BillyConditionAct1TrailColdReward",
-                null);
+                Act2LeperSmileReward);
+
+            return objective;
+        }
+
+        private BlueprintQuestObjective EnsureBillyConditionAct2LostChapelObjective()
+        {
+            return EnsureBillyConditionObjective(
+                ModBlueprintIds.QuestObjectives.BillyConditionAct2LostChapel,
+                "WotrMod_BillyConditionAct2LostChapelObjective",
+                LocalizationIds.Mod.BillyConditionAct2LostChapelTitle,
+                LocalizationIds.Mod.BillyConditionAct2LostChapelDescription,
+                EnsureBillyConditionAct3IvorySanctumObjective,
+                "WotrMod_BillyConditionAct2LostChapelReward",
+                Act2LostChapelReward);
+        }
+
+        private BlueprintQuestObjective EnsureBillyConditionAct3IvorySanctumObjective()
+        {
+            return EnsureBillyConditionObjective(
+                ModBlueprintIds.QuestObjectives.BillyConditionAct3IvorySanctum,
+                "WotrMod_BillyConditionAct3IvorySanctumObjective",
+                LocalizationIds.Mod.BillyConditionAct3IvorySanctumTitle,
+                LocalizationIds.Mod.BillyConditionAct3IvorySanctumDescription,
+                EnsureBillyConditionAct3MidnightFaneObjective,
+                "WotrMod_BillyConditionAct3IvorySanctumReward",
+                Act3IvorySanctumReward);
+        }
+
+        private BlueprintQuestObjective EnsureBillyConditionAct3MidnightFaneObjective()
+        {
+            return EnsureBillyConditionObjective(
+                ModBlueprintIds.QuestObjectives.BillyConditionAct3MidnightFane,
+                "WotrMod_BillyConditionAct3MidnightFaneObjective",
+                LocalizationIds.Mod.BillyConditionAct3MidnightFaneTitle,
+                LocalizationIds.Mod.BillyConditionAct3MidnightFaneDescription,
+                EnsureBillyConditionAct4AbyssObjective,
+                "WotrMod_BillyConditionAct3MidnightFaneReward",
+                Act3MidnightFaneReward);
+        }
+
+        private BlueprintQuestObjective EnsureBillyConditionAct4AbyssObjective()
+        {
+            return EnsureBillyConditionObjective(
+                ModBlueprintIds.QuestObjectives.BillyConditionAct4Abyss,
+                "WotrMod_BillyConditionAct4AbyssObjective",
+                LocalizationIds.Mod.BillyConditionAct4AbyssTitle,
+                LocalizationIds.Mod.BillyConditionAct4AbyssDescription,
+                nextObjectiveFactory: null,
+                rewardName: "WotrMod_BillyConditionAct4AbyssReward",
+                reward: null);
+        }
+
+        private BlueprintQuestObjective EnsureBillyConditionObjective(
+            string objectiveGuid,
+            string internalName,
+            string titleKey,
+            string descriptionKey,
+            Func<BlueprintQuestObjective> nextObjectiveFactory,
+            string rewardName,
+            QuestExperienceReward reward)
+        {
+            var objective = _blueprints.Get<BlueprintQuestObjective>(objectiveGuid);
+            if (objective == null)
+            {
+                objective = new BlueprintQuestObjective
+                {
+                    name = internalName,
+                    AssetGuid = BlueprintGuid.Parse(objectiveGuid)
+                };
+                _blueprints.AddCachedBlueprint(objectiveGuid, objective);
+            }
+
+            var quest = _blueprints.Get<BlueprintQuest>(ModBlueprintIds.Quests.BillyCondition);
+            objective.Title = CreateText(titleKey);
+            objective.Description = CreateText(descriptionKey);
+            objective.Locations = objective.Locations
+                                  ?? new List<Kingmaker.Globalmap.Blueprints.BlueprintGlobalMapPoint.Reference>();
+            objective.MultiEntranceEntries = objective.MultiEntranceEntries
+                                             ?? new List<Kingmaker.Globalmap.Blueprints.BlueprintMultiEntranceEntry.Reference>();
+            objective.AutoFailDays = 0;
+            objective.IsFakeFail = false;
+            objective.StartOnKingdomTime = false;
+            SetField(objective, "m_Addendums", new List<BlueprintQuestObjectiveReference>());
+            SetField(objective, "m_Areas", new List<BlueprintAreaReference>());
+            SetField(objective, "m_FinishParent", false);
+            SetField(objective, "m_Hidden", false);
+            var nextObjectives = new List<BlueprintQuestObjectiveReference>();
+            if (nextObjectiveFactory != null)
+            {
+                nextObjectives.Add(
+                    BlueprintReferenceBase.CreateTyped<BlueprintQuestObjectiveReference>(
+                        nextObjectiveFactory()));
+            }
+
+            SetField(objective, "m_NextObjectives", nextObjectives);
+            SetField(
+                objective,
+                "m_Quest",
+                quest == null ? null : BlueprintReferenceBase.CreateTyped<BlueprintQuestReference>(quest));
+            SetField(objective, "m_Type", BlueprintQuestObjective.Type.Objective);
+            QuestRewardInstaller.SetExperienceReward(
+                _blueprints,
+                objective,
+                rewardName,
+                reward);
 
             return objective;
         }
@@ -541,6 +801,21 @@ namespace wotr_mod.Content
             return player?.AllCharacters
                 ?.Any(unit => unit?.Body?.CurrentEquipmentSlots
                     ?.Any(slot => slot?.MaybeItem?.Blueprint?.AssetGuid == ArchersTunicGuid) == true) == true;
+        }
+
+        private static bool PlayerHasItem(BlueprintGuid itemGuid)
+        {
+            var player = Game.Instance?.Player;
+            var inventoryHasItem = player?.Inventory?.Items
+                ?.Any(item => item?.Blueprint?.AssetGuid == itemGuid) == true;
+            if (inventoryHasItem)
+            {
+                return true;
+            }
+
+            return player?.AllCharacters
+                ?.Any(unit => unit?.Body?.CurrentEquipmentSlots
+                    ?.Any(slot => slot?.MaybeItem?.Blueprint?.AssetGuid == itemGuid) == true) == true;
         }
 
         private static UnitEntityData FindBilly()

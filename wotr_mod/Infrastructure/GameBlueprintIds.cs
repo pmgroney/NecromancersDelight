@@ -43,10 +43,16 @@ namespace wotr_mod.Infrastructure
         internal static class Loot
         {
             public const string CultistsLairLuxeryCasket = "de82c5ff1d3879e468c02fc86709be5d";
+            public const string DrezenCitadelLevel2GoodLootChest = "eb43ac08841b96c4b97342116743f8c0";
             public const string EstrodTowerBasementBox = "b277a50b549848738b06319a6f6295c1";
+            public const string GibberingSwarmVescavorQueen = "7e9ac8cbfd99e9546a6a35976a5292e4";
+            public const string IvorySanctumXantirNotes = "1caaaf21b2312504686f045226181ce1";
+            public const string LostChapelLibraryCupboard = "00c27230f5a34b8ab9dc9b604baea3ce";
+            public const string MidnightFaneReserveBalorCorpse = "1003abbb77244a45b48d1b093792c6b5";
             public const string KenabresBurningChestNearBridge = "45f5a6e1bbe3c194fb6682cd2a763510";
             public const string KenabresBurningCrusaderCorpseWithScroll = "2d3ec4e0d147a7044a5fd3b7d1c1010e";
             public const string KenabresBurningSpecialThieflingStash = "4b7d47f312f186646a05beff7f501c3b";
+            public const string KenabresBurningHouseWithDemonsChest = "a3f4597fe98b50f4a93b6bbf20cd904c";
             public const string ShieldMazeShittyCultistScytheLoot = "3538022738594a4eae08e72d5a611577";
             public const string PrologueKenabresLoot = "11d711acd9bd4b89b48f920cbc5677ee";
         }
@@ -177,6 +183,7 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string UnbendingArmor = "aeb2da5269fe9b040b01e11272532c08";
             public const string Dodge = "97e216dbb46ae3c4faef90cf6bbe6fd5";
             public const string PowerAttack = "9972f33f977fc724c838e59641b2fca5";
             public const string ShieldFocus = "ac57069b6bf8c904086171683992a92a";
@@ -283,6 +290,10 @@ namespace wotr_mod.Infrastructure
             public const string DruidWoodlandStride = "4c1419ef6cfc430a9071405788da4a73";
             public const string VelociraptorAgileMovement = "9a44fc170dbe46d2a9e0e1e44666c714";
             public const string Ashmaker = "27ffa0263026b3c449c7db15795c27fa";
+            public const string NegativeChannelingBonus1Die = "163f3323011d4bd6aed27a419553f108";
+            public const string NegativeChannelingBonus2Dice = "a9136b75fcb94ce6949c8cbaa0362f4d";
+            public const string PositiveChannelingBonus1Die = "0164f5192ad14ddeb629e0160864411d";
+            public const string PositiveChannelingBonus2Dice = "6f03a699d1ea410b8cea6391cdbc0535";
         }
 
         internal static class Items
@@ -291,8 +302,12 @@ namespace wotr_mod.Infrastructure
             public const string ZachariusNecromancy = "de12840a4662481f937ff9542a6beb6b";
             public const string ColdIronMasterworkRapier = "47ee06073c429ad46916bf75e7455a5e";
             public const string BreastplatePlus1 = "5041415db3e6c394a8b2173c39fd4ec4";
+            public const string BreastplatePlus2 = "c77060ede0a983f4a8c7c47032ecf1ea";
+            public const string BreastplatePlus3 = "a7a2500acce8faf46b6ecb79ec05691e";
             public const string CompositeLongbow = "7998cd1409fe1194583b64180df4f216";
             public const string CompositeLongbowPlus1 = "2753a0159681be94da3a5eeabc8c8d1a";
+            public const string CompositeLongbowPlus2 = "94413d2906cf2ad4f9a687e1aa7ed315";
+            public const string CompositeLongbowPlus3 = "6a7424589eb401540a3d14c0764b8279";
             public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
             public const string MasterworkRapier = "d8ecfcf0db3de304681f8632da4b6b8c";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
@@ -304,6 +319,9 @@ namespace wotr_mod.Infrastructure
             public const string ScythePlus1 = "8933943621eca2d45b99d851bd9100d9";
             public const string Shortsword = "f717b39c351b8b44388c471d4d272f4e";
             public const string ShortswordPlus1 = "9f455505128866146a9bd81895d4cecd";
+            public const string StuddedHolyAgainstBlindnessPlus3 = "f490c181780d6fc49873f198c10d0fa1";
+            public const string StuddedLeatherPlus1 = "af51a42724e27474c89d9d61392e09f4";
+            public const string ConsumableLockpickPlus5 = "39e4982215f14d44d93a864320df62bd";
         }
 
         internal static class Projectiles
@@ -330,9 +348,14 @@ namespace wotr_mod.Infrastructure
         internal static class Enchantments
         {
             public const string ArmorEnhancementBonus1 = "a9ea95c5e02f9b7468447bc1010fe152";
+            public const string ArmorEnhancementBonus2 = "758b77a97640fd747abf149f5bf538d0";
+            public const string ArmorEnhancementBonus3 = "9448d3026111d6d49b31fc85e7f3745a";
+            public const string Charisma2 = "f945413e1b120294780ba9de26bd2f7a";
+            public const string Dexterity1 = "e13c1075e3ce6474199ef09630da83a5";
             public const string Ashmaker = "3cf303da46e98c54d857a9a7ef5a58a2";
             public const string LongswordOfRightEnchantment = "59c2b96ee4525144e9ba7b8063ae20bb";
             public const string RobeOfConsciousnessEnchantment = "dce5be8495d271349b8ca796d4fd8996";
+            public const string UnbendingArmorEnchantment = "fce1b85a4827b2d4e8d4a2165306b418";
             public const string WeaponEnhancementBonus1 = "d42fc23b92c640846ac137dc26e000d4";
         }
 

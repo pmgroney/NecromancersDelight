@@ -63,3 +63,15 @@ f957b4444b6fb404e84ae2a5765797bb CreatureAbilities/TrippingBite.jbp
 15e7da6645a7f3d41bdad7c8c4b9de1e Feats/LightningReflexes.jbp
 90e54424d682d104ab36436bd527af09 Feats/WeaponFinesse.jbp
 ```
+
+## Battle Mage Vest verified sources
+
+```text
+f490c181780d6fc49873f198c10d0fa1 Equipment/Armor/Items/TotalPlus4/Studded2StAgainstBlindnessPlus3.jbp (studded armor type, StuddedHoly entity, cost 16175)
+f945413e1b120294780ba9de26bd2f7a Equipment/CommonEnchantments/Charisma2.jbp
+aeb2da5269fe9b040b01e11272532c08 Equipment/Armor/Items/Unique/UniquePF2/Chapter1/UnbendingArmorFeature.jbp
+fce1b85a4827b2d4e8d4a2165306b418 Equipment/Armor/Items/Unique/UniquePF2/Chapter1/UnbendingArmorEnchantment.jbp
+eb43ac08841b96c4b97342116743f8c0 Loot/Cooking/DrezenCitadel_Level2/GoodLootChest_1.jbp
+```
+
+`AddDamageResistancePhysical` with `BypassedByForm=true` and `Form=Bludgeoning|Piercing` leaves resistance applying only to slashing damage.

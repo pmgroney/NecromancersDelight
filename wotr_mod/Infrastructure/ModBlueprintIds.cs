@@ -16,23 +16,46 @@ namespace wotr_mod.Infrastructure
 
         internal static class Items
         {
+            public const string AcolytesLongbowOfDiscipline = "8202bf801160b34d59c7db59860a36fa";
+            public const string AdeptsLongbowOfDiscipline = "b82c590b8ffcdfbb21468849ea5ebbe5";
             public const string ApprenticeEvokersStaff = "3416ac07b8e9ab1d37efa2d4a35e001a";
             public const string ArchersTunic = "8e5de80b19d140e3b884fe3105dbc0a2";
             public const string BillyPilgrimageRecord = "c87a5a91737e4e149073650f543b45df";
+            public const string BattleMageVest = "25c5cc3e812b478f938a11583a8e9bce";
+            public const string CutpurseVest = "8b3e1ec01ae44bafa7bd48ec74a91bcc";
             public const string NeophytesLongbowOfDiscipline = "067f5d63c7ec42f08207b6c5189e1715";
+            public const string IroriAcolytesArmor = "b378cac7870229203cd17b49b4852593";
+            public const string IroriAdeptsArmor = "751cf0cd9412a5086e67d273a11f359f";
             public const string ScythePlus1 = "ff9cbddecbd54932a73734f47d5c99cf";
             public const string ShortswordPlus1 = "d14589cfa1524261bef8a62b23075a6c";
         }
 
         internal static class Enchantments
         {
+            public const string AcolytesLongbowOfDisciplineForceDamage = "1a84af7b94fa801e93e6998266fb772b";
+            public const string AdeptsLongbowOfDisciplineForceDamage = "258487113ea5e673d9d0c7aa0b298da4";
             public const string ApprenticeEvokersStaff = "fdfa9833d8b1aa609219c517a35cd51c";
             public const string ArchersTunic = "98802d04c1764e66b1616ccd492dec9a";
+            public const string BattleMageVest = "e057602bec74452b8802f9f638bed5e9";
             public const string NeophytesLongbowOfDisciplineForceDamage = "52524073c51a4ec8bd5109751c85056a";
+            public const string IroriAcolytesArmor = "6a4e5a073895a40029a9a57449cc885b";
+            public const string IroriAdeptsArmor = "fb236c1b028aa8582f5c30632de9a794";
         }
 
         internal static class Dialogs
         {
+            public const string BillyAct2BowDialog = "b772a7551329bc71f63e372ec6ec4646";
+            public const string BillyAct2BowCue = "257f295a9949ba121e9116fcdf1dae8e";
+            public const string BillyAct2BowAnswer = "01f6036a63f8ad1f0b552d0a3bad4d32";
+            public const string BillyAct2ArmorDialog = "67156edd05bd3b4c91a4030d8f87d597";
+            public const string BillyAct2ArmorCue = "609f929947534bdf13e9084fcecb92ca";
+            public const string BillyAct2ArmorAnswer = "6067c206e810671ba194356896de725a";
+            public const string BillyAct3ArmorDialog = "b04ce613bc8176257f88756bd477188d";
+            public const string BillyAct3ArmorCue = "5f97b67dbcd397653e313f195de91c2f";
+            public const string BillyAct3ArmorAnswer = "808883c1ab137ec6a2ff7c62314c3a84";
+            public const string BillyAct3BowDialog = "1af6ff5f1f78343455419b62264fddda";
+            public const string BillyAct3BowCue = "71c04c4a475f42c4596c9742faaffe6e";
+            public const string BillyAct3BowAnswer = "aa66087cc6691373d3a3718cab013f40";
             public const string BillyDialog = "96850f6d4f4e444a80c0675c76d37c5d";
             public const string BillyBowQuestDialog = "5cefa4cfb52c46849b65512cac66bc68";
             public const string BillyBowQuestStartCue = "5dc6d10dc05c4868a5d5ff9d62b35439";
@@ -87,6 +110,10 @@ namespace wotr_mod.Infrastructure
 
         internal static class QuestObjectives
         {
+            public const string BillyConditionAct2LostChapel = "68984e85bad4d24da86054089c706c32";
+            public const string BillyConditionAct3IvorySanctum = "98b7c391668a84cf8d3d62beb83c24d8";
+            public const string BillyConditionAct3MidnightFane = "aa42301cc691c513b32b516a89ecb7dd";
+            public const string BillyConditionAct4Abyss = "06a4924bf844349679888692978a23ae";
             public const string BillyConditionAct1JalmerayLead = "7a91dd7b26c44df4a43a466e0cdd4a6a";
             public const string BillyConditionAct1TrailCold = "77a4ac30f20b4280ba1351af50d4a9fa";
             public const string BillyConditionInvestigate = "44b9939d80e945eb9a2debe04adcb36b";
@@ -314,6 +341,9 @@ namespace wotr_mod.Infrastructure
 
         internal static class Features
         {
+            public const string BattleMageVest = "a3e77273bd2f4fe4a6bd8523d7ebf323";
+            public const string IroriAcolytesArmor = "4e0be08ddf070a81f6b8f83dbbd0313a";
+            public const string IroriAdeptsArmor = "d4b5cd8a2bf694f2bbfb56082e1f415d";
             public const string ApprenticeEvokersStaff = "183be6dd0c2478d4b2a12d9725ec2c31";
             public const string ArchersTunicBowTraining = "ebac5091069e4fccb9824008a8304fb2";
             public const string BillyFeatureList = "0b70462a47a84e37b2046fd200a7125d";
