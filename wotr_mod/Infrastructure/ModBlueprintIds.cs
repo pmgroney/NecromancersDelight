@@ -170,6 +170,7 @@ namespace wotr_mod.Infrastructure
         internal static class SpellLists
         {
             public const string Evoker = "32ff2af163ef47a98414c1f2c40d3b55";
+            public const string EvokerScrollEligibility = "198a991d5c014f299f84e19a8fa5d7f9";
             public const string Necromancer = "d5ac5f898a2b4a7c804db407fba710a3";
             public const string Sepulchrit = "817ca4f5309b4d6c8e2f1a70b5c934d2";
             public const string Graveblade = "6b7c8d9e0f1a4b2c8d9e0f1a2b3c4d5e";

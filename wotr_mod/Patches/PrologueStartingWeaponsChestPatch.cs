@@ -1,9 +1,11 @@
 using System;
 using System.Linq;
 using HarmonyLib;
+using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Loot;
+using Kingmaker.Items;
 using Kingmaker.UI.MVVM._VM.Loot;
 using Kingmaker.View;
 using Kingmaker.View.MapObjects;
@@ -28,9 +30,16 @@ namespace wotr_mod.Patches
     internal static class PrologueStartingWeaponsChestPatch
     {
         private const string TargetContainerUniqueId = "7d7c1267-7c09-4c30-9f00-ae3ddf013cce";
+        private const string BrimorakHouseContainerUniqueId = "714fe373-791c-4df9-b468-9947f6ca0cac";
 
         private static readonly BlueprintGuid ScytheGuid =
             BlueprintGuid.Parse(GameBlueprintIds.Items.Scythe);
+        private static readonly BlueprintGuid DaggerPlus1Guid =
+            BlueprintGuid.Parse(GameBlueprintIds.Items.DaggerPlus1);
+        private static readonly BlueprintGuid ScrollOfRemoveBlindnessGuid =
+            BlueprintGuid.Parse(GameBlueprintIds.Items.ScrollOfRemoveBlindness);
+        private static readonly BlueprintGuid BrimorakInHouseGuid =
+            BlueprintGuid.Parse(GameBlueprintIds.AreaParts.KenabresBurningBrimorakInHouse);
 
         private static void Prefix(EntityViewBase[] objects)
         {
@@ -40,6 +49,8 @@ namespace wotr_mod.Patches
                 {
                     return;
                 }
+
+                AddBrimorakHouseRewards(objects);
 
                 foreach (var entityViewBase in objects)
                 {
@@ -79,6 +90,63 @@ namespace wotr_mod.Patches
             {
                 Main.Log($"Failed to add starting weapons to prologue chest: {ex}");
             }
+        }
+
+        private static void AddBrimorakHouseRewards(EntityViewBase[] objects)
+        {
+            if (Game.Instance?.CurrentlyLoadedAreaPart?.AssetGuid != BrimorakInHouseGuid)
+            {
+                return;
+            }
+
+            foreach (var entityViewBase in objects)
+            {
+                if (!LootWindowUtility.HasUniqueId(entityViewBase, BrimorakHouseContainerUniqueId))
+                {
+                    continue;
+                }
+
+                var lootPart = LootWindowUtility.GetLootPart(entityViewBase);
+                if (lootPart?.Loot == null)
+                {
+                    continue;
+                }
+
+                var dagger = BlueprintTool.Instance.Get<BlueprintItem>(GameBlueprintIds.Items.DaggerPlus1);
+                var scroll = BlueprintTool.Instance.Get<BlueprintItem>(GameBlueprintIds.Items.ScrollOfRemoveBlindness);
+                if (dagger == null || scroll == null)
+                {
+                    continue;
+                }
+
+                EnsureLootItemCount(lootPart.Loot, dagger, DaggerPlus1Guid, 2);
+                EnsureLootItemCount(lootPart.Loot, scroll, ScrollOfRemoveBlindnessGuid, 2);
+            }
+        }
+
+        private static void EnsureLootItemCount(
+            ItemsCollection loot,
+            BlueprintItem item,
+            BlueprintGuid itemGuid,
+            int count)
+        {
+            var existingItem = loot.Items.FirstOrDefault(existing => existing?.Blueprint?.AssetGuid == itemGuid);
+            if (existingItem != null)
+            {
+                if (existingItem.Count < count)
+                {
+                    existingItem.SetCount(count);
+                }
+
+                existingItem.Identify();
+                return;
+            }
+
+            loot.Add(item, count, true, createdItem =>
+            {
+                createdItem.SetCount(count);
+                createdItem.Identify();
+            });
         }
     }
 }

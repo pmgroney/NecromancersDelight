@@ -110,6 +110,7 @@ namespace wotr_mod.Classes.Evoker
             ReplaceSorcererProficiencies(characterClass);
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
+            spellbook.HasSpecialSpellList = true;
             _blueprints.SetCharacterClassArchetypes(characterClass);
             var noMartialWeaponProficiency = EnsureNoMartialWeaponProficiencyFeature(characterClass);
             EnsureMartialWeaponProficiencyBlockedForEvoker(noMartialWeaponProficiency);
@@ -158,12 +159,48 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.SetProgressionClasses(feature, characterClass);
             _blueprints.SetComponents(
                 feature,
+                EnsureScrollEligibilitySpellList(characterClass),
                 new EvokerSpellShaping
                 {
                     name = "$EvokerSpellShaping$Evoker",
                     Classes = new[] { characterClass }
                 });
             return feature;
+        }
+
+        private AddSpecialSpellList EnsureScrollEligibilitySpellList(BlueprintCharacterClass characterClass)
+        {
+            var spellList = _blueprints.Get<BlueprintSpellList>(ModBlueprintIds.SpellLists.EvokerScrollEligibility);
+            if (spellList == null)
+            {
+                var donor = _blueprints.Require<BlueprintSpellList>(
+                    GameBlueprintIds.SpellLists.Wizard,
+                    "Wizard spell list donor");
+                spellList = _blueprints.CloneBlueprint(
+                    donor,
+                    ModBlueprintIds.SpellLists.EvokerScrollEligibility,
+                    "WotrMod_EvokerScrollEligibilitySpellList");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.SpellLists.EvokerScrollEligibility, spellList);
+            }
+
+            var sourceSpellsByLevel = EvokerSpellRegistry.GetAll()
+                .Select(definition =>
+                {
+                    var spell = _blueprints.Require<BlueprintAbility>(
+                        definition.SpellGuid,
+                        definition.DisplayName + " scroll eligibility spell");
+                    return new KeyValuePair<BlueprintAbility, int>(spell, definition.SpellLevel);
+                });
+            _blueprints.SetSpellListSpells(
+                spellList,
+                sourceSpellsByLevel.OrderBy(pair => pair.Value).ThenBy(pair => pair.Key.name));
+
+            var component = new AddSpecialSpellList
+            {
+                name = "$AddSpecialSpellList$EvokerScrollEligibility"
+            };
+            _blueprints.SetAddSpecialSpellList(component, characterClass, spellList);
+            return component;
         }
 
         private BlueprintFeature EnsureNoMartialWeaponProficiencyFeature(BlueprintCharacterClass characterClass)
@@ -773,7 +810,7 @@ namespace wotr_mod.Classes.Evoker
                 AbilityRankType.Default,
                 ContextRankBaseValueType.ClassLevel,
                 ContextRankProgression.OnePlusDivStep,
-                startLevel: 1,
+                startLevel: 2,
                 stepLevel: 2,
                 characterClass: characterClass);
             _blueprints.SetContextRankMinimum(rank, 1);

@@ -1181,6 +1181,25 @@ namespace wotr_mod.Infrastructure
             spellList.SpellsByLevel = levels;
         }
 
+        public void SetAddSpecialSpellList(
+            AddSpecialSpellList component,
+            BlueprintCharacterClass characterClass,
+            BlueprintSpellList spellList)
+        {
+            BlueprintFields.AddSpecialSpellListCharacterClass.SetValue(
+                component,
+                characterClass == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(characterClass));
+            BlueprintFields.AddSpecialSpellListSpellList.SetValue(
+                component,
+                spellList == null
+                    ? null
+                    : BlueprintReferenceBase.CreateTyped<BlueprintSpellListReference>(spellList));
+            BlueprintFields.AddSpecialSpellListArchetype.SetValue(component, null);
+            component.ForArchetypeOnly = false;
+        }
+
         public IEnumerable<T> GetLoadedBlueprints<T>() where T : SimpleBlueprint
         {
             var result = new List<T>();

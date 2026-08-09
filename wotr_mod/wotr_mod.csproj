@@ -163,6 +163,7 @@
         <Compile Include="Infrastructure\BlueprintTool.cs" />
         <Compile Include="Infrastructure\IGamePatch.cs" />
         <Compile Include="Infrastructure\LocalizationTool.cs" />
+        <Compile Include="Infrastructure\LootWindowUtility.cs" />
         <Compile Include="Infrastructure\PatchRegistry.cs" />
         <Compile Include="Infrastructure\SelectionRecommendation.cs" />
         <Compile Include="Infrastructure\SpellEffectTheme.cs" />

@@ -685,14 +685,14 @@ namespace wotr_mod.Spells
         private Sprite GetIcon(SpellDefinition definition)
         {
             var icon = _icons.Load(definition.IconPath);
-            var tint = GetIconTint(definition.NewSpellGuid);
             if (icon != null)
             {
-                return tint.HasValue
-                    ? _icons.Tint(icon, definition.InternalName + "Icon", tint.Value.Color, tint.Value.Strength)
-                    : icon;
+                return icon;
             }
 
+            var tint = definition.IconPath == null
+                ? GetIconTint(definition.NewSpellGuid)
+                : null;
             if (!tint.HasValue)
             {
                 return null;
@@ -731,16 +731,6 @@ namespace wotr_mod.Spells
                 return new MissileIconTint(SpellEffectThemes.Acid, 0.72f);
             }
 
-            if (spellGuid == ModBlueprintIds.Spells.EmperorsWrath)
-            {
-                return new MissileIconTint(SpellEffectThemes.Electric, 0.72f);
-            }
-
-            if (spellGuid == ModBlueprintIds.Spells.ForceRay)
-            {
-                return new MissileIconTint(SpellEffectThemes.Arcane, 0.72f);
-            }
-
             if (spellGuid == ModBlueprintIds.Spells.FrostBlast)
             {
                 return new MissileIconTint(SpellEffectThemes.Cold, 0.72f);
@@ -764,11 +754,6 @@ namespace wotr_mod.Spells
             if (spellGuid == ModBlueprintIds.Spells.FireHellfireRay)
             {
                 return new MissileIconTint(SpellEffectThemes.Fire, 0.72f);
-            }
-
-            if (spellGuid == ModBlueprintIds.Spells.ShadowHellfireRay)
-            {
-                return new MissileIconTint(SpellEffectThemes.Shadow, 0.72f);
             }
 
             return null;

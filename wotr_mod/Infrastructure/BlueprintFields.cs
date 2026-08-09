@@ -81,6 +81,9 @@ namespace wotr_mod.Infrastructure
             if (AddClassLevelsMemorizeSpells == null) PatchRegistry.FallbackError("WARNING: AddClassLevels.m_MemorizeSpells not found");
             if (SelectionEntryFeatures == null) PatchRegistry.FallbackError("WARNING: SelectionEntry.m_Features not found");
             if (CharacterClassHiddenFields.Length == 0) PatchRegistry.FallbackError("WARNING: BlueprintCharacterClass hidden fields not found");
+            if (AddSpecialSpellListCharacterClass == null) PatchRegistry.FallbackError("WARNING: AddSpecialSpellList.m_CharacterClass not found");
+            if (AddSpecialSpellListSpellList == null) PatchRegistry.FallbackError("WARNING: AddSpecialSpellList.m_SpellList not found");
+            if (AddSpecialSpellListArchetype == null) PatchRegistry.FallbackError("WARNING: AddSpecialSpellList.m_Archetype not found");
         }
 
         public static readonly FieldInfo UnitFactDisplayName =
@@ -252,6 +255,15 @@ namespace wotr_mod.Infrastructure
 
         public static readonly FieldInfo SpellLevelListSpells =
             typeof(SpellLevelList).GetField("m_Spells", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddSpecialSpellListCharacterClass =
+            typeof(AddSpecialSpellList).GetField("m_CharacterClass", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddSpecialSpellListSpellList =
+            typeof(AddSpecialSpellList).GetField("m_SpellList", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo AddSpecialSpellListArchetype =
+            typeof(AddSpecialSpellList).GetField("m_Archetype", BindingFlags.Instance | BindingFlags.NonPublic);
 
         public static readonly FieldInfo FeatureSelectionFeatures =
             typeof(BlueprintFeatureSelection).GetField("m_Features", BindingFlags.Instance | BindingFlags.NonPublic);

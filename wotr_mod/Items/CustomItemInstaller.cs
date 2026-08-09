@@ -73,6 +73,8 @@ namespace wotr_mod.Items
                 var item = EnsureItem(definition);
                 ApplyPlacements(definition, item);
             }
+
+            AddArendaePartyHouseLoot();
         }
 
         private BlueprintItem EnsureItem(CustomItemDefinition definition)
@@ -895,6 +897,19 @@ namespace wotr_mod.Items
             {
                 _logger.Log($"Added {item.name} to chest loot {placement.TargetName}.");
             }
+        }
+
+        private void AddArendaePartyHouseLoot()
+        {
+            AddToChestLoot(
+                ItemPlacementDefinition.InChestLoot(
+                    GameBlueprintIds.Loot.ArendaePartyHouseKitchenLoot,
+                    "Arendae Party House kitchen loot",
+                    count: 1,
+                    identify: true),
+                _blueprints.Require<BlueprintItem>(
+                    GameBlueprintIds.Items.DaggerPlus1,
+                    "+1 dagger"));
         }
 
         private void AddToMapObjectLoot(ItemPlacementDefinition placement, BlueprintItem item)

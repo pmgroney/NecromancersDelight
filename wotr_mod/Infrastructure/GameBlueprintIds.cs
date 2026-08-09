@@ -53,6 +53,7 @@ namespace wotr_mod.Infrastructure
             public const string KenabresBurningCrusaderCorpseWithScroll = "2d3ec4e0d147a7044a5fd3b7d1c1010e";
             public const string KenabresBurningSpecialThieflingStash = "4b7d47f312f186646a05beff7f501c3b";
             public const string KenabresBurningHouseWithDemonsChest = "a3f4597fe98b50f4a93b6bbf20cd904c";
+            public const string ArendaePartyHouseKitchenLoot = "74f5af621a703d14a9c8ccff968f3b75";
             public const string ShieldMazeShittyCultistScytheLoot = "3538022738594a4eae08e72d5a611577";
             public const string PrologueKenabresLoot = "11d711acd9bd4b89b48f920cbc5677ee";
         }
@@ -84,6 +85,11 @@ namespace wotr_mod.Infrastructure
             public const string DefendersHeart = "089e897983fef564d9e15b46ff679d7e";
             public const string KenabresBurning = "92180b58582ec5f43a756071cd339f52";
             public const string PrologueLabyrinth = "944a6947fe8ffa8458c278aa1c0c4226";
+        }
+
+        internal static class AreaParts
+        {
+            public const string KenabresBurningBrimorakInHouse = "ac59b3f2d12dee545a4658ecc3da207b";
         }
 
         internal static class Etudes
@@ -301,6 +307,7 @@ namespace wotr_mod.Infrastructure
             public const string Ashmaker = "036ce89f2df7e2b428af9ff177f68caf";
             public const string ZachariusNecromancy = "de12840a4662481f937ff9542a6beb6b";
             public const string ColdIronMasterworkRapier = "47ee06073c429ad46916bf75e7455a5e";
+            public const string DaggerPlus1 = "2a45458f776442e43bba57de65f9b738";
             public const string BreastplatePlus1 = "5041415db3e6c394a8b2173c39fd4ec4";
             public const string BreastplatePlus2 = "c77060ede0a983f4a8c7c47032ecf1ea";
             public const string BreastplatePlus3 = "a7a2500acce8faf46b6ecb79ec05691e";
@@ -322,6 +329,7 @@ namespace wotr_mod.Infrastructure
             public const string StuddedHolyAgainstBlindnessPlus3 = "f490c181780d6fc49873f198c10d0fa1";
             public const string StuddedLeatherPlus1 = "af51a42724e27474c89d9d61392e09f4";
             public const string ConsumableLockpickPlus5 = "39e4982215f14d44d93a864320df62bd";
+            public const string ScrollOfRemoveBlindness = "de172db6e10f6d54896cb6a48b9fe8f7";
         }
 
         internal static class Projectiles
