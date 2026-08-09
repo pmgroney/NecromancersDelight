@@ -192,7 +192,7 @@ namespace wotr_mod.Spells.Modifiers
             var saved = Context?.SavingThrow?.IsPassed == true;
             var damage = new EnergyDamage(
                 new DiceFormula(dice, DiceType.D6),
-                DamageEnergyType.NegativeEnergy);
+                DamageEnergyType.Unholy);
 
             var rule = new RuleDealDamage(caster, target, damage)
             {

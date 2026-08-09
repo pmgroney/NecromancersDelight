@@ -68,7 +68,7 @@ namespace wotr_mod.Features
             var bonusDice = GetBonusDice(weapon);
             var extraDamage = new EnergyDamage(
                 new DiceFormula(bonusDice, DiceType.D6),
-                DamageEnergyType.NegativeEnergy);
+                DamageEnergyType.Unholy);
 
             if (evt.DamageBundle is DamageBundle bundle)
             {

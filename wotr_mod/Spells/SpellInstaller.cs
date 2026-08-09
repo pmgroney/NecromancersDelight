@@ -69,6 +69,9 @@ namespace wotr_mod.Spells
             var wizardList = _blueprints.Require<BlueprintSpellList>(
                 GameBlueprintIds.SpellLists.Wizard,
                 "Wizard spell list");
+            var witchList = _blueprints.Require<BlueprintSpellList>(
+                GameBlueprintIds.SpellLists.Witch,
+                "Witch spell list");
             var clericList = _blueprints.Require<BlueprintSpellList>(
                 GameBlueprintIds.SpellLists.Cleric,
                 "Cleric/Oracle spell list");
@@ -80,11 +83,13 @@ namespace wotr_mod.Spells
                 {
                     _blueprints.RemoveComponents<SpellListComponent>(spell);
                     _blueprints.RemoveSpellFromList(wizardList, spell);
+                    _blueprints.RemoveSpellFromList(witchList, spell);
                     _blueprints.RemoveSpellFromList(clericList, spell);
                     continue;
                 }
 
                 _blueprints.AddSpellToList(wizardList, spell, definition.SpellLevel);
+                _blueprints.AddSpellToList(witchList, spell, definition.SpellLevel);
                 if (IsDivineListSpell(definition))
                 {
                     _blueprints.AddSpellToList(clericList, spell, definition.SpellLevel);

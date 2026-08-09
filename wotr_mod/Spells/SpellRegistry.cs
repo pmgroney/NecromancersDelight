@@ -119,7 +119,7 @@ namespace wotr_mod.Spells
                     SpellDescriptor.Fire,
                     SpellDescriptor.Death,
                     DamageEnergyType.Fire,
-                    DamageEnergyType.NegativeEnergy,
+                    DamageEnergyType.Unholy,
                     scaling: new DamageTypeSpellModifier.ScalingConfig
                     {
                         RankType = Kingmaker.Enums.AbilityRankType.Default,

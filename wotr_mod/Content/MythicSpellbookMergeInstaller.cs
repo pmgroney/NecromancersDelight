@@ -38,11 +38,24 @@ namespace wotr_mod.Content
             var sepulchritSpellbook = _blueprints.Require<BlueprintSpellbook>(
                 ModBlueprintIds.Spellbooks.Sepulchrit,
                 "Sepulchrit spellbook");
+            var gravebladeSpellbook = _blueprints.Require<BlueprintSpellbook>(
+                ModBlueprintIds.Spellbooks.Graveblade,
+                "Graveblade spellbook");
+            var deathstalkerSpellbook = _blueprints.Require<BlueprintSpellbook>(
+                ModBlueprintIds.Spellbooks.Deathstalker,
+                "Deathstalker spellbook");
 
             _blueprints.AddAllowedMythicSpellbooks(
                 lichMergeFeature,
-                new[] { evokerSpellbook, necromancerSpellbook, sepulchritSpellbook });
-            _logger.Log("Lich merged spellbook eligibility includes Evoker, Necromancer, and Sepulchrit.");
+                new[]
+                {
+                    evokerSpellbook,
+                    necromancerSpellbook,
+                    sepulchritSpellbook,
+                    gravebladeSpellbook,
+                    deathstalkerSpellbook
+                });
+            _logger.Log("Lich merged spellbook eligibility includes Evoker, Necromancer, Sepulchrit, Graveblade, and Deathstalker.");
         }
     }
 }

@@ -111,6 +111,7 @@
         <Compile Include="Classes\Necromancer\NecromancerInstaller.Archetypes.cs" />
         <Compile Include="Classes\Necromancer\NecromancerInstaller.cs" />
         <Compile Include="Classes\Necromancer\NecromancerSpellRegistry.cs" />
+        <Compile Include="Classes\Necromancer\Archetypes\NecromancerMediumMergedSpellbookProgression.cs" />
         <Compile Include="Classes\Necromancer\Archetypes\GravebladeInstaller.cs" />
         <Compile Include="Classes\Necromancer\Archetypes\DeathstalkerInstaller.cs" />
         <Compile Include="Classes\Necromancer\Archetypes\SepulchritInstaller.cs" />

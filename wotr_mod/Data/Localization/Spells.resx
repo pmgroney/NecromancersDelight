@@ -241,7 +241,7 @@
     <value>Gravebolt Cascade</value>
   </data>
   <data name="wotr_mod.spell.gravebolt_cascade.description" xml:space="preserve">
-    <value>You fire three bolts of negative energy that can strike one or more enemy targets. Each bolt deals 1d8 points of negative energy damage + 1 point per caster level. Undead targets are healed by this amount instead. A creature struck by a bolt must succeed at a Fortitude save or become sickened for 1 round.</value>
+    <value>You fire three bolts of unholy energy that can strike one or more enemy targets. Each bolt deals 1d8 points of unholy damage + 1 point per caster level. Undead targets are healed by this amount instead. A creature struck by a bolt must succeed at a Fortitude save or become sickened for 1 round.</value>
   </data>
 
   <data name="wotr_mod.spell.hell_on_earth.name" xml:space="preserve">
@@ -255,14 +255,14 @@
     <value>Death Ray</value>
   </data>
   <data name="wotr_mod.spell.death_ray.description" xml:space="preserve">
-    <value>You fire a ray of deathly energy. You may fire one ray, plus one additional ray for every four caster levels beyond 3rd, to a maximum of three rays at 11th level. Each ray requires a ranged touch attack and deals 4d6 negative energy damage.</value>
+    <value>You fire a ray of deathly energy. You may fire one ray, plus one additional ray for every four caster levels beyond 3rd, to a maximum of three rays at 11th level. Each ray requires a ranged touch attack and deals 4d6 unholy damage.</value>
   </data>
 
   <data name="wotr_mod.spell.harvest_soul.name" xml:space="preserve">
     <value>Harvest Soul</value>
   </data>
   <data name="wotr_mod.spell.harvest_soul.description" xml:space="preserve">
-    <value>You tear at a single enemy's soul, dealing 1d6 negative energy damage per caster level, to a maximum of 25d6. A successful Fortitude save halves the damage. If this damage kills the target, you restore one expended spell slot of the selected level.</value>
+    <value>You tear at a single enemy's soul, dealing 1d6 unholy damage per caster level, to a maximum of 25d6. A successful Fortitude save halves the damage. If this damage kills the target, you restore one expended spell slot of the selected level.</value>
   </data>
   <data name="wotr_mod.spell.harvest_soul.restore_level_1.name" xml:space="preserve">
     <value>Harvest Soul - Restore Level 1 Slot</value>

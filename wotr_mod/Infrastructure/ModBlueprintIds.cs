@@ -167,6 +167,12 @@ namespace wotr_mod.Infrastructure
             public const string Deathstalker = "c6b96f65f9854a7f870d7a6f4c326b6d";
         }
 
+        internal static class SpellTables
+        {
+            public const string NecromancerMediumMergedSpellsPerDay = "6843f6ec0b6e4777a04b7489e67c2088";
+            public const string NecromancerMediumMergedSpellsKnown = "6e7888c32984442792f67c23f6c3070a";
+        }
+
         internal static class SpellLists
         {
             public const string Evoker = "32ff2af163ef47a98414c1f2c40d3b55";
@@ -388,6 +394,8 @@ namespace wotr_mod.Infrastructure
             public const string DraconicEvokerHeavyArcaneArmorProficiency = "5c46b6d7e23c4e27a75c9d6f03bc10a4";
             public const string ElementalConversionClassCard = "50609ce2a5be4d1eb6b7c613b7ea2426";
             public const string EvocationUnleashedClassCard = "47078fe0f71e472aac5cfbe7b3b9ffc5";
+            public const string EvokerCombatCasting = "50b4c7a76225c86e153aed0691b9f0b8";
+            public const string EvokerCombatCastingDeterministicLegacy = "d14c6a57209905af552d4871edeed492";
             public const string EvokerFamiliarClassCard = "5c2d915355d14ec086d293d5c637fed2";
             public const string EvokerNoMartialWeaponProficiency = "93e1a5d628144d3ab4f81c0e72a97b65";
             public const string EvokerAirArcana = "f5a250ec11b041d89ae9e94fb1d7a18d";

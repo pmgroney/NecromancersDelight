@@ -753,6 +753,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             }
             var inquisitorSpellbook = _blueprints.Require<BlueprintSpellbook>(GameBlueprintIds.Spellbooks.Inquisitor, "Inquisitor spellbook");
             _blueprints.CopySpellbookProgression(spellbook, inquisitorSpellbook);
+            NecromancerMediumMergedSpellbookProgression.Apply(_blueprints, spellbook);
             spellbook.CastingAttribute = baseSpellbook.CastingAttribute;
             _blueprints.SetSpellbookSpellList(spellbook, spellList);
             _blueprints.SetSpellbookCharacterClass(spellbook, characterClass);

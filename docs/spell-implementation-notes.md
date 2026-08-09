@@ -18,7 +18,7 @@ Use the existing spell pipeline unless a specific mechanic forces a different pa
 3. Add localization in `wotr_mod/Data/Localization/Spells.resx`.
    - Registry key stem `vitriolic_sphere` maps to `wotr_mod.spell.vitriolic_sphere.name` and `.description`.
 4. Add class-list entries where needed.
-   - `SpellInstaller.Install()` adds most spells to the wizard list.
+   - `SpellInstaller.Install()` adds most global custom spells to the Wizard and Witch lists.
    - Necromancy spells are also added to Cleric/Oracle by `IsDivineListSpell`.
    - Evoker availability requires an entry in `wotr_mod/Classes/Evoker/EvokerSpellRegistry.cs`.
    - Evoker spell-list entries resolve through Evoker-owned ability clones with deterministic GUIDs; update the clone path for Evoker-specific behavior or description changes rather than altering global source spell blueprints.
@@ -53,7 +53,7 @@ Common patterns:
 - `DamageTypeSpellModifier`: convert existing damage type, descriptor, dice type, and scaling when the donor spell already has the right shape.
 - `SpellModifierUtility.PatchRunActions`: patch actions inside `AbilityEffectRunAction`.
 - `ContextRankConfig`: control caster-level scaling and caps. Use `ConfigureContextRankConfig`, then `SetContextRankMaximum` when a cap is required.
-- Evoker elemental/Umbral rays and Necromancer Withering Ray use class-level `OnePlusDivStep(start 1, step 2)` for d6 dice count with zero flat bonus, avoiding `Div2` floor scaling at level 3.
+- Evoker elemental/Umbral rays and Necromancer Withering Ray use class-level `OnePlusDivStep(start 2, step 2)` for d6 dice count with zero flat bonus, producing 1d6 at levels 1-2, 2d6 at levels 3-4, and 3d6 at levels 5-6.
 - Magic Missile-style custom missiles use `OnePlusDiv2`; non-Evokers retain a maximum of 5 missiles, while Evoker clones remove the rank-based cap but preserve rank-driven projectile delivery.
 - When swapping projectile visuals, preserve or restore the donor projectile slot count for all spells, not only Magic Missile; rank-driven deliveries such as Magic Missile, Scorching Ray, and Hellfire Ray require repeated projectile refs up to their max rank, and Evoker uncapped clones must expand slots after clearing the rank maximum.
 - Elemental ray legacy placeholders have been removed after save migration/respec; necromancer legacy placeholders must remain until tested.

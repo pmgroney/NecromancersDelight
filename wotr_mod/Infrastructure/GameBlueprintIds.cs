@@ -107,6 +107,12 @@ namespace wotr_mod.Infrastructure
             public const string Wizard = "5a38c9ac8607890409fcb8f6342da6f4";
         }
 
+        internal static class SpellTables
+        {
+            public const string InquisitorSpellsPerDay = "83d3e15962e5d6949b90b5c226a2b487";
+            public const string InquisitorSpellsKnown = "c133d22305bab964c88a767cc69b1f9b";
+        }
+
         internal static class SpellLists
         {
             public const string Alchemist = "f60d0cd93edc65c42ad31e34a905fb2f";
@@ -317,6 +323,7 @@ namespace wotr_mod.Infrastructure
             public const string CompositeLongbowPlus3 = "6a7424589eb401540a3d14c0764b8279";
             public const string MasterworkGreatsword = "13b519f8573403f4da841b29f99c6987";
             public const string MasterworkRapier = "d8ecfcf0db3de304681f8632da4b6b8c";
+            public const string RapierPlus1 = "9d23d26b2fdbe484b89867667aabeebe";
             public const string MasterworkScythe = "4546c8236b5e9b74c8d692a923ab3f9a";
             public const string Scythe = "1052a1f7128861942aa0c2ee6078531e";
             public const string PlayersStartingBracers = "7a169971bbe8ca1469f2f5d4b4a8dcff";

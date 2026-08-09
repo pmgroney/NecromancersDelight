@@ -718,7 +718,7 @@ namespace wotr_mod.Classes.Necromancer
                 AbilityRankType.Default,
                 ContextRankBaseValueType.ClassLevel,
                 ContextRankProgression.OnePlusDivStep,
-                startLevel: 1,
+                startLevel: 2,
                 stepLevel: 2,
                 characterClass: characterClass);
             _blueprints.SetContextRankMinimum(rank, 1);

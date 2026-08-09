@@ -908,8 +908,8 @@ namespace wotr_mod.Items
                     count: 1,
                     identify: true),
                 _blueprints.Require<BlueprintItem>(
-                    GameBlueprintIds.Items.DaggerPlus1,
-                    "+1 dagger"));
+                    GameBlueprintIds.Items.RapierPlus1,
+                    "+1 rapier"));
         }
 
         private void AddToMapObjectLoot(ItemPlacementDefinition placement, BlueprintItem item)

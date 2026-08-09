@@ -735,8 +735,11 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                     baseSpellbook, ModBlueprintIds.Spellbooks.Graveblade, "WotrMod_NecromancerGravebladeSpellbook");
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Spellbooks.Graveblade, spellbook);
             }
-            var rangerSpellbook = _blueprints.Require<BlueprintSpellbook>(GameBlueprintIds.Spellbooks.Ranger, "Ranger spellbook");
-            _blueprints.CopySpellbookProgression(spellbook, rangerSpellbook);
+            var inquisitorSpellbook = _blueprints.Require<BlueprintSpellbook>(
+                GameBlueprintIds.Spellbooks.Inquisitor,
+                "Inquisitor spellbook");
+            _blueprints.CopySpellbookProgression(spellbook, inquisitorSpellbook);
+            NecromancerMediumMergedSpellbookProgression.Apply(_blueprints, spellbook);
             spellbook.CastingAttribute = baseSpellbook.CastingAttribute;
             _blueprints.SetSpellbookSpellList(spellbook, spellList);
             _blueprints.SetSpellbookCharacterClass(spellbook, characterClass);

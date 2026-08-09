@@ -42,6 +42,10 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 "Evoker bloodline selection");
             var arcaneBloodline = _evoker.EnsureEvokerArcaneBloodline(characterClass);
             var arcanistNewArcana = _evoker.EnsureArcanistNewArcanaSelection(characterClass);
+            var spellPenetration = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.SpellPenetration,
+                "Spell Penetration");
+            var combatCasting = _evoker.EnsureEvokerCombatCastingFeature(characterClass);
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
@@ -52,8 +56,8 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             _blueprints.SetArchetypeReplaceSpellbook(archetype, null);
             _blueprints.SetArchetypeFeatureChanges(
                 archetype,
-                CreateFeatureEntries(arcaneBloodline, arcanistNewArcana),
-                CreateRemoveFeatureEntries(evokerBloodlineSelection));
+                CreateFeatureEntries(arcaneBloodline, arcanistNewArcana, spellPenetration),
+                CreateRemoveFeatureEntries(evokerBloodlineSelection, combatCasting));
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
@@ -61,7 +65,8 @@ namespace wotr_mod.Classes.Evoker.Archetypes
 
         private static LevelEntry[] CreateFeatureEntries(
             BlueprintProgression arcaneBloodline,
-            BlueprintFeatureSelection arcanistNewArcana)
+            BlueprintFeatureSelection arcanistNewArcana,
+            BlueprintFeature spellPenetration)
         {
             var entries = (arcaneBloodline.LevelEntries ?? Array.Empty<LevelEntry>())
                 .Select(entry =>
@@ -74,6 +79,7 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 .Where(entry => entry != null)
                 .ToList();
 
+            AddFeatureToLevel(entries, 2, spellPenetration);
             AddFeatureToLevel(entries, 4, arcanistNewArcana);
             return entries
                 .OrderBy(entry => entry.Level)
@@ -81,11 +87,13 @@ namespace wotr_mod.Classes.Evoker.Archetypes
         }
 
         private static LevelEntry[] CreateRemoveFeatureEntries(
-            BlueprintFeatureBase evokerBloodlineSelection)
+            BlueprintFeatureBase evokerBloodlineSelection,
+            BlueprintFeature combatCasting)
         {
             return new[]
             {
-                CreateLevelEntry(1, evokerBloodlineSelection)
+                CreateLevelEntry(1, evokerBloodlineSelection),
+                CreateLevelEntry(2, combatCasting)
             };
         }
 

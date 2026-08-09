@@ -189,7 +189,7 @@ namespace wotr_mod.Spells.Modifiers
                 return;
             }
 
-            DealNegativeEnergyDamage(caster, target, casterLevel);
+            DealUnholyDamage(caster, target, casterLevel);
         }
 
         private bool IsUndead(UnitEntityData unit)
@@ -198,9 +198,9 @@ namespace wotr_mod.Spells.Modifiers
                    unit?.Descriptor?.Progression?.Features?.HasFact(UndeadType) == true;
         }
 
-        private void DealNegativeEnergyDamage(UnitEntityData caster, UnitEntityData target, int casterLevel)
+        private void DealUnholyDamage(UnitEntityData caster, UnitEntityData target, int casterLevel)
         {
-            var damage = new EnergyDamage(new DiceFormula(1, DiceType.D8), casterLevel, DamageEnergyType.NegativeEnergy);
+            var damage = new EnergyDamage(new DiceFormula(1, DiceType.D8), casterLevel, DamageEnergyType.Unholy);
             var rule = new RuleDealDamage(caster, target, damage)
             {
                 Reason = Context,

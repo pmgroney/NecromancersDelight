@@ -1,6 +1,6 @@
 # Billy Voice Implementation Notes
 
-These notes are for a later implementation pass. No voice code has been added yet.
+These notes track the Billy voice pipeline used by the mod.
 
 ## Current Billy Dialogue Surface
 
@@ -43,6 +43,78 @@ Use this as the Billy bark target:
 - Wwise-generated media: `.wem`
 - Runtime bank to ship/load: `Billy_GVR_ENG.bnk` or `CMP_Billy_GVR_ENG.bnk`
 - Runtime blueprint wiring: `UnitAsksComponent.SoundBanks = ["CMP_Billy_GVR_ENG"]`, with each `BarkEntry.AkEvent` set to the matching Wwise event name.
+
+## Regenerating Billy Audio
+
+The TTS helper scripts live outside the mod repo:
+
+```powershell
+cd C:\Users\Paul\RiderProjects\Utility
+```
+
+Dialogue WAVs are generated from `docs\billy_dialogue.json`:
+
+```powershell
+node --env-file=.env tts-billy-dialogue.js
+```
+
+Bark WAVs are generated from `docs\billy_barks.json`:
+
+```powershell
+node --env-file=.env tts-billy-barks.js
+```
+
+Both scripts skip existing WAV files. To regenerate one line, move the existing WAV aside first:
+
+```powershell
+Move-Item .\output\<file>.wav .\output\<file>.backup.wav
+```
+
+Examples used during verification:
+
+```powershell
+Move-Item .\output\billy_dialog_greeting.wav .\output\billy_dialog_greeting.backup.wav
+Move-Item .\output\billy_combat_start_04.wav .\output\billy_combat_start_04.backup.wav
+```
+
+`docs\billy_dialogue.json` and `docs\billy_barks.json` are TTS generation text. They may use phonetic spelling or punctuation to steer pronunciation and intonation, such as `Kenahbrays` for spoken `Kenabres` or `Oh! You almost scared me to death!` for a surprised read. Keep `wotr_mod/Content/Localization/ModText.cs` as the in-game display text unless the visible game text should also change.
+
+After the WAVs are generated, open the BillyVoice Wwise project in Wwise 2019.2.15 and enable:
+
+```text
+Project -> User Preferences -> Enable Wwise Authoring API
+```
+
+Then import/update the Wwise project from the Utility folder:
+
+```powershell
+node --env-file=.env wwise-build-billy.js
+```
+
+When the script prompts for manual bank generation:
+
+```text
+Layouts -> SoundBank -> select CMP_Billy_GVR_ENG -> Shift+F7
+```
+
+The generated bank should be copied to:
+
+```text
+wotr_mod\Audio\CMP_Billy_GVR_ENG.bnk
+```
+
+Verify the Wwise-generated bank and mod bank have matching size and timestamp:
+
+```powershell
+Get-ChildItem -LiteralPath C:\Users\Paul\Documents\WwiseProjects\BillyVoice\GeneratedSoundBanks\Windows\CMP_Billy_GVR_ENG.bnk | Select-Object FullName,Length,LastWriteTime
+Get-ChildItem -LiteralPath C:\Users\Paul\RiderProjects\wotr_mod\wotr_mod\Audio\CMP_Billy_GVR_ENG.bnk | Select-Object FullName,Length,LastWriteTime
+```
+
+Known issue: `wwise-build-billy.js` can detect an already-existing bank before Wwise finishes writing the fresh bank, leaving the mod copy stale. If the generated bank is newer or has a different size than the mod bank, copy it manually:
+
+```powershell
+Copy-Item -LiteralPath C:\Users\Paul\Documents\WwiseProjects\BillyVoice\GeneratedSoundBanks\Windows\CMP_Billy_GVR_ENG.bnk -Destination C:\Users\Paul\RiderProjects\wotr_mod\wotr_mod\Audio\CMP_Billy_GVR_ENG.bnk -Force
+```
 
 ## Full Dialogue VO Findings
 
