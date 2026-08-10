@@ -349,6 +349,12 @@ namespace wotr_mod.Infrastructure
         public static readonly FieldInfo RecommendationNoFeatFromGroupExcludedFeatures =
             typeof(RecommendationNoFeatFromGroup).GetField("m_FeaturesExlude", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static readonly FieldInfo RecommendationForWeaponCategoryRecommendation =
+            typeof(RecommendationForWeaponCategory).GetField("m_Recommendation", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public static readonly FieldInfo RecommendationForWeaponCategoryWeaponCategories =
+            typeof(RecommendationForWeaponCategory).GetField("m_WeaponCategories", BindingFlags.Instance | BindingFlags.NonPublic);
+
         public static readonly FieldInfo AddAbilityResourcesResource =
             typeof(AddAbilityResources).GetField("m_Resource", BindingFlags.Instance | BindingFlags.NonPublic);
 

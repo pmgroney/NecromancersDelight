@@ -421,6 +421,7 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerMaleficConversion = "24874e886cc042118c81b7c2eb1f3142";
             public const string NecromancerDeathlyFinesse = "958fb96e2ae648b5a18bc6716d140a52";
             public const string NecromancerDeathlyFinesseTraining = "cf929f9c1eb24d7da375a0df5bc0e36d";
+            public const string NecromancerDeathlyFinesseTrainingScythe = "b9d6f705fd1f4e5c8d5e3f55f2ee964f";
             public const string ShadowbornArcana = "e4ba41b250a94b988444c0b452e88030";
             public const string ShadowbornBurningHandsKnownSpell = "09a7b2d0c117473285e132ff12dfd26f";
             public const string ShadowbornHellfireRayKnownSpell = "17854f9815e14af1bbe8c1c27529a331";

@@ -5,9 +5,11 @@ using System.Security.Cryptography;
 using System.Text;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Items.Armors;
+using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
@@ -84,6 +86,9 @@ namespace wotr_mod.Classes.Necromancer
             EnsureNecromancerBloodline();
             RegisterNecromancerFeatures(characterClass);
             EnsureNecromancySpellFocusRecommendation(characterClass);
+            ConfigureWeaponFinesseRecommendation(characterClass);
+            ConfigureWeaponFocusRecommendation(characterClass);
+            ConfigureArcaneArmorTrainingRecommendation(characterClass);
 
             if (characterClass.Progression != null)
             {
@@ -221,6 +226,78 @@ namespace wotr_mod.Classes.Necromancer
             }
 
             recommendation.AddRecommendedClass(characterClass, SpellSchool.Necromancy);
+        }
+
+        private void ConfigureArcaneArmorTrainingRecommendation(BlueprintCharacterClass characterClass)
+        {
+            var arcaneArmorTraining = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.ArcaneArmorTraining,
+                "Arcane Armor Training");
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(arcaneArmorTraining);
+            var recommendation = _blueprints.EnsureComponent(
+                arcaneArmorTraining,
+                () => new SpellbookRecommendationExceptClasses
+                {
+                    name = "$SpellbookRecommendationExceptClasses$ArcaneArmorTraining"
+                });
+            recommendation.NotRecommendedClasses = characterClass == null
+                ? new BlueprintCharacterClass[0]
+                : new[] { characterClass };
+        }
+
+        private void ConfigureWeaponFinesseRecommendation(BlueprintCharacterClass characterClass)
+        {
+            var weaponFinesse = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.WeaponFinesse,
+                "Weapon Finesse");
+            var recommendation = _blueprints.EnsureComponent(
+                weaponFinesse,
+                () => new SpellbookRecommendationExceptClasses
+                {
+                    name = "$SpellbookRecommendationExceptClasses$WeaponFinesse",
+                    RecommendSpellbookClasses = false
+                });
+            recommendation.RecommendSpellbookClasses = false;
+            recommendation.NotRecommendedClasses = characterClass == null
+                ? new BlueprintCharacterClass[0]
+                : new[] { characterClass };
+        }
+
+        private void ConfigureWeaponFocusRecommendation(BlueprintCharacterClass characterClass)
+        {
+            var weaponFocus = _blueprints.Require<BlueprintParametrizedFeature>(
+                GameBlueprintIds.Features.WeaponFocus,
+                "Weapon Focus");
+            RemoveScytheFromBadWeaponFocusRecommendations(weaponFocus);
+            var recommendation = _blueprints.EnsureComponent(
+                weaponFocus,
+                () => new GravebladeWeaponFocusRecommendation
+                {
+                    name = "$GravebladeWeaponFocusRecommendation$Scythe"
+                });
+            recommendation.AddRecommendedClass(characterClass);
+        }
+
+        private void RemoveScytheFromBadWeaponFocusRecommendations(BlueprintParametrizedFeature weaponFocus)
+        {
+            foreach (var recommendation in _blueprints.GetComponents<RecommendationForWeaponCategory>(weaponFocus))
+            {
+                var priority = BlueprintFields.RecommendationForWeaponCategoryRecommendation
+                    .GetValue(recommendation)
+                    ?.ToString();
+                var categories = BlueprintFields.RecommendationForWeaponCategoryWeaponCategories
+                    .GetValue(recommendation) as List<WeaponCategory>;
+                if (priority != "Bad" || categories == null || !categories.Contains(WeaponCategory.Scythe))
+                {
+                    continue;
+                }
+
+                BlueprintFields.RecommendationForWeaponCategoryWeaponCategories.SetValue(
+                    recommendation,
+                    categories
+                    .Where(category => category != WeaponCategory.Scythe)
+                    .ToList());
+            }
         }
 
         private BlueprintProgression EnsureNecromancerBloodline()
@@ -644,6 +721,7 @@ namespace wotr_mod.Classes.Necromancer
                 "Rogue Finesse Training");
             var choices = _blueprints.GetFeatureSelectionAllFeatures(rogueFinesseTraining)
                 .Select(choice => EnsureDeathlyFinesseTrainingChoice(choice, characterClass))
+                .Concat(new[] { EnsureDeathlyFinesseTrainingScytheChoice(characterClass) })
                 .Where(choice => choice != null)
                 .ToArray();
             _blueprints.SetFeatureSelectionAllFeatures(selection, choices);
@@ -691,6 +769,49 @@ namespace wotr_mod.Classes.Necromancer
             foreach (var replacement in _blueprints.GetComponents<WeaponTypeDamageStatReplacement>(choice))
             {
                 replacement.Stat = StatType.Charisma;
+            }
+
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(choice, characterClass);
+            }
+
+            return choice;
+        }
+
+        private BlueprintFeature EnsureDeathlyFinesseTrainingScytheChoice(BlueprintCharacterClass characterClass)
+        {
+            var choice = _blueprints.Get<BlueprintFeature>(
+                ModBlueprintIds.Features.NecromancerDeathlyFinesseTrainingScythe);
+            if (choice == null)
+            {
+                choice = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(
+                        "50c7baae70624e24089d32d090e9cdb6",
+                        "Rogue Finesse Training Dagger"),
+                    ModBlueprintIds.Features.NecromancerDeathlyFinesseTrainingScythe,
+                    "WotrMod_NecromancerDeathlyFinesseTraining_Scythe");
+                _blueprints.AddCachedBlueprint(
+                    ModBlueprintIds.Features.NecromancerDeathlyFinesseTrainingScythe,
+                    choice);
+            }
+
+            choice.name = "WotrMod_NecromancerDeathlyFinesseTraining_Scythe";
+            choice.IsClassFeature = true;
+            choice.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                choice,
+                _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseTrainingScytheName),
+                _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseTrainingChoiceDescription));
+            foreach (var replacement in _blueprints.GetComponents<WeaponTypeDamageStatReplacement>(choice))
+            {
+                replacement.Stat = StatType.Charisma;
+                replacement.Category = WeaponCategory.Scythe;
+            }
+
+            foreach (var prerequisite in _blueprints.GetComponents<PrerequisiteProficiency>(choice))
+            {
+                prerequisite.WeaponProficiencies = new[] { WeaponCategory.Scythe };
             }
 
             if (characterClass != null)

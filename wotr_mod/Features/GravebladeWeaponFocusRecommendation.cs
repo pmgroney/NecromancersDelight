@@ -11,12 +11,13 @@ namespace wotr_mod.Features
 {
     public sealed class GravebladeWeaponFocusRecommendation : ParametrizedLevelUpRecommendationComponent
     {
+        public BlueprintCharacterClass[] RecommendedClasses;
         public BlueprintArchetype[] GravebladeArchetypes;
         public BlueprintFeatureSelection[] GravebladeSelections;
 
         public override RecommendationPriority GetPriority(FeatureParam param, LevelUpState levelUpState)
         {
-            if (param == null || !param.WeaponCategory.HasValue || !IsGraveblade(levelUpState))
+            if (param == null || !param.WeaponCategory.HasValue || !IsRecommendedCharacter(levelUpState))
             {
                 return RecommendationPriority.Same;
             }
@@ -50,7 +51,19 @@ namespace wotr_mod.Features
                 .ToArray();
         }
 
-        private bool IsGraveblade(LevelUpState levelUpState)
+        public void AddRecommendedClass(BlueprintCharacterClass characterClass)
+        {
+            if (characterClass == null || HasClass(characterClass))
+            {
+                return;
+            }
+
+            RecommendedClasses = (RecommendedClasses ?? new BlueprintCharacterClass[0])
+                .Concat(new[] { characterClass })
+                .ToArray();
+        }
+
+        private bool IsRecommendedCharacter(LevelUpState levelUpState)
         {
             if (levelUpState?.Selections != null &&
                 levelUpState.Selections.Any(selectionState =>
@@ -66,6 +79,11 @@ namespace wotr_mod.Features
             }
 
             var selectedClass = levelUpState?.SelectedClass;
+            if (HasClass(selectedClass))
+            {
+                return true;
+            }
+
             var classData = selectedClass == null
                 ? null
                 : levelUpState.Unit?.Progression.GetClassData(selectedClass);
@@ -87,6 +105,14 @@ namespace wotr_mod.Features
                    archetype != null &&
                    GravebladeArchetypes.Any(candidate =>
                        candidate != null && candidate.AssetGuid == archetype.AssetGuid);
+        }
+
+        private bool HasClass(BlueprintCharacterClass characterClass)
+        {
+            return RecommendedClasses != null &&
+                   characterClass != null &&
+                   RecommendedClasses.Any(candidate =>
+                       candidate != null && candidate.AssetGuid == characterClass.AssetGuid);
         }
     }
 }

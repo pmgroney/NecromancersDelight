@@ -293,6 +293,7 @@ namespace wotr_mod.Infrastructure
             public const string TwoWeaponFighting = "ac8aaf29054f5b74eb18f2af950e752d";
             public const string LightningReflexes = "15e7da6645a7f3d41bdad7c8c4b9de1e";
             public const string WeaponFinesse = "90e54424d682d104ab36436bd527af09";
+            public const string ArcaneArmorTraining = "1a0298abacb6e0f45b7e28553e99e76c";
             public const string ZenArcherWayOfTheBowLongbowFocus = "2e659493076249f49821925b9b7dc389";
             public const string RogueAdvancedTalents = "a33b99f95322d6741af83e9381b2391c";
             public const string RogueSneakAttack = "9b9eac6709e1c084cb18c3a366e0ec87";

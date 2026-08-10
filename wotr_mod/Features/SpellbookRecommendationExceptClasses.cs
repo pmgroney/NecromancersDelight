@@ -8,6 +8,7 @@ namespace wotr_mod.Features
     public sealed class SpellbookRecommendationExceptClasses : LevelUpRecommendationComponent
     {
         public BlueprintCharacterClass[] NotRecommendedClasses;
+        public bool RecommendSpellbookClasses = true;
 
         public override RecommendationPriority GetPriority(LevelUpState levelUpState)
         {
@@ -19,7 +20,7 @@ namespace wotr_mod.Features
 
             return IsNotRecommendedClass(selectedClass)
                 ? RecommendationPriority.Bad
-                : selectedClass.Spellbook != null
+                : RecommendSpellbookClasses && selectedClass.Spellbook != null
                     ? RecommendationPriority.Good
                     : RecommendationPriority.Same;
         }
