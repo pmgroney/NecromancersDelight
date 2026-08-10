@@ -2,6 +2,9 @@ using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.EntitySystem.Entities;
+using Kingmaker.EntitySystem.Stats;
+using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem.Rules;
@@ -152,6 +155,11 @@ namespace wotr_mod.Features
         private int GetBonusPerDie(BlueprintCharacterClass characterClass)
         {
             var classLevel = characterClass == null ? 0 : Owner.Progression.GetClassLevel(characterClass);
+            return GetDamageScaling(classLevel);
+        }
+
+        internal static int GetDamageScaling(int classLevel)
+        {
             if (classLevel <= 0)
             {
                 return 0;
@@ -159,6 +167,116 @@ namespace wotr_mod.Features
 
             var bonus = 1 + classLevel / 4;
             return bonus > 6 ? 6 : bonus;
+        }
+    }
+
+    public sealed class MasterOfDeathUndeadSummonTrait :
+        UnitFactComponentDelegate,
+        IInitiatorRulebookHandler<RuleSummonUnit>,
+        IRulebookHandler<RuleSummonUnit>,
+        IInitiatorRulebookSubscriber
+    {
+        public BlueprintFeature UndeadType;
+        public BlueprintBuff SummonBuff;
+
+        public void OnEventAboutToTrigger(RuleSummonUnit evt)
+        {
+        }
+
+        public void OnEventDidTrigger(RuleSummonUnit evt)
+        {
+            var summoned = evt?.SummonedUnit;
+            if (SummonBuff == null || !IsUndead(summoned))
+            {
+                return;
+            }
+
+            if (evt.Context != null)
+            {
+                summoned.Buffs.AddBuff(SummonBuff, evt.Context, null);
+                return;
+            }
+
+            summoned.Buffs.AddBuff(SummonBuff, Owner, null, null);
+        }
+
+        private bool IsUndead(UnitEntityData unit)
+        {
+            return UndeadType != null &&
+                   unit?.Descriptor?.Progression?.Features?.HasFact(UndeadType) == true;
+        }
+    }
+
+    public sealed class MasterOfDeathUndeadSummonBuff : UnitFactComponentDelegate
+    {
+        public BlueprintCharacterClass CharacterClass;
+        public ModifierDescriptor Descriptor = ModifierDescriptor.UntypedStackable;
+
+        protected override void OnActivate()
+        {
+            ApplyBonuses();
+        }
+
+        protected override void OnTurnOn()
+        {
+            ApplyBonuses();
+        }
+
+        protected override void OnDeactivate()
+        {
+            RemoveBonuses();
+        }
+
+        protected override void OnTurnOff()
+        {
+            RemoveBonuses();
+        }
+
+        private void ApplyBonuses()
+        {
+            RemoveBonuses();
+
+            var classLevel = GetCasterClassLevel();
+            if (classLevel <= 0)
+            {
+                return;
+            }
+
+            var combatBonus = MasterOfDeathArcanaClassSpells.GetDamageScaling(classLevel);
+            AddStatBonus(StatType.HitPoints, classLevel * 3);
+            AddStatBonus(StatType.AdditionalAttackBonus, combatBonus);
+            AddStatBonus(StatType.AdditionalDamage, combatBonus);
+        }
+
+        private int GetCasterClassLevel()
+        {
+            var caster = Fact?.MaybeContext?.MaybeCaster;
+            return CharacterClass == null || caster == null
+                ? 0
+                : caster.Progression.GetClassLevel(CharacterClass);
+        }
+
+        private void AddStatBonus(StatType stat, int value)
+        {
+            if (Owner?.Descriptor?.Stats == null)
+            {
+                return;
+            }
+
+            Owner.Descriptor.Stats.GetStat(stat)?.AddModifierUnique(value, Runtime, Descriptor);
+        }
+
+        private void RemoveBonuses()
+        {
+            if (Owner?.Descriptor?.Stats == null)
+            {
+                return;
+            }
+
+            foreach (var stat in Owner.Descriptor.Stats.AllStats)
+            {
+                stat?.RemoveModifiersFrom(Runtime);
+            }
         }
     }
 

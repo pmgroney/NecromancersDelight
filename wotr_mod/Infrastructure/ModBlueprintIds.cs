@@ -518,6 +518,7 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornArcana = "973702c1b9e74b9e8ddcc3e580e192f9";
             public const string ShadowbornLivingGhost = "23ca9c026754444499d9b30238873d97";
             public const string NecromancerMaleficConversion = "e6be4c0d0883456fbd7fbc25aec04936";
+            public const string NecromancerMasterOfDeathUndeadSummon = "2a241d8b235e406e8fc9186e845e54f1";
         }
     }
 }

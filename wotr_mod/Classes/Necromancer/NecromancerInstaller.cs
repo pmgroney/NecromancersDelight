@@ -704,14 +704,55 @@ namespace wotr_mod.Classes.Necromancer
                 _localization.Text(LocalizationIds.Mod.NecromancerMasterOfDeathClassCardDescription));
             var icon = _icons.Load("Icons\\master_of_death.png");
             if (icon != null) _blueprints.SetUnitFactIcon(feature, icon);
-            _blueprints.SetComponents(feature, new MasterOfDeathArcanaClassSpells
-            {
-                name = "$MasterOfDeathArcanaClassSpells$Necromancer",
-                Classes = characterClass == null ? Array.Empty<BlueprintCharacterClass>() : new[] { characterClass },
-                ConversionBuff = EnsureMaleficConversionBuff()
-            });
+            var summonBuff = EnsureMasterOfDeathUndeadSummonBuff(characterClass);
+            _blueprints.SetComponents(feature,
+                new MasterOfDeathArcanaClassSpells
+                {
+                    name = "$MasterOfDeathArcanaClassSpells$Necromancer",
+                    Classes = characterClass == null ? Array.Empty<BlueprintCharacterClass>() : new[] { characterClass },
+                    ConversionBuff = EnsureMaleficConversionBuff()
+                },
+                new MasterOfDeathUndeadSummonTrait
+                {
+                    name = "$MasterOfDeathUndeadSummonTrait$Necromancer",
+                    UndeadType = _blueprints.Require<BlueprintFeature>(
+                        GameBlueprintIds.Features.UndeadType,
+                        "Undead type"),
+                    SummonBuff = summonBuff
+                });
             if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
             return feature;
+        }
+
+        private BlueprintBuff EnsureMasterOfDeathUndeadSummonBuff(BlueprintCharacterClass characterClass)
+        {
+            var buff = _blueprints.Get<BlueprintBuff>(ModBlueprintIds.Buffs.NecromancerMasterOfDeathUndeadSummon);
+            if (buff == null)
+            {
+                buff = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintBuff>(
+                        "c2b7fa6ad976b084db711433b6f17716",
+                        "Gebbite Necromancer summon buff donor"),
+                    ModBlueprintIds.Buffs.NecromancerMasterOfDeathUndeadSummon,
+                    "WotrMod_NecromancerMasterOfDeathUndeadSummonBuff");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Buffs.NecromancerMasterOfDeathUndeadSummon, buff);
+            }
+
+            buff.IsClassFeature = false;
+            buff.Ranks = 1;
+            buff.Stacking = StackingType.Replace;
+            _blueprints.SetUnitFactDisplay(buff,
+                _localization.Text(LocalizationIds.Mod.NecromancerBloodlineArcanaName),
+                _localization.Text(LocalizationIds.Mod.NecromancerBloodlineArcanaDescription));
+            var icon = _icons.Load("Icons\\master_of_death.png");
+            if (icon != null) _blueprints.SetUnitFactIcon(buff, icon);
+            _blueprints.SetComponents(buff, new MasterOfDeathUndeadSummonBuff
+            {
+                name = "$MasterOfDeathUndeadSummonBuff$Necromancer",
+                CharacterClass = characterClass,
+                Descriptor = ModifierDescriptor.UntypedStackable
+            });
+            return buff;
         }
 
         private BlueprintFeature EnsureMaleficConversionFeature(BlueprintCharacterClass characterClass)
