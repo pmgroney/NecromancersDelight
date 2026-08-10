@@ -50,7 +50,14 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 archetype,
                 false,
                 _blueprints.GetCharacterClassStartingGold(characterClass));
-            _blueprints.SetArchetypeFeatureChanges(archetype, Array.Empty<LevelEntry>(), Array.Empty<LevelEntry>());
+            var deathlyFinesse = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerDeathlyFinesse);
+            var deathlyFinesseTraining = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining);
+            var removeEntries = new[]
+            {
+                _blueprints.CreateLevelEntry(3, deathlyFinesse),
+                _blueprints.CreateLevelEntry(5, deathlyFinesseTraining)
+            };
+            _blueprints.SetArchetypeFeatureChanges(archetype, Array.Empty<LevelEntry>(), removeEntries);
             _blueprints.SetArchetypeBuildChanging(archetype, true);
             _blueprints.SetArchetypeAttributeRecommendations(
                 archetype,

@@ -236,6 +236,11 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerStygianPrecisionDescription = "wotr_mod.class.necromancer.stygian_precision.description";
             public const string NecromancerReapersJudgementName = "wotr_mod.class.necromancer.reapers_judgement.name";
             public const string NecromancerReapersJudgementDescription = "wotr_mod.class.necromancer.reapers_judgement.description";
+            public const string NecromancerDeathlyFinesseName = "wotr_mod.class.necromancer.deathly_finesse.name";
+            public const string NecromancerDeathlyFinesseDescription = "wotr_mod.class.necromancer.deathly_finesse.description";
+            public const string NecromancerDeathlyFinesseTrainingName = "wotr_mod.class.necromancer.deathly_finesse_training.name";
+            public const string NecromancerDeathlyFinesseTrainingDescription = "wotr_mod.class.necromancer.deathly_finesse_training.description";
+            public const string NecromancerDeathlyFinesseTrainingChoiceDescription = "wotr_mod.class.necromancer.deathly_finesse_training.choice.description";
             public const string GravebladeReapingEdgeName = "wotr_mod.archetype.graveblade.reaping_edge.name";
             public const string GravebladeReapingEdgeDescription = "wotr_mod.archetype.graveblade.reaping_edge.description";
             public const string GravebladeReapingEdgeBaseName = "wotr_mod.archetype.graveblade.reaping_edge.base.name";

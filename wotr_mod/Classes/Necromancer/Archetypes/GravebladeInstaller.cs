@@ -184,7 +184,10 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             AddLevelEntryIfAny(entries, 2,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike granted spell"));
             AddLevelEntryIfAny(entries, 3,
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift"),
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerDeathlyFinesse, "Deathly Finesse"));
+            AddLevelEntryIfAny(entries, 5,
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining, "Deathly Finesse Training"));
             AddLevelEntryIfAny(entries, 4,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));

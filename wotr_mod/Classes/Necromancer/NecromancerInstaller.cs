@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
@@ -307,19 +309,21 @@ namespace wotr_mod.Classes.Necromancer
                 8, necromancerClass);
             var stygianPrecision = EnsureStygianPrecisionFeature(necromancerClass);
             var reapersJudgement = EnsureReapersJudgementFeature(necromancerClass);
+            var deathlyFinesse = EnsureDeathlyFinesseFeature(necromancerClass);
+            var deathlyFinesseTraining = EnsureDeathlyFinesseTrainingFeature(necromancerClass);
 
             var visibleFeatures = new BlueprintFeatureBase[]
             {
                 arcana, maleficConversion, power1, power3, boneSpike, corpseExplosion,
-                eldritchHorror, power9, harvestTheFallen, harvestSoul, deathClutch, power15, hellOnEarth, power20, stygianPrecision, reapersJudgement
+                eldritchHorror, power9, harvestTheFallen, harvestSoul, deathClutch, power15, hellOnEarth, power20, stygianPrecision, reapersJudgement, deathlyFinesse, deathlyFinesseTraining
             };
             clone.LevelEntries = new[]
             {
                 _blueprints.CreateLevelEntry(1, arcana, maleficConversion, power1, boneArmor),
                 _blueprints.CreateLevelEntry(2, boneSpike),
-                _blueprints.CreateLevelEntry(3, power3),
+                _blueprints.CreateLevelEntry(3, power3, deathlyFinesse),
                 _blueprints.CreateLevelEntry(4, corpseExplosion, stygianPrecision, arcana),
-                _blueprints.CreateLevelEntry(5, boneArmor),
+                _blueprints.CreateLevelEntry(5, boneArmor, deathlyFinesseTraining),
                 _blueprints.CreateLevelEntry(7, eldritchHorror),
                 _blueprints.CreateLevelEntry(8, stygianPrecision, arcana),
                 _blueprints.CreateLevelEntry(9, power3, power9, boneArmor),
@@ -368,7 +372,9 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerHellOnEarthKnownSpell, "Hell on Earth"),
                 EnsureNecromancerBonusFeatSelection(),
                 EnsureStygianPrecisionFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer)),
-                EnsureReapersJudgementFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer))
+                EnsureReapersJudgementFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer)),
+                EnsureDeathlyFinesseFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer)),
+                EnsureDeathlyFinesseTrainingFeature(_blueprints.Get<BlueprintCharacterClass>(ModBlueprintIds.Classes.Necromancer))
             };
         }
 
@@ -399,6 +405,10 @@ namespace wotr_mod.Classes.Necromancer
                 features, ModBlueprintIds.Features.NecromancerBloodlinePower1, "Withering Ray");
             var deathsGift = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerBloodlinePower3, "Death's Gift");
+            var deathlyFinesse = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerDeathlyFinesse, "Deathly Finesse");
+            var deathlyFinesseTraining = FindNecromancerFeature<BlueprintFeatureSelection>(
+                features, ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining, "Deathly Finesse Training");
             var graspOfTheDead = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerBloodlinePower9, "Grasp of the Dead");
             var incorporealForm = FindNecromancerFeature<BlueprintFeature>(
@@ -438,9 +448,9 @@ namespace wotr_mod.Classes.Necromancer
 
             _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, maleficConversion, witheringRay, boneArmor, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike);
-            _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift);
+            _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift, deathlyFinesse);
             _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision, masterOfDeath);
-            _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor);
+            _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor, deathlyFinesseTraining);
             _blueprints.AddFeaturesToLevel(progression, 6,  necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 7,  eldritchHorror);
             _blueprints.AddFeaturesToLevel(progression, 8,  stygianPrecision, masterOfDeath);
@@ -463,6 +473,7 @@ namespace wotr_mod.Classes.Necromancer
                 new[] { masterOfDeath, maleficConversion },
                 new[] { boneArmor },
                 new[] { deathsGift },
+                new[] { deathlyFinesse, deathlyFinesseTraining },
                 new[] { necromancerBonusFeat },
                 new[] { stygianPrecision, reapersJudgement },
                 new[] { graspOfTheDead, incorporealForm, oneOfUs },
@@ -561,6 +572,143 @@ namespace wotr_mod.Classes.Necromancer
             }
 
             return feature;
+        }
+
+        internal BlueprintFeature EnsureDeathlyFinesseFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerDeathlyFinesse);
+            if (feature == null)
+            {
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerDeathlyFinesse",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.NecromancerDeathlyFinesse)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerDeathlyFinesse, feature);
+            }
+
+            feature.name = "WotrMod_NecromancerDeathlyFinesse";
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseName),
+                _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseDescription));
+            var weaponFinesse = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.WeaponFinesse,
+                "Weapon Finesse donor");
+            if (weaponFinesse.Icon != null)
+            {
+                _blueprints.SetUnitFactIcon(feature, weaponFinesse.Icon);
+            }
+
+            _blueprints.SetComponents(feature, new AttackStatReplacement
+            {
+                name = "$AttackStatReplacement$NecromancerDeathlyFinesse",
+                ReplacementStat = StatType.Charisma,
+                SubCategory = WeaponSubCategory.None,
+                CheckWeaponTypes = false
+            });
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(feature, characterClass);
+            }
+
+            return feature;
+        }
+
+        internal BlueprintFeatureSelection EnsureDeathlyFinesseTrainingFeature(BlueprintCharacterClass characterClass)
+        {
+            var selection = _blueprints.Get<BlueprintFeatureSelection>(ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining);
+            if (selection == null)
+            {
+                selection = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeatureSelection>(
+                        GameBlueprintIds.Features.RogueFinesseTrainingSelection,
+                        "Rogue Finesse Training"),
+                    ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining,
+                    "WotrMod_NecromancerDeathlyFinesseTraining");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining, selection);
+            }
+
+            selection.name = "WotrMod_NecromancerDeathlyFinesseTraining";
+            selection.IsClassFeature = true;
+            selection.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                selection,
+                _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseTrainingName),
+                _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseTrainingDescription));
+
+            var rogueFinesseTraining = _blueprints.Require<BlueprintFeatureSelection>(
+                GameBlueprintIds.Features.RogueFinesseTrainingSelection,
+                "Rogue Finesse Training");
+            var choices = _blueprints.GetFeatureSelectionAllFeatures(rogueFinesseTraining)
+                .Select(choice => EnsureDeathlyFinesseTrainingChoice(choice, characterClass))
+                .Where(choice => choice != null)
+                .ToArray();
+            _blueprints.SetFeatureSelectionAllFeatures(selection, choices);
+            _blueprints.SetFeatureSelectionFeatures(selection, Array.Empty<BlueprintFeature>());
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClassesShallow(selection, characterClass);
+            }
+
+            return selection;
+        }
+
+        private BlueprintFeature EnsureDeathlyFinesseTrainingChoice(
+            BlueprintFeature donorChoice,
+            BlueprintCharacterClass characterClass)
+        {
+            if (donorChoice == null)
+            {
+                return null;
+            }
+
+            var choiceGuid = CreateDeathlyFinesseTrainingChoiceGuid(donorChoice);
+            var choice = _blueprints.Get<BlueprintFeature>(choiceGuid);
+            if (choice == null)
+            {
+                choice = _blueprints.CloneBlueprint(
+                    donorChoice,
+                    choiceGuid,
+                    "WotrMod_NecromancerDeathlyFinesseTraining_" + donorChoice.name);
+                _blueprints.AddCachedBlueprint(choiceGuid, choice);
+            }
+
+            choice.name = "WotrMod_NecromancerDeathlyFinesseTraining_" + donorChoice.name;
+            choice.IsClassFeature = true;
+            choice.Ranks = 1;
+            var donorName = BlueprintFields.UnitFactDisplayName.GetValue(donorChoice);
+            if (donorName is Kingmaker.Localization.LocalizedString localizedName)
+            {
+                _blueprints.SetUnitFactDisplay(
+                    choice,
+                    localizedName,
+                    _localization.Text(LocalizationIds.Mod.NecromancerDeathlyFinesseTrainingChoiceDescription));
+            }
+
+            foreach (var replacement in _blueprints.GetComponents<WeaponTypeDamageStatReplacement>(choice))
+            {
+                replacement.Stat = StatType.Charisma;
+            }
+
+            if (characterClass != null)
+            {
+                _blueprints.SetProgressionClasses(choice, characterClass);
+            }
+
+            return choice;
+        }
+
+        private static string CreateDeathlyFinesseTrainingChoiceGuid(BlueprintFeature donorChoice)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(
+                    "wotr_mod.necromancer.deathly_finesse_training." + donorChoice.AssetGuid);
+                return string.Concat(md5.ComputeHash(bytes).Select(b => b.ToString("x2")));
+            }
         }
 
         internal BlueprintFeatureSelection EnsureNecromancerBonusFeatSelection()
