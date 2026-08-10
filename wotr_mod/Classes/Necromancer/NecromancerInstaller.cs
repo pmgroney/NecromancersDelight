@@ -11,13 +11,16 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Enums.Damage;
 using Kingmaker.RuleSystem;
+using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityModManagerNet;
+using wotr_mod.Classes.Evoker;
 using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 using wotr_mod.Spells;
@@ -100,7 +103,18 @@ namespace wotr_mod.Classes.Necromancer
 
         private void ConfigureNecromancerSpellList(BlueprintSpellList spellList, int minimumSpellLevel = 0)
         {
-            var spellsByLevel = NecromancerSpellRegistry.GetAll()
+            var spellsByLevel = MergeSpellEntries(
+                GetNecromancerRegistrySpells(minimumSpellLevel),
+                GetWizardEvocationSpells(minimumSpellLevel));
+
+            _blueprints.SetSpellListSpells(
+                spellList,
+                spellsByLevel.OrderBy(p => p.Value).ThenBy(p => p.Key.name));
+        }
+
+        private IEnumerable<KeyValuePair<BlueprintAbility, int>> GetNecromancerRegistrySpells(int minimumSpellLevel)
+        {
+            return NecromancerSpellRegistry.GetAll()
                 .Where(d => d.SpellLevel >= minimumSpellLevel)
                 .Select(d =>
                 {
@@ -108,10 +122,58 @@ namespace wotr_mod.Classes.Necromancer
                     ApplySelectionRecommendation(spell, d);
                     return new KeyValuePair<BlueprintAbility, int>(spell, d.SpellLevel);
                 });
+        }
 
-            _blueprints.SetSpellListSpells(
-                spellList,
-                spellsByLevel.OrderBy(p => p.Value).ThenBy(p => p.Key.name));
+        private IEnumerable<KeyValuePair<BlueprintAbility, int>> GetWizardEvocationSpells(int minimumSpellLevel)
+        {
+            var wizardSpellList = _blueprints.Require<BlueprintSpellList>(
+                GameBlueprintIds.SpellLists.Wizard,
+                "Wizard spell list");
+
+            foreach (var levelList in wizardSpellList.SpellsByLevel ?? Array.Empty<SpellLevelList>())
+            {
+                if (levelList.SpellLevel < minimumSpellLevel)
+                {
+                    continue;
+                }
+
+                foreach (var spell in levelList.Spells ?? Enumerable.Empty<BlueprintAbility>())
+                {
+                    if (spell == null || !IsEvocationSpell(spell))
+                    {
+                        continue;
+                    }
+
+                    yield return new KeyValuePair<BlueprintAbility, int>(spell, levelList.SpellLevel);
+                }
+            }
+        }
+
+        private bool IsEvocationSpell(BlueprintAbility spell)
+        {
+            return _blueprints.GetComponents<SpellComponent>(spell)
+                .Any(component => component != null && component.School == SpellSchool.Evocation);
+        }
+
+        private static IEnumerable<KeyValuePair<BlueprintAbility, int>> MergeSpellEntries(
+            params IEnumerable<KeyValuePair<BlueprintAbility, int>>[] spellGroups)
+        {
+            var spells = new Dictionary<BlueprintGuid, KeyValuePair<BlueprintAbility, int>>();
+            foreach (var spellGroup in spellGroups ?? Array.Empty<IEnumerable<KeyValuePair<BlueprintAbility, int>>>())
+            {
+                foreach (var spellByLevel in spellGroup ?? Enumerable.Empty<KeyValuePair<BlueprintAbility, int>>())
+                {
+                    var spell = spellByLevel.Key;
+                    if (spell == null || spells.ContainsKey(spell.AssetGuid))
+                    {
+                        continue;
+                    }
+
+                    spells.Add(spell.AssetGuid, spellByLevel);
+                }
+            }
+
+            return spells.Values;
         }
 
         private void ApplySelectionRecommendation(BlueprintScriptableObject blueprint, ClassSpellDefinition definition)
@@ -179,6 +241,7 @@ namespace wotr_mod.Classes.Necromancer
             clone.HideNotAvailibleInUI = true;
 
             var arcana = EnsureMasterOfDeathFeature(necromancerClass);
+            var maleficConversion = EnsureMaleficConversionFeature(necromancerClass);
             var power1 = EnsureWitheringRayFeature(necromancerClass);
             var power3 = EnsureDeathsGiftFeature(necromancerClass);
             var power9 = EnsureGraspOfTheDeadFeature(necromancerClass);
@@ -247,12 +310,12 @@ namespace wotr_mod.Classes.Necromancer
 
             var visibleFeatures = new BlueprintFeatureBase[]
             {
-                arcana, power1, power3, boneSpike, corpseExplosion,
+                arcana, maleficConversion, power1, power3, boneSpike, corpseExplosion,
                 eldritchHorror, power9, harvestTheFallen, harvestSoul, deathClutch, power15, hellOnEarth, power20, stygianPrecision, reapersJudgement
             };
             clone.LevelEntries = new[]
             {
-                _blueprints.CreateLevelEntry(1, arcana, power1, boneArmor),
+                _blueprints.CreateLevelEntry(1, arcana, maleficConversion, power1, boneArmor),
                 _blueprints.CreateLevelEntry(2, boneSpike),
                 _blueprints.CreateLevelEntry(3, power3),
                 _blueprints.CreateLevelEntry(4, corpseExplosion, stygianPrecision, arcana),
@@ -295,6 +358,7 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerBloodlinePower15, "Incorporeal Form"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerBloodlinePower20, "One of Us"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerBoneArmor, "Bone Armor"),
+                _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerMaleficConversion, "Malefic Conversion"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerBoneSpikeKnownSpell, "Bone Spike"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion"),
                 _blueprints.Require<BlueprintFeature>(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror"),
@@ -329,6 +393,8 @@ namespace wotr_mod.Classes.Necromancer
                 features, ModBlueprintIds.Features.NecromancerProficiencies, "Necromancer Proficiencies");
             var masterOfDeath = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death");
+            var maleficConversion = FindNecromancerFeature<BlueprintFeature>(
+                features, ModBlueprintIds.Features.NecromancerMaleficConversion, "Malefic Conversion");
             var witheringRay = FindNecromancerFeature<BlueprintFeature>(
                 features, ModBlueprintIds.Features.NecromancerBloodlinePower1, "Withering Ray");
             var deathsGift = FindNecromancerFeature<BlueprintFeature>(
@@ -370,7 +436,7 @@ namespace wotr_mod.Classes.Necromancer
                 ModBlueprintIds.Features.NecromancerProficiencies,
                 ModBlueprintIds.Selections.NecromancerBonusFeat);
 
-            _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, witheringRay, boneArmor, necromancerBonusFeat);
+            _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, maleficConversion, witheringRay, boneArmor, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike);
             _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift);
             _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision, masterOfDeath);
@@ -394,7 +460,7 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.SetProgressionUiDeterminators(progression, Array.Empty<BlueprintFeatureBase>());
             _blueprints.SetProgressionUiGroups(
                 progression,
-                new[] { masterOfDeath },
+                new[] { masterOfDeath, maleficConversion },
                 new[] { boneArmor },
                 new[] { deathsGift },
                 new[] { necromancerBonusFeat },
@@ -641,10 +707,134 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.SetComponents(feature, new MasterOfDeathArcanaClassSpells
             {
                 name = "$MasterOfDeathArcanaClassSpells$Necromancer",
-                Classes = characterClass == null ? Array.Empty<BlueprintCharacterClass>() : new[] { characterClass }
+                Classes = characterClass == null ? Array.Empty<BlueprintCharacterClass>() : new[] { characterClass },
+                ConversionBuff = EnsureMaleficConversionBuff()
             });
             if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
             return feature;
+        }
+
+        private BlueprintFeature EnsureMaleficConversionFeature(BlueprintCharacterClass characterClass)
+        {
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerMaleficConversion);
+            if (feature == null)
+            {
+                feature = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintFeature>(
+                        GameBlueprintIds.Features.BloodlineElementalFireArcana,
+                        "Fire bloodline arcana feature donor"),
+                    ModBlueprintIds.Features.NecromancerMaleficConversion,
+                    "WotrMod_NecromancerMaleficConversionFeature");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerMaleficConversion, feature);
+            }
+
+            var ability = EnsureMaleficConversionAbility();
+            foreach (var addFacts in _blueprints.GetComponents<AddFacts>(feature))
+            {
+                _blueprints.SetAddFacts(addFacts, ability);
+            }
+
+            if (!_blueprints.GetComponents<AddFacts>(feature).Any())
+            {
+                var addFacts = new AddFacts { name = "$AddFacts$NecromancerMaleficConversion" };
+                _blueprints.AddComponent(feature, addFacts);
+                _blueprints.SetAddFacts(addFacts, ability);
+            }
+
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.NecromancerMaleficConversionName),
+                _localization.Text(LocalizationIds.Mod.NecromancerMaleficConversionDescription));
+            var icon = _icons.Load("Icons\\malefic_conversion.png");
+            if (icon != null) _blueprints.SetUnitFactIcon(feature, icon);
+            if (characterClass != null) _blueprints.SetProgressionClasses(feature, characterClass);
+            return feature;
+        }
+
+        private BlueprintActivatableAbility EnsureMaleficConversionAbility()
+        {
+            var ability = _blueprints.Get<BlueprintActivatableAbility>(ModBlueprintIds.Abilities.NecromancerMaleficConversion);
+            if (ability == null)
+            {
+                ability = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintActivatableAbility>(
+                        GameBlueprintIds.Abilities.BloodlineElementalFireArcanaAbility,
+                        "Fire bloodline arcana ability donor"),
+                    ModBlueprintIds.Abilities.NecromancerMaleficConversion,
+                    "WotrMod_NecromancerMaleficConversionAbility");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Abilities.NecromancerMaleficConversion, ability);
+            }
+
+            var buff = EnsureMaleficConversionBuff();
+            EvokerInstaller.ReplaceBuffReferences(
+                ability,
+                GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
+                buff);
+            _blueprints.SetUnitFactDisplay(
+                ability,
+                _localization.Text(LocalizationIds.Mod.NecromancerMaleficConversionName),
+                _localization.Text(LocalizationIds.Mod.NecromancerMaleficConversionDescription));
+            var icon = _icons.Load("Icons\\malefic_conversion.png");
+            if (icon != null) _blueprints.SetUnitFactIcon(ability, icon);
+            return ability;
+        }
+
+        private BlueprintBuff EnsureMaleficConversionBuff()
+        {
+            var buff = _blueprints.Get<BlueprintBuff>(ModBlueprintIds.Buffs.NecromancerMaleficConversion);
+            if (buff == null)
+            {
+                buff = _blueprints.CloneBlueprint(
+                    _blueprints.Require<BlueprintBuff>(
+                        GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
+                        "Fire bloodline arcana buff donor"),
+                    ModBlueprintIds.Buffs.NecromancerMaleficConversion,
+                    "WotrMod_NecromancerMaleficConversionBuff");
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Buffs.NecromancerMaleficConversion, buff);
+            }
+
+            foreach (var oldChangeElement in _blueprints.GetComponents<ChangeSpellElementalDamage>(buff))
+            {
+                var newChangeElement = _blueprints.CloneComponent(oldChangeElement);
+                newChangeElement.Element = DamageEnergyType.Unholy;
+                _blueprints.ReplaceComponent(buff, oldChangeElement, newChangeElement);
+            }
+
+            ReplaceDescriptor(buff, SpellDescriptor.Fire, SpellDescriptor.Death);
+            var themeToggle = _blueprints.GetComponents<SpellEffectThemeToggleComponent>(buff).FirstOrDefault();
+            if (themeToggle == null)
+            {
+                themeToggle = new SpellEffectThemeToggleComponent
+                {
+                    name = "$SpellEffectThemeToggleComponent$NecromancerMaleficConversion"
+                };
+                _blueprints.AddComponent(buff, themeToggle);
+            }
+
+            themeToggle.Theme = SpellEffectTheme.Necro;
+            _blueprints.SetUnitFactDisplay(
+                buff,
+                _localization.Text(LocalizationIds.Mod.NecromancerMaleficConversionName),
+                _localization.Text(LocalizationIds.Mod.NecromancerMaleficConversionDescription));
+            var icon = _icons.Load("Icons\\malefic_conversion.png");
+            if (icon != null) _blueprints.SetUnitFactIcon(buff, icon);
+            return buff;
+        }
+
+        private void ReplaceDescriptor(BlueprintScriptableObject blueprint, SpellDescriptor remove, SpellDescriptor add)
+        {
+            foreach (var oldDescriptor in _blueprints.GetComponents<SpellDescriptorComponent>(blueprint))
+            {
+                var newDescriptor = new SpellDescriptorComponent
+                {
+                    Descriptor = oldDescriptor.Descriptor
+                };
+                newDescriptor.Descriptor &= ~remove;
+                newDescriptor.Descriptor |= add;
+                _blueprints.ReplaceComponent(blueprint, oldDescriptor, newDescriptor);
+            }
         }
 
         private BlueprintFeature EnsureWitheringRayFeature(BlueprintCharacterClass characterClass)

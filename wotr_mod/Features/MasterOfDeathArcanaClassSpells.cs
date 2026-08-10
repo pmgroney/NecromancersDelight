@@ -1,3 +1,4 @@
+using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
@@ -6,6 +7,7 @@ using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Features
@@ -19,6 +21,7 @@ namespace wotr_mod.Features
         private static readonly BlueprintGuid WitheringRayGuid = BlueprintGuid.Parse(ModBlueprintIds.Abilities.WitheringRay);
 
         public BlueprintCharacterClass[] Classes;
+        public BlueprintBuff ConversionBuff;
 
         public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
@@ -47,7 +50,10 @@ namespace wotr_mod.Features
                 return;
             }
 
-            if (!sourceAbility.IsSpell || sourceAbility.School != SpellSchool.Necromancy)
+            var isEligibleSpell = sourceAbility.IsSpell &&
+                                  (sourceAbility.School == SpellSchool.Necromancy ||
+                                   IsSpellConvertedByMaleficConversion(evt));
+            if (!isEligibleSpell)
             {
                 return;
             }
@@ -63,6 +69,27 @@ namespace wotr_mod.Features
                 ApplyEnergyResistancePenetration(evt, characterClass);
                 return;
             }
+        }
+
+        private bool IsSpellConvertedByMaleficConversion(RuleCalculateDamage evt)
+        {
+            if (ConversionBuff == null || !Owner.HasFact(ConversionBuff))
+            {
+                return false;
+            }
+
+            return evt.DamageBundle
+                .OfType<EnergyDamage>()
+                .Any(damage => damage.EnergyType == DamageEnergyType.Unholy ||
+                               IsElementalEnergy(damage.EnergyType));
+        }
+
+        private static bool IsElementalEnergy(DamageEnergyType energyType)
+        {
+            return energyType == DamageEnergyType.Acid ||
+                   energyType == DamageEnergyType.Cold ||
+                   energyType == DamageEnergyType.Electricity ||
+                   energyType == DamageEnergyType.Fire;
         }
 
         private void ApplyBonus(RuleCalculateDamage evt, BlueprintCharacterClass characterClass)
@@ -89,11 +116,11 @@ namespace wotr_mod.Features
                 return;
             }
 
+            var maleficConversionActive = ConversionBuff != null && Owner.HasFact(ConversionBuff);
             foreach (var damage in evt.DamageBundle)
             {
                 if (!(damage is EnergyDamage energyDamage)
-                    || (energyDamage.EnergyType != DamageEnergyType.Unholy
-                        && energyDamage.EnergyType != DamageEnergyType.NegativeEnergy))
+                    || !IsMasterOfDeathEnergyDamage(energyDamage.EnergyType, maleficConversionActive))
                 {
                     continue;
                 }
@@ -107,6 +134,15 @@ namespace wotr_mod.Features
                 var penetration = classLevel >= 8 ? 10 : 5;
                 damage.ReductionPenalty.Add(new Modifier(penetration, Fact));
             }
+        }
+
+        private static bool IsMasterOfDeathEnergyDamage(
+            DamageEnergyType energyType,
+            bool maleficConversionActive)
+        {
+            return energyType == DamageEnergyType.Unholy ||
+                   energyType == DamageEnergyType.NegativeEnergy ||
+                   (maleficConversionActive && IsElementalEnergy(energyType));
         }
 
         public void OnEventDidTrigger(RuleCalculateDamage evt)

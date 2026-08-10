@@ -289,6 +289,7 @@ namespace wotr_mod.Infrastructure
             public const string ShadowbornUmbralBlast = "8e6bea96313f40b2a217bc43ade2b99a";
             public const string DeathstalkerMasterStrikeToggle = "241559349f6c49309c16e599ef98c265";
             public const string DeathstalkerDimensionDoor = "20a41c8ee0dd4252b70dc49348af5c76";
+            public const string NecromancerMaleficConversion = "b24499814be54ecebd3801dbf5299527";
         }
 
         internal static class AbilityResources
@@ -417,6 +418,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerProficiencies = "ed37f20e4c394714bb8a33a256a2820c";
             public const string NecromancerStygianPrecision = "a40b2428f0794b2badf02505fd227882";
             public const string NecromancerReapersJudgement = "d6a00e17db544a0188902e26499a7f6f";
+            public const string NecromancerMaleficConversion = "24874e886cc042118c81b7c2eb1f3142";
             public const string ShadowbornArcana = "e4ba41b250a94b988444c0b452e88030";
             public const string ShadowbornBurningHandsKnownSpell = "09a7b2d0c117473285e132ff12dfd26f";
             public const string ShadowbornHellfireRayKnownSpell = "17854f9815e14af1bbe8c1c27529a331";
@@ -515,6 +517,7 @@ namespace wotr_mod.Infrastructure
             public const string EvokerWaterArcana = "92efd294eff14c6f9d6ed2be3781e12d";
             public const string ShadowbornArcana = "973702c1b9e74b9e8ddcc3e580e192f9";
             public const string ShadowbornLivingGhost = "23ca9c026754444499d9b30238873d97";
+            public const string NecromancerMaleficConversion = "e6be4c0d0883456fbd7fbc25aec04936";
         }
     }
 }

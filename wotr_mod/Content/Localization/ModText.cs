@@ -275,6 +275,8 @@ namespace wotr_mod.Content.Localization
             { LocalizationIds.Mod.NecromancerBloodlinePower20Description, "At 20th level, you become one of the undead. You gain immunity to cold, nonlethal damage, paralysis, and sleep." },
             { LocalizationIds.Mod.NecromancerBoneArmorName, "Bone Armor" },
             { LocalizationIds.Mod.NecromancerBoneArmorDescription, "A silent ward of bone encases you, granting a +1 natural armor bonus to AC. This bonus increases by +1 at 5th level and every four levels thereafter, to a maximum of +5 at 17th level." },
+            { LocalizationIds.Mod.NecromancerMaleficConversionName, "Malefic Conversion" },
+            { LocalizationIds.Mod.NecromancerMaleficConversionDescription, "You can invoke profane conversion as a toggle, changing elemental spell damage into unholy damage. Spells converted this way benefit from Master of Death." },
             { LocalizationIds.Mod.NecromancerMasterOfDeathClassCardDescription, "Necromancers turn the cold grammar of death into a weapon. Their necromancy spells draw extra power from every damage die and increasingly penetrate resistance to unholy and negative energy." },
             { LocalizationIds.Mod.NecromancerWitheringRayClassCardDescription, "A Necromancer can fire a ray of wasting death at close range, dealing unholy damage that grows with the Necromancer's level and gains the caster's spellcasting ability bonus." },
             { LocalizationIds.Mod.NecromancerBoneArmorClassCardDescription, "A Necromancer is never truly unguarded. Pale plates, splinters, and spectral ribs gather around them as they grow in power, forming a grim ward that hardens their defenses without slowing their spellcasting." },

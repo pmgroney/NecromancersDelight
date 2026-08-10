@@ -304,6 +304,8 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower20Description = "wotr_mod.necromancer_bloodline.power20.description";
             public const string NecromancerBoneArmorName = "wotr_mod.necromancer.bone_armor.name";
             public const string NecromancerBoneArmorDescription = "wotr_mod.necromancer.bone_armor.description";
+            public const string NecromancerMaleficConversionName = "wotr_mod.necromancer.malefic_conversion.name";
+            public const string NecromancerMaleficConversionDescription = "wotr_mod.necromancer.malefic_conversion.description";
             public const string NecromancerMasterOfDeathClassCardDescription = "wotr_mod.necromancer.class_card.master_of_death.description";
             public const string NecromancerWitheringRayClassCardDescription = "wotr_mod.necromancer.class_card.withering_ray.description";
             public const string NecromancerBoneArmorClassCardDescription = "wotr_mod.necromancer.class_card.bone_armor.description";
