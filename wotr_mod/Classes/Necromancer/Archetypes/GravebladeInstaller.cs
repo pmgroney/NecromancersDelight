@@ -104,6 +104,7 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             {
                 CreateLevelEntry(1,  proficiencies, fighterTraining, reapingEdge, bonusFeat),
                 CreateLevelEntry(3,  armorTraining, overhandChop),
+                CreateLevelEntry(4,  bonusFeat),
                 CreateLevelEntry(5,  reapingEdgeTiers[1]),
                 CreateLevelEntry(6,  bonusFeat),
                 CreateLevelEntry(7,  armorTraining, backswing),
@@ -190,7 +191,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerDeathlyFinesseTraining, "Deathly Finesse Training"));
             AddLevelEntryIfAny(entries, 4,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"),
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
+                necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 6, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 7,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror granted spell"));

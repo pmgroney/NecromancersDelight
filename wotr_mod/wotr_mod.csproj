@@ -129,6 +129,7 @@
         <Compile Include="Features\EvocationUnleashedDamageBonus.cs" />
         <Compile Include="Features\EvokerArcaneDcScaling.cs" />
         <Compile Include="Features\PerDieBonusDamage.cs" />
+        <Compile Include="Features\DeathlyFinesseAttackStatReplacement.cs" />
         <Compile Include="Features\EvokerForceSpellConversion.cs" />
         <Compile Include="Features\EvokerSpellShaping.cs" />
         <Compile Include="Features\GravebladeWeaponFocusRecommendation.cs" />

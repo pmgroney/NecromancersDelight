@@ -241,7 +241,8 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             AddLevelEntryIfAny(entries, 4,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerCorpseExplosionKnownSpell, "Corpse Explosion granted spell"),
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerStygianPrecision, "Stygian Precision"),
-                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"));
+                GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerBloodlineArcana, "Master of Death"),
+                necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 6, necromancerBonusFeat);
             AddLevelEntryIfAny(entries, 7,
                 GetFeatureIfAvailable(ModBlueprintIds.Features.NecromancerEldritchHorrorKnownSpell, "Eldritch Horror granted spell"));

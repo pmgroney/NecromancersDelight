@@ -526,7 +526,7 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.AddFeaturesToLevel(progression, 1,  necromancerProficiencies, masterOfDeath, maleficConversion, witheringRay, boneArmor, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 2,  boneSpike);
             _blueprints.AddFeaturesToLevel(progression, 3,  deathsGift, deathlyFinesse);
-            _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision, masterOfDeath);
+            _blueprints.AddFeaturesToLevel(progression, 4,  corpseExplosion, stygianPrecision, masterOfDeath, necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 5,  boneArmor, deathlyFinesseTraining);
             _blueprints.AddFeaturesToLevel(progression, 6,  necromancerBonusFeat);
             _blueprints.AddFeaturesToLevel(progression, 7,  eldritchHorror);
@@ -679,12 +679,11 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.SetUnitFactIcon(feature, weaponFinesse.Icon);
             }
 
-            _blueprints.SetComponents(feature, new AttackStatReplacement
+            _blueprints.SetComponents(feature, new DeathlyFinesseAttackStatReplacement
             {
-                name = "$AttackStatReplacement$NecromancerDeathlyFinesse",
+                name = "$DeathlyFinesseAttackStatReplacement$NecromancerDeathlyFinesse",
                 ReplacementStat = StatType.Charisma,
-                SubCategory = WeaponSubCategory.None,
-                CheckWeaponTypes = false
+                Descriptor = ModifierDescriptor.UntypedStackable
             });
             if (characterClass != null)
             {
