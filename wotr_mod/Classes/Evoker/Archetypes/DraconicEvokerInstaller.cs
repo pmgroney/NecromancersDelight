@@ -51,20 +51,12 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             var weaponFocusClaw = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.WeaponFocusClaw,
                 "Weapon Focus (Claw)");
-            var mediumArmorProficiency = EnsureArmorProficiency(
+            var mediumArmorProficiency = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.ArmorProficiencyMedium,
-                ModBlueprintIds.Features.DraconicEvokerMediumArmorProficiency,
-                "WotrMod_DraconicEvokerMediumArmorProficiency",
-                LocalizationIds.Mod.DraconicEvokerMediumArmorProficiencyName,
-                LocalizationIds.Mod.DraconicEvokerMediumArmorProficiencyDescription,
-                characterClass);
-            var heavyArmorProficiency = EnsureArmorProficiency(
+                "Medium Armor Proficiency");
+            var heavyArmorProficiency = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.ArmorProficiencyHeavy,
-                ModBlueprintIds.Features.DraconicEvokerHeavyArmorProficiency,
-                "WotrMod_DraconicEvokerHeavyArmorProficiency",
-                LocalizationIds.Mod.DraconicEvokerHeavyArmorProficiencyName,
-                LocalizationIds.Mod.DraconicEvokerHeavyArmorProficiencyDescription,
-                characterClass);
+                "Heavy Armor Proficiency");
             var lightArcaneArmorProficiency = EnsureArcaneArmorProficiency(
                 ModBlueprintIds.Features.DraconicEvokerArcaneArmorProficiency,
                 "WotrMod_DraconicEvokerLightArcaneArmorProficiency",
@@ -117,36 +109,6 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
-        }
-
-        private BlueprintFeature EnsureArmorProficiency(
-            string sourceGuid,
-            string featureGuid,
-            string internalName,
-            string displayNameKey,
-            string descriptionKey,
-            BlueprintCharacterClass characterClass)
-        {
-            var feature = _blueprints.Get<BlueprintFeature>(featureGuid);
-            if (feature == null)
-            {
-                var source = _blueprints.Require<BlueprintFeature>(sourceGuid, internalName + " donor");
-                feature = _blueprints.CloneBlueprint(source, featureGuid, internalName);
-                _blueprints.AddCachedBlueprint(featureGuid, feature);
-            }
-
-            feature.IsClassFeature = true;
-            feature.Ranks = 1;
-            _blueprints.SetUnitFactDisplay(
-                feature,
-                _localization.Text(displayNameKey),
-                _localization.Text(descriptionKey));
-            if (characterClass != null)
-            {
-                _blueprints.SetProgressionClasses(feature, characterClass);
-            }
-
-            return feature;
         }
 
         private BlueprintFeature EnsureArcaneArmorProficiency(

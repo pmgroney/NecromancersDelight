@@ -403,9 +403,6 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerBloodlinePower9 = "e5f6a7b8c9d04b82e3f4a5b6c7d8e9f0";
             public const string NecromancerBloodlinePower15 = "f6a7b8c9d0e14c93f4a5b6c7d8e9f0a1";
             public const string NecromancerBloodlinePower20 = "07b8c9d0e1f24da405b6c7d8e9f0a1b2";
-            public const string DraconicEvokerLightArmorProficiency = "a6c31a7b98d3454bb6ac587f14b6e122";
-            public const string DraconicEvokerMediumArmorProficiency = "0f3c8422d1be4f2fa60a0c6861a71a9d";
-            public const string DraconicEvokerHeavyArmorProficiency = "77e78aa4b5924d9cb9221f7d5bdf31d6";
             public const string DraconicEvokerArcaneArmorProficiency = "492a7ad0f6fd4a9fbed41066230ecd73";
             public const string DraconicEvokerMediumArcaneArmorProficiency = "8a7d3f55ccf34d3c965e4c14731d2b9a";
             public const string DraconicEvokerHeavyArcaneArmorProficiency = "5c46b6d7e23c4e27a75c9d6f03bc10a4";

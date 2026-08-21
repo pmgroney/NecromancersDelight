@@ -45,7 +45,9 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             var spellPenetration = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.SpellPenetration,
                 "Spell Penetration");
-            var combatCasting = _evoker.EnsureEvokerCombatCastingFeature(characterClass);
+            var combatCasting = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.CombatCasting,
+                "Combat Casting");
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(

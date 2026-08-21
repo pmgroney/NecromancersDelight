@@ -160,10 +160,11 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.SetComponents(
                 feature,
                 EnsureScrollEligibilitySpellList(characterClass),
-                new EvokerSpellShaping
+                new ClassSpellAllyDamageImmunity
                 {
-                    name = "$EvokerSpellShaping$Evoker",
-                    Classes = new[] { characterClass }
+                    name = "$ClassSpellAllyDamageImmunity$Evoker",
+                    Classes = new[] { characterClass },
+                    School = SpellSchool.Evocation
                 });
             return feature;
         }
@@ -273,64 +274,21 @@ namespace wotr_mod.Classes.Evoker
 
         private void ConfigureEvokerCombatCasting(BlueprintCharacterClass characterClass)
         {
-            var combatCasting = EnsureEvokerCombatCastingFeature(characterClass);
-            var deterministicLegacyCombatCasting = EnsureLegacyEvokerCombatCastingFeature(
-                ModBlueprintIds.Features.EvokerCombatCastingDeterministicLegacy,
-                "WotrMod_EvokerCombatCastingDeterministicLegacy",
-                characterClass);
+            var combatCasting = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.CombatCasting,
+                "Combat Casting");
             ConfigureCombatCastingRecommendation(combatCasting, characterClass);
-            ConfigureCombatCastingRecommendation(deterministicLegacyCombatCasting, characterClass);
             if (characterClass?.Progression == null)
             {
                 return;
             }
 
             _blueprints.RemoveFeatureFromProgression(characterClass.Progression, GameBlueprintIds.Features.CombatCasting);
-            _blueprints.RemoveFeatureFromProgression(characterClass.Progression, combatCasting);
-            _blueprints.RemoveFeatureFromProgression(characterClass.Progression, deterministicLegacyCombatCasting);
+            _blueprints.RemoveFeatureFromProgression(characterClass.Progression, ModBlueprintIds.Features.EvokerCombatCasting);
+            _blueprints.RemoveFeatureFromProgression(
+                characterClass.Progression,
+                ModBlueprintIds.Features.EvokerCombatCastingDeterministicLegacy);
             _blueprints.AddFeatureToLevel(characterClass.Progression, 2, combatCasting);
-        }
-
-        internal BlueprintFeature EnsureEvokerCombatCastingFeature(BlueprintCharacterClass characterClass)
-        {
-            var source = _blueprints.Require<BlueprintFeature>(
-                GameBlueprintIds.Features.CombatCasting,
-                "Combat Casting");
-            var feature = EnsureEvokerCombatCastingFeature(
-                source,
-                ModBlueprintIds.Features.EvokerCombatCasting,
-                "WotrMod_EvokerCombatCasting");
-
-            _blueprints.SetProgressionClasses(feature, characterClass);
-            return feature;
-        }
-
-        private BlueprintFeature EnsureLegacyEvokerCombatCastingFeature(
-            string guid,
-            string internalName,
-            BlueprintCharacterClass characterClass)
-        {
-            var source = _blueprints.Require<BlueprintFeature>(
-                GameBlueprintIds.Features.CombatCasting,
-                "Combat Casting");
-            var feature = EnsureEvokerCombatCastingFeature(source, guid, internalName);
-            _blueprints.SetProgressionClasses(feature, characterClass);
-            return feature;
-        }
-
-        private BlueprintFeature EnsureEvokerCombatCastingFeature(
-            BlueprintFeature source,
-            string guid,
-            string internalName)
-        {
-            var feature = _blueprints.Get<BlueprintFeature>(guid);
-            if (feature == null)
-            {
-                feature = _blueprints.CloneBlueprint(source, guid, internalName);
-                _blueprints.AddCachedBlueprint(guid, feature);
-            }
-
-            return feature;
         }
 
         private void ConfigureCombatCastingRecommendation(
@@ -849,9 +807,9 @@ namespace wotr_mod.Classes.Evoker
             }
         }
 
-        internal void ConfigureElementalRayDamage(BlueprintAbility ability, BlueprintCharacterClass characterClass)
+        internal void ConfigureRankedD6Damage(BlueprintAbility ability, BlueprintCharacterClass characterClass)
         {
-            var rank = EnsureElementalRayDamageRank(ability);
+            var rank = EnsureDefaultDamageRank(ability);
             _blueprints.ConfigureContextRankConfig(
                 rank,
                 AbilityRankType.Default,
@@ -876,7 +834,7 @@ namespace wotr_mod.Classes.Evoker
             ability.OnEnable();
         }
 
-        private ContextRankConfig EnsureElementalRayDamageRank(BlueprintAbility ability)
+        private ContextRankConfig EnsureDefaultDamageRank(BlueprintAbility ability)
         {
             var rank = _blueprints.GetComponents<ContextRankConfig>(ability)
                 .FirstOrDefault(IsDefaultRank)

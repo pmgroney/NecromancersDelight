@@ -2,47 +2,42 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.PubSubSystem;
-using Kingmaker.RuleSystem.Rules.Damage;
+using Kingmaker.RuleSystem.Rules.Abilities;
 using Kingmaker.UnitLogic;
 
 namespace wotr_mod.Features
 {
-    public sealed class EvokerSpellShaping :
+    public sealed class SchoolSpellDcScaling :
         UnitFactComponentDelegate,
-        IInitiatorRulebookHandler<RuleCalculateDamage>,
-        IRulebookHandler<RuleCalculateDamage>,
+        IInitiatorRulebookHandler<RuleCalculateAbilityParams>,
+        IRulebookHandler<RuleCalculateAbilityParams>,
         IInitiatorRulebookSubscriber
     {
         public BlueprintCharacterClass[] Classes;
+        public SpellSchool School;
 
-        public void OnEventAboutToTrigger(RuleCalculateDamage evt)
+        public void OnEventAboutToTrigger(RuleCalculateAbilityParams evt)
         {
-            if (evt.Target == null || Owner == null || !Owner.IsAlly(evt.Target))
+            var spell = evt?.Spell;
+            if (spell == null || !spell.IsSpell || spell.School != School)
             {
                 return;
             }
 
-            var context = evt.Reason.Context;
-            if (context?.SourceAbility == null || !context.SourceAbility.IsSpell)
-            {
-                return;
-            }
-
-            if (context.SourceAbility.School != SpellSchool.Evocation)
-            {
-                return;
-            }
-
-            var spellbook = context.SourceAbilityContext?.Ability?.Spellbook;
+            var spellbook = evt.Spellbook;
             if (spellbook == null || !IsClassSpellbook(spellbook))
             {
                 return;
             }
 
-            evt.Remove(_ => true);
+            var bonus = (Fact?.GetRank() ?? 0) * 2;
+            if (bonus > 0)
+            {
+                evt.AddBonusDC(bonus);
+            }
         }
 
-        public void OnEventDidTrigger(RuleCalculateDamage evt)
+        public void OnEventDidTrigger(RuleCalculateAbilityParams evt)
         {
         }
 

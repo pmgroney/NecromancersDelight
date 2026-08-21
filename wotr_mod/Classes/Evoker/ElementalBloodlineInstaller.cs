@@ -64,7 +64,7 @@ namespace wotr_mod.Classes.Evoker
 
             var bloodlines = new[]
             {
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalAirBloodline,
+                EnsureBloodlineClone(GameBlueprintIds.Progressions.ElementalAirBloodline,
                     ModBlueprintIds.Progressions.EvokerAirBloodline, "WotrMod_EvokerBloodline_Air",
                     LocalizationIds.Mod.EvokerAirName, LocalizationIds.Mod.EvokerAirDescription,
                     GameBlueprintIds.Features.BloodlineElementalAirArcana,
@@ -78,7 +78,7 @@ namespace wotr_mod.Classes.Evoker
                     "WotrMod_EvokerAirArcanaBuff",
                     SpellEffectTheme.Electric,
                     characterClass),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalEarthBloodline,
+                EnsureBloodlineClone(GameBlueprintIds.Progressions.ElementalEarthBloodline,
                     ModBlueprintIds.Progressions.EvokerEarthBloodline, "WotrMod_EvokerBloodline_Earth",
                     LocalizationIds.Mod.EvokerEarthName, LocalizationIds.Mod.EvokerEarthDescription,
                     GameBlueprintIds.Features.BloodlineElementalEarthArcana,
@@ -92,7 +92,7 @@ namespace wotr_mod.Classes.Evoker
                     "WotrMod_EvokerEarthArcanaBuff",
                     SpellEffectTheme.Acid,
                     characterClass),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalFireBloodline,
+                EnsureBloodlineClone(GameBlueprintIds.Progressions.ElementalFireBloodline,
                     ModBlueprintIds.Progressions.EvokerFireBloodline, "WotrMod_EvokerBloodline_Fire",
                     LocalizationIds.Mod.EvokerFireName, LocalizationIds.Mod.EvokerFireDescription,
                     GameBlueprintIds.Features.BloodlineElementalFireArcana,
@@ -106,7 +106,7 @@ namespace wotr_mod.Classes.Evoker
                     "WotrMod_EvokerFireArcanaBuff",
                     SpellEffectTheme.Fire,
                     characterClass),
-                EnsureEvokerBloodline(GameBlueprintIds.Progressions.ElementalWaterBloodline,
+                EnsureBloodlineClone(GameBlueprintIds.Progressions.ElementalWaterBloodline,
                     ModBlueprintIds.Progressions.EvokerWaterBloodline, "WotrMod_EvokerBloodline_Water",
                     LocalizationIds.Mod.EvokerWaterName, LocalizationIds.Mod.EvokerWaterDescription,
                     GameBlueprintIds.Features.BloodlineElementalWaterArcana,
@@ -133,7 +133,7 @@ namespace wotr_mod.Classes.Evoker
             return selection;
         }
 
-        private BlueprintProgression EnsureEvokerBloodline(
+        private BlueprintProgression EnsureBloodlineClone(
             string donorGuid,
             string newGuid,
             string internalName,
@@ -158,7 +158,7 @@ namespace wotr_mod.Classes.Evoker
 
         internal BlueprintProgression EnsureEvokerArcaneBloodline(BlueprintCharacterClass characterClass)
         {
-            var progression = EnsureEvokerBloodline(
+            var progression = EnsureBloodlineClone(
                 GameBlueprintIds.Progressions.ArcaneBloodline,
                 ModBlueprintIds.Progressions.EvokerArcaneBloodline,
                 "WotrMod_EvokerBloodline_Arcane",
@@ -267,7 +267,7 @@ namespace wotr_mod.Classes.Evoker
 
         private BlueprintFeature EnsureEvokerForceArcanaFeature(BlueprintCharacterClass characterClass)
         {
-            var feature = EnsureEvokerElementalArcanaFeature(
+            var feature = EnsureElementalArcanaFeature(
                 GameBlueprintIds.Features.BloodlineElementalFireArcana,
                 GameBlueprintIds.Abilities.BloodlineElementalFireArcanaAbility,
                 GameBlueprintIds.Buffs.BloodlineElementalFireArcanaBuff,
@@ -301,11 +301,11 @@ namespace wotr_mod.Classes.Evoker
                 .GetComponents<BlueprintComponent>(buff)
                 .Where(component => !(component is ChangeSpellElementalDamage))
                 .ToList();
-            if (!components.OfType<EvokerForceSpellConversion>().Any())
+            if (!components.OfType<EnergyToForceSpellDamageConversion>().Any())
             {
-                components.Add(new EvokerForceSpellConversion
+                components.Add(new EnergyToForceSpellDamageConversion
                 {
-                    name = "$EvokerForceSpellConversion$EvokerForceArcana"
+                    name = "$EnergyToForceSpellDamageConversion$EvokerForceArcana"
                 });
             }
 
@@ -378,7 +378,7 @@ namespace wotr_mod.Classes.Evoker
                 damage.DamageType = SpellModifierUtility.ForceDamage();
                 return 1;
             });
-            _evoker.ConfigureElementalRayDamage(ability, characterClass);
+            _evoker.ConfigureRankedD6Damage(ability, characterClass);
             ConfigureEvokerForceRayVisuals(ability);
         }
 
@@ -446,7 +446,7 @@ namespace wotr_mod.Classes.Evoker
             _evoker.SetIcon(fact, "Icons\\force_beam.png");
         }
 
-        private BlueprintProgression EnsureEvokerBloodline(
+        private BlueprintProgression EnsureBloodlineClone(
             string donorGuid,
             string newGuid,
             string internalName,
@@ -464,13 +464,13 @@ namespace wotr_mod.Classes.Evoker
             SpellEffectTheme theme,
             BlueprintCharacterClass characterClass)
         {
-            var progression = EnsureEvokerBloodline(
+            var progression = EnsureBloodlineClone(
                 donorGuid,
                 newGuid,
                 internalName,
                 displayNameKey,
                 descriptionKey);
-            var arcana = EnsureEvokerElementalArcanaFeature(
+            var arcana = EnsureElementalArcanaFeature(
                 sourceArcanaFeatureGuid,
                 sourceArcanaAbilityGuid,
                 sourceArcanaBuffGuid,
@@ -662,7 +662,7 @@ namespace wotr_mod.Classes.Evoker
             {
                 _blueprints.SetAbilityResourceLogicResource(resourceLogic, resource);
             }
-            _evoker.ConfigureElementalRayDamage(ability, characterClass);
+            _evoker.ConfigureRankedD6Damage(ability, characterClass);
             return ability;
         }
 
@@ -785,7 +785,7 @@ namespace wotr_mod.Classes.Evoker
             }
         }
 
-        private BlueprintFeature EnsureEvokerElementalArcanaFeature(
+        private BlueprintFeature EnsureElementalArcanaFeature(
             string sourceFeatureGuid,
             string sourceAbilityGuid,
             string sourceBuffGuid,
@@ -805,7 +805,7 @@ namespace wotr_mod.Classes.Evoker
                 _blueprints.AddCachedBlueprint(featureGuid, feature);
             }
 
-            var ability = EnsureEvokerElementalArcanaAbility(
+            var ability = EnsureElementalArcanaAbility(
                 sourceAbilityGuid,
                 sourceBuffGuid,
                 abilityGuid,
@@ -821,7 +821,7 @@ namespace wotr_mod.Classes.Evoker
             return feature;
         }
 
-        private BlueprintActivatableAbility EnsureEvokerElementalArcanaAbility(
+        private BlueprintActivatableAbility EnsureElementalArcanaAbility(
             string sourceAbilityGuid,
             string sourceBuffGuid,
             string abilityGuid,
@@ -838,12 +838,12 @@ namespace wotr_mod.Classes.Evoker
                 _blueprints.AddCachedBlueprint(abilityGuid, ability);
             }
 
-            var buff = EnsureEvokerElementalArcanaBuff(sourceBuffGuid, buffGuid, buffName, theme);
+            var buff = EnsureElementalArcanaBuff(sourceBuffGuid, buffGuid, buffName, theme);
             EvokerInstaller.ReplaceBuffReferences(ability, sourceBuffGuid, buff);
             return ability;
         }
 
-        private BlueprintBuff EnsureEvokerElementalArcanaBuff(
+        private BlueprintBuff EnsureElementalArcanaBuff(
             string sourceBuffGuid,
             string buffGuid,
             string buffName,
@@ -917,10 +917,10 @@ namespace wotr_mod.Classes.Evoker
             string sourceFeatureGuid)
         {
             EvokerInstaller.RemoveProgressionFeature(progression, sourceFeatureGuid);
-            EvokerInstaller.RemoveProgressionFeature(progression, EvokerArcaneOwnedFeatureGuid(sourceFeatureGuid));
+            EvokerInstaller.RemoveProgressionFeature(progression, ArcaneBloodlineOwnedFeatureGuid(sourceFeatureGuid));
         }
 
-        private static string EvokerArcaneOwnedFeatureGuid(string sourceFeatureGuid)
+        private static string ArcaneBloodlineOwnedFeatureGuid(string sourceFeatureGuid)
         {
             return EvokerInstaller.DeterministicGuid(
                 "WotrMod_EvokerBloodline_Arcane.OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
@@ -947,10 +947,10 @@ namespace wotr_mod.Classes.Evoker
             EvokerInstaller.RemoveProgressionFeature(progression, sourceFeatureGuid);
             EvokerInstaller.RemoveProgressionFeature(
                 progression,
-                EvokerElementalOwnedFeatureGuid(ownershipSeed, sourceFeatureGuid));
+                ElementalBloodlineOwnedFeatureGuid(ownershipSeed, sourceFeatureGuid));
         }
 
-        private static string EvokerElementalOwnedFeatureGuid(
+        private static string ElementalBloodlineOwnedFeatureGuid(
             string ownershipSeed,
             string sourceFeatureGuid)
         {

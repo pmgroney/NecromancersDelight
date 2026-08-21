@@ -55,43 +55,43 @@ namespace wotr_mod.Classes.Evoker
 
             var bloodlines = new[]
             {
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BlackDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.BlackDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBlackDragonBloodline,
                     "WotrMod_EvokerBloodline_BlackDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BlueDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.BlueDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBlueDragonBloodline,
                     "WotrMod_EvokerBloodline_BlueDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BrassDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.BrassDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBrassDragonBloodline,
                     "WotrMod_EvokerBloodline_BrassDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.BronzeDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.BronzeDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerBronzeDragonBloodline,
                     "WotrMod_EvokerBloodline_BronzeDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.CopperDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.CopperDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerCopperDragonBloodline,
                     "WotrMod_EvokerBloodline_CopperDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.GoldDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.GoldDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerGoldDragonBloodline,
                     "WotrMod_EvokerBloodline_GoldDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.GreenDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.GreenDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerGreenDragonBloodline,
                     "WotrMod_EvokerBloodline_GreenDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.RedDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.RedDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerRedDragonBloodline,
                     "WotrMod_EvokerBloodline_RedDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.SilverDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.SilverDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerSilverDragonBloodline,
                     "WotrMod_EvokerBloodline_SilverDragon",
                     characterClass),
-                EnsureEvokerDragonBloodline(GameBlueprintIds.Progressions.WhiteDragonBloodline,
+                EnsureDragonBloodlineClone(GameBlueprintIds.Progressions.WhiteDragonBloodline,
                     ModBlueprintIds.Progressions.EvokerWhiteDragonBloodline,
                     "WotrMod_EvokerBloodline_WhiteDragon",
                     characterClass)
@@ -108,7 +108,7 @@ namespace wotr_mod.Classes.Evoker
             return selection;
         }
 
-        private BlueprintProgression EnsureEvokerDragonBloodline(
+        private BlueprintProgression EnsureDragonBloodlineClone(
             string donorGuid,
             string newGuid,
             string internalName,
@@ -123,13 +123,13 @@ namespace wotr_mod.Classes.Evoker
             }
 
             _blueprints.CopyUnitFactDisplay(bloodline, donor);
-            ConfigureDraconicEvokerBreathWeapon(bloodline, donor, internalName, characterClass);
+            ConfigureBreathWeaponReplacement(bloodline, donor, internalName, characterClass);
             _evoker.MoveProtectionFromEnergyToCommunal(bloodline, characterClass);
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(bloodline, internalName, characterClass);
             return bloodline;
         }
 
-        private void ConfigureDraconicEvokerBreathWeapon(
+        private void ConfigureBreathWeaponReplacement(
             BlueprintProgression bloodline,
             BlueprintProgression donor,
             string internalName,
@@ -158,22 +158,22 @@ namespace wotr_mod.Classes.Evoker
                 throw new InvalidOperationException(internalName + " donor breath ability was not found.");
             }
 
-            var ability = EnsureDraconicEvokerBreathAbility(sourceAbility, internalName, characterClass);
-            var feature = EnsureDraconicEvokerBreathFeature(sourceFeature, sourceAbility, ability, internalName, characterClass);
-            var baseFeature = EnsureDraconicEvokerBreathBaseFeature(sourceBaseFeature, sourceFeature, feature, internalName);
+            var ability = EnsureBreathAbilityClone(sourceAbility, internalName, characterClass);
+            var feature = EnsureBreathFeatureClone(sourceFeature, sourceAbility, ability, internalName, characterClass);
+            var baseFeature = EnsureBreathBaseFeatureClone(sourceBaseFeature, sourceFeature, feature, internalName);
             EvokerInstaller.ReplaceProgressionFeature(bloodline, sourceBaseFeature, baseFeature);
             EvokerInstaller.ReplaceProgressionUiFeature(bloodline, sourceBaseFeature, baseFeature);
 
             var sourceExtraUse = FindBreathExtraUseFeature(donor);
             if (sourceExtraUse != null)
             {
-                var extraUse = EnsureDraconicEvokerBreathExtraUseFeature(sourceExtraUse, internalName);
+                var extraUse = EnsureBreathExtraUseFeatureClone(sourceExtraUse, internalName);
                 EvokerInstaller.ReplaceProgressionFeature(bloodline, sourceExtraUse, extraUse);
                 EvokerInstaller.ReplaceProgressionUiFeature(bloodline, sourceExtraUse, extraUse);
             }
         }
 
-        private BlueprintAbility EnsureDraconicEvokerBreathAbility(
+        private BlueprintAbility EnsureBreathAbilityClone(
             BlueprintAbility sourceAbility,
             string internalName,
             BlueprintCharacterClass characterClass)
@@ -213,7 +213,7 @@ namespace wotr_mod.Classes.Evoker
             return ability;
         }
 
-        private BlueprintFeature EnsureDraconicEvokerBreathFeature(
+        private BlueprintFeature EnsureBreathFeatureClone(
             BlueprintFeature sourceFeature,
             BlueprintAbility sourceAbility,
             BlueprintAbility ability,
@@ -233,7 +233,7 @@ namespace wotr_mod.Classes.Evoker
 
             var damage = _blueprints.EnsureComponent(
                 feature,
-                () => new DraconicEvokerBreathDamage { name = "$DraconicEvokerBreathDamage$" + internalName });
+                () => new ClassLevelBreathDamageScaling { name = "$ClassLevelBreathDamageScaling$" + internalName });
             damage.Ability = ability;
             damage.CharacterClass = characterClass;
 
@@ -244,7 +244,7 @@ namespace wotr_mod.Classes.Evoker
             return feature;
         }
 
-        private BlueprintFeature EnsureDraconicEvokerBreathBaseFeature(
+        private BlueprintFeature EnsureBreathBaseFeatureClone(
             BlueprintFeature sourceBaseFeature,
             BlueprintFeature sourceFeature,
             BlueprintFeature feature,
@@ -266,7 +266,7 @@ namespace wotr_mod.Classes.Evoker
             return baseFeature;
         }
 
-        private BlueprintFeature EnsureDraconicEvokerBreathExtraUseFeature(
+        private BlueprintFeature EnsureBreathExtraUseFeatureClone(
             BlueprintFeature sourceFeature,
             string internalName)
         {

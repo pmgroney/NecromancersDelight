@@ -126,13 +126,13 @@
         <Compile Include="Content\Localization\ModText.cs"/>
         <Compile Include="Features\MasterOfDeathArcanaClassSpells.cs" />
         <Compile Include="Features\NecromancerProficiencyCleanup.cs" />
-        <Compile Include="Features\DraconicEvokerBreathDamage.cs" />
+        <Compile Include="Features\ClassLevelBreathDamageScaling.cs" />
         <Compile Include="Features\EvocationUnleashedDamageBonus.cs" />
-        <Compile Include="Features\EvokerArcaneDcScaling.cs" />
+        <Compile Include="Features\SchoolSpellDcScaling.cs" />
         <Compile Include="Features\PerDieBonusDamage.cs" />
         <Compile Include="Features\DeathlyFinesseAttackStatReplacement.cs" />
-        <Compile Include="Features\EvokerForceSpellConversion.cs" />
-        <Compile Include="Features\EvokerSpellShaping.cs" />
+        <Compile Include="Features\EnergyToForceSpellDamageConversion.cs" />
+        <Compile Include="Features\ClassSpellAllyDamageImmunity.cs" />
         <Compile Include="Features\ScytheWeaponFocusRecommendation.cs" />
         <Compile Include="Features\ArchetypeFeatureRecommendation.cs" />
         <Compile Include="Features\GrantedSpellRecommendation.cs" />

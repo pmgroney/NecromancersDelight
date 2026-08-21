@@ -5,7 +5,7 @@ using Kingmaker.UnitLogic;
 
 namespace wotr_mod.Features
 {
-    public sealed class EvokerForceSpellConversion :
+    public sealed class EnergyToForceSpellDamageConversion :
         UnitFactComponentDelegate,
         IInitiatorRulebookHandler<RuleCalculateDamage>,
         IRulebookHandler<RuleCalculateDamage>,

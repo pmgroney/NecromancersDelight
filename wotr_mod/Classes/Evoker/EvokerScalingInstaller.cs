@@ -261,10 +261,11 @@ namespace wotr_mod.Classes.Evoker
                 characterClass);
             _blueprints.SetComponents(
                 feature,
-                new EvokerArcaneDcScaling
+                new SchoolSpellDcScaling
                 {
-                    name = "$EvokerArcaneDcScaling$" + internalName,
-                    Classes = new[] { characterClass }
+                    name = "$SchoolSpellDcScaling$" + internalName,
+                    Classes = new[] { characterClass },
+                    School = Kingmaker.Blueprints.Classes.Spells.SpellSchool.Evocation
                 },
                 new PerDieBonusDamage
                 {

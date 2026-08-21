@@ -2,41 +2,48 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.PubSubSystem;
-using Kingmaker.RuleSystem.Rules.Abilities;
+using Kingmaker.RuleSystem.Rules.Damage;
 using Kingmaker.UnitLogic;
 
 namespace wotr_mod.Features
 {
-    public sealed class EvokerArcaneDcScaling :
+    public sealed class ClassSpellAllyDamageImmunity :
         UnitFactComponentDelegate,
-        IInitiatorRulebookHandler<RuleCalculateAbilityParams>,
-        IRulebookHandler<RuleCalculateAbilityParams>,
+        IInitiatorRulebookHandler<RuleCalculateDamage>,
+        IRulebookHandler<RuleCalculateDamage>,
         IInitiatorRulebookSubscriber
     {
         public BlueprintCharacterClass[] Classes;
+        public SpellSchool School;
 
-        public void OnEventAboutToTrigger(RuleCalculateAbilityParams evt)
+        public void OnEventAboutToTrigger(RuleCalculateDamage evt)
         {
-            var spell = evt?.Spell;
-            if (spell == null || !spell.IsSpell || spell.School != SpellSchool.Evocation)
+            if (evt.Target == null || Owner == null || !Owner.IsAlly(evt.Target))
             {
                 return;
             }
 
-            var spellbook = evt.Spellbook;
+            var context = evt.Reason.Context;
+            if (context?.SourceAbility == null || !context.SourceAbility.IsSpell)
+            {
+                return;
+            }
+
+            if (context.SourceAbility.School != School)
+            {
+                return;
+            }
+
+            var spellbook = context.SourceAbilityContext?.Ability?.Spellbook;
             if (spellbook == null || !IsClassSpellbook(spellbook))
             {
                 return;
             }
 
-            var bonus = (Fact?.GetRank() ?? 0) * 2;
-            if (bonus > 0)
-            {
-                evt.AddBonusDC(bonus);
-            }
+            evt.Remove(_ => true);
         }
 
-        public void OnEventDidTrigger(RuleCalculateAbilityParams evt)
+        public void OnEventDidTrigger(RuleCalculateDamage evt)
         {
         }
 

@@ -7,7 +7,7 @@ using Kingmaker.UnitLogic.Abilities.Blueprints;
 
 namespace wotr_mod.Features
 {
-    public sealed class DraconicEvokerBreathDamage :
+    public sealed class ClassLevelBreathDamageScaling :
         UnitFactComponentDelegate,
         IInitiatorRulebookHandler<RuleCalculateDamage>,
         IRulebookHandler<RuleCalculateDamage>,

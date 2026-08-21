@@ -190,7 +190,7 @@ namespace wotr_mod.Classes.Evoker
             _evoker.MoveProtectionFromEnergyToCommunal(bloodline, characterClass);
             EvokerInstaller.RemoveProgressionFeature(
                 bloodline,
-                EvokerFireOwnedFeatureGuid(GameBlueprintIds.Features.BloodlineElementalSpellLevel3));
+                FireBloodlineOwnedFeatureGuid(GameBlueprintIds.Features.BloodlineElementalSpellLevel3));
             RemoveFireProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalClassSkill);
             RemoveFireProgressionFeature(bloodline, GameBlueprintIds.Features.BloodlineElementalSpellLevel8);
             _blueprints.EnsureCustomClassOwnsProgressionFeatures(
@@ -253,8 +253,8 @@ namespace wotr_mod.Classes.Evoker
             BlueprintFeatureBase replacement)
         {
             EvokerInstaller.ReplaceProgressionFeature(bloodline, sourceFeatureGuid, replacement);
-            EvokerInstaller.ReplaceProgressionFeature(bloodline, EvokerFireOwnedFeatureGuid(sourceFeatureGuid), replacement);
-            foreach (var ownedFeatureGuid in EvokerFireReplacementFeatureGuids(sourceFeatureGuid))
+            EvokerInstaller.ReplaceProgressionFeature(bloodline, FireBloodlineOwnedFeatureGuid(sourceFeatureGuid), replacement);
+            foreach (var ownedFeatureGuid in FireBloodlineReplacementFeatureGuids(sourceFeatureGuid))
             {
                 EvokerInstaller.ReplaceProgressionFeature(bloodline, ownedFeatureGuid, replacement);
             }
@@ -265,8 +265,8 @@ namespace wotr_mod.Classes.Evoker
             string sourceFeatureGuid)
         {
             EvokerInstaller.RemoveProgressionFeature(bloodline, sourceFeatureGuid);
-            EvokerInstaller.RemoveProgressionFeature(bloodline, EvokerFireOwnedFeatureGuid(sourceFeatureGuid));
-            foreach (var ownedFeatureGuid in EvokerFireReplacementFeatureGuids(sourceFeatureGuid))
+            EvokerInstaller.RemoveProgressionFeature(bloodline, FireBloodlineOwnedFeatureGuid(sourceFeatureGuid));
+            foreach (var ownedFeatureGuid in FireBloodlineReplacementFeatureGuids(sourceFeatureGuid))
             {
                 EvokerInstaller.RemoveProgressionFeature(bloodline, ownedFeatureGuid);
             }
@@ -288,13 +288,13 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.AddFeatureToLevel(bloodline, level, replacement);
         }
 
-        internal static string EvokerFireOwnedFeatureGuid(string sourceFeatureGuid)
+        internal static string FireBloodlineOwnedFeatureGuid(string sourceFeatureGuid)
         {
             return EvokerInstaller.DeterministicGuid(
                 "WotrMod_EvokerBloodline_Fire.OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
         }
 
-        private static string[] EvokerFireReplacementFeatureGuids(string sourceFeatureGuid)
+        private static string[] FireBloodlineReplacementFeatureGuids(string sourceFeatureGuid)
         {
             if (BlueprintTool.NormalizeGuid(sourceFeatureGuid) == GameBlueprintIds.Features.BloodlineElementalFireElementalRayFeature)
             {
@@ -827,7 +827,7 @@ namespace wotr_mod.Classes.Evoker
             PatchFireDamageToNegativeEnergy(ability);
             if (abilityGuid == ModBlueprintIds.Abilities.ShadowbornUmbralRay)
             {
-                _evoker.ConfigureElementalRayDamage(ability, characterClass);
+                _evoker.ConfigureRankedD6Damage(ability, characterClass);
                 var resource = EnsureShadowbornUmbralRayResource(characterClass);
                 foreach (var resourceLogic in _blueprints.GetComponents<AbilityResourceLogic>(ability))
                 {

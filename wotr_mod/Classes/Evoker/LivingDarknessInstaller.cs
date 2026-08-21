@@ -551,7 +551,7 @@ namespace wotr_mod.Classes.Evoker
             EvokerInstaller.RemoveProgressionFeature(progression, featureGuid);
             EvokerInstaller.RemoveProgressionFeature(
                 progression,
-                ShadowbornBloodlineInstaller.EvokerFireOwnedFeatureGuid(featureGuid));
+                ShadowbornBloodlineInstaller.FireBloodlineOwnedFeatureGuid(featureGuid));
         }
 
         private static void MoveProgressionFeatureToLevel(
