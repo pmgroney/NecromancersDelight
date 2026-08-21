@@ -17,6 +17,11 @@ namespace wotr_mod.Patches
     {
         private const int GrowthLevel = 4;
 
+        private static readonly string[] ClassSpecificCompanionFeatureGuids =
+        {
+            GameBlueprintIds.Features.SableMarineHippogriffCompanion
+        };
+
         private readonly BlueprintTool _blueprints;
         private readonly LocalizationTool _localization;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -47,13 +52,20 @@ namespace wotr_mod.Patches
             }
 
             var companionSelection = _blueprints.Require<BlueprintFeatureSelection>(
-                GameBlueprintIds.Selections.SylvanAnimalCompanion,
-                "Sylvan animal companion selection");
+                GameBlueprintIds.Selections.AnimalCompanionBase,
+                "base animal companion selection");
 
             foreach (var companionFeature in _blueprints.GetFeatureSelectionAllFeatures(companionSelection)
                          .Where(feature => feature != null))
             {
                 ConfigureGrowth(companionFeature);
+            }
+
+            foreach (var companionFeatureGuid in ClassSpecificCompanionFeatureGuids)
+            {
+                ConfigureGrowth(_blueprints.Require<BlueprintFeature>(
+                    companionFeatureGuid,
+                    "class-specific animal companion feature"));
             }
 
             AddGrowthToLoadedPets();
@@ -101,9 +113,10 @@ namespace wotr_mod.Patches
         {
             var localizedDescription =
                 BlueprintFields.UnitFactDescription.GetValue(companionFeature) as LocalizedString;
+            var descriptionKey = GetLocalizationKey(localizedDescription);
             var description = companionFeature.Description;
             if (localizedDescription == null ||
-                string.IsNullOrEmpty(localizedDescription.Key) ||
+                string.IsNullOrEmpty(descriptionKey) ||
                 string.IsNullOrEmpty(description))
             {
                 _logger.Warning($"Skipping faster-growth description for {companionFeature.name}: description is missing.");
@@ -113,11 +126,30 @@ namespace wotr_mod.Patches
             var updatedDescription = description.Replace("7th level", "4th level");
             if (updatedDescription == description)
             {
-                _logger.Warning($"Skipping faster-growth description for {companionFeature.name}: no level-7 text was found.");
+                if (!description.Contains("4th level"))
+                {
+                    _logger.Warning($"Skipping faster-growth description for {companionFeature.name}: no level-7 text was found.");
+                }
+
                 return;
             }
 
-            _localization.Put(localizedDescription.Key, updatedDescription);
+            _localization.Put(descriptionKey, updatedDescription);
+        }
+
+        private static string GetLocalizationKey(LocalizedString localizedString)
+        {
+            if (localizedString == null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(localizedString.Key))
+            {
+                return localizedString.Key;
+            }
+
+            return localizedString.Shared?.String?.Key;
         }
 
         private void AddGrowthToLoadedPets()

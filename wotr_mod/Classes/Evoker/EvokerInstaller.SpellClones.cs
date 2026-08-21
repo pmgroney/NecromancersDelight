@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.ElementsSystem;
@@ -18,7 +17,7 @@ namespace wotr_mod.Classes.Evoker
     {
         private const string EvokerSpellClonePrefix = "WotrMod_EvokerSpell_";
         private const string EvokerDamageCapDescriptionNote =
-            "Evoker: when cast from the Evoker spellbook, this spell's damage scaling ignores its normal maximum cap.";
+            "Evoker: when cast from the Evoker spellbook, this spell's damage scaling ignores the normal maximum cap listed above.";
         private const int EvokerUncappedProjectileSlotCount = 40;
 
         private BlueprintAbility EnsureEvokerSpellClone(ClassSpellDefinition definition)
@@ -163,7 +162,7 @@ namespace wotr_mod.Classes.Evoker
             BlueprintAbility source,
             ClassSpellDefinition definition)
         {
-            var sourceDescription = RemoveDamageCapText(source.Description ?? string.Empty);
+            var sourceDescription = source.Description ?? string.Empty;
             var description = string.IsNullOrEmpty(sourceDescription)
                 ? EvokerDamageCapDescriptionNote
                 : sourceDescription + "\n\n" + EvokerDamageCapDescriptionNote;
@@ -174,31 +173,6 @@ namespace wotr_mod.Classes.Evoker
 
             _localization.Put(descriptionKey, description);
             _blueprints.SetAbilityDisplay(clone, name, _localization.Text(descriptionKey));
-        }
-
-        private static string RemoveDamageCapText(string description)
-        {
-            if (string.IsNullOrEmpty(description))
-            {
-                return description;
-            }
-
-            var text = Regex.Replace(
-                description,
-                @",?\s*to a maximum of [^.;]+(?=[.;])",
-                string.Empty,
-                RegexOptions.IgnoreCase);
-            text = Regex.Replace(
-                text,
-                @",?\s*maximum \d+d\d+",
-                string.Empty,
-                RegexOptions.IgnoreCase);
-            text = Regex.Replace(
-                text,
-                @"per caster level,\s+to ",
-                "per caster level to ",
-                RegexOptions.IgnoreCase);
-            return Regex.Replace(text, @"\s+([.,;])", "$1").Trim();
         }
 
         private bool HasDamageAction(BlueprintAbility ability)

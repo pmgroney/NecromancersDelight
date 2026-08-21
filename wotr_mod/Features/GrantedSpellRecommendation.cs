@@ -78,11 +78,6 @@ namespace wotr_mod.Features
 
         private static BlueprintGuid[] AddGuid(BlueprintGuid[] guids, string guid)
         {
-            if (string.IsNullOrWhiteSpace(guid))
-            {
-                return guids ?? new BlueprintGuid[0];
-            }
-
             return AddGuid(guids, BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(guid)));
         }
 

@@ -182,6 +182,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineArcaneFeatSelection = "ff4fd877b4c801342ab8e880b734a6b9";
             public const string BloodlineDraconicFeatSelection = "f4b011d090e8ae543b1441bd594c7bf7";
             public const string BloodlineElementalFeatSelection = "d2a4b74ee7e43a648b51d0f36db2aa34";
+            public const string AnimalCompanionBase = "90406c575576aee40a34917a1b429254";
             public const string SylvanAnimalCompanion = "a540d7dfe1e2a174a94198aba037274c";
             public const string SylvanCompanion = "bdeb45c295e93644c9fed3b3b431aa2d";
         }
@@ -281,6 +282,7 @@ namespace wotr_mod.Infrastructure
             public const string BloodlineElementalSpellLevel8 = "a97a9d3ce2ea0d24e8a9b96642c576f5";
             public const string BloodlineElementalSpellLevel9 = "1ed7c112f89d1024ea6c4e862f1d28d7";
             public const string PyromaniacGnome = "fc74a68e18a8479a9e8af34e761a70b3";
+            public const string SableMarineHippogriffCompanion = "5de352323c7045b9b53669df16314558";
             public const string TrippingBite = "f957b4444b6fb404e84ae2a5765797bb";
             public const string VelociraptorCompanion = "89420de28b6bb9443b62ce489ae5423b";
             public const string VelociraptorUpgrade = "5ae6dc5f479b5ea408ccaf75212155e8";
