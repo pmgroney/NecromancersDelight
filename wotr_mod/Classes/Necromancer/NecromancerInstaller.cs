@@ -60,10 +60,7 @@ namespace wotr_mod.Classes.Necromancer
 
         public void ConfigureSpellList(CharacterClassDefinition definition, BlueprintSpellList spellList)
         {
-            var characterClass = _blueprints.Require<BlueprintCharacterClass>(
-                definition.ClassGuid,
-                definition.InternalName + " class");
-            ConfigureNecromancerSpellList(spellList, characterClass);
+            ConfigureNecromancerSpellList(spellList, definition.ClassGuid);
         }
 
         public BlueprintFeatureBase EnsureProgressionFeature(CharacterClassDefinition definition)
@@ -115,11 +112,11 @@ namespace wotr_mod.Classes.Necromancer
 
         private void ConfigureNecromancerSpellList(
             BlueprintSpellList spellList,
-            BlueprintCharacterClass characterClass,
+            string characterClassGuid,
             int minimumSpellLevel = 0)
         {
             var spellsByLevel = MergeSpellEntries(
-                GetNecromancerRegistrySpells(characterClass, minimumSpellLevel),
+                GetNecromancerRegistrySpells(characterClassGuid, minimumSpellLevel),
                 GetWizardEvocationSpells(minimumSpellLevel));
 
             _blueprints.SetSpellListSpells(
@@ -128,7 +125,7 @@ namespace wotr_mod.Classes.Necromancer
         }
 
         private IEnumerable<KeyValuePair<BlueprintAbility, int>> GetNecromancerRegistrySpells(
-            BlueprintCharacterClass characterClass,
+            string characterClassGuid,
             int minimumSpellLevel)
         {
             return NecromancerSpellRegistry.GetAll()
@@ -136,7 +133,7 @@ namespace wotr_mod.Classes.Necromancer
                 .Select(d =>
                 {
                     var spell = _blueprints.Require<BlueprintAbility>(d.SpellGuid, d.DisplayName);
-                    ApplySelectionRecommendation(spell, d, characterClass);
+                    ApplySelectionRecommendation(spell, d, characterClassGuid);
                     return new KeyValuePair<BlueprintAbility, int>(spell, d.SpellLevel);
                 });
         }
@@ -196,7 +193,7 @@ namespace wotr_mod.Classes.Necromancer
         private void ApplySelectionRecommendation(
             BlueprintScriptableObject blueprint,
             ClassSpellDefinition definition,
-            BlueprintCharacterClass characterClass)
+            string characterClassGuid)
         {
             if (!definition.Recommendation.HasValue) return;
 
@@ -204,10 +201,11 @@ namespace wotr_mod.Classes.Necromancer
             {
                 // These spells are only auto-granted for free by the base Necromancer bloodline chain.
                 // Graveblade and Deathstalker remove that chain, so the spell is a normal pick for them.
+                _blueprints.RemoveComponents<GrantedFeatureRecommendation>(blueprint);
                 var recommendation = _blueprints.EnsureComponent(
                     blueprint,
-                    () => new GrantedFeatureRecommendation { name = $"$GrantedFeatureRecommendation${definition.DisplayName}" });
-                recommendation.AddNotRecommendedClass(characterClass);
+                    () => new GrantedSpellRecommendation { name = $"$GrantedSpellRecommendation${definition.DisplayName}" });
+                recommendation.AddNotRecommendedClass(characterClassGuid);
                 recommendation.AddExemptArchetype(ModBlueprintIds.Archetypes.Graveblade);
                 recommendation.AddExemptArchetype(ModBlueprintIds.Archetypes.Deathstalker);
                 return;

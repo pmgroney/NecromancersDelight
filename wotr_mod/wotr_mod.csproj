@@ -135,6 +135,7 @@
         <Compile Include="Features\ClassSpellAllyDamageImmunity.cs" />
         <Compile Include="Features\ScytheWeaponFocusRecommendation.cs" />
         <Compile Include="Features\ArchetypeFeatureRecommendation.cs" />
+        <Compile Include="Features\GrantedSpellRecommendation.cs" />
         <Compile Include="Features\GrantedFeatureRecommendation.cs" />
         <Compile Include="Features\OneTimeMeleeDamageBonusComponent.cs" />
         <Compile Include="Features\ReapingEdgeComponent.cs" />
