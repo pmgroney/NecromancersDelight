@@ -37,7 +37,7 @@ namespace wotr_mod.Content
             new QuestExperienceReward(EncounterType.ChallengeMinor, 4);
         private static readonly QuestExperienceReward Act1TrailColdReward =
             new QuestExperienceReward(EncounterType.QuestNormal, 4);
-        private static readonly QuestExperienceReward Act2LeperSmileReward =
+        private static readonly QuestExperienceReward Act2ReliableRedoubtReward =
             new QuestExperienceReward(EncounterType.QuestNormal, 6);
         private static readonly QuestExperienceReward Act2LostChapelReward =
             new QuestExperienceReward(EncounterType.QuestNormal, 8);
@@ -132,7 +132,14 @@ namespace wotr_mod.Content
 
         private BlueprintUnlockableFlag EnsureStartedFlag()
         {
-            var flag = _blueprints.Get<BlueprintUnlockableFlag>(ModBlueprintIds.Flags.BillyBowQuestStarted);
+            return EnsureUnlockableFlag(
+                ModBlueprintIds.Flags.BillyBowQuestStarted,
+                "WotrMod_BillyBowQuestStarted");
+        }
+
+        private BlueprintUnlockableFlag EnsureUnlockableFlag(string guid, string name)
+        {
+            var flag = _blueprints.Get<BlueprintUnlockableFlag>(guid);
             if (flag != null)
             {
                 return flag;
@@ -140,10 +147,10 @@ namespace wotr_mod.Content
 
             flag = new BlueprintUnlockableFlag
             {
-                name = "WotrMod_BillyBowQuestStarted",
-                AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Flags.BillyBowQuestStarted)
+                name = name,
+                AssetGuid = BlueprintGuid.Parse(guid)
             };
-            _blueprints.AddCachedBlueprint(ModBlueprintIds.Flags.BillyBowQuestStarted, flag);
+            _blueprints.AddCachedBlueprint(guid, flag);
             return flag;
         }
 
@@ -176,6 +183,7 @@ namespace wotr_mod.Content
                 }
 
                 StartQuestObjective(player, transferObjective);
+                MarkQuestDialogPending(ModBlueprintIds.Flags.BillyAct1RecordDialogPending);
                 _logger.Log("Advanced Billy condition quest to the Act 1 transfer record clue.");
                 if (startDialog)
                 {
@@ -223,6 +231,7 @@ namespace wotr_mod.Content
                 }
 
                 StartQuestObjective(player, trailColdObjective);
+                MarkQuestDialogPending(ModBlueprintIds.Flags.BillyAct1TunicDialogPending);
                 _logger.Log("Advanced Billy condition quest to the Act 1 trail-cold objective.");
                 if (startDialog)
                 {
@@ -248,7 +257,8 @@ namespace wotr_mod.Content
                 EnsureBillyConditionAct2LostChapelObjective,
                 ModBlueprintIds.Items.NeophytesLongbowOfDiscipline,
                 ModBlueprintIds.Dialogs.BillyAct2BowDialog,
-                "Billy Act 2 Leper's Smile bow reward",
+                ModBlueprintIds.Flags.BillyAct2BowDialogPending,
+                "Billy Act 2 Reliable Redoubt bow reward",
                 startDialog);
         }
 
@@ -260,6 +270,7 @@ namespace wotr_mod.Content
                 EnsureBillyConditionAct3IvorySanctumObjective,
                 ModBlueprintIds.Items.ArchersTunic,
                 ModBlueprintIds.Dialogs.BillyAct2ArmorDialog,
+                ModBlueprintIds.Flags.BillyAct2ArmorDialogPending,
                 "Billy Act 2 Lost Chapel armor reward",
                 startDialog);
         }
@@ -272,6 +283,7 @@ namespace wotr_mod.Content
                 EnsureBillyConditionAct3MidnightFaneObjective,
                 ModBlueprintIds.Items.IroriAcolytesArmor,
                 ModBlueprintIds.Dialogs.BillyAct3ArmorDialog,
+                ModBlueprintIds.Flags.BillyAct3ArmorDialogPending,
                 "Billy Act 3 Ivory Sanctum armor reward",
                 startDialog);
         }
@@ -284,6 +296,7 @@ namespace wotr_mod.Content
                 EnsureBillyConditionAct4AbyssObjective,
                 ModBlueprintIds.Items.AcolytesLongbowOfDiscipline,
                 ModBlueprintIds.Dialogs.BillyAct3BowDialog,
+                ModBlueprintIds.Flags.BillyAct3BowDialogPending,
                 "Billy Act 3 Midnight Fane bow reward",
                 startDialog);
         }
@@ -294,6 +307,7 @@ namespace wotr_mod.Content
             Func<BlueprintQuestObjective> nextObjectiveFactory,
             string previousItemGuid,
             string dialogGuid,
+            string pendingFlagGuid,
             string logName,
             bool startDialog)
         {
@@ -328,6 +342,7 @@ namespace wotr_mod.Content
 
                 player.Inventory.Remove(previousItem, 1, allowRemoveEquipped: true);
                 StartQuestObjective(player, nextObjective);
+                MarkQuestDialogPending(pendingFlagGuid);
                 _logger.Log("Advanced " + logName + " and replaced the prior equipment tier.");
                 if (startDialog)
                 {
@@ -362,7 +377,7 @@ namespace wotr_mod.Content
                     return;
                 }
 
-                var billy = FindBilly();
+                var billy = FindBillyForDialog();
                 var initiator = player.MainCharacter.Value ?? player.GetMainPartyUnit();
                 var dialog = _blueprints.Get<BlueprintDialog>(ModBlueprintIds.Dialogs.BillyBowQuestDialog);
                 if (billy == null || initiator == null || dialog == null || objective == null)
@@ -381,6 +396,21 @@ namespace wotr_mod.Content
             }
         }
 
+        private void MarkQuestDialogPending(string flagGuid)
+        {
+            var player = Game.Instance?.Player;
+            if (player?.UnlockableFlags == null)
+            {
+                return;
+            }
+
+            var flag = EnsureUnlockableFlag(flagGuid, "WotrMod_BillyQuestDialogPending_" + flagGuid);
+            if (!player.UnlockableFlags.IsUnlocked(flag))
+            {
+                player.UnlockableFlags.Unlock(flag);
+            }
+        }
+
         private void TryStartBillyQuestDialog(string dialogGuid, string logName)
         {
             var game = Game.Instance;
@@ -390,7 +420,7 @@ namespace wotr_mod.Content
                 return;
             }
 
-            var billy = FindBilly();
+            var billy = FindBillyForDialog();
             var initiator = player.MainCharacter.Value ?? player.GetMainPartyUnit();
             var dialog = _blueprints.Get<BlueprintDialog>(dialogGuid);
             if (billy == null || initiator == null || dialog == null)
@@ -631,7 +661,7 @@ namespace wotr_mod.Content
                 _blueprints,
                 objective,
                 "WotrMod_BillyConditionAct1TrailColdReward",
-                Act2LeperSmileReward);
+                Act2ReliableRedoubtReward);
 
             return objective;
         }
@@ -818,12 +848,11 @@ namespace wotr_mod.Content
                     ?.Any(slot => slot?.MaybeItem?.Blueprint?.AssetGuid == itemGuid) == true) == true;
         }
 
-        private static UnitEntityData FindBilly()
+        private static UnitEntityData FindBillyForDialog()
         {
             var player = Game.Instance?.Player;
             return player?.Party.FirstOrDefault(IsBilly)
                    ?? player?.ActiveCompanions.FirstOrDefault(IsBilly)
-                   ?? player?.AllCharacters.FirstOrDefault(IsBilly)
                    ?? Game.Instance?.State?.LoadedAreaState?.AllEntityData
                        ?.OfType<UnitEntityData>()
                        ?.FirstOrDefault(IsBilly);

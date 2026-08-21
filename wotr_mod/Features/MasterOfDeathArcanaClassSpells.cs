@@ -35,21 +35,10 @@ namespace wotr_mod.Features
                 return;
             }
 
-            // Withering Ray is a supernatural bloodline power, not a spellbook spell, so it
-            // can't be matched by the IsSpell/spellbook checks below. Match it directly instead.
+            // Withering Ray has its own casting-stat damage bonus and should not also
+            // receive Master of Death's spell damage bonus.
             if (sourceAbility.AssetGuid == WitheringRayGuid)
             {
-                foreach (var characterClass in Classes ?? new BlueprintCharacterClass[0])
-                {
-                    if (characterClass == null || Owner.Progression.GetClassLevel(characterClass) <= 0)
-                    {
-                        continue;
-                    }
-
-                    ApplyBonus(evt, characterClass);
-                    return;
-                }
-
                 return;
             }
 

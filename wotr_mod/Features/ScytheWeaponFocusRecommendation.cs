@@ -9,11 +9,11 @@ using Kingmaker.UnitLogic.Class.LevelUp;
 
 namespace wotr_mod.Features
 {
-    public sealed class GravebladeWeaponFocusRecommendation : ParametrizedLevelUpRecommendationComponent
+    public sealed class ScytheWeaponFocusRecommendation : ParametrizedLevelUpRecommendationComponent
     {
         public BlueprintCharacterClass[] RecommendedClasses;
-        public BlueprintArchetype[] GravebladeArchetypes;
-        public BlueprintFeatureSelection[] GravebladeSelections;
+        public BlueprintArchetype[] RecommendedArchetypes;
+        public BlueprintFeatureSelection[] RecommendedSelections;
 
         public override RecommendationPriority GetPriority(FeatureParam param, LevelUpState levelUpState)
         {
@@ -27,26 +27,26 @@ namespace wotr_mod.Features
                 : RecommendationPriority.Same;
         }
 
-        public void AddGravebladeArchetype(BlueprintArchetype archetype)
+        public void AddArchetype(BlueprintArchetype archetype)
         {
             if (archetype == null || HasArchetype(archetype))
             {
                 return;
             }
 
-            GravebladeArchetypes = (GravebladeArchetypes ?? new BlueprintArchetype[0])
+            RecommendedArchetypes = (RecommendedArchetypes ?? new BlueprintArchetype[0])
                 .Concat(new[] { archetype })
                 .ToArray();
         }
 
-        public void AddGravebladeSelection(BlueprintFeatureSelection selection)
+        public void AddSelection(BlueprintFeatureSelection selection)
         {
             if (selection == null || HasSelection(selection))
             {
                 return;
             }
 
-            GravebladeSelections = (GravebladeSelections ?? new BlueprintFeatureSelection[0])
+            RecommendedSelections = (RecommendedSelections ?? new BlueprintFeatureSelection[0])
                 .Concat(new[] { selection })
                 .ToArray();
         }
@@ -93,17 +93,17 @@ namespace wotr_mod.Features
 
         private bool HasSelection(BlueprintScriptableObject selection)
         {
-            return GravebladeSelections != null &&
+            return RecommendedSelections != null &&
                    selection != null &&
-                   GravebladeSelections.Any(candidate =>
+                   RecommendedSelections.Any(candidate =>
                        candidate != null && candidate.AssetGuid == selection.AssetGuid);
         }
 
         private bool HasArchetype(BlueprintArchetype archetype)
         {
-            return GravebladeArchetypes != null &&
+            return RecommendedArchetypes != null &&
                    archetype != null &&
-                   GravebladeArchetypes.Any(candidate =>
+                   RecommendedArchetypes.Any(candidate =>
                        candidate != null && candidate.AssetGuid == archetype.AssetGuid);
         }
 

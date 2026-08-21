@@ -42,7 +42,7 @@ namespace wotr_mod.Infrastructure
                     new BillyPlacementPatch(blueprints, logger),
                     new FetchlingRacePatch(blueprints, localization),
                     new CustomHeritagePatch(blueprints, localization),
-                    new LeopardTripPatch(blueprints, logger),
+                    new PetTripPatch(blueprints, logger),
                     new CompanionPetGrowthPatch(blueprints, localization, logger)
                 });
         }

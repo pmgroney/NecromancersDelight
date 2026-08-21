@@ -46,15 +46,19 @@ namespace wotr_mod.Infrastructure
         {
             public const string BillyAct2BowDialog = "b772a7551329bc71f63e372ec6ec4646";
             public const string BillyAct2BowCue = "257f295a9949ba121e9116fcdf1dae8e";
+            public const string BillyAct2BowUpgradeCue = "822b7df4d338462fa17becd316c15a31";
             public const string BillyAct2BowAnswer = "01f6036a63f8ad1f0b552d0a3bad4d32";
             public const string BillyAct2ArmorDialog = "67156edd05bd3b4c91a4030d8f87d597";
             public const string BillyAct2ArmorCue = "609f929947534bdf13e9084fcecb92ca";
+            public const string BillyAct2ArmorUpgradeCue = "cb207e94c61f43ad839de279cfea7b8d";
             public const string BillyAct2ArmorAnswer = "6067c206e810671ba194356896de725a";
             public const string BillyAct3ArmorDialog = "b04ce613bc8176257f88756bd477188d";
             public const string BillyAct3ArmorCue = "5f97b67dbcd397653e313f195de91c2f";
+            public const string BillyAct3ArmorUpgradeCue = "1131f58490524eab98f1743de92dab0e";
             public const string BillyAct3ArmorAnswer = "808883c1ab137ec6a2ff7c62314c3a84";
             public const string BillyAct3BowDialog = "1af6ff5f1f78343455419b62264fddda";
             public const string BillyAct3BowCue = "71c04c4a475f42c4596c9742faaffe6e";
+            public const string BillyAct3BowUpgradeCue = "1fd129ae6d314fc897809b2aba764dcb";
             public const string BillyAct3BowAnswer = "aa66087cc6691373d3a3718cab013f40";
             public const string BillyDialog = "96850f6d4f4e444a80c0675c76d37c5d";
             public const string BillyBowQuestDialog = "5cefa4cfb52c46849b65512cac66bc68";
@@ -129,6 +133,18 @@ namespace wotr_mod.Infrastructure
         {
             public const string BillyRecruited = "da03f5bd8a9e44b89a5a7df675cb95df";
             public const string BillyBowQuestStarted = "e1f39ce3152c439080ac6f2565e1f861";
+            public const string BillyAct1RecordDialogSeen = "50eafa43744b48dd83dff507c8f1dae0";
+            public const string BillyAct1TunicDialogSeen = "22c835fca7ca4f178e4276154d3a7b49";
+            public const string BillyAct2BowDialogSeen = "fd78cd72465f4b0e97346c0a23284f81";
+            public const string BillyAct2ArmorDialogSeen = "bbebb3a26a174f80bda5e20eed5f8c7d";
+            public const string BillyAct3ArmorDialogSeen = "323f5b371dc64db6884b9373f9e6e935";
+            public const string BillyAct3BowDialogSeen = "57e8b7c009fb49529c82c247981d1a78";
+            public const string BillyAct1RecordDialogPending = "ac07eb00fb0a43e096cc3c9dce614670";
+            public const string BillyAct1TunicDialogPending = "412c32c6ac8d45aca40007544a7a7cc3";
+            public const string BillyAct2BowDialogPending = "dcaf98c9e79847a4bace2775d10e94cc";
+            public const string BillyAct2ArmorDialogPending = "bf38cec1190148e98c0e6ebc82081a1e";
+            public const string BillyAct3ArmorDialogPending = "204ccfdb6ba2437e85cc6c676c284264";
+            public const string BillyAct3BowDialogPending = "3ace13f2c9fc454bac03a3824040daaa";
             public const string DefendersHeartAssaultTimerAdjusted = "5e8a2f7db8f84b2797720f4fbb09ef90";
             public const string DefendersHeartAssaultTimerAdjustedSixExtra = "e75c257c77274b7a870e5118a2dd3b68";
             public const string ShieldMazeRuntimeLootSeeded = "231ad8e13d8b400a98da928503969098";
@@ -422,6 +438,7 @@ namespace wotr_mod.Infrastructure
             public const string NecromancerDeathlyFinesse = "958fb96e2ae648b5a18bc6716d140a52";
             public const string NecromancerDeathlyFinesseTraining = "cf929f9c1eb24d7da375a0df5bc0e36d";
             public const string NecromancerDeathlyFinesseTrainingScythe = "b9d6f705fd1f4e5c8d5e3f55f2ee964f";
+            public const string NecromancerScytheProficiency = "bce65518ad804cb4916418495d7ff1a3";
             public const string ShadowbornArcana = "e4ba41b250a94b988444c0b452e88030";
             public const string ShadowbornBurningHandsKnownSpell = "09a7b2d0c117473285e132ff12dfd26f";
             public const string ShadowbornHellfireRayKnownSpell = "17854f9815e14af1bbe8c1c27529a331";

@@ -424,6 +424,7 @@ namespace wotr_mod.Infrastructure
             public const string Hosilla = "64dcc27d70edc1148b31257fcc2241ce";
             public const string MythicLichSkeletonArcher = "2b0c36c34172ac440a8e6d373094c3bd";
             public const string LeopardCompanion = "54cf380dee486ff42b803174d1b9da1b";
+            public const string ReliableRedoubtGargoyleMiniboss = "25fab688af9122a4fa4767657299b5e4";
             public const string VelociraptorCompanion = "28d1986d57a7081439fbb581aa6f960c";
             public const string ShieldMazeShittyCultist = "fa09c09aeff05b34ba4252911a507888";
         }

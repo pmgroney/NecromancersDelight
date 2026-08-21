@@ -17,8 +17,8 @@ namespace wotr_mod
         private static UnityModManager.ModEntry.ModLogger _logger;
         private static PatchRegistry _registry;
         private static bool _applied;
-        private const float TooltipSliderWidth = 180f;
-        private const float TooltipSliderIndent = 12f;
+        private const float OptionsSliderWidth = 180f;
+        private const float OptionsSliderIndent = 12f;
         private static readonly Color OptionsAccentColor = new Color(0.58f, 0.78f, 1f);
 
         internal static string ModPath { get; private set; }
@@ -68,12 +68,35 @@ namespace wotr_mod
                 Settings.EnableAchievementsWhileModded,
                 "Re-enable achievements while modded");
 
-            var delayDefendersHeartAssault = GUILayout.Toggle(
-                Settings.DelayDefendersHeartAssault,
-                "Delay Defender's Heart assault");
-            if (delayDefendersHeartAssault != Settings.DelayDefendersHeartAssault)
+            GUILayout.Space(14f);
+            GUILayout.Label("Defender's Heart assault timer");
+            GUILayout.Space(4f);
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(OptionsSliderIndent);
+            GUILayout.BeginVertical(GUILayout.Width(OptionsSliderWidth));
+            var defendersHeartDelayMode = Mathf.Clamp(
+                Mathf.RoundToInt(
+                    GUILayout.HorizontalSlider(
+                        Settings.DefendersHeartAssaultDelayMode,
+                        0,
+                        2,
+                        GUILayout.Width(OptionsSliderWidth))),
+                0,
+                2);
+            DrawThreePositionScale(
+                "3 days",
+                "+3",
+                "+6",
+                defendersHeartDelayMode);
+            GUILayout.Label(
+                DefendersHeartAssaultDelayLabel(defendersHeartDelayMode),
+                SelectedOptionsValueStyle());
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            if (defendersHeartDelayMode != Settings.DefendersHeartAssaultDelayMode)
             {
-                Settings.DelayDefendersHeartAssault = delayDefendersHeartAssault;
+                Settings.DefendersHeartAssaultDelayMode = defendersHeartDelayMode;
+                Settings.DelayDefendersHeartAssault = defendersHeartDelayMode != 0;
                 if (_applied)
                 {
                     _registry.ApplySettings();
@@ -92,42 +115,46 @@ namespace wotr_mod
             GUILayout.Label("Mouseover tooltip icon size");
             GUILayout.Space(4f);
             GUILayout.BeginHorizontal();
-            GUILayout.Space(TooltipSliderIndent);
-            GUILayout.BeginVertical(GUILayout.Width(TooltipSliderWidth));
+            GUILayout.Space(OptionsSliderIndent);
+            GUILayout.BeginVertical(GUILayout.Width(OptionsSliderWidth));
             Settings.TooltipIconMagnificationMode = Mathf.RoundToInt(
                 GUILayout.HorizontalSlider(
                     Settings.TooltipIconMagnificationMode,
                     0,
                     2,
-                    GUILayout.Width(TooltipSliderWidth)));
+                    GUILayout.Width(OptionsSliderWidth)));
             Settings.TooltipIconMagnificationMode = Mathf.Clamp(Settings.TooltipIconMagnificationMode, 0, 2);
-            DrawTooltipMagnificationScale(Settings.TooltipIconMagnificationMode);
+            DrawThreePositionScale("Off", "1.5x", "2x", Settings.TooltipIconMagnificationMode);
             GUILayout.Label(
                 TooltipIconMagnificationLabel(Settings.TooltipIconMagnificationMode),
-                SelectedTooltipValueStyle());
+                SelectedOptionsValueStyle());
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
         }
 
-        private static void DrawTooltipMagnificationScale(int selectedMode)
+        private static void DrawThreePositionScale(
+            string leftLabel,
+            string middleLabel,
+            string rightLabel,
+            int selectedMode)
         {
-            GUILayout.BeginHorizontal(GUILayout.Width(TooltipSliderWidth));
-            DrawTooltipScaleMarker("Off", selectedMode == 0, TextAnchor.MiddleLeft);
-            DrawTooltipScaleMarker("1.5x", selectedMode == 1, TextAnchor.MiddleCenter);
-            DrawTooltipScaleMarker("2x", selectedMode == 2, TextAnchor.MiddleRight);
+            GUILayout.BeginHorizontal(GUILayout.Width(OptionsSliderWidth));
+            DrawScaleMarker(leftLabel, selectedMode == 0, TextAnchor.MiddleLeft);
+            DrawScaleMarker(middleLabel, selectedMode == 1, TextAnchor.MiddleCenter);
+            DrawScaleMarker(rightLabel, selectedMode == 2, TextAnchor.MiddleRight);
             GUILayout.EndHorizontal();
         }
 
-        private static void DrawTooltipScaleMarker(string label, bool selected, TextAnchor alignment)
+        private static void DrawScaleMarker(string label, bool selected, TextAnchor alignment)
         {
             GUILayout.Label(
                 label,
-                selected ? SelectedTooltipMarkerStyle(alignment) : TooltipMarkerStyle(alignment),
+                selected ? SelectedOptionsMarkerStyle(alignment) : OptionsMarkerStyle(alignment),
                 GUILayout.Width(60f));
         }
 
-        private static GUIStyle TooltipMarkerStyle(TextAnchor alignment)
+        private static GUIStyle OptionsMarkerStyle(TextAnchor alignment)
         {
             return new GUIStyle(GUI.skin.label)
             {
@@ -135,15 +162,15 @@ namespace wotr_mod
             };
         }
 
-        private static GUIStyle SelectedTooltipMarkerStyle(TextAnchor alignment)
+        private static GUIStyle SelectedOptionsMarkerStyle(TextAnchor alignment)
         {
-            var style = TooltipMarkerStyle(alignment);
+            var style = OptionsMarkerStyle(alignment);
             style.fontStyle = FontStyle.Bold;
             style.normal.textColor = OptionsAccentColor;
             return style;
         }
 
-        private static GUIStyle SelectedTooltipValueStyle()
+        private static GUIStyle SelectedOptionsValueStyle()
         {
             var style = new GUIStyle(GUI.skin.label)
             {
@@ -151,6 +178,19 @@ namespace wotr_mod
             };
             style.normal.textColor = OptionsAccentColor;
             return style;
+        }
+
+        private static string DefendersHeartAssaultDelayLabel(int mode)
+        {
+            switch (mode)
+            {
+                case 0:
+                    return "Vanilla: 3 days";
+                case 2:
+                    return "6 extra days: 9 total";
+                default:
+                    return "3 extra days: 6 total";
+            }
         }
 
         private static string TooltipIconMagnificationLabel(int mode)

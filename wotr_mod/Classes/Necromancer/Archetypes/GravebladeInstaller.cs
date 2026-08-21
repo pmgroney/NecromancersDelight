@@ -147,12 +147,12 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
                 "Weapon Focus");
             var recommendation = _blueprints.EnsureComponent(
                 weaponFocus,
-                () => new GravebladeWeaponFocusRecommendation
+                () => new ScytheWeaponFocusRecommendation
                 {
-                    name = "$GravebladeWeaponFocusRecommendation$Scythe"
+                    name = "$ScytheWeaponFocusRecommendation$Graveblade"
                 });
-            recommendation.AddGravebladeArchetype(archetype);
-            recommendation.AddGravebladeSelection(bonusFeat);
+            recommendation.AddArchetype(archetype);
+            recommendation.AddSelection(bonusFeat);
         }
 
         private BlueprintItem[] GetGravebladeStartingEquipment(BlueprintCharacterClass characterClass)

@@ -81,12 +81,16 @@ namespace wotr_mod.Infrastructure
             public const string BillyAct1TunicCue = "wotr_mod.companion.billy.quest.act1.tunic.cue";
             public const string BillyAct2BowAnswer = "wotr_mod.companion.billy.quest.act2.bow.answer";
             public const string BillyAct2BowCue = "wotr_mod.companion.billy.quest.act2.bow.cue";
+            public const string BillyAct2BowUpgradeCue = "wotr_mod.companion.billy.quest.act2.bow.upgrade.cue";
             public const string BillyAct2ArmorAnswer = "wotr_mod.companion.billy.quest.act2.armor.answer";
             public const string BillyAct2ArmorCue = "wotr_mod.companion.billy.quest.act2.armor.cue";
+            public const string BillyAct2ArmorUpgradeCue = "wotr_mod.companion.billy.quest.act2.armor.upgrade.cue";
             public const string BillyAct3ArmorAnswer = "wotr_mod.companion.billy.quest.act3.armor.answer";
             public const string BillyAct3ArmorCue = "wotr_mod.companion.billy.quest.act3.armor.cue";
+            public const string BillyAct3ArmorUpgradeCue = "wotr_mod.companion.billy.quest.act3.armor.upgrade.cue";
             public const string BillyAct3BowAnswer = "wotr_mod.companion.billy.quest.act3.bow.answer";
             public const string BillyAct3BowCue = "wotr_mod.companion.billy.quest.act3.bow.cue";
+            public const string BillyAct3BowUpgradeCue = "wotr_mod.companion.billy.quest.act3.bow.upgrade.cue";
             public const string BillyIroriDisciplineName = "wotr_mod.companion.billy.feature.irori_discipline.name";
             public const string BillyIroriDisciplineDescription = "wotr_mod.companion.billy.feature.irori_discipline.description";
             public const string BillyWayOfTheBowName = "wotr_mod.companion.billy.feature.way_of_the_bow.name";

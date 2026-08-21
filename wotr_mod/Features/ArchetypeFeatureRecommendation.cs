@@ -10,7 +10,7 @@ namespace wotr_mod.Features
 {
     // Recommends a plain (non-parametrized) feature only for characters on one of the
     // given archetypes; neutral for everyone else. Mirrors
-    // GravebladeWeaponFocusRecommendation's archetype-detection logic, for features that
+    // ScytheWeaponFocusRecommendation's archetype-detection logic, for features that
     // don't take a FeatureParam (e.g. Two-Weapon Fighting, vs. Weapon Focus's weapon category).
     public sealed class ArchetypeFeatureRecommendation : LevelUpRecommendationComponent
     {

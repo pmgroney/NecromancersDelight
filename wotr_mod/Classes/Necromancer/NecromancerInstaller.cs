@@ -39,6 +39,7 @@ namespace wotr_mod.Classes.Necromancer
         private readonly UnityModManager.ModEntry.ModLogger _logger;
         private readonly SpellIconLoader _icons;
         private readonly GrantedSpellFeatureFactory _grantedSpellFeatures;
+        private const string NecromancerOwnershipSeed = "WotrMod_NecromancerClass";
 
         public NecromancerInstaller(
             BlueprintTool blueprints,
@@ -271,9 +272,9 @@ namespace wotr_mod.Classes.Necromancer
             RemoveScytheFromBadWeaponFocusRecommendations(weaponFocus);
             var recommendation = _blueprints.EnsureComponent(
                 weaponFocus,
-                () => new GravebladeWeaponFocusRecommendation
+                () => new ScytheWeaponFocusRecommendation
                 {
-                    name = "$GravebladeWeaponFocusRecommendation$Scythe"
+                    name = "$ScytheWeaponFocusRecommendation$Necromancer"
                 });
             recommendation.AddRecommendedClass(characterClass);
         }
@@ -518,6 +519,12 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.RemoveFeaturesFromProgression(
                 progression,
                 GameBlueprintIds.Features.SorcererProficiencies,
+                GameBlueprintIds.Features.BloodragerProficiencies,
+                GameBlueprintIds.Features.MartialWeaponProficiency,
+                GameBlueprintIds.Features.ScytheProficiency,
+                NecromancerOwnedFeatureGuid(GameBlueprintIds.Features.BloodragerProficiencies),
+                NecromancerOwnedFeatureGuid(GameBlueprintIds.Features.MartialWeaponProficiency),
+                NecromancerOwnedFeatureGuid(GameBlueprintIds.Features.ScytheProficiency),
                 GameBlueprintIds.Selections.SorcererBonusFeat,
                 GameBlueprintIds.Selections.SorcererFeatSelection,
                 ModBlueprintIds.Features.NecromancerProficiencies,
@@ -555,6 +562,12 @@ namespace wotr_mod.Classes.Necromancer
                 new[] { stygianPrecision, reapersJudgement },
                 new[] { graspOfTheDead, incorporealForm, oneOfUs },
                 new[] { boneSpike, corpseExplosion, eldritchHorror, harvestTheFallen, harvestSoul, deathClutch, hellOnEarth });
+        }
+
+        private static string NecromancerOwnedFeatureGuid(string sourceFeatureGuid)
+        {
+            return BlueprintReferencePatcher.DeterministicGuid(
+                NecromancerOwnershipSeed + ".OwnedFeature." + BlueprintTool.NormalizeGuid(sourceFeatureGuid));
         }
 
         internal static T FindNecromancerFeature<T>(
@@ -872,26 +885,68 @@ namespace wotr_mod.Classes.Necromancer
             _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.NecromancerProficienciesName),
                 _localization.Text(LocalizationIds.Mod.NecromancerProficienciesDescription));
-            var addFacts = _blueprints.EnsureComponent(feature, () => new AddFacts());
+            var addFacts = new AddFacts { name = "$AddFacts$NecromancerProficiencies" };
             _blueprints.SetAddFacts(addFacts,
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight, "Light Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SimpleWeaponProficiency, "Simple Weapon Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ScytheProficiency, "Scythe Proficiency"));
-            EnsureLightArmorCastingProficiency(feature);
+                EnsureNecromancerScytheProficiency());
+            var components = new List<BlueprintComponent>
+            {
+                addFacts,
+                new NecromancerProficiencyCleanup
+                {
+                    name = "$NecromancerProficiencyCleanup$BaseClass",
+                    MartialWeaponProficiency = _blueprints.Require<BlueprintFeature>(
+                        GameBlueprintIds.Features.MartialWeaponProficiency,
+                        "Martial Weapon Proficiency"),
+                    GravebladeProficienciesGuid = BlueprintTool.NormalizeGuid(ModBlueprintIds.Features.GravebladeProficiencies),
+                    DeathstalkerProficienciesGuid = BlueprintTool.NormalizeGuid(ModBlueprintIds.Features.DeathstalkerProficiencies)
+                }
+            };
+            var lightArmorCasting = EnsureLightArmorCastingProficiencyComponent();
+            if (lightArmorCasting != null)
+            {
+                components.Add(lightArmorCasting);
+            }
+
+            _blueprints.SetComponents(feature, components.ToArray());
             return feature;
         }
 
-        private void EnsureLightArmorCastingProficiency(BlueprintFeature feature)
+        private BlueprintFeature EnsureNecromancerScytheProficiency()
         {
-            const string componentName = "$ArcaneArmorProficiency$NecromancerLightArmor";
-            var existing = _blueprints.GetComponents<ArcaneArmorProficiency>(feature)
-                .FirstOrDefault(component => component.name == componentName);
-            if (existing != null)
+            var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.NecromancerScytheProficiency);
+            if (feature == null)
             {
-                existing.Armor = new[] { ArmorProficiencyGroup.Light };
-                return;
+                feature = new BlueprintFeature
+                {
+                    name = "WotrMod_NecromancerScytheProficiency",
+                    AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.NecromancerScytheProficiency)
+                };
+                _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.NecromancerScytheProficiency, feature);
             }
 
+            feature.IsClassFeature = true;
+            feature.Ranks = 1;
+            feature.HideInUI = true;
+            feature.HideInCharacterSheetAndLevelUp = true;
+            feature.HideNotAvailibleInUI = true;
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.NecromancerProficienciesName),
+                _localization.Text(LocalizationIds.Mod.NecromancerProficienciesDescription));
+            _blueprints.SetComponents(feature, new AddProficiencies
+            {
+                name = "$AddProficiencies$NecromancerScythe",
+                ArmorProficiencies = Array.Empty<ArmorProficiencyGroup>(),
+                WeaponProficiencies = new[] { WeaponCategory.Scythe }
+            });
+            return feature;
+        }
+
+        private BlueprintComponent EnsureLightArmorCastingProficiencyComponent()
+        {
+            const string componentName = "$ArcaneArmorProficiency$NecromancerLightArmor";
             var bloodragerProficiencies = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.BloodragerProficiencies,
                 "Bloodrager Proficiencies");
@@ -900,7 +955,7 @@ namespace wotr_mod.Classes.Necromancer
             if (source == null)
             {
                 _logger.Error("Bloodrager Proficiencies has no ArcaneArmorProficiency component to clone.");
-                return;
+                return null;
             }
 
             var clonedComponent = _blueprints.CloneComponent(source);
@@ -910,7 +965,7 @@ namespace wotr_mod.Classes.Necromancer
                 armorProficiency.Armor = new[] { ArmorProficiencyGroup.Light };
             }
 
-            _blueprints.AddComponent(feature, clonedComponent);
+            return clonedComponent;
         }
 
         private BlueprintFeature EnsureNecromancerBloodlineFeature(
@@ -1216,8 +1271,8 @@ namespace wotr_mod.Classes.Necromancer
                 rank,
                 AbilityRankType.Default,
                 ContextRankBaseValueType.ClassLevel,
-                ContextRankProgression.OnePlusDivStep,
-                startLevel: 2,
+                ContextRankProgression.StartPlusDivStep,
+                startLevel: 1,
                 stepLevel: 2,
                 characterClass: characterClass);
             _blueprints.SetContextRankMinimum(rank, 1);

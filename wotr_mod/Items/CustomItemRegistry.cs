@@ -55,9 +55,9 @@ namespace wotr_mod.Items
                     },
                     placements: new[]
                     {
-                        ItemPlacementDefinition.InChestLoot(
-                            GameBlueprintIds.Loot.GibberingSwarmVescavorQueen,
-                            "Leper's Smile Vescavor Queen loot",
+                        ItemPlacementDefinition.OnUnit(
+                            GameBlueprintIds.Units.ReliableRedoubtGargoyleMiniboss,
+                            "Reliable Redoubt gargoyle miniboss",
                             count: 1,
                             identify: true)
                     }),

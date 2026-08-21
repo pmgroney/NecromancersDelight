@@ -13,9 +13,9 @@ namespace wotr_mod.Content
     {
         private const int BaseDelayDays = 3;
         private const int PreviousExtraDelayDays = 3;
-        private const int ExtraDelayDays = 6;
+        private const int MaximumExtraDelayDays = 6;
         private const int PreviousModdedDelayDays = BaseDelayDays + PreviousExtraDelayDays;
-        private const int ModdedDelayDays = BaseDelayDays + ExtraDelayDays;
+        private const int MaximumModdedDelayDays = BaseDelayDays + MaximumExtraDelayDays;
 
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -52,11 +52,11 @@ namespace wotr_mod.Content
 
         public void ApplyCurrentSetting(string source)
         {
-            var enabled = Main.Settings != null && Main.Settings.DelayDefendersHeartAssault;
-            ApplyBlueprintDelay(enabled ? ModdedDelayDays : BaseDelayDays);
-            if (enabled)
+            var extraDelayDays = GetConfiguredExtraDelayDays();
+            ApplyBlueprintDelay(BaseDelayDays + extraDelayDays);
+            if (extraDelayDays > 0)
             {
-                RepairSavedTimerIfNeeded(source);
+                RepairSavedTimerIfNeeded(source, extraDelayDays);
                 return;
             }
 
@@ -82,7 +82,8 @@ namespace wotr_mod.Content
             var currentDelayDays = (int)BlueprintFields.EtudeInvokeActionsDelayedDays.GetValue(delayedActions);
             if (currentDelayDays != BaseDelayDays
                 && currentDelayDays != PreviousModdedDelayDays
-                && currentDelayDays != ModdedDelayDays)
+                && currentDelayDays != MaximumModdedDelayDays
+                && currentDelayDays != targetDelayDays)
             {
                 _logger.Warning(
                     $"Defender's Heart assault timer had unexpected delay {currentDelayDays} days; overriding to {targetDelayDays}.");
@@ -114,7 +115,25 @@ namespace wotr_mod.Content
             return flag;
         }
 
-        private void RepairSavedTimerIfNeeded(string source)
+        private static int GetConfiguredExtraDelayDays()
+        {
+            if (Main.Settings == null)
+            {
+                return PreviousExtraDelayDays;
+            }
+
+            switch (Main.Settings.DefendersHeartAssaultDelayMode)
+            {
+                case 0:
+                    return 0;
+                case 2:
+                    return MaximumExtraDelayDays;
+                default:
+                    return PreviousExtraDelayDays;
+            }
+        }
+
+        private void RepairSavedTimerIfNeeded(string source, int targetExtraDelayDays)
         {
             if (!Game.HasInstance || Game.Instance.Player == null)
             {
@@ -128,18 +147,38 @@ namespace wotr_mod.Content
             var adjustmentFlag = EnsureRuntimeAdjustmentFlag(
                 ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjustedSixExtra,
                 "WotrMod_DefendersHeartAssaultTimerAdjustedSixExtra");
-            if (player.UnlockableFlags.IsUnlocked(adjustmentFlag))
+            var alreadyAppliedExtraDelayDays = player.UnlockableFlags.IsUnlocked(adjustmentFlag)
+                ? MaximumExtraDelayDays
+                : player.UnlockableFlags.IsUnlocked(previousAdjustmentFlag)
+                    ? PreviousExtraDelayDays
+                    : 0;
+            if (alreadyAppliedExtraDelayDays == targetExtraDelayDays)
             {
                 return;
             }
 
-            var previousAdjustmentApplied = player.UnlockableFlags.IsUnlocked(previousAdjustmentFlag);
-            var remainingDelayToAddDays = previousAdjustmentApplied
-                ? ExtraDelayDays - PreviousExtraDelayDays
-                : ExtraDelayDays;
-            var maximumAlreadyAdjustedDays = previousAdjustmentApplied
-                ? PreviousModdedDelayDays
-                : BaseDelayDays;
+            Action<int> setAdjustmentFlags = extraDelayDays =>
+            {
+                if (extraDelayDays >= PreviousExtraDelayDays)
+                {
+                    player.UnlockableFlags.Unlock(previousAdjustmentFlag);
+                }
+                else
+                {
+                    player.UnlockableFlags.Lock(previousAdjustmentFlag);
+                }
+
+                if (extraDelayDays >= MaximumExtraDelayDays)
+                {
+                    player.UnlockableFlags.Unlock(adjustmentFlag);
+                }
+                else
+                {
+                    player.UnlockableFlags.Lock(adjustmentFlag);
+                }
+            };
+            var delayDeltaDays = targetExtraDelayDays - alreadyAppliedExtraDelayDays;
+            var maximumAlreadyAdjustedDays = BaseDelayDays + alreadyAppliedExtraDelayDays;
 
             var etudes = player.EtudesSystem;
             if (etudes == null)
@@ -157,22 +196,35 @@ namespace wotr_mod.Content
 
             if (etudes.EtudeIsStarted(readyForAttack) || etudes.EtudeIsCompleted(readyForAttack))
             {
-                player.UnlockableFlags.Unlock(adjustmentFlag);
+                setAdjustmentFlags(targetExtraDelayDays);
                 _logger.Log($"Defender's Heart assault timer repair skipped from {source}; assault is already active or resolved.");
                 return;
             }
 
             if (etudes.EtudeIsStarted(timer) && !etudes.EtudeIsCompleted(timer))
             {
-                if (TryAddSavedTimerDelay(
+                if (delayDeltaDays < 0 && TryRemoveSavedTimerDelay(
                         etudes,
                         timer,
-                        TimeSpan.FromDays(remainingDelayToAddDays),
+                        TimeSpan.FromDays(-delayDeltaDays),
+                        out var reducedBefore,
+                        out var reducedAfter))
+                {
+                    setAdjustmentFlags(targetExtraDelayDays);
+                    _logger.Log(
+                        $"Defender's Heart saved assault timer reduced from {reducedBefore.TotalDays:0.##} to {reducedAfter.TotalDays:0.##} days remaining from {source}.");
+                    return;
+                }
+
+                if (delayDeltaDays > 0 && TryAddSavedTimerDelay(
+                        etudes,
+                        timer,
+                        TimeSpan.FromDays(delayDeltaDays),
                         TimeSpan.FromDays(maximumAlreadyAdjustedDays),
                         out var before,
                         out var after))
                 {
-                    player.UnlockableFlags.Unlock(adjustmentFlag);
+                    setAdjustmentFlags(targetExtraDelayDays);
                     _logger.Log(
                         $"Defender's Heart saved assault timer extended from {before.TotalDays:0.##} to {after.TotalDays:0.##} days remaining from {source}.");
                     return;
@@ -181,16 +233,23 @@ namespace wotr_mod.Content
 
             if (etudes.EtudeIsCompleted(timer) && etudes.EtudeIsStarted(warning) && !etudes.EtudeIsCompleted(warning))
             {
+                if (delayDeltaDays <= 0)
+                {
+                    setAdjustmentFlags(targetExtraDelayDays);
+                    _logger.Log($"Defender's Heart assault timer reduction skipped from {source}; warning state is already active.");
+                    return;
+                }
+
                 etudes.UnstartEtude(warning, false);
                 etudes.UnstartEtude(timer, false);
                 etudes.StartEtude(timer, false, true);
-                SetSavedTimerRemaining(etudes, timer, TimeSpan.FromDays(remainingDelayToAddDays));
-                player.UnlockableFlags.Unlock(adjustmentFlag);
-                _logger.Log($"Defender's Heart warning state rolled back to a {remainingDelayToAddDays}-day remaining timer from {source}.");
+                SetSavedTimerRemaining(etudes, timer, TimeSpan.FromDays(delayDeltaDays));
+                setAdjustmentFlags(targetExtraDelayDays);
+                _logger.Log($"Defender's Heart warning state rolled back to a {delayDeltaDays}-day remaining timer from {source}.");
                 return;
             }
 
-            player.UnlockableFlags.Unlock(adjustmentFlag);
+            setAdjustmentFlags(targetExtraDelayDays);
             _logger.Log($"Defender's Heart assault timer repair marked complete from {source}; blueprint delay will apply.");
         }
 
@@ -208,9 +267,12 @@ namespace wotr_mod.Content
             var adjustmentFlag = EnsureRuntimeAdjustmentFlag(
                 ModBlueprintIds.Flags.DefendersHeartAssaultTimerAdjustedSixExtra,
                 "WotrMod_DefendersHeartAssaultTimerAdjustedSixExtra");
-            var sixDayAdjustmentApplied = player.UnlockableFlags.IsUnlocked(adjustmentFlag);
-            var previousAdjustmentApplied = player.UnlockableFlags.IsUnlocked(previousAdjustmentFlag);
-            if (!sixDayAdjustmentApplied && !previousAdjustmentApplied)
+            var appliedExtraDelayDays = player.UnlockableFlags.IsUnlocked(adjustmentFlag)
+                ? MaximumExtraDelayDays
+                : player.UnlockableFlags.IsUnlocked(previousAdjustmentFlag)
+                    ? PreviousExtraDelayDays
+                    : 0;
+            if (appliedExtraDelayDays <= 0)
             {
                 return;
             }
@@ -225,9 +287,8 @@ namespace wotr_mod.Content
                 var timerData = FindTimerData(etudes, timer);
                 if (timerData != null)
                 {
-                    var daysToRemove = sixDayAdjustmentApplied ? ExtraDelayDays : PreviousExtraDelayDays;
                     var before = timerData.TimeRemaining;
-                    var after = before - TimeSpan.FromDays(daysToRemove);
+                    var after = before - TimeSpan.FromDays(appliedExtraDelayDays);
                     timerData.TimeRemaining = after > TimeSpan.Zero ? after : TimeSpan.Zero;
                     _logger.Log(
                         $"Defender's Heart saved assault timer reduced from {before.TotalDays:0.##} to {timerData.TimeRemaining.TotalDays:0.##} days remaining from {source}.");
@@ -262,6 +323,28 @@ namespace wotr_mod.Content
             }
 
             timerData.TimeRemaining += extraDelay;
+            after = timerData.TimeRemaining;
+            return true;
+        }
+
+        private static bool TryRemoveSavedTimerDelay(
+            EtudesSystem etudes,
+            BlueprintEtude timer,
+            TimeSpan delayToRemove,
+            out TimeSpan before,
+            out TimeSpan after)
+        {
+            var timerData = FindTimerData(etudes, timer);
+            if (timerData == null)
+            {
+                before = TimeSpan.Zero;
+                after = TimeSpan.Zero;
+                return false;
+            }
+
+            before = timerData.TimeRemaining;
+            after = before - delayToRemove;
+            timerData.TimeRemaining = after > TimeSpan.Zero ? after : TimeSpan.Zero;
             after = timerData.TimeRemaining;
             return true;
         }

@@ -341,6 +341,42 @@ namespace wotr_mod.Content
         {
             var story = EnsureBillyStory(speaker);
             var recruitedFlag = EnsureBillyRecruitedFlag();
+            var act1RecordDialogSeenFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct1RecordDialogSeen,
+                "WotrMod_BillyAct1RecordDialogSeen");
+            var act1RecordDialogPendingFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct1RecordDialogPending,
+                "WotrMod_BillyAct1RecordDialogPending");
+            var act1TunicDialogSeenFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct1TunicDialogSeen,
+                "WotrMod_BillyAct1TunicDialogSeen");
+            var act1TunicDialogPendingFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct1TunicDialogPending,
+                "WotrMod_BillyAct1TunicDialogPending");
+            var act2BowDialogSeenFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct2BowDialogSeen,
+                "WotrMod_BillyAct2BowDialogSeen");
+            var act2BowDialogPendingFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct2BowDialogPending,
+                "WotrMod_BillyAct2BowDialogPending");
+            var act2ArmorDialogSeenFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct2ArmorDialogSeen,
+                "WotrMod_BillyAct2ArmorDialogSeen");
+            var act2ArmorDialogPendingFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct2ArmorDialogPending,
+                "WotrMod_BillyAct2ArmorDialogPending");
+            var act3ArmorDialogSeenFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct3ArmorDialogSeen,
+                "WotrMod_BillyAct3ArmorDialogSeen");
+            var act3ArmorDialogPendingFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct3ArmorDialogPending,
+                "WotrMod_BillyAct3ArmorDialogPending");
+            var act3BowDialogSeenFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct3BowDialogSeen,
+                "WotrMod_BillyAct3BowDialogSeen");
+            var act3BowDialogPendingFlag = EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyAct3BowDialogPending,
+                "WotrMod_BillyAct3BowDialogPending");
             var dialog = GetOrClone<BlueprintDialog>(
                 GameBlueprintIds.Dialogs.CiarZombieDialog,
                 ModBlueprintIds.Dialogs.BillyDialog,
@@ -466,20 +502,40 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Dialogs.BillyAct2BowCue,
                 "WotrMod_BillyAct2BowCue",
                 "Ciar zombie greeting cue");
+            var act2BowUpgradeCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct2BowUpgradeCue,
+                "WotrMod_BillyAct2BowUpgradeCue",
+                "Ciar zombie greeting cue");
             var act2ArmorCue = GetOrClone<BlueprintCue>(
                 GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
                 ModBlueprintIds.Dialogs.BillyAct2ArmorCue,
                 "WotrMod_BillyAct2ArmorCue",
+                "Ciar zombie greeting cue");
+            var act2ArmorUpgradeCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct2ArmorUpgradeCue,
+                "WotrMod_BillyAct2ArmorUpgradeCue",
                 "Ciar zombie greeting cue");
             var act3ArmorCue = GetOrClone<BlueprintCue>(
                 GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
                 ModBlueprintIds.Dialogs.BillyAct3ArmorCue,
                 "WotrMod_BillyAct3ArmorCue",
                 "Ciar zombie greeting cue");
+            var act3ArmorUpgradeCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct3ArmorUpgradeCue,
+                "WotrMod_BillyAct3ArmorUpgradeCue",
+                "Ciar zombie greeting cue");
             var act3BowCue = GetOrClone<BlueprintCue>(
                 GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
                 ModBlueprintIds.Dialogs.BillyAct3BowCue,
                 "WotrMod_BillyAct3BowCue",
+                "Ciar zombie greeting cue");
+            var act3BowUpgradeCue = GetOrClone<BlueprintCue>(
+                GameBlueprintIds.Dialogs.CiarZombieGreetingCue,
+                ModBlueprintIds.Dialogs.BillyAct3BowUpgradeCue,
+                "WotrMod_BillyAct3BowUpgradeCue",
                 "Ciar zombie greeting cue");
             var act1JalmerayAnswer = GetOrClone<BlueprintAnswer>(
                 GameBlueprintIds.Dialogs.CiarZombieLeaveAnswer,
@@ -590,9 +646,13 @@ namespace wotr_mod.Content
             ConfigureBillyInfoCue(act1RecordCue, LocalizationIds.Mod.BillyAct1RecordCue, speaker, answers);
             ConfigureBillyInfoCue(act1TunicCue, LocalizationIds.Mod.BillyAct1TunicCue, speaker, answers);
             ConfigureBillyInfoCue(act2BowCue, LocalizationIds.Mod.BillyAct2BowCue, speaker, answers);
+            ConfigureBillyNarrationCue(act2BowUpgradeCue, LocalizationIds.Mod.BillyAct2BowUpgradeCue);
             ConfigureBillyInfoCue(act2ArmorCue, LocalizationIds.Mod.BillyAct2ArmorCue, speaker, answers);
+            ConfigureBillyNarrationCue(act2ArmorUpgradeCue, LocalizationIds.Mod.BillyAct2ArmorUpgradeCue);
             ConfigureBillyInfoCue(act3ArmorCue, LocalizationIds.Mod.BillyAct3ArmorCue, speaker, answers);
+            ConfigureBillyNarrationCue(act3ArmorUpgradeCue, LocalizationIds.Mod.BillyAct3ArmorUpgradeCue);
             ConfigureBillyInfoCue(act3BowCue, LocalizationIds.Mod.BillyAct3BowCue, speaker, answers);
+            ConfigureBillyNarrationCue(act3BowUpgradeCue, LocalizationIds.Mod.BillyAct3BowUpgradeCue);
             ConfigureBillyQuestionAnswer(
                 whatAreYouAnswer,
                 LocalizationIds.Mod.BillyWhatAreYouAnswer,
@@ -601,50 +661,54 @@ namespace wotr_mod.Content
             ConfigureBillyQuestionAnswer(dangerousAnswer, LocalizationIds.Mod.BillyDangerousAnswer, dangerousCue);
             ConfigureBillyQuestionAnswer(planAnswer, LocalizationIds.Mod.BillyPlanAnswer, planCue);
             ConfigureBillyAct1JalmerayAnswer(act1JalmerayAnswer, act1JalmerayCue, act1JalmerayContinueAnswer);
-            ConfigureBillyQuestStatusAnswer(
+            ConfigureBillyQuestPendingAnswer(
                 act1RecordAnswer,
                 LocalizationIds.Mod.BillyAct1RecordAnswer,
                 act1RecordCue,
-                ModBlueprintIds.QuestObjectives.BillyConditionTransferRecord,
-                QuestObjectiveState.Started);
+                act1RecordDialogPendingFlag,
+                act1RecordDialogSeenFlag);
             ConfigureBillyQuestCueExit(act1RecordCue, act1JalmerayContinueAnswer);
-            ConfigureBillyQuestStatusAnswer(
+            ConfigureBillyQuestPendingAnswer(
                 act1TunicAnswer,
                 LocalizationIds.Mod.BillyAct1TunicAnswer,
                 act1TunicCue,
-                ModBlueprintIds.QuestObjectives.BillyConditionAct1TrailCold,
-                QuestObjectiveState.Started);
+                act1TunicDialogPendingFlag,
+                act1TunicDialogSeenFlag);
             ConfigureBillyQuestCueExit(act1TunicCue, act1JalmerayContinueAnswer);
             ConfigureBillySingleCueDialog(act1RecordDialog, act1RecordCue);
             ConfigureBillySingleCueDialog(act1TunicDialog, act1TunicCue);
-            ConfigureBillyQuestStatusAnswer(
+            ConfigureBillyQuestPendingAnswer(
                 act2BowAnswer,
                 LocalizationIds.Mod.BillyAct2BowAnswer,
                 act2BowCue,
-                ModBlueprintIds.QuestObjectives.BillyConditionAct2LostChapel,
-                QuestObjectiveState.Started);
-            ConfigureBillyQuestCueExit(act2BowCue, act1JalmerayContinueAnswer);
-            ConfigureBillyQuestStatusAnswer(
+                act2BowDialogPendingFlag,
+                act2BowDialogSeenFlag);
+            ConfigureBillyQuestCueContinue(act2BowCue, act2BowUpgradeCue);
+            ConfigureBillyQuestCueExit(act2BowUpgradeCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestPendingAnswer(
                 act2ArmorAnswer,
                 LocalizationIds.Mod.BillyAct2ArmorAnswer,
                 act2ArmorCue,
-                ModBlueprintIds.QuestObjectives.BillyConditionAct3IvorySanctum,
-                QuestObjectiveState.Started);
-            ConfigureBillyQuestCueExit(act2ArmorCue, act1JalmerayContinueAnswer);
-            ConfigureBillyQuestStatusAnswer(
+                act2ArmorDialogPendingFlag,
+                act2ArmorDialogSeenFlag);
+            ConfigureBillyQuestCueContinue(act2ArmorCue, act2ArmorUpgradeCue);
+            ConfigureBillyQuestCueExit(act2ArmorUpgradeCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestPendingAnswer(
                 act3ArmorAnswer,
                 LocalizationIds.Mod.BillyAct3ArmorAnswer,
                 act3ArmorCue,
-                ModBlueprintIds.QuestObjectives.BillyConditionAct3MidnightFane,
-                QuestObjectiveState.Started);
-            ConfigureBillyQuestCueExit(act3ArmorCue, act1JalmerayContinueAnswer);
-            ConfigureBillyQuestStatusAnswer(
+                act3ArmorDialogPendingFlag,
+                act3ArmorDialogSeenFlag);
+            ConfigureBillyQuestCueContinue(act3ArmorCue, act3ArmorUpgradeCue);
+            ConfigureBillyQuestCueExit(act3ArmorUpgradeCue, act1JalmerayContinueAnswer);
+            ConfigureBillyQuestPendingAnswer(
                 act3BowAnswer,
                 LocalizationIds.Mod.BillyAct3BowAnswer,
                 act3BowCue,
-                ModBlueprintIds.QuestObjectives.BillyConditionAct4Abyss,
-                QuestObjectiveState.Started);
-            ConfigureBillyQuestCueExit(act3BowCue, act1JalmerayContinueAnswer);
+                act3BowDialogPendingFlag,
+                act3BowDialogSeenFlag);
+            ConfigureBillyQuestCueContinue(act3BowCue, act3BowUpgradeCue);
+            ConfigureBillyQuestCueExit(act3BowUpgradeCue, act1JalmerayContinueAnswer);
             ConfigureBillySingleCueDialog(act2BowDialog, act2BowCue);
             ConfigureBillySingleCueDialog(act2ArmorDialog, act2ArmorCue);
             ConfigureBillySingleCueDialog(act3ArmorDialog, act3ArmorCue);
@@ -675,7 +739,14 @@ namespace wotr_mod.Content
 
         private BlueprintUnlockableFlag EnsureBillyRecruitedFlag()
         {
-            var flag = _blueprints.Get<BlueprintUnlockableFlag>(ModBlueprintIds.Flags.BillyRecruited);
+            return EnsureBillyQuestDialogSeenFlag(
+                ModBlueprintIds.Flags.BillyRecruited,
+                "WotrMod_BillyRecruited");
+        }
+
+        private BlueprintUnlockableFlag EnsureBillyQuestDialogSeenFlag(string guid, string name)
+        {
+            var flag = _blueprints.Get<BlueprintUnlockableFlag>(guid);
             if (flag != null)
             {
                 return flag;
@@ -683,10 +754,10 @@ namespace wotr_mod.Content
 
             flag = new BlueprintUnlockableFlag
             {
-                name = "WotrMod_BillyRecruited",
-                AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Flags.BillyRecruited)
+                name = name,
+                AssetGuid = BlueprintGuid.Parse(guid)
             };
-            _blueprints.AddCachedBlueprint(ModBlueprintIds.Flags.BillyRecruited, flag);
+            _blueprints.AddCachedBlueprint(guid, flag);
             return flag;
         }
 
@@ -904,12 +975,12 @@ namespace wotr_mod.Content
             answer.AddToHistory = true;
         }
 
-        private void ConfigureBillyQuestStatusAnswer(
+        private void ConfigureBillyQuestPendingAnswer(
             BlueprintAnswer answer,
             string localizationKey,
             BlueprintCue cue,
-            string objectiveGuid,
-            QuestObjectiveState state)
+            BlueprintUnlockableFlag pendingFlag,
+            BlueprintUnlockableFlag seenFlag)
         {
             ConfigureBillyQuestionAnswer(answer, localizationKey, cue);
             answer.ShowConditions = new ConditionsChecker
@@ -917,10 +988,21 @@ namespace wotr_mod.Content
                 Operation = Operation.And,
                 Conditions = new Condition[]
                 {
-                    CreateObjectiveStatusCondition(
-                        objectiveGuid,
-                        "WotrMod_BillyQuestDialogue_" + cue.name,
-                        state)
+                    CreateFlagUnlockedCondition(
+                        pendingFlag,
+                        "WotrMod_BillyQuestDialoguePending_" + cue.name,
+                        not: false),
+                    CreateFlagUnlockedCondition(
+                        seenFlag,
+                        "WotrMod_BillyQuestDialogueSeen_" + cue.name,
+                        not: true)
+                }
+            };
+            cue.OnStop = new ActionList
+            {
+                Actions = new GameAction[]
+                {
+                    CreateUnlockFlagAction(seenFlag, "WotrMod_MarkBillyQuestDialogueSeen_" + cue.name)
                 }
             };
         }
@@ -932,6 +1014,28 @@ namespace wotr_mod.Content
                 BlueprintReferenceBase.CreateTyped<BlueprintAnswerBaseReference>(continueAnswer)
             };
             cue.Continue = CreateEmptyCueSelection();
+        }
+
+        private void ConfigureBillyNarrationCue(BlueprintCue cue, string localizationKey)
+        {
+            cue.Text = _localization.Text(localizationKey);
+            cue.Speaker = new DialogSpeaker
+            {
+                MoveCamera = true,
+                NoSpeaker = true
+            };
+            cue.OnShow = new ActionList();
+            cue.OnStop = new ActionList();
+            cue.Answers = new List<BlueprintAnswerBaseReference>();
+            cue.Continue = CreateEmptyCueSelection();
+            cue.ShowOnce = false;
+            cue.ShowOnceCurrentDialog = false;
+        }
+
+        private static void ConfigureBillyQuestCueContinue(BlueprintCue cue, BlueprintCue nextCue)
+        {
+            cue.Answers = new List<BlueprintAnswerBaseReference>();
+            cue.Continue = CreateCueSelection(nextCue);
         }
 
         private static void ConfigureBillySingleCueDialog(BlueprintDialog dialog, BlueprintCue cue)
@@ -961,6 +1065,24 @@ namespace wotr_mod.Content
                     _blueprints.Require<BlueprintQuestObjective>(objectiveGuid, conditionName + " objective")));
 
             return objectiveStatus;
+        }
+
+        private Condition CreateFlagUnlockedCondition(
+            BlueprintUnlockableFlag flag,
+            string conditionName,
+            bool not)
+        {
+            var flagUnlocked = new FlagUnlocked
+            {
+                name = "$FlagUnlocked$" + conditionName,
+                Not = not
+            };
+            SetField(
+                flagUnlocked,
+                "m_ConditionFlag",
+                BlueprintReferenceBase.CreateTyped<BlueprintUnlockableFlagReference>(flag));
+
+            return flagUnlocked;
         }
 
         private Condition CreateCurrentAreaCondition(string areaGuid, string conditionName)
@@ -1346,9 +1468,14 @@ namespace wotr_mod.Content
 
         private static UnlockFlag CreateUnlockFlagAction(BlueprintUnlockableFlag flag)
         {
+            return CreateUnlockFlagAction(flag, "WotrMod_UnlockBillyRecruitedFlag");
+        }
+
+        private static UnlockFlag CreateUnlockFlagAction(BlueprintUnlockableFlag flag, string name)
+        {
             var action = new UnlockFlag
             {
-                name = "WotrMod_UnlockBillyRecruitedFlag",
+                name = name,
                 flagValue = 1,
                 flag = flag
             };
