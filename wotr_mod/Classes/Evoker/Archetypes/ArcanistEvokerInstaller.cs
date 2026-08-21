@@ -4,6 +4,8 @@ using System.Linq;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
+using Kingmaker.Designers.Mechanics.Recommendations;
+using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes.Evoker.Archetypes
@@ -48,6 +50,7 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             var combatCasting = _blueprints.Require<BlueprintFeature>(
                 GameBlueprintIds.Features.CombatCasting,
                 "Combat Casting");
+            ConfigureGrantedFeatRecommendation(spellPenetration);
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
@@ -63,6 +66,18 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
+        }
+
+        private void ConfigureGrantedFeatRecommendation(BlueprintFeature feature)
+        {
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(feature);
+            var recommendation = _blueprints.EnsureComponent(
+                feature,
+                () => new GrantedFeatureRecommendation
+                {
+                    name = "$GrantedFeatureRecommendation$ArcanistEvoker"
+                });
+            recommendation.AddNotRecommendedArchetype(ModBlueprintIds.Archetypes.ArcanistEvoker);
         }
 
         private static LevelEntry[] CreateFeatureEntries(

@@ -108,6 +108,7 @@ namespace wotr_mod.Classes.Evoker
             ConfigureEvokerCombatCasting(characterClass);
             EnsureShadowbornBonusFeatCompatibilityStub(characterClass);
             ReplaceSorcererProficiencies(characterClass);
+            ConfigureEvokerProficiencyRecommendations(characterClass);
             EnsureEvokerBloodlineSelection(characterClass);
             EnsureEvocationSpellFocusRecommendation(characterClass);
             spellbook.HasSpecialSpellList = true;
@@ -298,13 +299,43 @@ namespace wotr_mod.Classes.Evoker
             _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(combatCasting);
             var recommendation = _blueprints.EnsureComponent(
                 combatCasting,
-                () => new SpellbookRecommendationExceptClasses
+                () => new GrantedFeatureRecommendation
                 {
-                    name = "$SpellbookRecommendationExceptClasses$CombatCasting"
+                    name = "$GrantedFeatureRecommendation$CombatCasting"
                 });
-            recommendation.NotRecommendedClasses = characterClass == null
-                ? new BlueprintCharacterClass[0]
-                : new[] { characterClass };
+            recommendation.AddNotRecommendedClass(characterClass);
+            recommendation.AddExemptArchetype(ModBlueprintIds.Archetypes.ArcanistEvoker);
+        }
+
+        private void ConfigureEvokerProficiencyRecommendations(BlueprintCharacterClass characterClass)
+        {
+            ConfigureClassGrantedFeatRecommendation(
+                GameBlueprintIds.Features.ArmorProficiencyLight,
+                "Light Armor Proficiency",
+                characterClass,
+                "LightArmorProficiency");
+            ConfigureClassGrantedFeatRecommendation(
+                GameBlueprintIds.Features.SimpleWeaponProficiency,
+                "Simple Weapon Proficiency",
+                characterClass,
+                "SimpleWeaponProficiency");
+        }
+
+        private void ConfigureClassGrantedFeatRecommendation(
+            string featureGuid,
+            string featureName,
+            BlueprintCharacterClass characterClass,
+            string nameSuffix)
+        {
+            var feature = _blueprints.Require<BlueprintFeature>(featureGuid, featureName);
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(feature);
+            var recommendation = _blueprints.EnsureComponent(
+                feature,
+                () => new GrantedFeatureRecommendation
+                {
+                    name = "$GrantedFeatureRecommendation$Evoker" + nameSuffix
+                });
+            recommendation.AddNotRecommendedClass(characterClass);
         }
 
         internal BlueprintFeatureSelection EnsureEvokerBonusFeatSelection(BlueprintCharacterClass characterClass)

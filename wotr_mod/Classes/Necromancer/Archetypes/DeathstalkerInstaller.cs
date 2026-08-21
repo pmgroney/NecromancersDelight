@@ -657,12 +657,20 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.DeathstalkerProficienciesName),
                 _localization.Text(LocalizationIds.Mod.DeathstalkerProficienciesDescription));
+            var martialWeaponProficiency = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.MartialWeaponProficiency,
+                "Martial Weapon Proficiency");
+            var lightningReflexes = _blueprints.Require<BlueprintFeature>(
+                GameBlueprintIds.Features.LightningReflexes,
+                "Lightning Reflexes");
+            ConfigureGrantedFeatRecommendation(martialWeaponProficiency, "MartialWeaponProficiency");
+            ConfigureGrantedFeatRecommendation(lightningReflexes, "LightningReflexes");
             var addFacts = new AddFacts { name = "$AddFacts$DeathstalkerProficiencies" };
             _blueprints.SetAddFacts(addFacts,
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight, "Light Armor Proficiency"),
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.SimpleWeaponProficiency, "Simple Weapon Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency, "Martial Weapon Proficiency"),
-                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.LightningReflexes, "Lightning Reflexes"),
+                martialWeaponProficiency,
+                lightningReflexes,
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.WeaponFinesse, "Weapon Finesse"));
             var athleticsClassSkill = new AddClassSkill
             {
@@ -691,6 +699,18 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             };
             _blueprints.SetComponents(feature, addFacts, athleticsClassSkill, mobilityClassSkill, thieveryClassSkill, stealthClassSkill, perceptionClassSkill);
             return feature;
+        }
+
+        private void ConfigureGrantedFeatRecommendation(BlueprintFeature feature, string nameSuffix)
+        {
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(feature);
+            var recommendation = _blueprints.EnsureComponent(
+                feature,
+                () => new GrantedFeatureRecommendation
+                {
+                    name = "$GrantedFeatureRecommendation$Deathstalker" + nameSuffix
+                });
+            recommendation.AddNotRecommendedArchetype(ModBlueprintIds.Archetypes.Deathstalker);
         }
 
         private BlueprintFeatureSelection EnsureDeathstalkerBonusFeatSelection(BlueprintArchetype archetype)

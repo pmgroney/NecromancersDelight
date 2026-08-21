@@ -10,6 +10,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.Designers.Mechanics.Recommendations;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
@@ -420,6 +421,15 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             _blueprints.SetUnitFactDisplay(feature,
                 _localization.Text(LocalizationIds.Mod.GravebladeProficienciesName),
                 _localization.Text(LocalizationIds.Mod.GravebladeProficienciesDescription));
+            ConfigureGrantedFeatRecommendation(
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyMedium, "Medium Armor Proficiency"),
+                "MediumArmorProficiency");
+            ConfigureGrantedFeatRecommendation(
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyHeavy, "Heavy Armor Proficiency"),
+                "HeavyArmorProficiency");
+            ConfigureGrantedFeatRecommendation(
+                _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.MartialWeaponProficiency, "Martial Weapon Proficiency"),
+                "MartialWeaponProficiency");
             var addFacts = new AddFacts { name = "$AddFacts$GravebladeProficiencies" };
             _blueprints.SetAddFacts(addFacts,
                 _blueprints.Require<BlueprintFeature>(GameBlueprintIds.Features.ArmorProficiencyLight, "Light Armor Proficiency"),
@@ -434,6 +444,18 @@ namespace wotr_mod.Classes.Necromancer.Archetypes
             };
             _blueprints.SetComponents(feature, addFacts, athleticsClassSkill);
             return feature;
+        }
+
+        private void ConfigureGrantedFeatRecommendation(BlueprintFeature feature, string nameSuffix)
+        {
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(feature);
+            var recommendation = _blueprints.EnsureComponent(
+                feature,
+                () => new GrantedFeatureRecommendation
+                {
+                    name = "$GrantedFeatureRecommendation$Graveblade" + nameSuffix
+                });
+            recommendation.AddNotRecommendedArchetype(ModBlueprintIds.Archetypes.Graveblade);
         }
 
         private BlueprintFeature[] EnsureGravebladeReapingEdge(BlueprintCharacterClass characterClass)

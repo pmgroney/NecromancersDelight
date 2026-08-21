@@ -60,7 +60,10 @@ namespace wotr_mod.Classes.Necromancer
 
         public void ConfigureSpellList(CharacterClassDefinition definition, BlueprintSpellList spellList)
         {
-            ConfigureNecromancerSpellList(spellList);
+            var characterClass = _blueprints.Require<BlueprintCharacterClass>(
+                definition.ClassGuid,
+                definition.InternalName + " class");
+            ConfigureNecromancerSpellList(spellList, characterClass);
         }
 
         public BlueprintFeatureBase EnsureProgressionFeature(CharacterClassDefinition definition)
@@ -87,6 +90,7 @@ namespace wotr_mod.Classes.Necromancer
             EnsureNecromancerBloodline();
             RegisterNecromancerFeatures(characterClass);
             EnsureNecromancySpellFocusRecommendation(characterClass);
+            ConfigureNecromancerProficiencyRecommendations(characterClass);
             ConfigureWeaponFinesseRecommendation(characterClass);
             ConfigureWeaponFocusRecommendation(characterClass);
             ConfigureArcaneArmorTrainingRecommendation(characterClass);
@@ -109,10 +113,13 @@ namespace wotr_mod.Classes.Necromancer
                 _blueprints.GetCharacterClassStartingGold(characterClass));
         }
 
-        private void ConfigureNecromancerSpellList(BlueprintSpellList spellList, int minimumSpellLevel = 0)
+        private void ConfigureNecromancerSpellList(
+            BlueprintSpellList spellList,
+            BlueprintCharacterClass characterClass,
+            int minimumSpellLevel = 0)
         {
             var spellsByLevel = MergeSpellEntries(
-                GetNecromancerRegistrySpells(minimumSpellLevel),
+                GetNecromancerRegistrySpells(characterClass, minimumSpellLevel),
                 GetWizardEvocationSpells(minimumSpellLevel));
 
             _blueprints.SetSpellListSpells(
@@ -120,14 +127,16 @@ namespace wotr_mod.Classes.Necromancer
                 spellsByLevel.OrderBy(p => p.Value).ThenBy(p => p.Key.name));
         }
 
-        private IEnumerable<KeyValuePair<BlueprintAbility, int>> GetNecromancerRegistrySpells(int minimumSpellLevel)
+        private IEnumerable<KeyValuePair<BlueprintAbility, int>> GetNecromancerRegistrySpells(
+            BlueprintCharacterClass characterClass,
+            int minimumSpellLevel)
         {
             return NecromancerSpellRegistry.GetAll()
                 .Where(d => d.SpellLevel >= minimumSpellLevel)
                 .Select(d =>
                 {
                     var spell = _blueprints.Require<BlueprintAbility>(d.SpellGuid, d.DisplayName);
-                    ApplySelectionRecommendation(spell, d);
+                    ApplySelectionRecommendation(spell, d, characterClass);
                     return new KeyValuePair<BlueprintAbility, int>(spell, d.SpellLevel);
                 });
         }
@@ -184,7 +193,10 @@ namespace wotr_mod.Classes.Necromancer
             return spells.Values;
         }
 
-        private void ApplySelectionRecommendation(BlueprintScriptableObject blueprint, ClassSpellDefinition definition)
+        private void ApplySelectionRecommendation(
+            BlueprintScriptableObject blueprint,
+            ClassSpellDefinition definition,
+            BlueprintCharacterClass characterClass)
         {
             if (!definition.Recommendation.HasValue) return;
 
@@ -194,12 +206,10 @@ namespace wotr_mod.Classes.Necromancer
                 // Graveblade and Deathstalker remove that chain, so the spell is a normal pick for them.
                 var recommendation = _blueprints.EnsureComponent(
                     blueprint,
-                    () => new GrantedSpellRecommendation { name = $"$GrantedSpellRecommendation${definition.DisplayName}" });
-                recommendation.ExemptArchetypeGuids = new[]
-                {
-                    BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(ModBlueprintIds.Archetypes.Graveblade)),
-                    BlueprintGuid.Parse(BlueprintTool.NormalizeGuid(ModBlueprintIds.Archetypes.Deathstalker))
-                };
+                    () => new GrantedFeatureRecommendation { name = $"$GrantedFeatureRecommendation${definition.DisplayName}" });
+                recommendation.AddNotRecommendedClass(characterClass);
+                recommendation.AddExemptArchetype(ModBlueprintIds.Archetypes.Graveblade);
+                recommendation.AddExemptArchetype(ModBlueprintIds.Archetypes.Deathstalker);
                 return;
             }
 
@@ -244,6 +254,37 @@ namespace wotr_mod.Classes.Necromancer
             recommendation.NotRecommendedClasses = characterClass == null
                 ? new BlueprintCharacterClass[0]
                 : new[] { characterClass };
+        }
+
+        private void ConfigureNecromancerProficiencyRecommendations(BlueprintCharacterClass characterClass)
+        {
+            ConfigureClassGrantedFeatRecommendation(
+                GameBlueprintIds.Features.ArmorProficiencyLight,
+                "Light Armor Proficiency",
+                characterClass,
+                "LightArmorProficiency");
+            ConfigureClassGrantedFeatRecommendation(
+                GameBlueprintIds.Features.SimpleWeaponProficiency,
+                "Simple Weapon Proficiency",
+                characterClass,
+                "SimpleWeaponProficiency");
+        }
+
+        private void ConfigureClassGrantedFeatRecommendation(
+            string featureGuid,
+            string featureName,
+            BlueprintCharacterClass characterClass,
+            string nameSuffix)
+        {
+            var feature = _blueprints.Require<BlueprintFeature>(featureGuid, featureName);
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(feature);
+            var recommendation = _blueprints.EnsureComponent(
+                feature,
+                () => new GrantedFeatureRecommendation
+                {
+                    name = "$GrantedFeatureRecommendation$Necromancer" + nameSuffix
+                });
+            recommendation.AddNotRecommendedClass(characterClass);
         }
 
         private void ConfigureWeaponFinesseRecommendation(BlueprintCharacterClass characterClass)

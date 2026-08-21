@@ -4,7 +4,9 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.Designers.Mechanics.Recommendations;
 using UnityModManagerNet;
+using wotr_mod.Features;
 using wotr_mod.Infrastructure;
 
 namespace wotr_mod.Classes.Evoker.Archetypes
@@ -75,6 +77,9 @@ namespace wotr_mod.Classes.Evoker.Archetypes
                 "$ArcaneArmorProficiency$DraconicEvokerHeavyArmor",
                 ArmorProficiencyGroup.Heavy,
                 characterClass);
+            ConfigureGrantedFeatRecommendation(weaponFocusClaw, "WeaponFocusClaw");
+            ConfigureGrantedFeatRecommendation(mediumArmorProficiency, "MediumArmorProficiency");
+            ConfigureGrantedFeatRecommendation(heavyArmorProficiency, "HeavyArmorProficiency");
 
             _blueprints.SetComponents(archetype);
             _blueprints.SetArchetypeDisplay(
@@ -109,6 +114,18 @@ namespace wotr_mod.Classes.Evoker.Archetypes
             _blueprints.SetArchetypeBuildChanging(archetype, true);
 
             return archetype;
+        }
+
+        private void ConfigureGrantedFeatRecommendation(BlueprintFeature feature, string nameSuffix)
+        {
+            _blueprints.RemoveComponents<RecommendationRequiresSpellbook>(feature);
+            var recommendation = _blueprints.EnsureComponent(
+                feature,
+                () => new GrantedFeatureRecommendation
+                {
+                    name = "$GrantedFeatureRecommendation$DraconicEvoker" + nameSuffix
+                });
+            recommendation.AddNotRecommendedArchetype(ModBlueprintIds.Archetypes.DraconicEvoker);
         }
 
         private BlueprintFeature EnsureArcaneArmorProficiency(
