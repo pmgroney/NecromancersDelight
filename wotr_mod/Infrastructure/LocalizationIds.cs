@@ -92,8 +92,8 @@ namespace wotr_mod.Infrastructure
             public const string BillyAct3BowAnswer = "wotr_mod.companion.billy.quest.act3.bow.answer";
             public const string BillyAct3BowCue = "wotr_mod.companion.billy.quest.act3.bow.cue";
             public const string BillyAct3BowUpgradeCue = "wotr_mod.companion.billy.quest.act3.bow.upgrade.cue";
-            public const string BillyIroriDisciplineName = "wotr_mod.companion.billy.feature.irori_discipline.name";
-            public const string BillyIroriDisciplineDescription = "wotr_mod.companion.billy.feature.irori_discipline.description";
+            public const string BillyPositiveEnergyImmunityName = "wotr_mod.companion.billy.feature.positive_energy_immunity.name";
+            public const string BillyPositiveEnergyImmunityDescription = "wotr_mod.companion.billy.feature.positive_energy_immunity.description";
             public const string BillyWayOfTheBowName = "wotr_mod.companion.billy.feature.way_of_the_bow.name";
             public const string BillyWayOfTheBowDescription = "wotr_mod.companion.billy.feature.way_of_the_bow.description";
             public const string BillyStoryTitle = "wotr_mod.companion.billy.story.title";

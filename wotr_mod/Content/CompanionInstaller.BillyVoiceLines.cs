@@ -160,6 +160,27 @@ namespace wotr_mod.Content
             "BILLY_ULB_004_A",
             "BILLY_ULB_004_B"
         };
+
+        private static readonly HashSet<string> TextOnlyBillySceneInterjectionIds = new HashSet<string>
+        {
+            "SCN_HOUNDHEART_LANN_RING",
+            "SCN_HOUNDHEART_ELAN_ATTACKS_CURL",
+            "SCN_HOUNDHEART_REDEMPTION",
+            "SCN_HURLUN_JUDGE_JURY",
+            "SCN_HURLUN_BLASPHEMY",
+            "SCN_REGILL_RECRUITMENT_DISCIPLINE",
+            "SCN_REGILL_CRUELTY_PURPOSE",
+            "SCN_RADIANCE_LEGACY",
+            "SCN_STAUNTON_DEATH_DIDNT_CHANGE",
+            "SCN_STAUNTON_NO_PEACE",
+            "SCN_COMMANDER_BECOMES_LICH",
+            "SCN_ZACHARIUS_DAERAN_SCANDAL",
+            "SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL",
+            "SCN_ZACHARIUS_NENIO_VOLUNTEERS",
+            "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY",
+            "SCN_ZACHARIUS_OFFER_WARNING"
+        };
+
         private static readonly BillyBanterReplacement[] CanonicalBillyBanterReplacements =
         {
             new BillyBanterReplacement("BILLY_SEE_001", "Seelah", "4061abcd06662f347ad3aefb525eae08", "54be53f0b35bf3c4592a97ae335fe765", new[] { VanillaLine(BanterSourceRole.FirstPhrase), BillyLine("BILLY_SEE_001_A", "Good. I was worried the rigor mortis was making me seem aloof.") }),
@@ -261,6 +282,82 @@ namespace wotr_mod.Content
             new BillySceneInterjection("SCN_DAERAN_FIRST_MEET_LONELY", "7c6ba5d07d21bd548aa310d0b32fa67b", new[]
                 {
                     new BillySceneInterjectionLine("SCN_DAERAN_FIRST_MEET_LONELY_A", "faa33f9af0085a66824f51f51f80c238", "faa33f9a-f008-5a66-824f-51f51f80c238", "Those aren't friends, Ember. They're furniture that drinks.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_002", "42f4cc0a1948a8647bcad0cd405efe23", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_002", "32c152e9d4d4590796e713667ceda2ab", "32c152e9-d4d4-5907-96e7-13667ceda2ab", "I've met enough clergy to assure you the two are not mutually exclusive.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_003", "49b15396177edab4ebb46fa5b3f959d4", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_003", "ae7efe8c5dba556a87d95498ed66c7ce", "ae7efe8c-5dba-556a-87d9-5498ed66c7ce", "Look on the bright side. If we fail, he won't have anyone left to invoice.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_004", "80f0af9f5e5fc7e43b9975b279a41de7", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_004", "fb6252569ebc54e98bea7cf119a16cb8", "fb625256-9ebc-54e9-8bea-7cf119a16cb8", "And here I thought I was supposed to be the unsettling one.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_005", "e4e711820cfcc7f41a9a0a355ac08fb1", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_005", "061a4636b1395b30aa5fca6e972d6391", "061a4636-b139-5b30-aa5f-ca6e972d6391", "Regret is useful only while you're still willing to learn from it.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_006", "798cfed412194074eb0f53759d53c120", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_006", "54817db5acbd5987abfd2e970da212f4", "54817db5-acbd-5987-abfd-2e970da212f4", "On that, paladin, we agree.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_007", "4883404530f5a89468d05573b7f8051c", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_007", "67f2dd1597fa5254b4c40964cb2a0360", "67f2dd15-97fa-5254-b4c4-0964cb2a0360", "Nenio, perhaps wait until after we've determined whether she's going to kill us.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_008", "0e6996174d355a946aa8581d61e7395a", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_008", "adf0e71e04d85754816c6d7da309c9b4", "adf0e71e-04d8-5754-816c-6d7da309c9b4", "I'd also like an answer to the 'someone who died is saved' portion.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_009", "fe1b35b58c4b71c49849e7a2df6c2db8", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_009", "d16f157ef0a45783ade89789c8aaa4c1", "d16f157e-f0a4-5783-ade8-9789c8aaa4c1", "Your confidence has reassured me completely.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_010", "6be2e11b82435384984904d2eca129e8", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_010", "bc7e31ef51935951abc61b62561fc56d", "bc7e31ef-5193-5951-abc6-1b62561fc56d", "A comprehensive plan. I particularly admire the consistency.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_011", "4f8ecb2c52b7ec848930924e23152d90", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_011", "0cdaa86329515d84af81e76c7ce27a8f", "0cdaa863-2951-5d84-af81-e76c7ce27a8f", "Tempting, but she knows where I sleep.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_012", "af36fec407b21b9439562233be4f2b56", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_012", "9d1a7ffb83d650eb81ce979c99b4c0a1", "9d1a7ffb-83d6-50eb-81ce-979c99b4c0a1", "Remarkably, the church has the same problem.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_013", "478cb2d2e05ac374881de0ef61969675", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_013", "e3910e29de0d580c904598be732f7030", "e3910e29-de0d-580c-9045-98be732f7030", "I didn't know she could do that.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_014", "e4403a7c1af9f4c4ca9e7b1492825dc1", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_014", "6274368b82115818b713a78ea9b1a9b8", "6274368b-8211-5818-b713-a78ea9b1a9b8", "If it helps, age doesn't improve the experience.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_015", "1fa3c030f3dcfa24eb1c5787e60c0230", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_015", "f6c7c013bb98599588124591c9653a7f", "f6c7c013-bb98-5995-8812-4591c9653a7f", "Nenio, for once in your life, please stop doing science.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_016", "b289c5a0480ec1847b3dfb25b7c722c9", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_016", "df047ddb942250a6ba227e6b953adde7", "df047ddb-9422-50a6-ba22-7e6b953adde7", "Faith that demands certainty is just a transaction.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_017", "d9f391f62b3307742a968f662ca4c940", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_017", "cac6e6370237573c9091f5436b707c9b", "cac6e637-0237-573c-9091-f5436b707c9b", "And this is why no god has invited you anywhere in person.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_018", "008b44bd33e335a44b3ad629da80b2cf", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_018", "1b1ba5347e25513e8d2bbffc4711d4bb", "1b1ba534-7e25-513e-8d2b-bffc4711d4bb", "You don't have to understand it. Just don't mistake what we are for who we are.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_019", "3965490c7cdded5499f7eed9dc339f68", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_019", "d2dceef7ec3657bd996eb8261835c9a9", "d2dceef7-ec36-57bd-996e-b8261835c9a9", "That may be the most honest thing you've ever said.")
+                }),
+            new BillySceneInterjection("BILLY_SCENE_020", "55f091a91ce31884392e3dfe6a31f916", new[]
+                {
+                    new BillySceneInterjectionLine("BILLY_SCENE_020", "8659f2ff86e951c38339e6ce601213a3", "8659f2ff-86e9-51c3-8339-e6ce601213a3", "Kill him first. We'll worry about interior decorating afterward.")
                 }),
             new BillySceneInterjection("SCN_RADIANCE_LEGACY", "f75bb9463b053424c8dd819f4cd13bb9", new[]
                 {

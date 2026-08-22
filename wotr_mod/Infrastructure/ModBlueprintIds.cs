@@ -375,7 +375,6 @@ namespace wotr_mod.Infrastructure
             public const string LivingDarknessFeature2 = "a1b2c3d4e5f648901a2b3c4d5e6f0002";
             public const string LivingDarknessFeature3 = "a1b2c3d4e5f648901a2b3c4d5e6f0003";
             public const string LivingDarknessFeature4 = "a1b2c3d4e5f648901a2b3c4d5e6f0004";
-            public const string BillyMonkAcBonus = "a73f9c2d4e5849a5bc6d7e8f9012a3b4";
             public const string BillyPositiveEnergyImmunity = "e009f36b497c489c9faeeac27d115a82";
             public const string BillyWayOfTheBowLongbow = "b84e0f6a1c2d4e3f95a7b8c9d0e1f234";
             public const string CleverPyromaniacGnome = "d2c7d0907a3340f8a34d2a6d1f569101";
@@ -490,7 +489,6 @@ namespace wotr_mod.Infrastructure
 
         internal static class Buffs
         {
-            public const string BillyMonkAcBonusBuffUnarmored = "c95f1a2b3c4d5e6f8091a2b3c4d5e6f7";
             public const string LivingDarkness1AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0021";
             public const string LivingDarkness2AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0022";
             public const string LivingDarkness3AuraBuff = "a1b2c3d4e5f648901a2b3c4d5e6f0023";

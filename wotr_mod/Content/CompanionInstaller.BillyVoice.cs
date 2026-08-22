@@ -298,10 +298,16 @@ namespace wotr_mod.Content
 
         private void RegisterBillySceneInterjectionLocalization()
         {
-            foreach (var line in BillySceneInterjections.SelectMany(entry => entry.Lines))
+            foreach (var entry in BillySceneInterjections)
             {
-                _localization.Put(line.LocalizationKey, line.Text);
-                _localization.PutSoundEvent(line.LocalizationKey, line.AkEvent);
+                foreach (var line in entry.Lines)
+                {
+                    _localization.Put(line.LocalizationKey, line.Text);
+                    if (!TextOnlyBillySceneInterjectionIds.Contains(entry.SceneId))
+                    {
+                        _localization.PutSoundEvent(line.LocalizationKey, line.AkEvent);
+                    }
+                }
             }
         }
 

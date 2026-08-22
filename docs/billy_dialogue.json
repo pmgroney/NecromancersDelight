@@ -96,41 +96,6 @@
     "BillyBanterAru_002_A": "Sometimes leaving isn't a choice."
   },
   "sceneInterjectionDialogue": {
-    "SCN_HOUNDHEART_LANN_RING_A": {
-      "text": "And people say romance is dead. Present company excluded.",
-      "file": "SCN_HOUNDHEART_LANN_RING_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_HOUNDHEART_LANN_RING_A"
-    },
-    "SCN_HOUNDHEART_ELAN_ATTACKS_CURL_A": {
-      "text": "Certainty is a poor substitute for self-control.",
-      "file": "SCN_HOUNDHEART_ELAN_ATTACKS_CURL_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_HOUNDHEART_ELAN_ATTACKS_CURL_A"
-    },
-    "SCN_HOUNDHEART_REDEMPTION_A": {
-      "text": "If being an idiot were grounds for execution, this crusade would be considerably smaller.",
-      "file": "SCN_HOUNDHEART_REDEMPTION_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_HOUNDHEART_REDEMPTION_A"
-    },
-    "SCN_HURLUN_JUDGE_JURY_A": {
-      "text": "Efficient. He's eliminated the troublesome middleman known as justice.",
-      "file": "SCN_HURLUN_JUDGE_JURY_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_HURLUN_JUDGE_JURY_A"
-    },
-    "SCN_HURLUN_BLASPHEMY_A": {
-      "text": "Technically, blasphemy requires him to be wrong about the god.",
-      "file": "SCN_HURLUN_BLASPHEMY_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_HURLUN_BLASPHEMY_A"
-    },
-    "SCN_REGILL_RECRUITMENT_DISCIPLINE_A": {
-      "text": "Discipline is admirable. What one chooses to do with it remains rather important.",
-      "file": "SCN_REGILL_RECRUITMENT_DISCIPLINE_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_REGILL_RECRUITMENT_DISCIPLINE_A"
-    },
-    "SCN_REGILL_CRUELTY_PURPOSE_A": {
-      "text": "Discipline without purpose is merely suffering with better posture.",
-      "file": "SCN_REGILL_CRUELTY_PURPOSE_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_REGILL_CRUELTY_PURPOSE_A"
-    },
     "SCN_NENIO_REVEAL_LANN_A": {
       "text": "I've been doing that for years. People assume wisdom.",
       "file": "SCN_NENIO_REVEAL_LANN_A.wav",
@@ -151,75 +116,100 @@
       "file": "SCN_DAERAN_FIRST_MEET_LONELY_A.wav",
       "event": "Play_CMP_Billy_Dialog_SCN_DAERAN_FIRST_MEET_LONELY_A"
     },
-    "SCN_RADIANCE_LEGACY_A": {
-      "text": "Legacy is what remains after perfection proves unattainable.",
-      "file": "SCN_RADIANCE_LEGACY_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_RADIANCE_LEGACY_A"
+    "BILLY_SCENE_002": {
+      "text": "I've met enough clergy to assure you the two are not mutually exclusive.",
+      "file": "BILLY_SCENE_002.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_002"
     },
-    "SCN_STAUNTON_DEATH_DIDNT_CHANGE_A": {
-      "text": "Why would it? Dying doesn't improve a man. He has to manage that himself.",
-      "file": "SCN_STAUNTON_DEATH_DIDNT_CHANGE_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_STAUNTON_DEATH_DIDNT_CHANGE_A"
+    "BILLY_SCENE_003": {
+      "text": "Look on the bright side. If we fail, he won't have anyone left to invoice.",
+      "file": "BILLY_SCENE_003.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_003"
     },
-    "SCN_STAUNTON_NO_PEACE_A": {
-      "text": "Peace isn't something death grants. Trust me.",
-      "file": "SCN_STAUNTON_NO_PEACE_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_STAUNTON_NO_PEACE_A"
+    "BILLY_SCENE_004": {
+      "text": "And here I thought I was supposed to be the unsettling one.",
+      "file": "BILLY_SCENE_004.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_004"
     },
-    "SCN_COMMANDER_BECOMES_LICH_A": {
-      "text": "You think dying is the difficult part.",
-      "file": "SCN_COMMANDER_BECOMES_LICH_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_COMMANDER_BECOMES_LICH_A"
+    "BILLY_SCENE_005": {
+      "text": "Regret is useful only while you're still willing to learn from it.",
+      "file": "BILLY_SCENE_005.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_005"
     },
-    "SCN_COMMANDER_BECOMES_LICH_B": {
-      "text": "It isn't.",
-      "file": "SCN_COMMANDER_BECOMES_LICH_B.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_COMMANDER_BECOMES_LICH_B"
+    "BILLY_SCENE_006": {
+      "text": "On that, paladin, we agree.",
+      "file": "BILLY_SCENE_006.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_006"
     },
-    "SCN_COMMANDER_BECOMES_LICH_C": {
-      "text": "What comes next is deciding whether the person you were still matters.",
-      "file": "SCN_COMMANDER_BECOMES_LICH_C.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_COMMANDER_BECOMES_LICH_C"
+    "BILLY_SCENE_007": {
+      "text": "Nenio, perhaps wait until after we've determined whether she's going to kill us.",
+      "file": "BILLY_SCENE_007.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_007"
     },
-    "SCN_ZACHARIUS_DAERAN_SCANDAL_A": {
-      "text": "Please include me in the correspondence. I haven't enjoyed religious scandal this much in years.",
-      "file": "SCN_ZACHARIUS_DAERAN_SCANDAL_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_DAERAN_SCANDAL_A"
+    "BILLY_SCENE_008": {
+      "text": "I'd also like an answer to the 'someone who died is saved' portion.",
+      "file": "BILLY_SCENE_008.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_008"
     },
-    "SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL_A": {
-      "text": "Well. This has become awkward.",
-      "file": "SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL_A"
+    "BILLY_SCENE_009": {
+      "text": "Your confidence has reassured me completely.",
+      "file": "BILLY_SCENE_009.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_009"
     },
-    "SCN_ZACHARIUS_NENIO_VOLUNTEERS_A": {
-      "text": "No.",
-      "file": "SCN_ZACHARIUS_NENIO_VOLUNTEERS_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_NENIO_VOLUNTEERS_A"
+    "BILLY_SCENE_010": {
+      "text": "A comprehensive plan. I particularly admire the consistency.",
+      "file": "BILLY_SCENE_010.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_010"
     },
-    "SCN_ZACHARIUS_NENIO_VOLUNTEERS_B": {
-      "text": "Absolutely fucking not.",
-      "file": "SCN_ZACHARIUS_NENIO_VOLUNTEERS_B.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_NENIO_VOLUNTEERS_B"
+    "BILLY_SCENE_011": {
+      "text": "Tempting, but she knows where I sleep.",
+      "file": "BILLY_SCENE_011.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_011"
     },
-    "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_A": {
-      "text": "Ulbrig.",
-      "file": "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_A"
+    "BILLY_SCENE_012": {
+      "text": "Remarkably, the church has the same problem.",
+      "file": "BILLY_SCENE_012.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_012"
     },
-    "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_B": {
-      "text": "I'm standing right here.",
-      "file": "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_B.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_B"
+    "BILLY_SCENE_013": {
+      "text": "I didn't know she could do that.",
+      "file": "BILLY_SCENE_013.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_013"
     },
-    "SCN_ZACHARIUS_OFFER_WARNING_A": {
-      "text": "Undeath isn't power without a price.",
-      "file": "SCN_ZACHARIUS_OFFER_WARNING_A.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_OFFER_WARNING_A"
+    "BILLY_SCENE_014": {
+      "text": "If it helps, age doesn't improve the experience.",
+      "file": "BILLY_SCENE_014.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_014"
     },
-    "SCN_ZACHARIUS_OFFER_WARNING_B": {
-      "text": "The disturbing part is how long you have to regret paying it.",
-      "file": "SCN_ZACHARIUS_OFFER_WARNING_B.wav",
-      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_OFFER_WARNING_B"
+    "BILLY_SCENE_015": {
+      "text": "Nenio, for once in your life, please stop doing science.",
+      "file": "BILLY_SCENE_015.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_015"
+    },
+    "BILLY_SCENE_016": {
+      "text": "Faith that demands certainty is just a transaction.",
+      "file": "BILLY_SCENE_016.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_016"
+    },
+    "BILLY_SCENE_017": {
+      "text": "And this is why no god has invited you anywhere in person.",
+      "file": "BILLY_SCENE_017.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_017"
+    },
+    "BILLY_SCENE_018": {
+      "text": "You don't have to understand it. Just don't mistake what we are for who we are.",
+      "file": "BILLY_SCENE_018.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_018"
+    },
+    "BILLY_SCENE_019": {
+      "text": "That may be the most honest thing you've ever said.",
+      "file": "BILLY_SCENE_019.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_019"
+    },
+    "BILLY_SCENE_020": {
+      "text": "Kill him first. We'll worry about interior decorating afterward.",
+      "file": "BILLY_SCENE_020.wav",
+      "event": "Play_CMP_Billy_Dialog_BILLY_SCENE_020"
     }
   }
 }

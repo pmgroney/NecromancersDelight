@@ -613,12 +613,12 @@ namespace wotr_mod.Content
 
         private void ConfigureBillyUnit(BlueprintUnit unit)
         {
-            unit.Strength = 16;
-            unit.Dexterity = 18;
+            unit.Strength = 14;
+            unit.Dexterity = 16;
             unit.Constitution = 10;
             unit.Intelligence = 12;
-            unit.Wisdom = 17;
-            unit.Charisma = 14;
+            unit.Wisdom = 18;
+            unit.Charisma = 15;
             unit.Alignment = Alignment.LawfulNeutral;
 
             var longbowProficiency = _blueprints.Require<BlueprintUnitFact>(
@@ -630,19 +630,15 @@ namespace wotr_mod.Content
             var dodge = _blueprints.Require<BlueprintUnitFact>(
                 GameBlueprintIds.Features.Dodge,
                 "Dodge");
-            var undeadType = _blueprints.Require<BlueprintUnitFact>(
-                GameBlueprintIds.Features.UndeadType,
-                "Undead Type");
-            var featureList = EnsureBillyFeatureList();
-            var positiveEnergyImmunity = EnsureBillyPositiveEnergyImmunity();
             var scalingClass = _blueprints.Require<BlueprintCharacterClass>(
                 GameBlueprintIds.Classes.Cleric,
                 "Cleric class");
-            var scalingArchetype = _blueprints.Require<BlueprintArchetype>(
-                GameBlueprintIds.Archetypes.PriestOfBalance,
-                "Priest of Balance archetype");
-            var monkAcBonus = EnsureBillyMonkAcBonus(scalingClass, scalingArchetype);
+            var undeadType = _blueprints.Require<BlueprintUnitFact>(
+                GameBlueprintIds.Features.UndeadType,
+                "Undead Type");
+            var positiveEnergyImmunity = EnsureBillyPositiveEnergyImmunity(scalingClass);
             var wayOfTheBow = EnsureBillyWayOfTheBow(scalingClass);
+            var featureList = EnsureBillyFeatureList();
             var visualSource = _blueprints.Require<BlueprintUnit>(
                 GameBlueprintIds.Units.Dlc5StartPregenFighter,
                 "DLC5 start pregen fighter visual unit");
@@ -661,7 +657,6 @@ namespace wotr_mod.Content
                 shortbowProficiency,
                 dodge,
                 positiveEnergyImmunity,
-                monkAcBonus,
                 wayOfTheBow);
 
             SetUnitPortrait(unit, EnsureBillyPortrait());
@@ -672,36 +667,6 @@ namespace wotr_mod.Content
             SetUnitBarks(unit, EnsureBillyBarks());
         }
 
-        private BlueprintFeature EnsureBillyMonkAcBonus(
-            BlueprintCharacterClass scalingClass,
-            BlueprintArchetype scalingArchetype)
-        {
-            var unarmoredBuff = GetOrClone<BlueprintBuff>(
-                GameBlueprintIds.Buffs.MonkAcBonusBuffUnarmored,
-                ModBlueprintIds.Buffs.BillyMonkAcBonusBuffUnarmored,
-                "WotrMod_BillyMonkACBonusBuffUnarmored",
-                "Monk AC bonus unarmored buff");
-            ConfigureContextRankClass(unarmoredBuff, scalingClass, scalingArchetype);
-
-            var feature = GetOrClone<BlueprintFeature>(
-                GameBlueprintIds.Features.MonkAcBonus,
-                ModBlueprintIds.Features.BillyMonkAcBonus,
-                "WotrMod_BillyMonkACBonus",
-                "Monk AC bonus");
-            _blueprints.SetUnitFactDisplay(
-                feature,
-                _localization.Text(LocalizationIds.Mod.BillyIroriDisciplineName),
-                _localization.Text(LocalizationIds.Mod.BillyIroriDisciplineDescription));
-            _blueprints.SetUnitFactShortDescription(
-                feature,
-                _localization.Text(LocalizationIds.Mod.BillyIroriDisciplineDescription));
-            var wisdomBuff = _blueprints.Require<BlueprintUnitFact>(
-                GameBlueprintIds.Buffs.MonkAcBonusBuff,
-                "Monk AC wisdom buff");
-            SetAddFacts(feature, wisdomBuff, unarmoredBuff);
-            return feature;
-        }
-
         private BlueprintFeature EnsureBillyWayOfTheBow(BlueprintCharacterClass scalingClass)
         {
             var feature = GetOrClone<BlueprintFeature>(
@@ -709,6 +674,12 @@ namespace wotr_mod.Content
                 ModBlueprintIds.Features.BillyWayOfTheBowLongbow,
                 "WotrMod_BillyWayOfTheBowLongbow",
                 "Zen Archer Way of the Bow - Longbow");
+            feature.HideInUI = false;
+            feature.HideInCharacterSheetAndLevelUp = false;
+            feature.HideNotAvailibleInUI = false;
+            feature.Ranks = 1;
+            feature.IsClassFeature = true;
+            _blueprints.SetProgressionClasses(feature, scalingClass);
             _blueprints.SetUnitFactDisplay(
                 feature,
                 _localization.Text(LocalizationIds.Mod.BillyWayOfTheBowName),
@@ -718,37 +689,6 @@ namespace wotr_mod.Content
                 _localization.Text(LocalizationIds.Mod.BillyWayOfTheBowDescription));
             ConfigureAddFeatureOnClassLevel(feature, scalingClass);
             return feature;
-        }
-
-        private static void ConfigureContextRankClass(
-            BlueprintBuff buff,
-            BlueprintCharacterClass scalingClass,
-            BlueprintArchetype scalingArchetype)
-        {
-            foreach (var component in buff.ComponentsArray ?? Array.Empty<BlueprintComponent>())
-            {
-                if (component.GetType().Name != "ContextRankConfig")
-                {
-                    continue;
-                }
-
-                var classReference = BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(scalingClass);
-                var classField = FindField(component.GetType(), "m_Class");
-                if (classField?.FieldType.IsArray == true)
-                {
-                    classField.SetValue(component, new[] { classReference });
-                }
-                else
-                {
-                    classField?.SetValue(component, classReference);
-                }
-
-                SetField(
-                    component,
-                    "Archetype",
-                    BlueprintReferenceBase.CreateTyped<BlueprintArchetypeReference>(scalingArchetype));
-                SetField(component, "m_AdditionalArchetypes", Array.Empty<BlueprintArchetypeReference>());
-            }
         }
 
         private static void ConfigureAddFeatureOnClassLevel(BlueprintFeature feature, BlueprintCharacterClass scalingClass)
@@ -766,21 +706,6 @@ namespace wotr_mod.Content
                     BlueprintReferenceBase.CreateTyped<BlueprintCharacterClassReference>(scalingClass));
                 SetField(component, "m_AdditionalClasses", Array.Empty<BlueprintCharacterClassReference>());
                 SetField(component, "m_Archetypes", Array.Empty<BlueprintArchetypeReference>());
-            }
-        }
-
-        private static void SetAddFacts(BlueprintFeature feature, params BlueprintUnitFact[] facts)
-        {
-            var references = facts
-                .Select(fact => BlueprintReferenceBase.CreateTyped<BlueprintUnitFactReference>(fact))
-                .ToArray();
-
-            foreach (var component in feature.ComponentsArray ?? Array.Empty<BlueprintComponent>())
-            {
-                if (component.GetType().Name == "AddFacts")
-                {
-                    SetField(component, "m_Facts", references);
-                }
             }
         }
 

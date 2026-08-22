@@ -22,9 +22,9 @@ namespace wotr_mod.Patches
         private const float DefendersHeartSpawnY = 40f;
         private const float DefendersHeartSpawnZ = -7f;
         private const float DefendersHeartSpawnOrientation = 0f;
-        private const float WarCampSpawnX = -12f;
+        private const float WarCampSpawnX = -22f;
         private const float WarCampSpawnY = 40f;
-        private const float WarCampSpawnZ = 44f;
+        private const float WarCampSpawnZ = 24f;
         private const float WarCampSpawnOrientation = 180f;
         private static readonly BlueprintGuid BillyGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.UndeadCiarCompanion);
         private static readonly BlueprintGuid BillyStandInGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.BillyShieldMazeStandIn);

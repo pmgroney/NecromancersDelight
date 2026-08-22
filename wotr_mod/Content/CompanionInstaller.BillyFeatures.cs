@@ -19,7 +19,7 @@ namespace wotr_mod.Content
 {
     internal sealed partial class CompanionInstaller
     {
-        private BlueprintFeature EnsureBillyPositiveEnergyImmunity()
+        private BlueprintFeature EnsureBillyPositiveEnergyImmunity(BlueprintCharacterClass scalingClass)
         {
             var feature = _blueprints.Get<BlueprintFeature>(ModBlueprintIds.Features.BillyPositiveEnergyImmunity);
             if (feature == null)
@@ -28,18 +28,28 @@ namespace wotr_mod.Content
                 {
                     name = "WotrMod_BillyPositiveEnergyImmunity",
                     AssetGuid = BlueprintGuid.Parse(ModBlueprintIds.Features.BillyPositiveEnergyImmunity),
-                    HideInUI = true,
-                    HideInCharacterSheetAndLevelUp = true,
+                    HideInUI = false,
+                    HideInCharacterSheetAndLevelUp = false,
+                    HideNotAvailibleInUI = false,
                     Ranks = 1,
                     IsClassFeature = true
                 };
                 _blueprints.AddCachedBlueprint(ModBlueprintIds.Features.BillyPositiveEnergyImmunity, feature);
             }
 
-            feature.HideInUI = true;
-            feature.HideInCharacterSheetAndLevelUp = true;
+            feature.HideInUI = false;
+            feature.HideInCharacterSheetAndLevelUp = false;
+            feature.HideNotAvailibleInUI = false;
             feature.Ranks = 1;
             feature.IsClassFeature = true;
+            _blueprints.SetProgressionClasses(feature, scalingClass);
+            _blueprints.SetUnitFactDisplay(
+                feature,
+                _localization.Text(LocalizationIds.Mod.BillyPositiveEnergyImmunityName),
+                _localization.Text(LocalizationIds.Mod.BillyPositiveEnergyImmunityDescription));
+            _blueprints.SetUnitFactShortDescription(
+                feature,
+                _localization.Text(LocalizationIds.Mod.BillyPositiveEnergyImmunityDescription));
             _blueprints.SetComponents(
                 feature,
                 new AddEnergyDamageImmunity

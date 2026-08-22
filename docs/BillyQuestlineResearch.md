@@ -81,6 +81,7 @@ The Hosilla placement should use:
 - Defender's Heart uses the recruited roster Billy itself, as local-map party portrait pins require an in-game roster or party unit; a runtime stand-in can appear in-world but will not generate the portrait pin.
 - Defender's Heart Billy placement uses fixed hub coordinates instead of party-relative placement, ensuring a stable room and map position across all entry points.
 - Final static coordinate for Billy in the Defender's Heart center room is `(-82, 40, -7)` with orientation `0`.
+- Final static coordinate for Billy in the Crusader's Camp is `(-22, 40, 24)` with orientation `180`; this replaced `(-12, 40, 44)` after the first offset test moved him toward the tent instead of away from it.
 - Prior coordinates `(-84, 40, 4)` and `(-101, 40, -11)` were rejected for placing the map pin too far south near/below the center-room lower edge and inside the top-right bedroom, respectively; `Y=40` remained valid throughout.
 - Billy Defender's Heart placement checks `Player.AllCharacters` as well as active/remote/party collections so roster-only recruitment still satisfies the stand-in placement gate.
 - `Player.AllCharacters` can include runtime Billy stand-ins; treat a Billy unit in that list as recruited roster only when `UnitPartCompanion.State` is `Remote`, `InParty`, `InPartyDetached`, or `ExCompanion`.
