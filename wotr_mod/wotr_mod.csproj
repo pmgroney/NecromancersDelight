@@ -208,6 +208,7 @@
         <Compile Include="Patches\BillyRecruitedCondition.cs" />
         <Compile Include="Patches\BillyRecruitmentFallbackAction.cs" />
         <Compile Include="Patches\BillyPlacementPatch.cs" />
+        <Compile Include="Patches\BillyBanterRuntimePatch.cs" />
         <Compile Include="Patches\BillyVisualPatch.cs" />
         <Compile Include="Patches\CustomHeritagePatch.cs" />
         <Compile Include="Patches\AchievementReenablePatch.cs" />

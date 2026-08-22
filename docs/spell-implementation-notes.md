@@ -26,6 +26,7 @@ Use the existing spell pipeline unless a specific mechanic forces a different pa
    - `EvocationUnleashedDamageBonus` adds the caster's Charisma bonus as flat damage to all Evocation spells regardless of casting spellbook; Evoker spell shaping still handles ally damage removal separately for Evoker-spellbook casts.
    - Reusable `PerDieBonusDamage` covers Evoker class-spellbook evocation per-die bonuses, explicit ability allowlists for granted rays, and force-damage matching for Arcwright Force Ray.
    - Base Necromancer availability comes from `wotr_mod/Classes/Necromancer/NecromancerSpellRegistry.cs` plus Wizard-list spells whose `SpellComponent.School` is Evocation; global custom Evocation spells reach the base Necromancer because `SpellInstaller` adds them to Wizard before `CharacterClassInstaller` runs.
+   - Graveblade and Deathstalker copy the Inquisitor 6-level spell progression, then `NecromancerMediumMergedSpellbookProgression` extends their copied spells-per-day and spells-known tables for Lich merged spellbooks. Spell levels above 6 intentionally unlock only by combined caster level threshold: 7th at CL 22, 8th at CL 24, 9th at CL 26, and 10th at CL 28. This delayed unlock is intended, not a bug.
 5. Add new modifier files to `wotr_mod/wotr_mod.csproj`.
 6. Add icon content to the project only if the icon is new. Existing icons may already be included.
 
