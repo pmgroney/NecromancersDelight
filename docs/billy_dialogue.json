@@ -94,5 +94,132 @@
     "BillyBanterGry_002_A": "I'm a cleric of Irori. If this were a sermon, you'd be doing push-ups.",
     "BillyBanterGry_004_A": "Death is surprisingly bad at enforcing that sort of thing.",
     "BillyBanterAru_002_A": "Sometimes leaving isn't a choice."
+  },
+  "sceneInterjectionDialogue": {
+    "SCN_HOUNDHEART_LANN_RING_A": {
+      "text": "And people say romance is dead. Present company excluded.",
+      "file": "SCN_HOUNDHEART_LANN_RING_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_HOUNDHEART_LANN_RING_A"
+    },
+    "SCN_HOUNDHEART_ELAN_ATTACKS_CURL_A": {
+      "text": "Certainty is a poor substitute for self-control.",
+      "file": "SCN_HOUNDHEART_ELAN_ATTACKS_CURL_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_HOUNDHEART_ELAN_ATTACKS_CURL_A"
+    },
+    "SCN_HOUNDHEART_REDEMPTION_A": {
+      "text": "If being an idiot were grounds for execution, this crusade would be considerably smaller.",
+      "file": "SCN_HOUNDHEART_REDEMPTION_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_HOUNDHEART_REDEMPTION_A"
+    },
+    "SCN_HURLUN_JUDGE_JURY_A": {
+      "text": "Efficient. He's eliminated the troublesome middleman known as justice.",
+      "file": "SCN_HURLUN_JUDGE_JURY_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_HURLUN_JUDGE_JURY_A"
+    },
+    "SCN_HURLUN_BLASPHEMY_A": {
+      "text": "Technically, blasphemy requires him to be wrong about the god.",
+      "file": "SCN_HURLUN_BLASPHEMY_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_HURLUN_BLASPHEMY_A"
+    },
+    "SCN_REGILL_RECRUITMENT_DISCIPLINE_A": {
+      "text": "Discipline is admirable. What one chooses to do with it remains rather important.",
+      "file": "SCN_REGILL_RECRUITMENT_DISCIPLINE_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_REGILL_RECRUITMENT_DISCIPLINE_A"
+    },
+    "SCN_REGILL_CRUELTY_PURPOSE_A": {
+      "text": "Discipline without purpose is merely suffering with better posture.",
+      "file": "SCN_REGILL_CRUELTY_PURPOSE_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_REGILL_CRUELTY_PURPOSE_A"
+    },
+    "SCN_NENIO_REVEAL_LANN_A": {
+      "text": "I've been doing that for years. People assume wisdom.",
+      "file": "SCN_NENIO_REVEAL_LANN_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_NENIO_REVEAL_LANN_A"
+    },
+    "SCN_NENIO_REVEAL_DANGER_A": {
+      "text": "I tested that hypothesis once. The results were inconclusive.",
+      "file": "SCN_NENIO_REVEAL_DANGER_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_NENIO_REVEAL_DANGER_A"
+    },
+    "SCN_NENIO_REVEAL_CAMELLIA_PRIVACY_A": {
+      "text": "Yes. Imagine the horror.",
+      "file": "SCN_NENIO_REVEAL_CAMELLIA_PRIVACY_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_NENIO_REVEAL_CAMELLIA_PRIVACY_A"
+    },
+    "SCN_DAERAN_FIRST_MEET_LONELY_A": {
+      "text": "Those aren't friends, Ember. They're furniture that drinks.",
+      "file": "SCN_DAERAN_FIRST_MEET_LONELY_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_DAERAN_FIRST_MEET_LONELY_A"
+    },
+    "SCN_RADIANCE_LEGACY_A": {
+      "text": "Legacy is what remains after perfection proves unattainable.",
+      "file": "SCN_RADIANCE_LEGACY_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_RADIANCE_LEGACY_A"
+    },
+    "SCN_STAUNTON_DEATH_DIDNT_CHANGE_A": {
+      "text": "Why would it? Dying doesn't improve a man. He has to manage that himself.",
+      "file": "SCN_STAUNTON_DEATH_DIDNT_CHANGE_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_STAUNTON_DEATH_DIDNT_CHANGE_A"
+    },
+    "SCN_STAUNTON_NO_PEACE_A": {
+      "text": "Peace isn't something death grants. Trust me.",
+      "file": "SCN_STAUNTON_NO_PEACE_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_STAUNTON_NO_PEACE_A"
+    },
+    "SCN_COMMANDER_BECOMES_LICH_A": {
+      "text": "You think dying is the difficult part.",
+      "file": "SCN_COMMANDER_BECOMES_LICH_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_COMMANDER_BECOMES_LICH_A"
+    },
+    "SCN_COMMANDER_BECOMES_LICH_B": {
+      "text": "It isn't.",
+      "file": "SCN_COMMANDER_BECOMES_LICH_B.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_COMMANDER_BECOMES_LICH_B"
+    },
+    "SCN_COMMANDER_BECOMES_LICH_C": {
+      "text": "What comes next is deciding whether the person you were still matters.",
+      "file": "SCN_COMMANDER_BECOMES_LICH_C.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_COMMANDER_BECOMES_LICH_C"
+    },
+    "SCN_ZACHARIUS_DAERAN_SCANDAL_A": {
+      "text": "Please include me in the correspondence. I haven't enjoyed religious scandal this much in years.",
+      "file": "SCN_ZACHARIUS_DAERAN_SCANDAL_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_DAERAN_SCANDAL_A"
+    },
+    "SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL_A": {
+      "text": "Well. This has become awkward.",
+      "file": "SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_SEELAH_UNDEAD_EVIL_A"
+    },
+    "SCN_ZACHARIUS_NENIO_VOLUNTEERS_A": {
+      "text": "No.",
+      "file": "SCN_ZACHARIUS_NENIO_VOLUNTEERS_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_NENIO_VOLUNTEERS_A"
+    },
+    "SCN_ZACHARIUS_NENIO_VOLUNTEERS_B": {
+      "text": "Absolutely fucking not.",
+      "file": "SCN_ZACHARIUS_NENIO_VOLUNTEERS_B.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_NENIO_VOLUNTEERS_B"
+    },
+    "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_A": {
+      "text": "Ulbrig.",
+      "file": "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_A"
+    },
+    "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_B": {
+      "text": "I'm standing right here.",
+      "file": "SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_B.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_ULBRIG_UNDEAD_FOLLY_B"
+    },
+    "SCN_ZACHARIUS_OFFER_WARNING_A": {
+      "text": "Undeath isn't power without a price.",
+      "file": "SCN_ZACHARIUS_OFFER_WARNING_A.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_OFFER_WARNING_A"
+    },
+    "SCN_ZACHARIUS_OFFER_WARNING_B": {
+      "text": "The disturbing part is how long you have to regret paying it.",
+      "file": "SCN_ZACHARIUS_OFFER_WARNING_B.wav",
+      "event": "Play_CMP_Billy_Dialog_SCN_ZACHARIUS_OFFER_WARNING_B"
+    }
   }
 }

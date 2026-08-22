@@ -85,6 +85,7 @@ namespace wotr_mod.Infrastructure
             public const string DefendersHeart = "089e897983fef564d9e15b46ff679d7e";
             public const string KenabresBurning = "92180b58582ec5f43a756071cd339f52";
             public const string PrologueLabyrinth = "944a6947fe8ffa8458c278aa1c0c4226";
+            public const string WarCamp = "7a25c101fe6f7aa46b192db13373d03b";
         }
 
         internal static class AreaParts
@@ -238,6 +239,7 @@ namespace wotr_mod.Infrastructure
             public const string MagusFighterTraining = "2b636b9e8dd7df94cbd372c52237eebf";
             public const string MonkAcBonus = "e241bdfd6333b9843a7bfd674d607ac4";
             public const string Pharasma = "458750bc214ab2e44abdeae404ab22e9";
+            public const string PointBlankMasterLongbow = "22baf0213c7382f4cbe5641d03a8e476";
             public const string PointBlankShot = "0da0c194d6e1d43419eb8d990b28e0ab";
             public const string PreciseShot = "8f3d1e6b4be006f4d896081f2f889665";
             public const string RedDragonBloodlineArcana = "a8baee8eb681d53438cc17bd1d125890";
@@ -247,6 +249,7 @@ namespace wotr_mod.Infrastructure
             public const string WeaponFocusClaw = "153937f44fcd42a429a286a10babd82d";
             public const string ShortbowProficiency = "e8096942d950c8843857c2545f8dc18f";
             public const string UndeadType = "734a29b693e9ec346ba2951b27987e33";
+            public const string ZenArcherZenArcheryFeature = "379c0da9f384e7547a70c259445377f5";
             public const string BloodlineElementalAirElementalRayFeature = "acf668c24dfbcdd499276eaf1881486e";
             public const string BloodlineElementalEarthElementalRayFeature = "cb15c04cf43b93a4589077078b4188eb";
             public const string BloodlineUndeadSpellLevel1 = "3e4080a48cbd3154aac907befca64801";

@@ -22,10 +22,15 @@ namespace wotr_mod.Patches
         private const float DefendersHeartSpawnY = 40f;
         private const float DefendersHeartSpawnZ = -7f;
         private const float DefendersHeartSpawnOrientation = 0f;
+        private const float WarCampSpawnX = -12f;
+        private const float WarCampSpawnY = 40f;
+        private const float WarCampSpawnZ = 44f;
+        private const float WarCampSpawnOrientation = 180f;
         private static readonly BlueprintGuid BillyGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.UndeadCiarCompanion);
         private static readonly BlueprintGuid BillyStandInGuid = BlueprintGuid.Parse(ModBlueprintIds.Units.BillyShieldMazeStandIn);
         private static readonly BlueprintGuid PrologueLabyrinthGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.PrologueLabyrinth);
         private static readonly BlueprintGuid DefendersHeartGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.DefendersHeart);
+        private static readonly BlueprintGuid WarCampGuid = BlueprintGuid.Parse(GameBlueprintIds.Areas.WarCamp);
 
         private readonly BlueprintTool _blueprints;
         private readonly UnityModManager.ModEntry.ModLogger _logger;
@@ -47,6 +52,7 @@ namespace wotr_mod.Patches
         {
             _blueprints.Require<BlueprintArea>(GameBlueprintIds.Areas.PrologueLabyrinth, "Shield Maze area");
             _blueprints.Require<BlueprintArea>(GameBlueprintIds.Areas.DefendersHeart, "Defender's Heart area");
+            _blueprints.Require<BlueprintArea>(GameBlueprintIds.Areas.WarCamp, "Crusader's Camp area");
             _canPlaceBilly = _blueprints.Get<BlueprintUnit>(ModBlueprintIds.Units.UndeadCiarCompanion) != null
                              && _blueprints.Get<BlueprintUnit>(ModBlueprintIds.Units.BillyShieldMazeStandIn) != null;
             _logger.Log($"Billy placement apply: canPlaceBilly={_canPlaceBilly}.");
@@ -89,6 +95,16 @@ namespace wotr_mod.Patches
                     return;
                 }
 
+                if (ShouldPlaceBillyInWarCamp(out var warCampReason))
+                {
+                    var position = GetWarCampSpawnPosition();
+                    var billy = FindBillyRosterUnit();
+                    PlaceBilly(billy, position, WarCampSpawnOrientation);
+                    Game.Instance.Player?.InvalidateCharacterLists();
+                    _logger.Log($"Billy placement positioned Crusader's Camp roster Billy: position={FormatVector3(position)}, orientation={WarCampSpawnOrientation}, hasView={billy?.View != null}, isInGame={billy?.IsInGame == true}.");
+                    return;
+                }
+
                 if (areaGuid == PrologueLabyrinthGuid)
                 {
                     _logger.Log("Billy placement skipped Shield Maze: " + shieldMazeReason);
@@ -96,6 +112,10 @@ namespace wotr_mod.Patches
                 else if (areaGuid == DefendersHeartGuid)
                 {
                     _logger.Log("Billy placement skipped Defender's Heart: " + defendersHeartReason);
+                }
+                else if (areaGuid == WarCampGuid)
+                {
+                    _logger.Log("Billy placement skipped Crusader's Camp: " + warCampReason);
                 }
             }
             catch (Exception ex)
@@ -157,6 +177,27 @@ namespace wotr_mod.Patches
             if (Game.Instance.CurrentlyLoadedArea.AssetGuid != DefendersHeartGuid)
             {
                 reason = "loaded area is not Defender's Heart.";
+                return false;
+            }
+
+            var player = Game.Instance.Player;
+            var roster = IsBillyInPlayerRoster();
+            var standIn = IsBillyStandInPresent(includeCrossScene: false);
+            reason = DescribePlacementGate(player, roster, standIn);
+            return roster && !standIn;
+        }
+
+        private static bool ShouldPlaceBillyInWarCamp(out string reason)
+        {
+            if (!Game.HasInstance || Game.Instance.CurrentlyLoadedArea == null)
+            {
+                reason = "game instance or loaded area is unavailable.";
+                return false;
+            }
+
+            if (Game.Instance.CurrentlyLoadedArea.AssetGuid != WarCampGuid)
+            {
+                reason = "loaded area is not Crusader's Camp.";
                 return false;
             }
 
@@ -324,6 +365,14 @@ namespace wotr_mod.Patches
                 DefendersHeartSpawnX,
                 DefendersHeartSpawnY,
                 DefendersHeartSpawnZ);
+        }
+
+        private static Vector3 GetWarCampSpawnPosition()
+        {
+            return new Vector3(
+                WarCampSpawnX,
+                WarCampSpawnY,
+                WarCampSpawnZ);
         }
 
         private static string FormatVector3(Vector3 value)

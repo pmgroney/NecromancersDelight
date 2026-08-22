@@ -6,8 +6,9 @@ These notes track the Billy voice pipeline used by the mod.
 
 - Main dialogue is built in `wotr_mod/Content/CompanionInstaller.cs`.
 - Billy's conversation clones Ciar zombie `BlueprintDialog`, `BlueprintCue`, `BlueprintAnswer`, and `BlueprintAnswersList` assets, then replaces localized text and speaker wiring.
-- Billy's reactivity barks are line-only right now:
-  - `wotr_mod/Content/BillyReactivityLines.cs` stores categorized bark text.
+- Billy's reactivity bark scaffolding remains, but the old line set was intentionally cleared:
+  - `wotr_mod/Content/BillyReactivityLines.cs` keeps the category/action surface with no current text entries.
+  - `docs/billy_barks.json` keeps an empty `billyReactivityLines` object for the next story-accurate line pass.
   - `wotr_mod/Patches/BillyReactivityBarkAction.cs` calls `BarkManager.ShowBark(..., new VoiceOverStatus())`.
 - Billy's normal unit barks use `UnitAsksComponent` in `CompanionInstaller.EnsureBillyBarks`.
   - `UnitAsksComponent.SoundBanks` is currently empty.

@@ -121,6 +121,10 @@
         <Compile Include="Content\MythicSpellbookMergeInstaller.cs" />
         <Compile Include="Content\QuestExperienceReward.cs" />
         <Compile Include="Content\BillyReactivityLines.cs" />
+        <Compile Include="Content\CompanionInstaller.BillyDialogue.cs" />
+        <Compile Include="Content\CompanionInstaller.BillyFeatures.cs" />
+        <Compile Include="Content\CompanionInstaller.BillyVoice.cs" />
+        <Compile Include="Content\CompanionInstaller.BillyVoiceLines.cs" />
         <Compile Include="Content\CompanionInstaller.cs" />
         <Compile Include="Content\IContentModule.cs"/>
         <Compile Include="Content\Localization\ModText.cs"/>
